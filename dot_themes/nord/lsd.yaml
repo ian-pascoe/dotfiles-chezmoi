@@ -1,0 +1,67 @@
+# Nord
+#
+#   name  | category    | id                | 256 color | terminal color code
+# -----------------------------------------------------------------------------
+#  Nord0  | Polar Night | nord-black        | #1C1C1C   | 235
+#  Nord1  | Polar Night | nord-darker-gray  | #262626   | 236
+#  Nord2  | Polar Night | nord-dark-gray    | #303030   | 237
+#  Nord3  | Polar Night | nord-gray         | #444444   | 238
+#  Nord4  | Snow Storm  | nord-light-gray   | #D7D7D7   | 188
+#  Nord5  | Snow Storm  | nord-lighter-gray | #EEEEEE   | 255
+#  Nord6  | Snow Storm  | nord-white        | #FFFFFF   | 15
+#  Nord7  | Frost       | nord-frost-green  | #87AFAF   | 152
+#  Nord8  | Frost       | nord-arctic-blue  | #87CEFA   | 110
+#  Nord9  | Frost       | nord-frost-blue   | #5F87AF   | 109
+#  Nord10 | Frost       | nord-frost-gray   | #5F5F87   | 67
+#  Nord11 | Aurora      | nord-red          | #AF5F5F   | 167
+#  Nord12 | Aurora      | nord-orange       | #D7875F   | 173
+#  Nord13 | Aurora      | nord-yellow       | #FFD787   | 222
+#  Nord14 | Aurora      | nord-aurora-green | #AFD7AF   | 151
+#  Nord15 | Aurora      | nord-purple       | #D7AFD7   | 182
+
+# Custom
+#
+#  id             | 256 color | terminal color code
+# --------------------------------------------------
+#  alt-light-gray | #afd7af   | 146
+#  alt-gray       | #875f87   | 103
+#  alt-dark-gray  | #5f5f5f   | 60
+
+user: 182 # purple
+group: 110 # nord-arctic-blue
+permission:
+  read: 222 # nord-yellow
+  write: 173 # nord-orange
+  exec: 167 # nord-red
+  exec-sticky: 151 # green
+  no-access: 103 # alt-gray
+  octal: 110 # nord-arctic-blue
+  acl: 109 # nord-frost-blue
+  context: 188 # nord-light-gray
+date:
+  hour-old: 146 # alt-light-gray
+  day-old: 103 # alt-gray
+  older: 60 # alt-dark-gray
+size:
+  none: 238 # nord-gray
+  small: 151 # nord-aurora-green
+  medium: 109 # nord-frost-blue
+  large: 167 # nord-red
+inode:
+  valid: 188 # nord-light-gray
+  invalid: 167 # nord-red
+links:
+  valid: 110 # nord-arctic-blue
+  invalid: 167 # nord-red
+tree-edge: 152 # nord-frost-green
+git-status:
+  default: 238 # nord-gray
+  unmodified: 238 # nord-gray
+  ignored: 238 # nord-gray
+  new-in-index: 152 # nord-frost-green
+  new-in-workdir: 109 # nord-frost-blue
+  typechange: 151 # nord-aurora-green
+  deleted: 167 # nord-red
+  renamed: 109 # nord-frost-blue
+  modified: 110 # nord-arctic-blue
+  conflicted: 167 # nord-red

@@ -1,0 +1,56 @@
+:root {
+  /* Catppuccin Mocha base colors */
+  --rosewater: 245, 224, 220;
+  --flamingo: 242, 205, 205;
+  --pink: 245, 194, 231;
+  --mauve: 203, 166, 247;
+  --red: 243, 139, 168;
+  --maroon: 235, 160, 172;
+  --peach: 250, 179, 135;
+  --yellow: 249, 226, 175;
+  --green: 166, 227, 161;
+  --teal: 148, 226, 213;
+  --sky: 137, 220, 235;
+  --sapphire: 116, 199, 236;
+  --blue: 137, 180, 250;
+  --lavender: 180, 190, 254;
+  --text: 205, 214, 244;
+  --subtext1: 186, 194, 222;
+  --subtext0: 166, 173, 200;
+  --overlay2: 147, 153, 178;
+  --overlay1: 127, 132, 156;
+  --overlay0: 108, 112, 134;
+  --surface2: 88, 91, 112;
+  --surface1: 69, 71, 90;
+  --surface0: 49, 50, 68;
+  --base: 30, 30, 46;
+  --mantle: 24, 24, 37;
+  --crust: 17, 17, 27;
+
+  /* Semantic color mappings */
+  --background: var(--base);
+  --foreground: var(--text);
+  --card-background: var(--surface0);
+  --card-foreground: var(--text);
+  --popup-background: var(--surface1);
+  --popup-foreground: var(--text);
+  --primary: var(--mauve);
+  --primary-foreground: var(--base);
+  --secondary: var(--blue);
+  --secondary-foreground: var(--base);
+  --tertiary: var(--sapphire);
+  --tertiary-foreground: var(--base);
+  --accent: var(--lavender);
+  --accent-foreground: var(--base);
+  --muted-background: var(--overlay0);
+  --muted-foreground: var(--base);
+  --info: var(--sky);
+  --info-foreground: var(--base);
+  --success: var(--green);
+  --success-foreground: var(--base);
+  --warning: var(--yellow);
+  --warning-foreground: var(--base);
+  --destructive: var(--red);
+  --destructive-foreground: var(--base);
+  --border: var(--overlay1);
+}

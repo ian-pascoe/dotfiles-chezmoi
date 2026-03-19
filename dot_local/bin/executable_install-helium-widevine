@@ -1,0 +1,14 @@
+#!/bin/bash
+
+HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/opt/homebrew}"
+
+GOOGLE_CHROME_PREFIX="$HOMEBREW_PREFIX/Caskroom/google-chrome"
+GOOGLE_CHROME_VERSION="$(ls "$GOOGLE_CHROME_PREFIX" | sort -V | tail -n 1)"
+
+HELIUM_PREFIX="$HOMEBREW_PREFIX/Caskroom/helium-browser"
+HELIUM_VERSION="$(ls "$HELIUM_PREFIX" | sort -V | tail -n 1)"
+
+ln -snf "$GOOGLE_CHROME_PREFIX/$GOOGLE_CHROME_VERSION/Google Chrome.app/Contents/Frameworks/Google Chrome Framework.framework/Libraries/WidevineCdm" "$HELIUM_PREFIX/$HELIUM_VERSION/Helium.app/Contents/Frameworks/Helium Framework.framework/Libraries/WidevineCdm"
+
+xattr -cr "$HELIUM_PREFIX/$HELIUM_VERSION/Helium.app"
+codesign --force --deep -s - "$HELIUM_PREFIX/$HELIUM_VERSION/Helium.app"

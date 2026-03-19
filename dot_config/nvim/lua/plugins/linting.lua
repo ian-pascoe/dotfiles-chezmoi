@@ -1,0 +1,3 @@
+return {
+  { import = 'plugins.linting' },
+}

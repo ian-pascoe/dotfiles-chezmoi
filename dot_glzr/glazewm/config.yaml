@@ -1,0 +1,343 @@
+general:
+  shutdown_commands: []
+  cursor_jump:
+    trigger: monitor_focus
+    enabled: true
+  show_all_in_taskbar: false
+  hide_method: cloak
+  config_reload_commands: []
+  focus_follows_cursor: false
+  startup_commands: []
+  toggle_workspace_on_refocus: false
+window_rules:
+- commands:
+  - ignore
+  match:
+  - window_title:
+      regex: '[Pp]icture.in.[Pp]icture'
+    window_class:
+      regex: Chrome_WidgetWin_1|MozillaDialogClass
+  - window_process:
+      equals: Flow.Launcher
+  - window_process:
+      equals: keyviz
+window_behavior:
+  state_defaults:
+    fullscreen:
+      maximized: false
+      shown_on_top: false
+    floating:
+      shown_on_top: false
+      centered: true
+  initial_state: tiling
+window_effects:
+  focused_window:
+    transparency:
+      opacity: 95%
+      enabled: false
+    corner_style:
+      style: rounded
+      enabled: true
+    hide_title_bar:
+      enabled: false
+    border:
+      color: '#EBBCBA'
+      enabled: true
+  other_windows:
+    transparency:
+      opacity: 95%
+      enabled: true
+    corner_style:
+      style: rounded
+      enabled: true
+    hide_title_bar:
+      enabled: false
+    border:
+      color: '#403D52'
+      enabled: true
+keybindings:
+- bindings:
+  - alt+h
+  - alt+left
+  commands:
+  - focus --direction left
+- bindings:
+  - alt+l
+  - alt+right
+  commands:
+  - focus --direction right
+- bindings:
+  - alt+k
+  - alt+up
+  commands:
+  - focus --direction up
+- bindings:
+  - alt+j
+  - alt+down
+  commands:
+  - focus --direction down
+- bindings:
+  - alt+shift+h
+  - alt+shift+left
+  commands:
+  - move --direction left
+- bindings:
+  - alt+shift+l
+  - alt+shift+right
+  commands:
+  - move --direction right
+- bindings:
+  - alt+shift+k
+  - alt+shift+up
+  commands:
+  - move --direction up
+- bindings:
+  - alt+shift+j
+  - alt+shift+down
+  commands:
+  - move --direction down
+- bindings:
+  - alt+u
+  commands:
+  - resize --width -2%
+- bindings:
+  - alt+p
+  commands:
+  - resize --width +2%
+- bindings:
+  - alt+o
+  commands:
+  - resize --height +2%
+- bindings:
+  - alt+i
+  commands:
+  - resize --height -2%
+- bindings:
+  - alt+r
+  commands:
+  - wm-enable-binding-mode --name resize
+- bindings:
+  - alt+shift+p
+  commands:
+  - wm-toggle-pause
+- bindings:
+  - alt+v
+  commands:
+  - toggle-tiling-direction
+- bindings:
+  - alt+space
+  commands:
+  - wm-cycle-focus
+- bindings:
+  - alt+shift+space
+  commands:
+  - toggle-floating --centered
+- bindings:
+  - alt+t
+  commands:
+  - toggle-tiling
+- bindings:
+  - alt+f
+  commands:
+  - toggle-fullscreen
+- bindings:
+  - alt+m
+  commands:
+  - toggle-minimized
+- bindings:
+  - alt+shift+q
+  commands:
+  - close
+- bindings:
+  - alt+shift+e
+  commands:
+  - wm-exit
+- bindings:
+  - alt+shift+r
+  commands:
+  - wm-reload-config
+- bindings:
+  - alt+shift+w
+  commands:
+  - wm-redraw
+- bindings:
+  - alt+enter
+  commands:
+  - shell-exec %SCOOP%\apps\windows-terminal\current\wt.exe
+- bindings:
+  - alt+shift+enter
+  commands:
+  - shell-exec %SCOOP%\apps\helium\current\chrome.exe
+- bindings:
+  - alt+s
+  commands:
+  - focus --next-active-workspace
+- bindings:
+  - alt+a
+  commands:
+  - focus --prev-active-workspace
+- bindings:
+  - alt+d
+  commands:
+  - focus --recent-workspace
+- bindings:
+  - alt+1
+  commands:
+  - focus --workspace 1
+- bindings:
+  - alt+2
+  commands:
+  - focus --workspace 2
+- bindings:
+  - alt+3
+  commands:
+  - focus --workspace 3
+- bindings:
+  - alt+4
+  commands:
+  - focus --workspace 4
+- bindings:
+  - alt+5
+  commands:
+  - focus --workspace 5
+- bindings:
+  - alt+6
+  commands:
+  - focus --workspace 6
+- bindings:
+  - alt+7
+  commands:
+  - focus --workspace 7
+- bindings:
+  - alt+8
+  commands:
+  - focus --workspace 8
+- bindings:
+  - alt+9
+  commands:
+  - focus --workspace 9
+- bindings:
+  - alt+shift+a
+  commands:
+  - move-workspace --direction left
+- bindings:
+  - alt+shift+f
+  commands:
+  - move-workspace --direction right
+- bindings:
+  - alt+shift+d
+  commands:
+  - move-workspace --direction up
+- bindings:
+  - alt+shift+s
+  commands:
+  - move-workspace --direction down
+- bindings:
+  - alt+shift+1
+  commands:
+  - move --workspace 1
+  - focus --workspace 1
+- bindings:
+  - alt+shift+2
+  commands:
+  - move --workspace 2
+  - focus --workspace 2
+- bindings:
+  - alt+shift+3
+  commands:
+  - move --workspace 3
+  - focus --workspace 3
+- bindings:
+  - alt+shift+4
+  commands:
+  - move --workspace 4
+  - focus --workspace 4
+- bindings:
+  - alt+shift+5
+  commands:
+  - move --workspace 5
+  - focus --workspace 5
+- bindings:
+  - alt+shift+6
+  commands:
+  - move --workspace 6
+  - focus --workspace 6
+- bindings:
+  - alt+shift+7
+  commands:
+  - move --workspace 7
+  - focus --workspace 7
+- bindings:
+  - alt+shift+8
+  commands:
+  - move --workspace 8
+  - focus --workspace 8
+- bindings:
+  - alt+shift+9
+  commands:
+  - move --workspace 9
+  - focus --workspace 9
+binding_modes:
+- name: resize
+  keybindings:
+  - bindings:
+    - h
+    - left
+    commands:
+    - resize --width -2%
+  - bindings:
+    - l
+    - right
+    commands:
+    - resize --width +2%
+  - bindings:
+    - k
+    - up
+    commands:
+    - resize --height +2%
+  - bindings:
+    - j
+    - down
+    commands:
+    - resize --height -2%
+  - bindings:
+    - escape
+    - enter
+    commands:
+    - wm-disable-binding-mode --name resize
+workspaces:
+- keep_alive: true
+  bind_to_monitor: 0
+  name: "1"
+- keep_alive: true
+  bind_to_monitor: 0
+  name: "2"
+- keep_alive: true
+  bind_to_monitor: 0
+  name: "3"
+- keep_alive: true
+  bind_to_monitor: 0
+  name: "4"
+- keep_alive: true
+  bind_to_monitor: 0
+  name: "5"
+- keep_alive: true
+  bind_to_monitor: 1
+  name: "6"
+- keep_alive: true
+  bind_to_monitor: 1
+  name: "7"
+- keep_alive: true
+  bind_to_monitor: 1
+  name: "8"
+- keep_alive: true
+  bind_to_monitor: 1
+  name: "9"
+gaps:
+  outer_gap:
+    right: 5px
+    left: 5px
+    top: 5px
+    bottom: 5px
+  inner_gap: 5px
+  scale_with_dpi: true

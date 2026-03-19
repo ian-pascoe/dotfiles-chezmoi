@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 <theme-name>"
+  exit 1
+fi
+
+THEMES_DIR="$HOME/.themes/"
+CURRENT_THEME_DIR="$HOME/.config/theme"
+
+THEME_NAME=$(echo "$1" | sed -E 's/<[^>]+>//g' | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+THEME_PATH="$THEMES_DIR/$THEME_NAME"
+
+# Check if the theme entered exists
+if [[ ! -d "$THEME_PATH" ]]; then
+  echo "Theme '$THEME_NAME' does not exist in $THEMES_DIR"
+  exit 1
+fi
+
+echo "Linking new theme: $THEME_NAME"
+ln -snf "$THEME_PATH" "$CURRENT_THEME_DIR"
+
+# Bat
+mkdir -p "$HOME/.config/bat/themes"
+ln -snf "$CURRENT_THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/current.tmTheme"
+bat cache --build
+
+# BTop
+mkdir -p "$HOME/.config/btop/themes"
+ln -snf "$CURRENT_THEME_DIR/btop.theme" "$HOME/.config/btop/themes/current.theme"
+
+# K9s
+mkdir -p "$HOME/.config/k9s/skins"
+ln -snf "$CURRENT_THEME_DIR/k9s.yaml" "$HOME/.config/k9s/skins/current.yaml"
+
+# LSD
+ln -snf "$CURRENT_THEME_DIR/lsd.yaml" "$HOME/.config/lsd/colors.yaml"
+
+# Yazi
+ln -snf "$CURRENT_THEME_DIR/yazi/theme.toml" "$HOME/.config/yazi/theme.toml"
+if [ -d "$CURRENT_THEME_DIR/yazi/flavors" ]; then
+  for flavor in "$CURRENT_THEME_DIR/yazi/flavors/"*; do
+    ln -snf "$flavor" "$HOME/.config/yazi/flavors/$(basename "$flavor")"
+  done
+fi
+
+set-bg 1
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  brew services restart borders
+fi

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+set -e
+
+AUTH_FILE="$HOME/.local/share/opencode/auth.json"
+APPS_FILE="$HOME/.config/github-copilot/apps.json"
+
+if [ ! -f "$AUTH_FILE" ]; then
+  echo "Error: $AUTH_FILE not found"
+  exit 1
+fi
+
+if [ ! -f "$APPS_FILE" ]; then
+  echo "Error: $APPS_FILE not found"
+  exit 1
+fi
+
+AUTH_MTIME=$(stat -c %Y "$AUTH_FILE" 2>/dev/null || stat -f %m "$AUTH_FILE")
+APPS_MTIME=$(stat -c %Y "$APPS_FILE" 2>/dev/null || stat -f %m "$APPS_FILE")
+
+REFRESH_TOKEN=$(jq -r '.["github-copilot"].refresh' "$AUTH_FILE")
+OAUTH_TOKEN=$(jq -r '.[] | .oauth_token' "$APPS_FILE" | head -n1)
+
+if [ -z "$REFRESH_TOKEN" ] || [ "$REFRESH_TOKEN" = "null" ]; then
+  echo "Error: Could not extract refresh token from $AUTH_FILE"
+  exit 1
+fi
+
+if [ -z "$OAUTH_TOKEN" ] || [ "$OAUTH_TOKEN" = "null" ]; then
+  echo "Error: Could not extract oauth_token from $APPS_FILE"
+  exit 1
+fi
+
+if [ "$REFRESH_TOKEN" = "$OAUTH_TOKEN" ]; then
+  echo "Tokens are already in sync"
+  exit 0
+fi
+
+if [ "$AUTH_MTIME" -gt "$APPS_MTIME" ]; then
+  echo "Syncing from $AUTH_FILE to $APPS_FILE (auth.json is newer)"
+  jq --arg token "$REFRESH_TOKEN" '.[] |= (.oauth_token = $token)' "$APPS_FILE" >"${APPS_FILE}.tmp"
+  mv "${APPS_FILE}.tmp" "$APPS_FILE"
+elif [ "$APPS_MTIME" -gt "$AUTH_MTIME" ]; then
+  echo "Syncing from $APPS_FILE to $AUTH_FILE (apps.json is newer)"
+  jq --arg token "$OAUTH_TOKEN" '.["github-copilot"].refresh = $token' "$AUTH_FILE" >"${AUTH_FILE}.tmp"
+  mv "${AUTH_FILE}.tmp" "$AUTH_FILE"
+else
+  echo "Files are in sync (both have same modification time)"
+fi

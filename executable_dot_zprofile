@@ -1,0 +1,35 @@
+##===========================================
+## .zprofile
+##===========================================
+
+## Homebrew/Linuxbrew
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+fi
+
+## Crosspack
+if [[ -x "$HOME/.crosspack/bin/crosspack" ]]; then
+  eval "$("$HOME/.crosspack/bin/crosspack" init-shell --shell zsh)"
+fi
+
+## Cargo
+if [ -f "$HOME/.cargo/env" ]; then
+  source "$HOME/.cargo/env"
+fi
+
+## Environment-Specific Env
+if [ -f "$HOME/.env" ]; then
+  source "$HOME/.env"
+fi
+
+## Apply Base Path Order
+if (($+functions[_zsh_apply_base_path_order])); then
+  _zsh_apply_base_path_order
+fi
+
+## Apply Mise Hook Env
+if [[ $- != *i* ]] && (($+functions[_zsh_apply_mise_hook_env])); then
+  _zsh_apply_mise_hook_env
+fi

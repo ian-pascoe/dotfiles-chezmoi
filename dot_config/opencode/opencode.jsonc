@@ -1,0 +1,296 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["opencode-antigravity-auth@latest"],
+  "autoupdate": "notify",
+  "permission": {
+    "external_directory": {
+      "*": "ask",
+      "/tmp/**": "allow",
+      "~/.config/opencode/**": "allow"
+    },
+
+    "google_search": "deny", // use exa instead
+    "chrome-devtools*": "deny", // only needed for frontend-expert
+
+    // require permission for online tools by default
+    "codesearch": "ask",
+    "context7*": "ask",
+    "deepwiki*": "ask",
+    "grep-app*": "ask",
+    "webfetch": "ask",
+    "websearch": "ask"
+  },
+  "agent": {
+    // default opencode models with customizations
+    "build": {
+      "model": "openai/gpt-5.4",
+      "variant": "medium"
+    },
+    "plan": {
+      "model": "openai/gpt-5.4",
+      "variant": "high",
+      "permission": {
+        "edit": {
+          "*": "deny",
+          "AGENTS.md": "allow",
+          "**/AGENTS.md": "allow",
+          ".opencode/plans/**": "allow"
+        }
+      }
+    },
+    "explore": {
+      "description": "Codebase exploration agent for local repository understanding. Use it to inspect project structure, find files/symbols, trace implementations, and answer questions about how code in this repo works. Prefer research for internet or external-source investigation.",
+      "model": "openai/gpt-5.1-codex-mini",
+      "permission": {
+        "skill": "allow", // denied by default in opencode
+
+        // the following are allowed by default, but we delegate these to research agent instead
+        "codesearch": "deny",
+        "webfetch": "deny",
+        "websearch": "deny",
+
+        // deny the other online tools
+        "context7*": "deny",
+        "deepwiki*": "deny",
+        "grep-app*": "deny"
+      }
+    },
+    "general": {
+      "description": "Default balanced agent for most engineering tasks. Use for everyday coding, debugging, file edits, and command execution when you need solid quality without extreme latency or extreme depth. Escalate to quick for tiny tasks, deep for high-complexity analysis, and frontend-expert for UI-heavy work.",
+      "model": "openai/gpt-5.4",
+      "variant": "medium"
+    },
+    // custom agents
+    "research": {
+      "description": "Web research subagent for external information gathering and synthesis. Use it for internet search, reading external docs/articles/issues, comparing sources, and producing evidence-based summaries. Prefer explore for local codebase inspection and in-repo implementation tracing.",
+      "mode": "subagent",
+      "model": "google/antigravity-gemini-3-flash",
+      "permission": {
+        "*": "deny",
+        "bash": "allow",
+        "read": "allow",
+        "list": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "skill": "allow",
+        "codesearch": "allow",
+        "context7*": "allow",
+        "deepwiki*": "allow",
+        "grep-app*": "allow",
+        "webfetch": "allow",
+        "websearch": "allow"
+      }
+    },
+    "quick": {
+      "description": "Speed-first subagent for low-complexity work. Use for quick lookups, short summaries, single-command checks, and small isolated edits where correctness is straightforward. If scope grows, uncertainty appears, or multiple systems are involved, switch to general or deep.",
+      "mode": "subagent",
+      "model": "openai/gpt-5.4",
+      "variant": "low",
+      // same as general
+      "permission": {
+        "todoread": "deny",
+        "todowrite": "deny"
+      }
+    },
+    "deep": {
+      "description": "Thorough reasoning subagent for complex or high-risk tasks. Use for difficult debugging, architecture decisions, multi-file refactors, root-cause analysis, and work with subtle trade-offs or edge cases. Prefer this when accuracy and completeness matter more than speed.",
+      "mode": "subagent",
+      "model": "openai/gpt-5.4",
+      "variant": "high",
+      // same as general
+      "permission": {
+        "todoread": "deny",
+        "todowrite": "deny"
+      }
+    },
+    "frontend-expert": {
+      "description": "Specialist for frontend and UX tasks. Use for building or refining components/pages, HTML/CSS/JavaScript framework work, responsive behavior, accessibility, visual polish, and browser-side debugging. Prefer this whenever the main challenge is UI behavior or design quality.",
+      "mode": "all",
+      "model": "google/antigravity-gemini-3.1-pro",
+      "variant": "high",
+      "permission": {
+        "chrome-devtools*": "allow"
+      }
+    },
+    // utility agents
+    "summary": {
+      "model": "opencode/big-pickle"
+    },
+    "title": {
+      "model": "opencode/big-pickle"
+    },
+    "compaction": {
+      "model": "openai/gpt-5.1-codex-mini"
+    }
+  },
+  "mcp": {
+    "chrome-devtools": {
+      "enabled": true,
+      "type": "local",
+      "command": ["bunx", "chrome-devtools-mcp@latest"]
+    },
+    "context7": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp/oauth"
+    },
+    "deepwiki": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.deepwiki.com/mcp"
+    },
+    "grep-app": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.grep.app"
+    }
+  },
+  "lsp": {
+    "biome": {
+      "command": ["biome", "lsp-proxy"],
+      "extensions": [
+        ".ts",
+        ".tsx",
+        ".mts",
+        ".cts",
+        ".js",
+        ".jsx",
+        ".mjs",
+        ".cjs",
+        ".json",
+        ".jsonc",
+        ".css",
+        ".html"
+      ]
+    }
+  },
+  "formatter": {
+    "stylua": {
+      "command": [
+        "stylua",
+        "--search-parent-directories",
+        "--stdin-filepath",
+        "$FILE"
+      ],
+      "extensions": [".lua", ".luau"]
+    },
+    "markdownlint-cli2": {
+      "command": ["markdownlint-cli2", "--fix", "$FILE"],
+      "extensions": [".md", ".mdx"]
+    }
+  },
+  "provider": {
+    "google": {
+      "name": "Google",
+      "models": {
+        "antigravity-gemini-3-pro": {
+          "name": "Gemini 3 Pro (Antigravity)",
+          "limit": { "context": 1048576, "output": 65535 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          },
+          "variants": {
+            "low": { "thinkingLevel": "low" },
+            "high": { "thinkingLevel": "high" }
+          }
+        },
+        "antigravity-gemini-3.1-pro": {
+          "name": "Gemini 3.1 Pro (Antigravity)",
+          "limit": { "context": 1048576, "output": 65535 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          },
+          "variants": {
+            "low": { "thinkingLevel": "low" },
+            "high": { "thinkingLevel": "high" }
+          }
+        },
+        "antigravity-gemini-3-flash": {
+          "name": "Gemini 3 Flash (Antigravity)",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          },
+          "variants": {
+            "minimal": { "thinkingLevel": "minimal" },
+            "low": { "thinkingLevel": "low" },
+            "medium": { "thinkingLevel": "medium" },
+            "high": { "thinkingLevel": "high" }
+          }
+        },
+        "antigravity-claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6 (Antigravity)",
+          "limit": { "context": 200000, "output": 64000 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          }
+        },
+        "antigravity-claude-opus-4-6-thinking": {
+          "name": "Claude Opus 4.6 Thinking (Antigravity)",
+          "limit": { "context": 200000, "output": 64000 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          },
+          "variants": {
+            "low": { "thinkingConfig": { "thinkingBudget": 8192 } },
+            "max": { "thinkingConfig": { "thinkingBudget": 32768 } }
+          }
+        },
+        "gemini-2.5-flash": {
+          "name": "Gemini 2.5 Flash (Gemini CLI)",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          }
+        },
+        "gemini-2.5-pro": {
+          "name": "Gemini 2.5 Pro (Gemini CLI)",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          }
+        },
+        "gemini-3-flash-preview": {
+          "name": "Gemini 3 Flash Preview (Gemini CLI)",
+          "limit": { "context": 1048576, "output": 65536 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          }
+        },
+        "gemini-3-pro-preview": {
+          "name": "Gemini 3 Pro Preview (Gemini CLI)",
+          "limit": { "context": 1048576, "output": 65535 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          }
+        },
+        "gemini-3.1-pro-preview": {
+          "name": "Gemini 3.1 Pro Preview (Gemini CLI)",
+          "limit": { "context": 1048576, "output": 65535 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          }
+        },
+        "gemini-3.1-pro-preview-customtools": {
+          "name": "Gemini 3.1 Pro Preview Custom Tools (Gemini CLI)",
+          "limit": { "context": 1048576, "output": 65535 },
+          "modalities": {
+            "input": ["text", "image", "pdf"],
+            "output": ["text"]
+          }
+        }
+      }
+    }
+  },
+  "username": "Ian"
+}

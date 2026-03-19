@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+self_path="${BASH_SOURCE[0]}"
+real_opencode=''
+
+while IFS= read -r candidate; do
+  if [[ ! "$candidate" -ef "$self_path" ]]; then
+    real_opencode="$candidate"
+    break
+  fi
+done < <(type -ap opencode)
+
+if [[ -z "$real_opencode" ]]; then
+  printf 'opencode wrapper: could not find underlying opencode executable\n' >&2
+  exit 127
+fi
+
+if (($# > 0)) || [[ -z "${OPENCODE_SERVER_URL:-}" ]]; then
+  exec "$real_opencode" "$@"
+fi
+
+if [[ -z "${OPENCODE_SERVER_PASSWORD:-}" ]]; then
+  exec "$real_opencode" attach "$OPENCODE_SERVER_URL" --dir="$(pwd)"
+else
+  exec "$real_opencode" attach "$OPENCODE_SERVER_URL" --password="$OPENCODE_SERVER_PASSWORD" --dir="$(pwd)"
+fi

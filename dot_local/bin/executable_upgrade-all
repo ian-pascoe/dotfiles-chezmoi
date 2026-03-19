@@ -1,0 +1,171 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+#########################################################################
+# Helpers
+has_cmd() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+has_service() {
+  local load_state
+
+  load_state=$(systemctl --user show --property=LoadState --value "$1" 2>/dev/null || true)
+  [ -n "$load_state" ] && [ "$load_state" != "not-found" ]
+}
+
+# Necessary for systemd service restarts
+if has_cmd systemctl; then
+  if [ -z "${XDG_RUNTIME_DIR:-}" ] && [ -d "/run/user/$(id -u)" ]; then
+    export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+  fi
+
+  if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] && [ -n "${XDG_RUNTIME_DIR:-}" ] && [ -S "${XDG_RUNTIME_DIR}/bus" ]; then
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
+  fi
+fi
+
+#########################################################################
+# Start
+START_TIME=$(date +%s)
+echo "Starting upgrade process at $(date)..."
+
+#########################################################################
+# Homebrew/Linuxbrew
+if has_cmd brew; then
+  echo "Updating Homebrew and its packages..."
+  brew update && brew upgrade --greedy && brew cleanup
+  echo "Homebrew and its packages updated successfully!"
+fi
+
+#########################################################################
+# Yazi
+if has_cmd ya; then
+  echo "Updating Yazi packages..."
+  ya pkg upgrade
+  echo "Yazi packages updated successfully!"
+fi
+
+#########################################################################
+# Node
+if has_cmd npm; then
+  echo "Updating global npm modules..."
+  npm update -g
+  echo "Global npm modules updated successfully!"
+fi
+
+#########################################################################
+# PNPM
+if has_cmd pnpm; then
+  echo "Updating global pnpm modules..."
+  pnpm -g update --latest
+  echo "Global pnpm modules updated successfully!"
+fi
+
+#########################################################################
+# Bun
+if has_cmd bun; then
+  echo "Updating global bun modules..."
+  bun -g update --latest
+  echo "Global bun modules updated successfully!"
+fi
+
+#########################################################################
+# Skills
+SKILLS_CMD=()
+if has_cmd skills; then
+  SKILLS_CMD=("skills")
+elif has_cmd npx; then
+  SKILLS_CMD=("npx" "--yes" "skills@latest")
+elif has_cmd pnpm; then
+  SKILLS_CMD=("pnpm" "dlx" "skills@latest")
+elif has_cmd bunx; then
+  SKILLS_CMD=("bunx" "skills@latest")
+fi
+if [ ${#SKILLS_CMD[@]} -ne 0 ]; then
+  echo "Updating global skills..."
+  "${SKILLS_CMD[@]}" update -g
+  echo "Global skills updated successfully!"
+fi
+
+#########################################################################
+# OpenClaw
+if has_cmd openclaw && [ -d "$HOME/openclaw/" ]; then
+  echo "Updating OpenClaw and its dependencies..."
+  openclaw update --yes
+  echo "OpenClaw and its dependencies updated successfully!"
+fi
+
+CLAWHUB_CMD=()
+if has_cmd clawhub; then
+  CLAWHUB_CMD=(clawhub)
+elif has_cmd npx; then
+  CLAWHUB_CMD=("npx" "--yes" "clawhub@latest")
+elif has_cmd pnpm; then
+  CLAWHUB_CMD=("pnpm" "dlx" "clawhub@latest")
+elif has_cmd bunx; then
+  CLAWHUB_CMD=("bunx" "clawhub@latest")
+fi
+
+if [ -d "$HOME/.openclaw" ]; then
+  (
+    cd "$HOME/.openclaw" || exit 1
+    if [ ${#SKILLS_CMD[@]} -ne 0 ]; then
+      echo "Updating global OpenClaw skills..."
+      "${SKILLS_CMD[@]}" update
+      echo "Global OpenClaw skills updated successfully!"
+    fi
+    if [ ${#CLAWHUB_CMD[@]} -ne 0 ]; then
+      echo "Updating global ClawHub skills..."
+      "${CLAWHUB_CMD[@]}" update --all --force
+      echo "Global ClawHub skills updated successfully!"
+    fi
+
+    for workspace in ./workspaces/*; do
+      [ -d "$workspace" ] || continue
+      (
+        echo "Updating agent workspace: $workspace"
+        cd "$workspace" || exit 1
+        if [ ${#SKILLS_CMD[@]} -ne 0 ]; then
+          echo "Updating OpenClaw skills in workspace: $workspace"
+          "${SKILLS_CMD[@]}" update
+          echo "OpenClaw skills updated in workspace: $workspace"
+        fi
+        if [ ${#CLAWHUB_CMD[@]} -ne 0 ]; then
+          echo "Updating ClawHub skills in workspace: $workspace"
+          "${CLAWHUB_CMD[@]}" update --all --force
+          echo "ClawHub skills updated in workspace: $workspace"
+        fi
+      )
+    done
+  )
+fi
+
+####################################################################
+# Dotfiles
+if has_cmd git && [ -d "$HOME/.dotfiles/.git" ]; then
+  echo "Updating dotfiles..."
+  (
+    cd "$HOME/.dotfiles" || exit 1
+    git pull --tags --rebase --autostash
+  )
+  echo "Dotfiles updated successfully!"
+fi
+
+####################################################################
+# OpenCode Server
+if has_cmd systemctl && has_service opencode-server.service; then
+  echo "Restarting OpenCode server..."
+  systemctl --user daemon-reload
+  systemctl --user restart opencode-server.service
+  echo "OpenCode server restarted successfully!"
+fi
+
+####################################################################
+# Finished
+END_TIME=$(date +%s)
+ELAPSED_TIME=$((END_TIME - START_TIME))
+
+echo "All updates completed successfully in $ELAPSED_TIME seconds!"
+echo "Finished upgrade process at $(date)."

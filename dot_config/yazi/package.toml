@@ -1,0 +1,34 @@
+[[plugin.deps]]
+use = "yazi-rs/plugins:git"
+rev = "1962818"
+hash = "26db011a778f261d730d4f5f8bf24b3f"
+
+[[flavor.deps]]
+use = "Mintass/rose-pine"
+rev = "d91f8f2"
+hash = "87da3630653b6d272e43658418599188"
+
+[[flavor.deps]]
+use = "Mintass/rose-pine-dawn"
+rev = "d82f54f"
+hash = "15ae5f83d3770b9ffc276af77f642e2b"
+
+[[flavor.deps]]
+use = "Mintass/rose-pine-moon"
+rev = "94385fe"
+hash = "edbe0dfb5db8ff37281dba62adc7e750"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-mocha"
+rev = "9511cb0"
+hash = "7dfe41c9c3d9be76da8a844263d0bbed"
+
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-latte"
+rev = "9511cb0"
+hash = "b8f46853c27707115f25f3423a47bd38"
+
+[[flavor.deps]]
+use = "BennyOe/tokyo-night"
+rev = "8e6296f"
+hash = "d9da921c3bd37ba32ee27a8a7a40461f"

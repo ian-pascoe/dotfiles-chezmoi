@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Skill(.*)",
+      "Bash(bd:*)",
+      "Bash(git:*)",
+      "Bash(gh:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(yarn:*)",
+      "Bash(pnpm:*)",
+      "Bash(bun:*)",
+      "Bash(node:*)",
+      "Bash(deno:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(pip:*)",
+      "Bash(pip3:*)",
+      "Bash(uv:*)",
+      "Bash(pytest:*)",
+      "Bash(cargo:*)",
+      "Bash(rustc:*)",
+      "Bash(go:*)",
+      "Bash(make:*)",
+      "Bash(cmake:*)",
+      "Bash(brew:*)",
+      "Bash(docker:*)",
+      "Bash(docker-compose:*)",
+      "Bash(kubectl:*)",
+      "Bash(terraform:*)",
+      "Bash(ls:*)",
+      "Bash(tree:*)",
+      "Bash(pwd)",
+      "Bash(which:*)",
+      "Bash(env)",
+      "Bash(jq:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(diff:*)",
+      "Bash(tar:*)",
+      "Bash(unzip:*)",
+      "Bash(zip:*)"
+    ],
+    "deny": ["Bash(rm -rf /)", "Bash(rm -rf ~)"],
+    "ask": ["Bash(curl:*)", "Bash(wget:*)", "Bash(rm:*)", "Bash(git push:*)"],
+    "defaultMode": "default"
+  },
+  "model": "opus",
+  "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "beads@beads-marketplace": true,
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@superpowers-marketplace": true,
+    "ralph-loop@claude-plugins-official": true,
+    "context7@claude-plugins-official": true
+  }
+}

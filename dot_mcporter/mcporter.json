@@ -1,0 +1,47 @@
+{
+  "mcpServers": {
+    "linear-personal": {
+      "description": "Project management tool. Signed into the \"Ian Pascoe\" workspace.",
+      "baseUrl": "https://mcp.linear.app/mcp",
+      "auth": "oauth"
+    },
+    "linear-family": {
+      "description": "Project management tool. Signed into the \"Pascoe Family\" workspace.",
+      "baseUrl": "https://mcp.linear.app/mcp",
+      "auth": "oauth"
+    },
+    "linear-business": {
+      "description": "Project management tool. Signed into the \"Spirit-Led Software\" workspace.",
+      "baseUrl": "https://mcp.linear.app/mcp",
+      "auth": "oauth"
+    },
+    "exa": {
+      "description": "The best web search API for AI.",
+      "baseUrl": "https://mcp.exa.ai/mcp"
+    },
+    "context7": {
+      "description": "Up-to-date code documentation for LLMs and AI code editors",
+      "baseUrl": "https://mcp.context7.com/mcp"
+    },
+    "grep": {
+      "description": "Find code examples on GitHub",
+      "baseUrl": "https://mcp.grep.app"
+    },
+    "chrome-devtools": {
+      "description": "Control and inspect a live Chrome browser.",
+      "command": "bunx",
+      "args": [
+        "chrome-devtools-mcp@latest",
+        "--no-usage-statistics"
+      ],
+      "env": {
+        "npm_config_loglevel": "error"
+      }
+    },
+    "deepwiki": {
+      "description": "DeepWiki provides up-to-date documentation you can talk to, for deepwiki. Think Deep Research for GitHub - powered by Devin.",
+      "baseUrl": "https://mcp.deepwiki.com/mcp"
+    }
+  },
+  "imports": []
+}

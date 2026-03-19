@@ -1,0 +1,46 @@
+:root {
+  /* Nord base colors */
+  --nord0: 46, 52, 64;
+  --nord1: 59, 66, 82;
+  --nord2: 67, 76, 94;
+  --nord3: 76, 86, 106;
+  --nord4: 216, 222, 233;
+  --nord5: 229, 233, 240;
+  --nord6: 236, 239, 244;
+  --nord7: 143, 188, 187;
+  --nord8: 136, 192, 208;
+  --nord9: 129, 161, 193;
+  --nord10: 94, 129, 172;
+  --nord11: 191, 97, 106;
+  --nord12: 208, 135, 112;
+  --nord13: 235, 203, 139;
+  --nord14: 163, 190, 140;
+  --nord15: 180, 142, 173;
+
+  /* Semantic color mappings */
+  --background: var(--nord0);
+  --foreground: var(--nord6);
+  --card-background: var(--nord1);
+  --card-foreground: var(--nord6);
+  --popup-background: var(--nord2);
+  --popup-foreground: var(--nord6);
+  --primary: var(--nord8);
+  --primary-foreground: var(--nord0);
+  --secondary: var(--nord9);
+  --secondary-foreground: var(--nord0);
+  --tertiary: var(--nord10);
+  --tertiary-foreground: var(--nord0);
+  --accent: var(--nord7);
+  --accent-foreground: var(--nord0);
+  --muted-background: var(--nord3);
+  --muted-foreground: var(--nord0);
+  --info: var(--nord7);
+  --info-foreground: var(--nord0);
+  --success: var(--nord14);
+  --success-foreground: var(--nord0);
+  --warning: var(--nord13);
+  --warning-foreground: var(--nord0);
+  --destructive: var(--nord11);
+  --destructive-foreground: var(--nord0);
+  --border: var(--nord3);
+}

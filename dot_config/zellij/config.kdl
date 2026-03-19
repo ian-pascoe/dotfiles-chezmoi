@@ -1,0 +1,321 @@
+mouse_mode true
+scroll_buffer_size 10000
+copy_on_select true
+session_serialization true
+serialize_pane_viewport true
+scrollback_lines_to_serialize 10000
+show_startup_tips false
+theme "ansi"
+web_client {
+  font "monospace"
+}
+keybinds clear-defaults=true {
+  shared_except "locked" "normal" {
+    bind "esc" {
+      SwitchToMode "normal"
+    }
+  }
+  shared_except "locked" {
+    bind "Ctrl h" {
+      MessagePlugin "vim-navigator" {
+        name "move_focus_or_tab"
+        payload "left"
+        move_mod "ctrl"
+        use_arrow_keys "false"
+      }
+    }
+    bind "Ctrl j" {
+      MessagePlugin "vim-navigator" {
+        name "move_focus"
+        payload "down"
+        move_mod "ctrl"
+        use_arrow_keys "false"
+      }
+    }
+    bind "Ctrl k" {
+      MessagePlugin "vim-navigator" {
+        name "move_focus"
+        payload "up"
+        move_mod "ctrl"
+        use_arrow_keys "false"
+      }
+    }
+    bind "Ctrl l" {
+      MessagePlugin "vim-navigator" {
+        name "move_focus_or_tab"
+        payload "right"
+        move_mod "ctrl"
+        use_arrow_keys "false"
+      }
+    }
+  }
+  shared_except "renametab" "renamepane" "tmux" {
+    bind "Ctrl a" {
+      SwitchToMode "tmux"
+    }
+  }
+  tmux {
+    bind "L" {
+      SwitchToMode "locked"
+    }
+    bind "s" {
+      LaunchOrFocusPlugin "session-manager" {
+        floating true
+        move_to_focused_tab true
+      }
+      SwitchToMode "normal"
+    }
+    bind "[" {
+      SwitchToMode "scroll"
+    }
+    bind "/" {
+      SwitchToMode "entersearch"
+      SearchInput 0
+    }
+    bind "?" {
+      SwitchToMode "entersearch"
+      SearchInput 0
+    }
+    bind "m" {
+      SwitchToMode "move"
+    }
+    bind "r" {
+      SwitchToMode "resize"
+    }
+    bind "," {
+      SwitchToMode "renametab"
+      TabNameInput 0
+    }
+    bind "." {
+      SwitchToMode "renamepane"
+      PaneNameInput 0
+    }
+    bind "t" {
+      NewTab
+      SwitchToMode "normal"
+    }
+    bind "n" {
+      GoToNextTab
+      SwitchToMode "normal"
+    }
+    bind "p" {
+      GoToPreviousTab
+      SwitchToMode "normal"
+    }
+    bind "d" {
+      Detach
+    }
+    bind "x" {
+      CloseFocus
+      SwitchToMode "normal"
+    }
+    bind "X" {
+      CloseTab
+      SwitchToMode "normal"
+    }
+    bind "z" {
+      ToggleFocusFullscreen
+      SwitchToMode "normal"
+    }
+    bind "$" {
+      ToggleActiveSyncTab
+      SwitchToMode "normal"
+    }
+    bind "-" {
+      NewPane "down"
+      SwitchToMode "normal"
+    }
+    bind "|" {
+      NewPane "right"
+      SwitchToMode "normal"
+    }
+  }
+  scroll {
+    bind "/" {
+      SwitchToMode "entersearch"
+      SearchInput 0
+    }
+    bind "?" {
+      SwitchToMode "entersearch"
+      SearchInput 0
+    }
+    bind "v" {
+      EditScrollback
+      SwitchToMode "normal"
+    }
+  }
+  search {
+    bind "n" {
+      Search "down"
+    }
+    bind "N" {
+      Search "up"
+    }
+    bind "c" {
+      SearchToggleOption "CaseSensitivity"
+    }
+    bind "o" {
+      SearchToggleOption "WholeWord"
+    }
+    bind "w" {
+      SearchToggleOption "Wrap"
+    }
+  }
+  shared_among "scroll" "search" {
+    bind "up" {
+      ScrollUp
+    }
+    bind "down" {
+      ScrollDown
+    }
+    bind "PageDown" {
+      PageScrollDown
+    }
+    bind "PageUp" {
+      PageScrollUp
+    }
+    bind "j" {
+      ScrollDown
+    }
+    bind "k" {
+      ScrollUp
+    }
+    bind "Ctrl b" {
+      PageScrollUp
+    }
+    bind "Ctrl f" {
+      PageScrollDown
+    }
+    bind "Ctrl u" {
+      HalfPageScrollUp
+    }
+    bind "Ctrl d" {
+      HalfPageScrollDown
+    }
+    bind "g" {
+      ScrollToTop
+    }
+    bind "G" {
+      ScrollToBottom
+    }
+  }
+  entersearch {
+    bind "enter" {
+      SwitchToMode "search"
+      // Wrap by default
+      SearchToggleOption "Wrap"
+      // Case insensitive by default
+      SearchToggleOption "CaseSensitivity"
+    }
+  }
+  renamepane {
+    bind "esc" {
+      UndoRenamePane
+      SwitchToMode "normal"
+    }
+  }
+  renametab {
+    bind "esc" {
+      UndoRenameTab
+      SwitchToMode "normal"
+    }
+  }
+  shared_among "renametab" "renamepane" {
+    bind "enter" {
+      SwitchToMode "normal"
+    }
+  }
+  move {
+    bind "h" {
+      MovePane "left"
+    }
+    bind "j" {
+      MovePane "down"
+    }
+    bind "k" {
+      MovePane "up"
+    }
+    bind "l" {
+      MovePane "right"
+    }
+  }
+  resize {
+    bind "h" {
+      Resize "left"
+    }
+    bind "j" {
+      Resize "down"
+    }
+    bind "k" {
+      Resize "up"
+    }
+    bind "l" {
+      Resize "right"
+    }
+  }
+}
+plugins {
+  about location="zellij:about"
+  compact-bar location="zellij:compact-bar"
+  configuration location="zellij:configuration"
+  filepicker location="zellij:strider" {
+    cwd "/"
+  }
+  plugin-manager location="zellij:plugin-manager"
+  session-manager location="zellij:session-manager"
+  status-bar location="zellij:status-bar"
+  strider location="zellij:strider"
+  tab-bar location="zellij:tab-bar"
+  vim-navigator location="file:~/.config/zellij/plugins/vim-zellij-navigator.wasm"
+  welcome-screen location="zellij:session-manager" {
+    welcome_screen true
+  }
+  zjstatus location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+    format_left "{mode} #[fg=bright_black]󰇘 {tabs} #[fg=bright_black]󰇘 #[fg=green]{swap_layout}"
+    format_center "#[fg=bright_black]󰇘 #[fg=cyan]{session} #[fg=bright_black]󰇘"
+    format_right "#[fg=bright_black]󰇘 {command_git_branch} #[fg=bright_black]󰇘 #[fg=blue]{datetime}"
+    format_space "#[fg=yellow] "
+    hide_frame_for_single_pane "false"
+    border_enabled "false"
+    mode_normal "#[fg=yellow]NORMAL"
+    mode_locked "#[fg=red]LOCKED"
+    mode_tmux "#[fg=cyan]TMUX"
+    mode_resize "#[fg=red]RESIZE"
+    mode_pane "#[fg=cyan]PANE"
+    mode_tab "#[fg=cyan]TAB"
+    mode_scroll "#[fg=green]SCROLL"
+    mode_enter_search "#[fg=blue]{name}"
+    mode_search "#[fg=blue]SEARCH"
+    mode_rename_tab "#[fg=red]{name}"
+    mode_rename_pane "#[fg=red]{name}"
+    mode_session "#[fg=green]SESSION"
+    mode_move "#[fg=red]MOVE"
+    mode_prompt "#[fg=green]PROMPT"
+    tab_normal "#[fg=#6e7a99]{name}"
+    tab_normal_fullscreen "#[fg=#6e7a99]{name}"
+    tab_normal_sync "#[fg=#6e7a99]{name}"
+    tab_active "#[fg=cyan]{name}#[fg=yellow]{floating_indicator}"
+    tab_active_fullscreen "#[fg=yellow]{name}#[fg=yellow]{fullscreen_indicator}"
+    tab_active_sync "#[fg=green]{name}#[fg=yellow]{sync_indicator}"
+    tab_separator "#[fg=bright_black]:"
+    tab_rename "#[fg=red] {index} {name} {floating_indicator} "
+    tab_sync_indicator "  "
+    tab_fullscreen_indicator "  "
+    tab_floating_indicator " 󰉧 "
+    command_git_branch_command "git branch --show-current"
+    command_git_branch_format "#[fg=green]{stdout}#[fg=white]local#[fg=bright_black]:#[fg=red]main #[fg=green]"
+    command_git_branch_interval "1"
+    command_git_branch_rendermode "static"
+    tab_display_count "3"
+    tab_truncate_start_format "#[fg=red,bg=black] < + {count} ..."
+    tab_truncate_end_format "#[fg=red,bg=black] ... + {count} >"
+    datetime "#[fg=blue]{format}"
+    datetime_format "%A, %d %b %Y %H:%M"
+    datetime_timezone "America/New_York"
+  }
+}
+load_plugins {
+  vim-navigator
+  zjstatus
+}
+

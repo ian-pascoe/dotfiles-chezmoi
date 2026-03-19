@@ -1,0 +1,239 @@
+{
+  "$help": "https://aka.ms/terminal-documentation",
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "actions": [],
+  "alwaysShowTabs": true,
+  "copyFormatting": "none",
+  "copyOnSelect": false,
+  "defaultProfile": "{e72abb56-ab17-50cf-9780-9bbd9b2b850c}",
+  "firstWindowPreference": "defaultProfile",
+  "keybindings": [
+    {
+      "id": "Terminal.CopyToClipboard",
+      "keys": "ctrl+insert"
+    },
+    {
+      "id": "Terminal.PasteFromClipboard",
+      "keys": "shift+insert"
+    }
+  ],
+  "launchMode": "focus",
+  "newTabMenu": [
+    {
+      "type": "remainingProfiles"
+    }
+  ],
+  "profiles": {
+    "defaults": {
+      "colorScheme": "rose-pine",
+      "cursorShape": "filledBox",
+      "font": {
+        "builtinGlyphs": false,
+        "colorGlyphs": false,
+        "face": "JetBrainsMono Nerd Font",
+        "size": 11
+      },
+      "opacity": 90,
+      "padding": "10"
+    },
+    "list": [
+      {
+        "commandline": "pwsh",
+        "guid": "{e72abb56-ab17-50cf-9780-9bbd9b2b850c}",
+        "hidden": false,
+        "name": "PowerShell",
+        "startingDirectory": "%USERPROFILE%"
+      },
+      {
+        "commandline": "wsl -d NixOS --cd ~",
+        "guid": "{a4ad531d-2918-58a1-8af0-06a580dffdf0}",
+        "hidden": false,
+        "name": "NixOS",
+        "pathTranslationStyle": "wsl",
+        "startingDirectory": "~"
+      }
+    ]
+  },
+  "rendering.software": true,
+  "schemes": [
+    {
+      "background": "#1E1E2E",
+      "black": "#45475A",
+      "blue": "#89B4FA",
+      "brightBlack": "#585B70",
+      "brightBlue": "#89B4FA",
+      "brightCyan": "#94E2D5",
+      "brightGreen": "#A6E3A1",
+      "brightPurple": "#F5C2E7",
+      "brightRed": "#F38BA8",
+      "brightWhite": "#A6ADC8",
+      "brightYellow": "#F9E2AF",
+      "cursorColor": "#F5E0DC",
+      "cyan": "#94E2D5",
+      "foreground": "#CDD6F4",
+      "green": "#A6E3A1",
+      "name": "catppuccin",
+      "purple": "#F5C2E7",
+      "red": "#F38BA8",
+      "selectionBackground": "#585B70",
+      "white": "#BAC2DE",
+      "yellow": "#F9E2AF"
+    },
+    {
+      "background": "#2E3440",
+      "black": "#3B4252",
+      "blue": "#81A1C1",
+      "brightBlack": "#4C566A",
+      "brightBlue": "#81A1C1",
+      "brightCyan": "#8FBCBB",
+      "brightGreen": "#A3BE8C",
+      "brightPurple": "#B48EAD",
+      "brightRed": "#BF616A",
+      "brightWhite": "#ECEFF4",
+      "brightYellow": "#EBCB8B",
+      "cursorColor": "#ECEFF4",
+      "cyan": "#88C0D0",
+      "foreground": "#D8DEE9",
+      "green": "#A3BE8C",
+      "name": "nord",
+      "purple": "#B48EAD",
+      "red": "#BF616A",
+      "selectionBackground": "#ECEFF4",
+      "white": "#E5E9F0",
+      "yellow": "#EBCB8B"
+    },
+    {
+      "background": "#191724",
+      "black": "#26233A",
+      "blue": "#31748F",
+      "brightBlack": "#6E6A86",
+      "brightBlue": "#31748F",
+      "brightCyan": "#EBBCBA",
+      "brightGreen": "#9CCFD8",
+      "brightPurple": "#C4A7E7",
+      "brightRed": "#EB6F92",
+      "brightWhite": "#E0DEF4",
+      "brightYellow": "#F6C177",
+      "cursorColor": "#E0DEF4",
+      "cyan": "#EBBCBA",
+      "foreground": "#E0DEF4",
+      "green": "#9CCFD8",
+      "name": "rose-pine",
+      "purple": "#C4A7E7",
+      "red": "#EB6F92",
+      "selectionBackground": "#191724",
+      "white": "#E0DEF4",
+      "yellow": "#F6C177"
+    },
+    {
+      "background": "#1A1B26",
+      "black": "#15161E",
+      "blue": "#7AA2F7",
+      "brightBlack": "#414868",
+      "brightBlue": "#7AA2F7",
+      "brightCyan": "#7DCFFF",
+      "brightGreen": "#9ECE6A",
+      "brightPurple": "#BB9AF7",
+      "brightRed": "#F7768E",
+      "brightWhite": "#C0CAF5",
+      "brightYellow": "#E0AF68",
+      "cursorColor": "#C0CAF5",
+      "cyan": "#7DCFFF",
+      "foreground": "#C0CAF5",
+      "green": "#9ECE6A",
+      "name": "tokyo-night",
+      "purple": "#BB9AF7",
+      "red": "#F7768E",
+      "selectionBackground": "#33467C",
+      "white": "#A9B1D6",
+      "yellow": "#E0AF68"
+    }
+  ],
+  "showTabsInTitlebar": true,
+  "snapToGridOnResize": false,
+  "tabWidthMode": "equal",
+  "theme": "rose-pine",
+  "themes": [
+    {
+      "name": "catppuccin",
+      "tab": {
+        "background": "#1E1E2EFF",
+        "iconStyle": "default",
+        "showCloseButton": "always",
+        "unfocusedBackground": null
+      },
+      "tabRow": {
+        "background": "#181825FF",
+        "unfocusedBackground": "#11111BFF"
+      },
+      "window": {
+        "applicationTheme": "dark",
+        "experimental.rainbowFrame": false,
+        "frame": null,
+        "unfocusedFrame": null,
+        "useMica": false
+      }
+    },
+    {
+      "name": "nord",
+      "tab": {
+        "background": "#2E3440FF",
+        "iconStyle": "default",
+        "showCloseButton": "always",
+        "unfocusedBackground": null
+      },
+      "tabRow": {
+        "background": "#3B4252FF",
+        "unfocusedBackground": "#434C5EFF"
+      },
+      "window": {
+        "applicationTheme": "dark",
+        "experimental.rainbowFrame": false,
+        "frame": null,
+        "unfocusedFrame": null,
+        "useMica": false
+      }
+    },
+    {
+      "name": "rose-pine",
+      "tab": {
+        "background": "#191724FF",
+        "iconStyle": "default",
+        "showCloseButton": "always",
+        "unfocusedBackground": null
+      },
+      "tabRow": {
+        "background": "#26233AFF",
+        "unfocusedBackground": "#908CAAFF"
+      },
+      "window": {
+        "applicationTheme": "dark",
+        "experimental.rainbowFrame": false,
+        "frame": null,
+        "unfocusedFrame": null,
+        "useMica": false
+      }
+    },
+    {
+      "name": "tokyo-night",
+      "tab": {
+        "background": "#1A1B26FF",
+        "iconStyle": "default",
+        "showCloseButton": "always",
+        "unfocusedBackground": null
+      },
+      "tabRow": {
+        "background": "#15161EFF",
+        "unfocusedBackground": "#2A2C36FF"
+      },
+      "window": {
+        "applicationTheme": "dark",
+        "experimental.rainbowFrame": false,
+        "frame": null,
+        "unfocusedFrame": null,
+        "useMica": false
+      }
+    }
+  ],
+  "useAcrylicInTabRow": true
+}

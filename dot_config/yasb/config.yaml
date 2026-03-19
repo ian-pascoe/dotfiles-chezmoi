@@ -1,0 +1,408 @@
+# This is default and very simple configuration file for Yasb.
+# For more information about configuration options, please visit the Wiki https://github.com/amnweb/yasb/wiki
+watch_stylesheet: true
+watch_config: true
+debug: false
+update_check: true # Enable automatic update check.
+bars:
+  primary-bar:
+    enabled: true
+    screens: ["*"]
+    class_name: "yasb-bar"
+    alignment:
+      position: "top"
+      center: false
+    animation:
+      enabled: true
+      duration: 200
+    blur_effect:
+      enabled: false
+      acrylic: false
+      dark_mode: true
+      round_corners: false
+      border_color: None
+    window_flags:
+      always_on_top: false
+      windows_app_bar: true
+    dimensions:
+      width: "100%"
+      height: 36
+    padding:
+      top: 5
+      left: 5
+      bottom: 0
+      right: 5
+    widgets:
+      left:
+        - "home"
+        - "apps"
+        - "glazewm_binding_mode"
+        - "glazewm_workspaces"
+        - "glazewm_tiling_direction"
+      center:
+        - "active_window"
+        - "media"
+      right:
+        - "cpu"
+        - "memory"
+        - "disk"
+        - "battery"
+        - "wifi"
+        - "volume"
+        - "microphone"
+        - "systray"
+        - "notifications"
+        - "clock"
+widgets:
+  home:
+    type: "yasb.home.HomeWidget"
+    options:
+      label: "<span>\udb82\udd53</span>"
+      menu_list:
+        - { title: "User Home", path: "~" }
+        - { title: "Downloads", path: "~\\Downloads" }
+        - { title: "Documents", path: "~\\Documents" }
+        - { title: "Pictures", path: "~\\Pictures" }
+      system_menu: true
+      power_menu: true
+      blur: true
+  apps:
+    type: "yasb.applications.ApplicationsWidget"
+    options:
+      label: "{data}"
+      app_list:
+        - name: "Helium Browser"
+          launch: "$env:SCOOP\\apps\\helium\\current\\chrome.exe"
+          icon: ""
+        - name: "Terminal"
+          launch: "$env:SCOOP\\apps\\windows-terminal\\current\\wt.exe"
+          icon: ""
+        - name: "NixOS Terminal"
+          launch: "$env:SCOOP\\apps\\windows-terminal\\current\\wt.exe new-tab --profile NixOS"
+          icon: "󱄅"
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  glazewm_binding_mode:
+    type: "glazewm.binding_mode.GlazewmBindingModeWidget"
+    options:
+      hide_if_no_active: false
+      label_if_no_active: "normal"
+      default_icon: ""
+      icons:
+        none: ""
+        resize: ""
+      binding_modes_to_cycle_through: [
+          "none", # none handles if no binding mode is active
+          "resize",
+        ]
+      callbacks:
+        on_left: "next_binding_mode"
+        on_middle: "toggle_label"
+        on_right: "disable_binding_mode"
+  glazewm_workspaces:
+    type: "glazewm.workspaces.GlazewmWorkspacesWidget"
+    options:
+      offline_label: "GlazeWM Offline"
+      hide_empty_workspaces: false
+      hide_if_offline: true
+      enable_scroll_switching: true
+      btn_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+      app_icons:
+        enabled_populated: true
+        enabled_active: true
+        size: 10
+        max_icons: 4
+        hide_label: false
+        hide_duplicates: false
+        hide_floating: false
+      animation: true
+  glazewm_tiling_direction:
+    type: "glazewm.tiling_direction.GlazewmTilingDirectionWidget"
+    options:
+      horizontal_label: "\udb81\udce1"
+      vertical_label: "\udb81\udce2"
+      btn_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  active_window:
+    type: "yasb.active_window.ActiveWindowWidget"
+    options:
+      label: "{win[title]}"
+      label_alt: "[class_name='{win[class_name]}' exe='{win[process][name]}' hwnd={win[hwnd]}]"
+      label_no_window: ""
+      label_icon: true
+      label_icon_size: 16
+      max_length: 32
+      max_length_ellipsis: "..."
+      monitor_exclusive: true
+  media:
+    type: "yasb.media.MediaWidget"
+    options:
+      label: "<span>\udb80\udf87</span> {title}"
+      label_alt: "<span>\udb80\udf87</span> {title}"
+      hide_empty: true
+      callbacks:
+        on_left: "toggle_media_menu"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
+      max_field_size:
+        label: 55
+        label_alt: 80
+      show_thumbnail: true
+      controls_only: false
+      controls_left: true
+      thumbnail_alpha: 80
+      thumbnail_padding: 0
+      thumbnail_corner_radius: 8
+      thumbnail_edge_fade: true
+      scrolling_label:
+        enabled: false
+        update_interval_ms: 100
+        style: "left" # can be "left", "right", "bounce", "bounce-ease"
+        separator: " | "
+        label_padding: 0
+        # Easing curve params: https://www.desmos.com/calculator/j7eamemxzi
+        ease_slope: 20
+        ease_pos: 0.8
+        ease_min: 0.5
+      icons:
+        prev_track: "\uf048"
+        next_track: "\uf051"
+        play: "\uf04b"
+        pause: "\uf04c"
+      media_menu:
+        blur: true
+        round_corners: true
+        round_corners_type: "small"
+        border_color: "system"
+        alignment: "right"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
+        thumbnail_corner_radius: 4
+        thumbnail_size: 80
+        max_title_size: 80
+        max_artist_size: 20
+        show_source: true
+      media_menu_icons:
+        play: "\uf04b"
+        pause: "\uf04c"
+        prev_track: "\uf048"
+        next_track: "\uf051"
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  cpu:
+    type: "yasb.cpu.CpuWidget"
+    options:
+      label: "<span>\uf4bc</span>{info[percent][total]}%"
+      label_alt: "<span>\uf437</span>{info[histograms][cpu_percent]}"
+      update_interval: 2000
+      cpu_thresholds:
+        low: 25
+        medium: 50
+        high: 90
+      histogram_icons:
+        - "\u2581" # 0%
+        - "\u2581" # 10%
+        - "\u2582" # 20%
+        - "\u2583" # 30%
+        - "\u2584" # 40%
+        - "\u2585" # 50%
+        - "\u2586" # 60%
+        - "\u2587" # 70%
+        - "\u2588" # 80%+
+      histogram_num_columns: 8
+      callbacks:
+        on_right: "exec cmd /c Taskmgr"
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  memory:
+    type: "yasb.memory.MemoryWidget"
+    options:
+      label: "<span>\uefc5</span> {virtual_mem_percent}%"
+      label_alt: "<span>\uefc5</span> VIRT: {virtual_mem_percent}% SWAP: {swap_mem_percent}%"
+      update_interval: 1000
+      callbacks:
+        on_left: "toggle_label"
+        on_middle: "do_nothing"
+        on_right: "do_nothing"
+      memory_thresholds:
+        low: 25
+        medium: 50
+        high: 90
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  disk:
+    type: "yasb.disk.DiskWidget"
+    options:
+      label: "<span>\uf0a0</span>{space[used][percent]}"
+      label_alt: "{volume_label} {space[used][gb]} / {space[total][gb]}"
+      volume_label: "C:\\"
+      update_interval: 60
+      callbacks:
+        on_left: "toggle_label"
+        on_right: "exec explorer C:\\" # Open disk C in file explorer
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+      disk_thresholds:
+        low: 25
+        medium: 50
+        high: 90
+  battery:
+    type: "yasb.battery.BatteryWidget"
+    options:
+      label: "<span>{icon}</span> {percent}%"
+      label_alt: "<span>{icon}</span> {percent}% | time: {time_remaining}"
+      update_interval: 5000
+      time_remaining_natural: False
+      hide_unsupported: True
+      charging_options:
+        icon_format: "{charging_icon}"
+        blink_charging_icon: true
+        blink_interval: 500
+      status_thresholds:
+        critical: 10
+        low: 25
+        medium: 75
+        high: 95
+        full: 100
+      status_icons:
+        icon_charging: "\udb80\udc84"
+        icon_critical: "\uf244"
+        icon_low: "\uf243"
+        icon_medium: "\uf242"
+        icon_high: "\uf241"
+        icon_full: "\uf240"
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  wifi:
+    type: "yasb.wifi.WifiWidget"
+    options:
+      label: "<span>{wifi_icon}</span>"
+      label_alt: "<span>{wifi_icon}</span>{wifi_name}"
+      update_interval: 5000
+      callbacks:
+        on_left: "toggle_menu"
+        on_middle: "exec cmd.exe /c start ms-settings:network"
+        on_right: "toggle_label"
+      ethernet_label: "<span>{wifi_icon}</span>"
+      ethernet_label_alt: "<span>{wifi_icon}</span>{ip_addr}"
+      ethernet_icon: "\ueba9"
+      get_exact_wifi_strength: true # Optional. Will require location access permission if true.
+      wifi_icons:
+        - "\udb82\udd2e" # Icon for 0% strength
+        - "\udb82\udd1f" # Icon for 1-24% strength
+        - "\udb82\udd22" # Icon for 25-49% strength
+        - "\udb82\udd25" # Icon for 50-74% strength
+        - "\udb82\udd28" # Icon for 75-100% strength
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+      menu_config:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "System"
+        alignment: "right"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
+        wifi_icons_secured: ["\ue670", "\ue671", "\ue672", "\ue673"]
+        wifi_icons_unsecured: ["\uec3c", "\uec3d", "\uec3e", "\uec3f"]
+  volume:
+    type: "yasb.volume.VolumeWidget"
+    options:
+      label: "<span>{icon}</span>{level}"
+      label_alt: "<span>{icon}</span>{level}%"
+      tooltip: false
+      volume_icons:
+        - "\ueee8"
+        - "\uf026"
+        - "\uf027"
+        - "\uf027"
+        - "\uf028"
+      callbacks:
+        on_left: "toggle_mute"
+        on_right: "exec cmd.exe /c start ms-settings:sound"
+  microphone:
+    type: "yasb.microphone.MicrophoneWidget"
+    options:
+      label: "<span>{icon}</span>{level}"
+      label_alt: "<span>{icon}</span>{level}%"
+      icons:
+        normal: "\udb80\udf6c"
+        muted: "\udb80\udf6d"
+      callbacks:
+        on_left: "toggle_mute"
+        on_middle: "toggle_label"
+        on_right: "exec cmd.exe /c start ms-settings:sound"
+  systray:
+    type: "yasb.systray.SystrayWidget"
+    options:
+      class_name: "systray"
+      label_collapsed: "\udb80\udd40"
+      label_expanded: "\udb80\udd41"
+      label_position: "right" # Can be "left" or "right"
+      icon_size: 14 # Can be any integer between 8 and 64
+      pin_click_modifier: "alt" # Can be "ctrl", "alt" or "shift"
+      show_unpinned: false
+      show_unpinned_button: true
+      show_battery: false
+      show_volume: false
+      show_network: false
+      btn_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  notifications:
+    type: "yasb.notifications.NotificationsWidget"
+    options:
+      label: "<span>\uf476</span>{count}"
+      label_alt: "{count} notifications"
+      hide_empty: false
+      tooltip: true
+      callbacks:
+        on_left: "toggle_notification"
+        on_right: "do_nothing"
+        on_middle: "toggle_label"
+  clock:
+    type: "yasb.clock.ClockWidget"
+    options:
+      label: "<span>\uf017</span>{%r}"
+      label_alt: "{%A, %d %B %Y %H:%M}"
+      timezones: []
+      calendar:
+        blur: false
+        round_corners: false
+        alignment: "center"
+        direction: "down"
+      callbacks:
+        on_left: "toggle_calendar"
+        on_right: "toggle_label"

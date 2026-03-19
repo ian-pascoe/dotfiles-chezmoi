@@ -1,0 +1,43 @@
+:root {
+  /* Tokyo Night Moon base colors */
+  --background: 34, 36, 54;
+  --surface: 30, 32, 48;
+  --surface-bright: 47, 51, 77;
+  --foreground: 200, 211, 245;
+  --muted: 130, 139, 184;
+  --border: 88, 158, 215;
+  --blue: 130, 170, 255;
+  --cyan: 13, 185, 215;
+  --sky-blue: 134, 225, 252;
+  --green: 195, 232, 141;
+  --orange: 255, 150, 108;
+  --yellow: 255, 199, 119;
+  --pink: 252, 167, 234;
+  --purple: 192, 153, 255;
+  --red: 255, 117, 127;
+  --teal: 79, 214, 190;
+
+  /* Semantic color mappings */
+  --card-background: var(--surface);
+  --card-foreground: var(--foreground);
+  --popup-background: var(--surface-bright);
+  --popup-foreground: var(--foreground);
+  --primary: var(--blue);
+  --primary-foreground: var(--background);
+  --secondary: var(--cyan);
+  --secondary-foreground: var(--background);
+  --tertiary: var(--purple);
+  --tertiary-foreground: var(--background);
+  --accent: var(--pink);
+  --accent-foreground: var(--background);
+  --muted-background: var(--muted);
+  --muted-foreground: var(--background);
+  --info: var(--sky-blue);
+  --info-foreground: var(--background);
+  --success: var(--green);
+  --success-foreground: var(--background);
+  --warning: var(--yellow);
+  --warning-foreground: var(--background);
+  --destructive: var(--red);
+  --destructive-foreground: var(--background);
+}

@@ -1,0 +1,21 @@
+model = "gpt-5.4"
+personality = "pragmatic"
+model_reasoning_effort = "medium"
+[projects."/Users/ianpascoe/.dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/code/crosspack"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/code/crosspack/crosspack"]
+trust_level = "trusted"
+
+[projects."/"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.2-codex" = "gpt-5.3-codex"
+"gpt-5.3-codex" = "gpt-5.4"
+
+[features]
+multi_agent = true

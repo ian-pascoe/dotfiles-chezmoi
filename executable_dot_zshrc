@@ -1,0 +1,143 @@
+##============================
+## .zshrc
+##============================
+
+## History
+HISTSIZE=10000
+SAVEHIST=$HISTSIZE
+HISTFILE="$HOME/.zsh_history"
+
+# Persist history immediately and dedupe entries
+setopt appendhistory
+setopt inc_append_history
+setopt hist_ignore_dups
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+
+## ZPlug
+if command -v brew &>/dev/null; then
+  export ZPLUG_HOME="$(brew --prefix zplug 2>/dev/null)"
+fi
+if [ -n "${ZPLUG_HOME:-}" ] && [ -d "${ZPLUG_HOME}" ]; then
+  source "${ZPLUG_HOME}/init.zsh"
+
+  zplug "zsh-users/zsh-autosuggestions"
+  zplug "zsh-users/zsh-syntax-highlighting", defer:2
+
+  if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -rq; then
+      echo
+      zplug install
+    fi
+  fi
+  zplug load
+fi
+
+## Editor
+if command -v nvim &>/dev/null; then
+  alias vim='nvim'
+fi
+
+## LSD
+if command -v lsd &>/dev/null; then
+  alias ls='lsd'
+fi
+alias l='ls'
+alias ll='ls -l'
+alias lla='ls -lA'
+alias la='ls -A'
+alias lt='ls --tree'
+alias ltla='ls -lA --tree'
+
+## Bat
+if command -v bat &>/dev/null; then
+  alias cat='bat --style=plain --paging=never'
+fi
+
+## FZF
+if command -v fzf &>/dev/null; then
+  source <(fzf --zsh)
+fi
+
+## JJ
+if command -v jj &>/dev/null; then
+  autoload -U compinit && compinit
+  source <(jj util completion zsh)
+fi
+
+# Yazi
+if command -v yazi &>/dev/null; then
+  alias y='yazi'
+fi
+
+## Zellij
+if command -v zellij &>/dev/null; then
+  alias zj='zellij'
+  alias zjl='zellij list-sessions'
+  alias zja='zellij attach'
+  alias zjd='zellij delete-session'
+  alias zjda='zellij delete-all-sessions'
+  alias zjk='zellij kill-session'
+  alias zjka='zellij kill-all-sessions'
+  alias zj-dev='zellij --layout dev'
+fi
+
+## OpenClaw
+# NOTE: Have to use full paths with no env vars here
+# or else openclaw will constantly ask about adding
+# completions to the shell. So annoying!!
+if [ -f "/home/ianpascoe/.openclaw/completions/openclaw.zsh" ]; then
+  source "/home/ianpascoe/.openclaw/completions/openclaw.zsh"
+elif [ -f "/Users/ianpascoe/.openclaw/completions/openclaw.zsh" ]; then
+  source "/Users/ianpascoe/.openclaw/completions/openclaw.zsh"
+fi
+
+## Brewfile
+if command -v brew &>/dev/null; then
+  brew() {
+    command brew "$@"
+    if [[ "$1" =~ ^(install|uninstall|remove|upgrade)$ ]]; then
+      command brew bundle dump --force --file=~/Brewfile
+    fi
+  }
+fi
+
+## Zoxide
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+  function zd() {
+    if [ $# -eq 0 ]; then
+      builtin cd ~ && zoxide add "$(pwd)" && return
+    elif [ -d "$1" ]; then
+      builtin cd "$1" && zoxide add "$(pwd)" && return
+    else
+      z "$@" && printf "\U000F17A9 " && pwd || echo "Error: Directory not found"
+    fi
+  }
+  alias cd='zd'
+fi
+
+## Apply Base Path Order
+if (($+functions[_zsh_apply_base_path_order])); then
+  _zsh_apply_base_path_order
+fi
+
+## Apply Mise Hook Env
+if (($+functions[_zsh_mise_cmd])); then
+  __zsh_mise_cmd="$(_zsh_mise_cmd)"
+  if [[ -n "$__zsh_mise_cmd" ]]; then
+    eval "$("$__zsh_mise_cmd" activate zsh)"
+  fi
+  unset __zsh_mise_cmd
+fi
+
+## Starship
+if command -v starship &>/dev/null; then
+  # Clear stale line state before each prompt render in zsh.
+  __sanitize_prompt() { printf '\r\033[K'; }
+  if ((${precmd_functions[(Ie)__sanitize_prompt]} == 0)); then
+    precmd_functions+=(__sanitize_prompt)
+  fi
+  eval "$(starship init zsh)"
+fi
