@@ -1,0 +1,15 @@
+[Unit]
+Description=OpenViking
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/home/ianpascoe/.openviking
+ExecStart=/home/ianpascoe/.openviking/venv/bin/openviking-server --config /home/ianpascoe/.openviking/ov.conf
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+TimeoutStartSec=30
+
+[Install]
+WantedBy=default.target

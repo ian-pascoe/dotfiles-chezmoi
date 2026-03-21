@@ -1,0 +1,9 @@
+[".config/zellij/plugins/zjstatus.wasm"]
+type = "file"
+url = "https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm"
+refreshPeriod = "168h"
+
+[".config/zellij/plugins/vim-zellij-navigator.wasm"]
+type = "file"
+url = "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm"
+refreshPeriod = "168h"
