@@ -1,2 +1,7 @@
-## Syncthing
+# Syncthing
 .stfolder/
+.stignore
+
+*.log
+*.tmp
+*.bak

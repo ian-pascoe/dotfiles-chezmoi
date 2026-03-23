@@ -1,0 +1,54 @@
+[calendars]
+
+# === Ian's Calendars (from Ian's iCloud) ===
+
+[[ians_work]]
+path = ~/.local/share/vdirsyncer/calendars/ian/work/
+color = dark blue
+
+[[ians_shared]]
+path = ~/.local/share/vdirsyncer/calendars/ian/6CA9B908-7648-463B-9630-DC9C1F89BE73/
+color = dark cyan
+
+[[pascoe_family]]
+path = ~/.local/share/vdirsyncer/calendars/ian/1788091d49bc36b55987383042ad7f2d0c154cc9db607979ce968ae713e7135f/
+color = dark green
+
+[[big_family]]
+path = ~/.local/share/vdirsyncer/calendars/ian/E20B0F9A-DA37-4658-AFBB-8CE990A21B62/
+color = dark magenta
+
+[[mk_calendar]]
+path = ~/.local/share/vdirsyncer/calendars/ian/dc50397fe5b31e521a75582027de1fdc91fe60c821c313465b2cfab42cd3b644/
+color = light magenta
+
+[[ians_reminders]]
+path = ~/.local/share/vdirsyncer/calendars/ian/297c79dc-d98f-40b8-b323-4eeb3f5449cc/
+color = light gray
+
+# === MK's Calendars (from MK's iCloud) ===
+# Keep only calendars that appear unique in khal output.
+# Duplicated shared calendars remain synced by vdirsyncer but are hidden here:
+#   mk_03E6  ~= mk_calendar
+#   mk_2cc8  ~= ians_work
+#   mk_3ac3  ~= pascoe_family
+#   mk_95bc  ~= ians_shared
+
+[[mk_home]]
+path = ~/.local/share/vdirsyncer/calendars/mk/home/
+color = light magenta
+
+[[mk_9f4d]]
+path = ~/.local/share/vdirsyncer/calendars/mk/9f4dfb1f-547a-4881-8a6a-fde8bbb22c7c/
+color = light red
+
+[default]
+default_calendar = ians_work
+highlight_event_days = True
+
+[locale]
+timeformat = %H:%M
+dateformat = %Y-%m-%d
+longdateformat = %Y-%m-%d
+datetimeformat = %Y-%m-%d %H:%M
+longdatetimeformat = %Y-%m-%d %H:%M

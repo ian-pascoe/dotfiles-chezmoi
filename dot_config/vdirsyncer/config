@@ -1,0 +1,38 @@
+[general]
+status_path = "~/.local/share/vdirsyncer/status/"
+
+# Ian's iCloud Calendar
+[pair ians_icloud_calendar]
+a = "ians_icloud_remote"
+b = "ians_icloud_local"
+collections = ["from a", "from b"]
+conflict_resolution = "a wins"
+
+[storage ians_icloud_remote]
+type = "caldav"
+url = "https://caldav.icloud.com/"
+username = "ian.g.pascoe@gmail.com"
+password.fetch = ["command", "cat", "~/.config/vdirsyncer/ians_icloud_password"]
+
+[storage ians_icloud_local]
+type = "filesystem"
+path = "~/.local/share/vdirsyncer/calendars/ian/"
+fileext = ".ics"
+
+# MK's iCloud Calendar
+[pair mks_icloud_calendar]
+a = "mks_icloud_remote"
+b = "mks_icloud_local"
+collections = ["from a", "from b"]
+conflict_resolution = "a wins"
+
+[storage mks_icloud_remote]
+type = "caldav"
+url = "https://caldav.icloud.com/"
+username = "mkcheers@comcast.net"
+password.fetch = ["command", "cat", "~/.config/vdirsyncer/mks_icloud_password"]
+
+[storage mks_icloud_local]
+type = "filesystem"
+path = "~/.local/share/vdirsyncer/calendars/mk/"
+fileext = ".ics"

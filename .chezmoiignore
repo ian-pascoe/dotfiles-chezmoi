@@ -8,6 +8,10 @@ README.md
 .gitignore
 .gitkeep
 
+*.log
+*.tmp
+*.bak
+
 # Non-Darwin
 {{ if ne .chezmoi.os "darwin" }}
 .hammerspoon
