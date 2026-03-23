@@ -5,7 +5,7 @@ layout {
       plugin location="zjstatus"
     }
   }
-  tab name="Tab #1" {
+  tab {
     pane
   }
 }

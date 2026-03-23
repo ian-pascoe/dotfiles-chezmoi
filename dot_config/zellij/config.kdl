@@ -102,7 +102,7 @@ keybinds clear-defaults=true {
       GoToPreviousTab
       SwitchToMode "normal"
     }
-    bind "d" {
+    bind "D" {
       Detach
     }
     bind "x" {

@@ -1,0 +1,47 @@
+README.md
+
+# Syncthing
+.stfolder
+.stignore
+
+# Git
+.gitignore
+.gitkeep
+
+# Non-Darwin
+{{ if ne .chezmoi.os "darwin" }}
+.hammerspoon
+.config/aerospace
+.config/borders
+.config/karabiner
+{{ end }}
+
+# Non-Linux
+{{ if ne .chezmoi.os "linux" }}
+.config/systemd
+{{ end }}
+
+# Non-Windows
+{{ if ne .chezmoi.os "windows" }}
+Documents/PowerShell
+.wslconfig
+.config/autohotkey
+.config/flow-launcher
+.config/scoop
+.config/windows-terminal
+.config/vcxsrv
+.config/yasb
+.local/bin/*.ps1
+{{ end }}
+
+# Non-Unix (Windows)
+{{ if eq .chezmoi.os "windows" }}
+.config/tmux
+.config/zellij
+.local/bin/*
+!.local/bin/*.ps1
+{{ end }}
+
+{{ if and (ne .chezmoi.os "windows") (ne .chezmoi.os "darwin") }}
+.glzr
+{{ end }}

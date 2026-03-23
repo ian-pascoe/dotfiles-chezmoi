@@ -8,8 +8,7 @@ layout {
   tab name="dev" split_direction="vertical" {
     pane size="60%" split_direction="horizontal" {
       pane name="editor" size="70%" {
-        command "nvim"
-        args "."
+        command "yazi"
       }
       pane name="cmd" size="30%" {
         command "zsh"
@@ -19,18 +18,12 @@ layout {
       command "opencode"
     }
   }
-  tab name="dotfiles" split_direction="vertical" cwd="~/.dotfiles" {
+  tab name="home" split_direction="vertical" cwd="~" {
     pane size="60%" split_direction="horizontal" {
       pane name="editor" size="70%" {
-        command "nvim"
+        command "yazi"
         args "."
       }
-      pane name="cmd" size="30%" {
-        command "zsh"
-      }
-    }
-    pane name="agent" size="40%" {
-      command "opencode"
     }
   }
 }

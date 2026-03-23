@@ -1,11 +1,11 @@
 [Unit]
-Description=OpenViking
+Description=OpenCode Server
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-WorkingDirectory=/home/ianpascoe/.openviking
-ExecStart=/home/ianpascoe/.openviking/venv/bin/openviking-server --config /home/ianpascoe/.openviking/ov.conf
+WorkingDirectory=/home/ianpascoe
+ExecStart=/home/linuxbrew/.linuxbrew/bin/opencode web --port 4096
 Restart=always
 RestartSec=5
 TimeoutStopSec=30
