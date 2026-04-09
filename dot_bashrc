@@ -1,0 +1,97 @@
+##=========================================
+## .bashrc
+##=========================================
+
+# If not running interactively, don't do anything.
+[ -z "$PS1" ] && return
+
+## Path Helpers
+if [ -f "$HOME/.config/shell/path.bash" ]; then
+  source "$HOME/.config/shell/path.bash"
+fi
+
+## History
+HISTSIZE=10000
+HISTFILESIZE=$HISTSIZE
+HISTFILE="$HOME/.bash_history"
+HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+
+# Check window size after each command and update LINES and COLUMNS
+shopt -s checkwinsize
+
+## Shared Interactive Config
+if [ -f "$HOME/.config/shell/interactive.sh" ]; then
+  source "$HOME/.config/shell/interactive.sh"
+fi
+
+## Ble.sh
+if [[ $- == *i* ]] && [[ -f "$HOME/.local/share/blesh/ble.sh" ]]; then
+  source "$HOME/.local/share/blesh/ble.sh" --attach=none
+fi
+
+## Bash Completion
+if command -v brew &>/dev/null; then
+  if [[ -f "$(brew --prefix)/etc/profile.d/bash_completion.sh" ]]; then
+    source "$(brew --prefix)/etc/profile.d/bash_completion.sh"
+  fi
+elif [[ -f /usr/share/bash-completion/bash_completion ]]; then
+  source /usr/share/bash-completion/bash_completion
+elif [[ -f /etc/bash_completion ]]; then
+  source /etc/bash_completion
+fi
+
+## FZF
+if command -v fzf &>/dev/null; then
+  eval "$(fzf --bash)"
+fi
+
+## JJ
+if command -v jj &>/dev/null; then
+  source <(jj util completion bash)
+fi
+
+## OpenClaw
+# NOTE: Have to use full paths with no env vars here
+# or else openclaw will constantly ask about adding
+# completions to the shell. So annoying!!
+if [ -f "/home/ianpascoe/.openclaw/completions/openclaw.bash" ]; then
+  source "/home/ianpascoe/.openclaw/completions/openclaw.bash"
+elif [ -f "/Users/ianpascoe/.openclaw/completions/openclaw.bash" ]; then
+  source "/Users/ianpascoe/.openclaw/completions/openclaw.bash"
+fi
+
+## Zoxide
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init bash)"
+  zd() {
+    if [ $# -eq 0 ]; then
+      builtin cd ~ && zoxide add "$(pwd)" && return
+    elif [ -d "$1" ]; then
+      builtin cd "$1" && zoxide add "$(pwd)" && return
+    else
+      z "$@" && printf '\Uf17a9 ' && pwd || echo "Error: Directory not found"
+    fi
+  }
+  alias cd='zd'
+fi
+
+## Starship
+if command -v starship &>/dev/null; then
+  starship_precmd() { printf '\r\033[K'; }
+  if [[ -n "${PROMPT_COMMAND:-}" ]]; then
+    PROMPT_COMMAND="starship_precmd; $PROMPT_COMMAND"
+  else
+    PROMPT_COMMAND="starship_precmd"
+  fi
+  eval "$(starship init bash)"
+fi
+
+## Apply Base Path Order
+if declare -F _bash_apply_base_path_order >/dev/null; then
+  _bash_apply_base_path_order
+fi
+
+## Interactive Shell
+[[ ! ${BLE_VERSION-} ]] || ble-attach

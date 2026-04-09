@@ -1,0 +1,23 @@
+##=========================================
+## .bash_profile
+##=========================================
+
+## User Profile
+if [ -f "$HOME/.profile" ]; then
+  source "$HOME/.profile"
+fi
+
+## Path Helpers
+if [ -f "$HOME/.config/shell/path.bash" ]; then
+  source "$HOME/.config/shell/path.bash"
+fi
+
+## Login Shell
+if [ -f "$HOME/.config/shell/login.sh" ]; then
+  source "$HOME/.config/shell/login.sh"
+fi
+
+## Interactive Shell
+if [ -f "$HOME/.bashrc" ]; then
+  source "$HOME/.bashrc"
+fi

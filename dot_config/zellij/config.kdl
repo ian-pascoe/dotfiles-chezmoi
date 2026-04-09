@@ -96,11 +96,9 @@ keybinds clear-defaults=true {
     }
     bind "n" {
       GoToNextTab
-      SwitchToMode "normal"
     }
     bind "p" {
       GoToPreviousTab
-      SwitchToMode "normal"
     }
     bind "D" {
       Detach

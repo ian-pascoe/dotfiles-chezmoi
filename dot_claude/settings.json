@@ -48,11 +48,19 @@
       "Bash(unzip:*)",
       "Bash(zip:*)"
     ],
-    "deny": ["Bash(rm -rf /)", "Bash(rm -rf ~)"],
-    "ask": ["Bash(curl:*)", "Bash(wget:*)", "Bash(rm:*)", "Bash(git push:*)"],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)"
+    ],
+    "ask": [
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(rm:*)",
+      "Bash(git push:*)"
+    ],
     "defaultMode": "default"
   },
-  "model": "opus",
+  "model": "opus[1m]",
   "hooks": {
     "PreCompact": [
       {

@@ -1,0 +1,18 @@
+##===================================
+## .zshenv
+##===================================
+
+## User Profile
+if [ -f "$HOME/.profile" ]; then
+  source "$HOME/.profile"
+fi
+
+## Path Helpers
+if [ -f "$HOME/.config/shell/path.zsh" ]; then
+  source "$HOME/.config/shell/path.zsh"
+fi
+
+## Apply Base Path Order
+if command -v _zsh_apply_base_path_order &>/dev/null; then
+  _zsh_apply_base_path_order
+fi

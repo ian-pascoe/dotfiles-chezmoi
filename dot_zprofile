@@ -1,0 +1,8 @@
+##===========================================
+## .zprofile
+##===========================================
+
+## Login Shell
+if [ -f "$HOME/.config/shell/login.sh" ]; then
+  source "$HOME/.config/shell/login.sh"
+fi

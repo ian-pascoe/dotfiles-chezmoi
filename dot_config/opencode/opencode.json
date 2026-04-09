@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-antigravity-auth@latest"],
+  "plugin": [],
   "autoupdate": "notify",
   "permission": {
     "external_directory": {
@@ -8,11 +8,8 @@
       "/tmp/**": "allow",
       "~/.config/opencode/**": "allow"
     },
-
-    "google_search": "deny", // use exa instead
-    "chrome-devtools*": "deny", // only needed for frontend-expert
-
-    // require permission for online tools by default
+    "google_search": "deny",
+    "chrome-devtools*": "deny",
     "codesearch": "ask",
     "context7*": "ask",
     "deepwiki*": "ask",
@@ -21,7 +18,6 @@
     "websearch": "ask"
   },
   "agent": {
-    // default opencode models with customizations
     "build": {
       "model": "openai/gpt-5.4",
       "variant": "medium"
@@ -40,16 +36,12 @@
     },
     "explore": {
       "description": "Codebase exploration agent for local repository understanding. Use it to inspect project structure, find files/symbols, trace implementations, and answer questions about how code in this repo works. Prefer research for internet or external-source investigation.",
-      "model": "openai/gpt-5.1-codex-mini",
+      "model": "openai/gpt-5.4-mini",
       "permission": {
-        "skill": "allow", // denied by default in opencode
-
-        // the following are allowed by default, but we delegate these to research agent instead
+        "skill": "allow",
         "codesearch": "deny",
         "webfetch": "deny",
         "websearch": "deny",
-
-        // deny the other online tools
         "context7*": "deny",
         "deepwiki*": "deny",
         "grep-app*": "deny"
@@ -60,11 +52,10 @@
       "model": "openai/gpt-5.4",
       "variant": "medium"
     },
-    // custom agents
     "research": {
       "description": "Web research subagent for external information gathering and synthesis. Use it for internet search, reading external docs/articles/issues, comparing sources, and producing evidence-based summaries. Prefer explore for local codebase inspection and in-repo implementation tracing.",
       "mode": "subagent",
-      "model": "google/antigravity-gemini-3-flash",
+      "model": "openai/gpt-5.4-mini",
       "permission": {
         "*": "deny",
         "bash": "allow",
@@ -86,7 +77,6 @@
       "mode": "subagent",
       "model": "openai/gpt-5.4",
       "variant": "low",
-      // same as general
       "permission": {
         "todoread": "deny",
         "todowrite": "deny"
@@ -97,7 +87,6 @@
       "mode": "subagent",
       "model": "openai/gpt-5.4",
       "variant": "high",
-      // same as general
       "permission": {
         "todoread": "deny",
         "todowrite": "deny"
@@ -106,13 +95,12 @@
     "frontend-expert": {
       "description": "Specialist for frontend and UX tasks. Use for building or refining components/pages, HTML/CSS/JavaScript framework work, responsive behavior, accessibility, visual polish, and browser-side debugging. Prefer this whenever the main challenge is UI behavior or design quality.",
       "mode": "all",
-      "model": "google/antigravity-gemini-3.1-pro",
+      "model": "openai/gpt-5.4",
       "variant": "high",
       "permission": {
         "chrome-devtools*": "allow"
       }
     },
-    // utility agents
     "summary": {
       "model": "opencode/big-pickle"
     },
@@ -120,14 +108,17 @@
       "model": "opencode/big-pickle"
     },
     "compaction": {
-      "model": "openai/gpt-5.1-codex-mini"
+      "model": "openai/gpt-5.4-mini"
     }
   },
   "mcp": {
     "chrome-devtools": {
       "enabled": true,
       "type": "local",
-      "command": ["bunx", "chrome-devtools-mcp@latest"]
+      "command": [
+        "bunx",
+        "chrome-devtools-mcp@latest"
+      ]
     },
     "context7": {
       "enabled": true,
@@ -147,7 +138,10 @@
   },
   "lsp": {
     "biome": {
-      "command": ["biome", "lsp-proxy"],
+      "command": [
+        "biome",
+        "lsp-proxy"
+      ],
       "extensions": [
         ".ts",
         ".tsx",
@@ -172,11 +166,21 @@
         "--stdin-filepath",
         "$FILE"
       ],
-      "extensions": [".lua", ".luau"]
+      "extensions": [
+        ".lua",
+        ".luau"
+      ]
     },
     "markdownlint-cli2": {
-      "command": ["markdownlint-cli2", "--fix", "$FILE"],
-      "extensions": [".md", ".mdx"]
+      "command": [
+        "markdownlint-cli2",
+        "--fix",
+        "$FILE"
+      ],
+      "extensions": [
+        ".md",
+        ".mdx"
+      ]
     }
   },
   "provider": {
@@ -185,108 +189,231 @@
       "models": {
         "antigravity-gemini-3-pro": {
           "name": "Gemini 3 Pro (Antigravity)",
-          "limit": { "context": 1048576, "output": 65535 },
+          "limit": {
+            "context": 1048576,
+            "output": 65535
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "variants": {
-            "low": { "thinkingLevel": "low" },
-            "high": { "thinkingLevel": "high" }
+            "low": {
+              "thinkingLevel": "low"
+            },
+            "high": {
+              "thinkingLevel": "high"
+            }
           }
         },
         "antigravity-gemini-3.1-pro": {
           "name": "Gemini 3.1 Pro (Antigravity)",
-          "limit": { "context": 1048576, "output": 65535 },
+          "limit": {
+            "context": 1048576,
+            "output": 65535
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "variants": {
-            "low": { "thinkingLevel": "low" },
-            "high": { "thinkingLevel": "high" }
+            "low": {
+              "thinkingLevel": "low"
+            },
+            "high": {
+              "thinkingLevel": "high"
+            }
           }
         },
         "antigravity-gemini-3-flash": {
           "name": "Gemini 3 Flash (Antigravity)",
-          "limit": { "context": 1048576, "output": 65536 },
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "variants": {
-            "minimal": { "thinkingLevel": "minimal" },
-            "low": { "thinkingLevel": "low" },
-            "medium": { "thinkingLevel": "medium" },
-            "high": { "thinkingLevel": "high" }
+            "minimal": {
+              "thinkingLevel": "minimal"
+            },
+            "low": {
+              "thinkingLevel": "low"
+            },
+            "medium": {
+              "thinkingLevel": "medium"
+            },
+            "high": {
+              "thinkingLevel": "high"
+            }
           }
         },
         "antigravity-claude-sonnet-4-6": {
           "name": "Claude Sonnet 4.6 (Antigravity)",
-          "limit": { "context": 200000, "output": 64000 },
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           }
         },
         "antigravity-claude-opus-4-6-thinking": {
           "name": "Claude Opus 4.6 Thinking (Antigravity)",
-          "limit": { "context": 200000, "output": 64000 },
+          "limit": {
+            "context": 200000,
+            "output": 64000
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           },
           "variants": {
-            "low": { "thinkingConfig": { "thinkingBudget": 8192 } },
-            "max": { "thinkingConfig": { "thinkingBudget": 32768 } }
+            "low": {
+              "thinkingConfig": {
+                "thinkingBudget": 8192
+              }
+            },
+            "max": {
+              "thinkingConfig": {
+                "thinkingBudget": 32768
+              }
+            }
           }
         },
         "gemini-2.5-flash": {
           "name": "Gemini 2.5 Flash (Gemini CLI)",
-          "limit": { "context": 1048576, "output": 65536 },
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           }
         },
         "gemini-2.5-pro": {
           "name": "Gemini 2.5 Pro (Gemini CLI)",
-          "limit": { "context": 1048576, "output": 65536 },
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           }
         },
         "gemini-3-flash-preview": {
           "name": "Gemini 3 Flash Preview (Gemini CLI)",
-          "limit": { "context": 1048576, "output": 65536 },
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           }
         },
         "gemini-3-pro-preview": {
           "name": "Gemini 3 Pro Preview (Gemini CLI)",
-          "limit": { "context": 1048576, "output": 65535 },
+          "limit": {
+            "context": 1048576,
+            "output": 65535
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           }
         },
         "gemini-3.1-pro-preview": {
           "name": "Gemini 3.1 Pro Preview (Gemini CLI)",
-          "limit": { "context": 1048576, "output": 65535 },
+          "limit": {
+            "context": 1048576,
+            "output": 65535
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           }
         },
         "gemini-3.1-pro-preview-customtools": {
           "name": "Gemini 3.1 Pro Preview Custom Tools (Gemini CLI)",
-          "limit": { "context": 1048576, "output": 65535 },
+          "limit": {
+            "context": 1048576,
+            "output": 65535
+          },
           "modalities": {
-            "input": ["text", "image", "pdf"],
-            "output": ["text"]
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
           }
         }
       }

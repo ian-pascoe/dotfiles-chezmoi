@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
-
 #########################################################################
 # Helpers
 has_cmd() {
@@ -35,16 +33,9 @@ echo "Starting upgrade process at $(date)..."
 # Homebrew/Linuxbrew
 if has_cmd brew; then
   echo "Updating Homebrew and its packages..."
-  brew update && brew upgrade --greedy && brew cleanup
+  brew update
+  brew upgrade --greedy
   echo "Homebrew and its packages updated successfully!"
-fi
-
-#########################################################################
-# Yazi
-if has_cmd ya; then
-  echo "Updating Yazi packages..."
-  ya pkg upgrade
-  echo "Yazi packages updated successfully!"
 fi
 
 #########################################################################
@@ -69,6 +60,55 @@ if has_cmd bun; then
   echo "Updating global bun modules..."
   bun -g update --latest
   echo "Global bun modules updated successfully!"
+fi
+
+#########################################################################
+# Pip
+if has_cmd pip; then
+  echo "Updating Pip packages..."
+  pip install --upgrade pip
+  pip list --outdated --format=json | jq -r '.[].name' | xargs -r -n1 pip install -U
+  echo "Pip packages updated successfully!"
+fi
+
+#########################################################################
+# Pipx
+if has_cmd pipx; then
+  echo "Updating Pipx packages..."
+  pipx upgrade-all
+  echo "Pipx packages updated successfully!"
+fi
+
+#########################################################################
+# UV
+if has_cmd uv; then
+  echo "Updating UV packages..."
+  uv tool upgrade --all
+  echo "UV packages updated successfully!"
+fi
+
+#########################################################################
+# RustUp
+if has_cmd rustup; then
+  echo "Updating RustUp and its components..."
+  rustup update
+  echo "RustUp and its components updated successfully!"
+fi
+
+#########################################################################
+# Cargo
+if has_cmd cargo; then
+  echo "Updating Cargo packages..."
+  cargo install-update -a
+  echo "Cargo packages updated successfully!"
+fi
+
+#########################################################################
+# Mise
+if has_cmd mise; then
+  echo "Updating Mise packages..."
+  mise upgrade --bump
+  echo "Mise packages updated successfully!"
 fi
 
 #########################################################################
@@ -122,7 +162,7 @@ if [ -d "$HOME/.openclaw" ]; then
       echo "Global ClawHub skills updated successfully!"
     fi
 
-    for workspace in ./workspaces/*; do
+    for workspace in ./workspace*/; do
       [ -d "$workspace" ] || continue
       (
         echo "Updating agent workspace: $workspace"
@@ -142,24 +182,105 @@ if [ -d "$HOME/.openclaw" ]; then
   )
 fi
 
+#########################################################################
+# Yazi
+if has_cmd ya; then
+  echo "Updating Yazi packages..."
+  ya pkg upgrade
+  echo "Yazi packages updated successfully!"
+fi
+
+#########################################################################
+# Hermes
+if has_cmd hermes && [ -d "$HOME/.hermes" ]; then
+  echo -e "y\n" | hermes update
+fi
+
+####################################################################
+# OpenCode Server
+if has_cmd systemctl && has_service opencode.service; then
+  echo "Restarting OpenCode server..."
+  systemctl --user restart opencode.service
+  echo "OpenCode server restarted successfully!"
+fi
+
 ####################################################################
 # Dotfiles
-if has_cmd git && [ -d "$HOME/.dotfiles/.git" ]; then
+if has_cmd git && [ -d "$HOME/.local/share/chezmoi/" ]; then
   echo "Updating dotfiles..."
   (
-    cd "$HOME/.dotfiles" || exit 1
+    cd "$HOME/.local/share/chezmoi/" || exit 1
     git pull --tags --rebase --autostash
   )
   echo "Dotfiles updated successfully!"
 fi
 
 ####################################################################
-# OpenCode Server
-if has_cmd systemctl && has_service opencode-server.service; then
-  echo "Restarting OpenCode server..."
-  systemctl --user daemon-reload
-  systemctl --user restart opencode-server.service
-  echo "OpenCode server restarted successfully!"
+# Local update script
+if [ -x "$HOME/.local/bin/local-upgrade-all" ]; then
+  echo "Running local update script..."
+  "$HOME/.local/bin/local-upgrade-all"
+  echo "Local update script completed successfully!"
+fi
+
+####################################################################
+# Cleanup
+if has_cmd brew; then
+  echo "Cleaning up Homebrew cache..."
+  brew cleanup -s
+  brew autoremove
+  echo "Homebrew cache cleaned successfully!"
+fi
+if has_cmd npm; then
+  echo "Cleaning up npm cache..."
+  npm cache clean --force
+  echo "npm cache cleaned successfully!"
+fi
+if has_cmd pnpm; then
+  echo "Cleaning up pnpm cache..."
+  pnpm store prune
+  pnpm cache delete
+  echo "pnpm cache cleaned successfully!"
+fi
+if has_cmd bun; then
+  echo "Cleaning up bun cache..."
+  bun -g pm cache rm
+  echo "bun cache cleaned successfully!"
+fi
+if has_cmd pip; then
+  echo "Cleaning up Pip cache..."
+  pip cache purge
+  echo "Pip cache cleaned successfully!"
+fi
+if has_cmd pipx; then
+  echo "Cleaning up Pipx cache..."
+  rm -rf ~/.cache/pipx
+  echo "Pipx cache cleaned successfully!"
+fi
+if has_cmd uv; then
+  echo "Cleaning up uv cache..."
+  uv cache clean
+  echo "UV cache cleaned successfully!"
+fi
+if has_cmd cargo; then
+  echo "Cleaning up cargo cache..."
+  cargo cache -a
+  echo "Cargo cache cleaned successfully!"
+fi
+if has_cmd mise; then
+  echo "Cleaning up Mise cache..."
+  mise cache clear
+  echo "Mise cache cleaned successfully!"
+fi
+if has_cmd docker; then
+  echo "Cleaning up Docker system..."
+  docker system prune -af --volumes
+  echo "Docker system cleaned successfully!"
+fi
+if has_cmd git; then
+  echo "Running git garbage collection..."
+  find "$HOME" -type d -name ".git" -prune -exec sh -c 'cd "$(dirname "{}")" && git gc --auto' \;
+  echo "Git garbage collection completed successfully!"
 fi
 
 ####################################################################

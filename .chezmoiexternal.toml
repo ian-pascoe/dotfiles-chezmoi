@@ -7,3 +7,9 @@ refreshPeriod = "168h"
 type = "file"
 url = "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm"
 refreshPeriod = "168h"
+
+[".local/share/blesh"]
+type = "archive"
+url = "https://github.com/akinomyoga/ble.sh/releases/download/v0.3.4/ble-0.3.4.tar.xz"
+stripComponents = 1
+refreshPeriod = "168h"
