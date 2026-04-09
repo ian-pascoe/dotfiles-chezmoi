@@ -1,67 +1,24 @@
----@param dir "h"|"j"|"k"|"l"|nil the direction to navigate
----@return fun() function to navigate in the given direction
-local function smart_nav(dir)
-  return function()
-    local ss = require('smart-splits')
-    if dir == 'h' then
-      return vim.schedule(ss.move_cursor_left)
-    elseif dir == 'j' then
-      return vim.schedule(ss.move_cursor_down)
-    elseif dir == 'k' then
-      return vim.schedule(ss.move_cursor_up)
-    elseif dir == 'l' then
-      return vim.schedule(ss.move_cursor_right)
-    else
-      return vim.schedule(ss.move_cursor_previous)
-    end
-  end
-end
-
 return {
-  { -- smart nav
-    'mrjones2014/smart-splits.nvim',
-    lazy = false,
-    opts = {
-      zellij_move_focus_or_tab = true,
-    },
+  {
+    'christoomey/vim-tmux-navigator',
+    event = 'VeryLazy',
     keys = {
-      { '<C-h>', smart_nav('h'), desc = 'Move to left split' },
-      { '<C-j>', smart_nav('j'), desc = 'Move to down split' },
-      { '<C-k>', smart_nav('k'), desc = 'Move to up split' },
-      { '<C-l>', smart_nav('l'), desc = 'Move to right split' },
+      { '<c-h>', '<cmd><C-U>TmuxNavigateLeft<cr>' },
+      { '<c-j>', '<cmd><C-U>TmuxNavigateDown<cr>' },
+      { '<c-k>', '<cmd><C-U>TmuxNavigateUp<cr>' },
+      { '<c-l>', '<cmd><C-U>TmuxNavigateRight<cr>' },
     },
   },
-  { -- smart nav in snacks terminals
-    'folke/snacks.nvim',
-    dependencies = { 'mrjones2014/smart-splits.nvim' },
-    opts = {
-      terminal = {
-        win = {
-          keys = {
-            nav_h = { '<C-h>', smart_nav('h'), desc = 'Go to Left Window', expr = true, mode = 't' },
-            nav_j = { '<C-j>', smart_nav('j'), desc = 'Go to Lower Window', expr = true, mode = 't' },
-            nav_k = { '<C-k>', smart_nav('k'), desc = 'Go to Upper Window', expr = true, mode = 't' },
-            nav_l = { '<C-l>', smart_nav('l'), desc = 'Go to Right Window', expr = true, mode = 't' },
-          },
-        },
-      },
+  {
+    'swaits/zellij-nav.nvim',
+    event = 'VeryLazy',
+    keys = {
+      { '<c-h>', '<cmd>ZellijNavigateLeftTab<cr>', { mode = { 'n', 't' }, silent = true, desc = 'navigate left or tab' } },
+      { '<c-j>', '<cmd>ZellijNavigateDown<cr>', { mode = { 'n', 't' }, silent = true, desc = 'navigate down' } },
+      { '<c-k>', '<cmd>ZellijNavigateUp<cr>', { mode = { 'n', 't' }, silent = true, desc = 'navigate up' } },
+      { '<c-l>', '<cmd>ZellijNavigateRightTab<cr>', { mode = { 'n', 't' }, silent = true, desc = 'navigate right or tab' } },
     },
-  },
-  { -- smart nav in sidekick cli
-    'folke/sidekick.nvim',
-    dependencies = { 'mrjones2014/smart-splits.nvim' },
-    opts = {
-      cli = {
-        win = {
-          keys = {
-            nav_h = { '<C-h>', smart_nav('h'), desc = 'Go to Left Window', expr = true, mode = 't' },
-            nav_j = { '<C-j>', smart_nav('j'), desc = 'Go to Lower Window', expr = true, mode = 't' },
-            nav_k = { '<C-k>', smart_nav('k'), desc = 'Go to Upper Window', expr = true, mode = 't' },
-            nav_l = { '<C-l>', smart_nav('l'), desc = 'Go to Right Window', expr = true, mode = 't' },
-          },
-        },
-      },
-    },
+    opts = {},
   },
   { -- vim learning game
     'ThePrimeagen/vim-be-good',

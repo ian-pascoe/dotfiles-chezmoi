@@ -19,3 +19,9 @@ vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile' }, {
     vim.bo.filetype = 'groovy'
   end,
 })
+
+-- Switch to normal mode when leaving zellij
+vim.api.nvim_create_autocmd('VimLeave', {
+  pattern = '*',
+  command = 'silent !zellij action switch-mode normal',
+})

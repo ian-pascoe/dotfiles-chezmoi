@@ -13,3 +13,9 @@ type = "archive"
 url = "https://github.com/akinomyoga/ble.sh/releases/download/v0.3.4/ble-0.3.4.tar.xz"
 stripComponents = 1
 refreshPeriod = "168h"
+
+[".config/tmux/plugins/tpm"]
+type = "archive"
+url = "https://github.com/tmux-plugins/tpm/archive/refs/heads/master.zip"
+stripComponents = 1
+refreshPeriod = "168h"
