@@ -1,7 +1,8 @@
 return {
   {
     'christoomey/vim-tmux-navigator',
-    event = 'VeryLazy',
+    enabled = vim.env.TMUX ~= nil,
+    lazy = false,
     keys = {
       { '<c-h>', '<cmd><C-U>TmuxNavigateLeft<cr>' },
       { '<c-j>', '<cmd><C-U>TmuxNavigateDown<cr>' },
@@ -11,7 +12,8 @@ return {
   },
   {
     'swaits/zellij-nav.nvim',
-    event = 'VeryLazy',
+    enabled = vim.env.ZELLIJ ~= nil,
+    lazy = false,
     keys = {
       { '<c-h>', '<cmd>ZellijNavigateLeftTab<cr>', { mode = { 'n', 't' }, silent = true, desc = 'navigate left or tab' } },
       { '<c-j>', '<cmd>ZellijNavigateDown<cr>', { mode = { 'n', 't' }, silent = true, desc = 'navigate down' } },

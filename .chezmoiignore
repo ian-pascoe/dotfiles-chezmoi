@@ -3,6 +3,7 @@ README.md
 # Syncthing
 .stfolder
 .stignore
+*.sync-conflict*
 
 # Git
 .gitignore

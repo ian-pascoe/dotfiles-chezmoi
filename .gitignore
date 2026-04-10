@@ -1,6 +1,7 @@
 # Syncthing
 .stfolder/
 .stignore
+*.sync-conflict*
 
 *.log
 *.tmp
