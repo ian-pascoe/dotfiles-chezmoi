@@ -4,6 +4,7 @@ README.md
 .stfolder
 .stignore
 *.sync-conflict*
+.*.sync-conflict*
 
 # Git
 .gitignore
