@@ -192,8 +192,21 @@ fi
 
 #########################################################################
 # Hermes
-if has_cmd hermes && [ -d "$HOME/.hermes" ]; then
-  echo -e "y\n" | hermes update
+if has_cmd hermes && [ -d "$HOME/.hermes/hermes-agent" ]; then
+  echo "Updating Hermes agent and its dependencies..."
+  (
+    cd "$HOME/.hermes/hermes-agent" || exit 1
+    git fetch -ftp --all
+    git rebase origin/main --autostash
+
+    export VIRTUAL_ENV="$HOME/.hermes/hermes-agent/venv"
+    export PATH="$VIRTUAL_ENV/bin:$PATH"
+    rm -rf ./**/__pycache__/
+    uv pip install -e ".[all]" --quiet
+    npm install --silent
+    systemctl --user restart 'hermes-gateway*.service'
+  )
+  echo "Hermes agent and its dependencies updated successfully!"
 fi
 
 ####################################################################
