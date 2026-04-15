@@ -7,10 +7,7 @@ has_cmd() {
 }
 
 has_service() {
-  local load_state
-
-  load_state=$(systemctl --user show --property=LoadState --value "$1" 2>/dev/null || true)
-  [ -n "$load_state" ] && [ "$load_state" != "not-found" ]
+  systemctl --user is-active --quiet "$1"
 }
 
 # Necessary for systemd service restarts
@@ -192,19 +189,14 @@ fi
 
 #########################################################################
 # Hermes
-if has_cmd hermes && [ -d "$HOME/.hermes/hermes-agent" ]; then
+if has_cmd hermes && [ -d "$HOME/.hermes" ]; then
   echo "Updating Hermes agent and its dependencies..."
   (
-    cd "$HOME/.hermes/hermes-agent" || exit 1
-    git fetch -ftp --all
-    git rebase origin/main --autostash
-
-    export VIRTUAL_ENV="$HOME/.hermes/hermes-agent/venv"
-    export PATH="$VIRTUAL_ENV/bin:$PATH"
-    rm -rf ./**/__pycache__/
-    uv pip install -e ".[all]" --quiet
-    npm install --silent
-    systemctl --user restart 'hermes-gateway*.service'
+    if [ -x "$HOME/.hermes/bin/upgrade" ]; then
+      "$HOME/.hermes/bin/upgrade" --restart
+    else
+      echo -e "y\n" | hermes update
+    fi
   )
   echo "Hermes agent and its dependencies updated successfully!"
 fi

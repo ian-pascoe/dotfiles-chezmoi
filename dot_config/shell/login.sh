@@ -47,6 +47,17 @@ if [ -f "$HOME/.env" ]; then
   source "$HOME/.env"
 fi
 
+## SSH terminal fallback
+if [ -n "${SSH_CONNECTION:-}" ] && [ "${TERM:-}" = "xterm-ghostty" ]; then
+  if ! infocmp xterm-ghostty >/dev/null 2>&1; then
+    if infocmp ghostty >/dev/null 2>&1; then
+      export TERM='ghostty'
+    else
+      export TERM='xterm-256color'
+    fi
+  fi
+fi
+
 ## Apply Base Path Order
 if [ -n "${BASH_VERSION:-}" ] && command -v _bash_apply_base_path_order &>/dev/null; then
   _bash_apply_base_path_order
