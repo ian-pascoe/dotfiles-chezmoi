@@ -5,16 +5,13 @@ Wants=network-online.target
 
 [Service]
 WorkingDirectory=/home/ianpascoe
-ExecStart=/home/linuxbrew/.linuxbrew/bin/opencode web --port 4096
+ExecStart=/home/linuxbrew/.linuxbrew/bin/zsh -lc "opencode web --port 4096"
 Restart=always
 RestartSec=5
 TimeoutStopSec=30
 TimeoutStartSec=30
 SuccessExitStatus=0 143
 KillMode=control-group
-Environment=HOME=/home/ianpascoe
-Environment=TMPDIR=/tmp
-Environment=PATH=/home/ianpascoe/.local/bin:/home/ianpascoe/.cache/.bun/bin:/home/ianpascoe/.local/share/pnpm:/home/ianpascoe/.npm-global/bin:/home/ianpascoe/.cargo/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
 
 [Install]
 WantedBy=default.target

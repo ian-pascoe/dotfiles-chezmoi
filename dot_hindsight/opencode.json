@@ -1,0 +1,12 @@
+{
+  "bankId": "opencode",
+  "agentName": "opencode",
+  "autoRecall": true,
+  "autoRetain": true,
+  "retainMode": "last-turn",
+  "recallBudget": "mid",
+  "recallMaxTokens": 4096,
+  "retainEveryNTurns": 1,
+  "dynamicBankId": false,
+  "debug": false
+}

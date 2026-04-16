@@ -104,10 +104,10 @@
       }
     },
     "summary": {
-      "model": "opencode/big-pickle"
+      "model": "litellm/openrouter/free"
     },
     "title": {
-      "model": "opencode/big-pickle"
+      "model": "litellm/openrouter/free"
     },
     "compaction": {
       "model": "litellm/google/gemini-3.1-flash-lite-preview"
@@ -300,6 +300,13 @@
             "high": {
               "reasoningEffort": "high"
             }
+          }
+        },
+        "openrouter/free": {
+          "name": "OpenRouter Free",
+          "limit": {
+            "context": 128000,
+            "output": 4096
           }
         }
       }
