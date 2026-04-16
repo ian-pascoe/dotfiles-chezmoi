@@ -1,6 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": [],
+  "plugin": [
+    "@vectorize-io/opencode-hindsight"
+  ],
   "autoupdate": "notify",
   "permission": {
     "external_directory": {
@@ -19,11 +21,11 @@
   },
   "agent": {
     "build": {
-      "model": "openai/gpt-5.4",
+      "model": "litellm/openai/gpt-5.4",
       "variant": "medium"
     },
     "plan": {
-      "model": "openai/gpt-5.4",
+      "model": "litellm/openai/gpt-5.4",
       "variant": "high",
       "permission": {
         "edit": {
@@ -36,7 +38,7 @@
     },
     "explore": {
       "description": "Codebase exploration agent for local repository understanding. Use it to inspect project structure, find files/symbols, trace implementations, and answer questions about how code in this repo works. Prefer research for internet or external-source investigation.",
-      "model": "openai/gpt-5.4-mini",
+      "model": "litellm/openai/gpt-5.4-mini",
       "permission": {
         "skill": "allow",
         "codesearch": "deny",
@@ -49,13 +51,13 @@
     },
     "general": {
       "description": "Default balanced agent for most engineering tasks. Use for everyday coding, debugging, file edits, and command execution when you need solid quality without extreme latency or extreme depth. Escalate to quick for tiny tasks, deep for high-complexity analysis, and frontend-expert for UI-heavy work.",
-      "model": "openai/gpt-5.4",
+      "model": "litellm/openai/gpt-5.4",
       "variant": "medium"
     },
     "research": {
       "description": "Web research subagent for external information gathering and synthesis. Use it for internet search, reading external docs/articles/issues, comparing sources, and producing evidence-based summaries. Prefer explore for local codebase inspection and in-repo implementation tracing.",
       "mode": "subagent",
-      "model": "openai/gpt-5.4-mini",
+      "model": "litellm/openai/gpt-5.4-mini",
       "permission": {
         "*": "deny",
         "bash": "allow",
@@ -75,7 +77,7 @@
     "quick": {
       "description": "Speed-first subagent for low-complexity work. Use for quick lookups, short summaries, single-command checks, and small isolated edits where correctness is straightforward. If scope grows, uncertainty appears, or multiple systems are involved, switch to general or deep.",
       "mode": "subagent",
-      "model": "openai/gpt-5.4",
+      "model": "litellm/openai/gpt-5.4",
       "variant": "low",
       "permission": {
         "todoread": "deny",
@@ -85,7 +87,7 @@
     "deep": {
       "description": "Thorough reasoning subagent for complex or high-risk tasks. Use for difficult debugging, architecture decisions, multi-file refactors, root-cause analysis, and work with subtle trade-offs or edge cases. Prefer this when accuracy and completeness matter more than speed.",
       "mode": "subagent",
-      "model": "openai/gpt-5.4",
+      "model": "litellm/openai/gpt-5.4",
       "variant": "high",
       "permission": {
         "todoread": "deny",
@@ -95,7 +97,7 @@
     "frontend-expert": {
       "description": "Specialist for frontend and UX tasks. Use for building or refining components/pages, HTML/CSS/JavaScript framework work, responsive behavior, accessibility, visual polish, and browser-side debugging. Prefer this whenever the main challenge is UI behavior or design quality.",
       "mode": "all",
-      "model": "openai/gpt-5.4",
+      "model": "litellm/google/gemini-3.1-pro-preview",
       "variant": "high",
       "permission": {
         "chrome-devtools*": "allow"
@@ -108,7 +110,7 @@
       "model": "opencode/big-pickle"
     },
     "compaction": {
-      "model": "openai/gpt-5.4-mini"
+      "model": "litellm/google/gemini-3.1-flash-lite-preview"
     }
   },
   "mcp": {
@@ -184,236 +186,120 @@
     }
   },
   "provider": {
-    "google": {
-      "name": "Google",
+    "litellm": {
+      "name": "LiteLLM",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "{env:LITELLM_API_URL}",
+        "apiKey": "{env:LITELLM_API_KEY}"
+      },
       "models": {
-        "antigravity-gemini-3-pro": {
-          "name": "Gemini 3 Pro (Antigravity)",
+        "openai/gpt-5.4": {
+          "name": "OpenAI GPT-5.4",
           "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
+            "context": 1050000,
+            "output": 128000
           },
           "variants": {
-            "low": {
-              "thinkingLevel": "low"
+            "none": {
+              "reasoningEffort": "none"
             },
-            "high": {
-              "thinkingLevel": "high"
-            }
-          }
-        },
-        "antigravity-gemini-3.1-pro": {
-          "name": "Gemini 3.1 Pro (Antigravity)",
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "low": {
-              "thinkingLevel": "low"
-            },
-            "high": {
-              "thinkingLevel": "high"
-            }
-          }
-        },
-        "antigravity-gemini-3-flash": {
-          "name": "Gemini 3 Flash (Antigravity)",
-          "limit": {
-            "context": 1048576,
-            "output": 65536
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
             "minimal": {
-              "thinkingLevel": "minimal"
+              "reasoningEffort": "minimal"
             },
             "low": {
-              "thinkingLevel": "low"
+              "reasoningEffort": "low"
             },
             "medium": {
-              "thinkingLevel": "medium"
+              "reasoningEffort": "medium"
             },
             "high": {
-              "thinkingLevel": "high"
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
             }
           }
         },
-        "antigravity-claude-sonnet-4-6": {
-          "name": "Claude Sonnet 4.6 (Antigravity)",
+        "openai/gpt-5.4-mini": {
+          "name": "OpenAI GPT-5.4 Mini",
           "limit": {
-            "context": 200000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        },
-        "antigravity-claude-opus-4-6-thinking": {
-          "name": "Claude Opus 4.6 Thinking (Antigravity)",
-          "limit": {
-            "context": 200000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
+            "context": 400000,
+            "output": 128000
           },
           "variants": {
-            "low": {
-              "thinkingConfig": {
-                "thinkingBudget": 8192
-              }
+            "none": {
+              "reasoningEffort": "none"
             },
-            "max": {
-              "thinkingConfig": {
-                "thinkingBudget": 32768
-              }
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
             }
           }
         },
-        "gemini-2.5-flash": {
-          "name": "Gemini 2.5 Flash (Gemini CLI)",
+        "google/gemini-3.1-pro-preview": {
+          "name": "Google Gemini 3.1 Pro Preview",
           "limit": {
             "context": 1048576,
-            "output": 65536
+            "output": 128000
           },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
+          "variants": {
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
-        "gemini-2.5-pro": {
-          "name": "Gemini 2.5 Pro (Gemini CLI)",
+        "google/gemini-3-flash-preview": {
+          "name": "Google Gemini 3 Flash Preview",
           "limit": {
             "context": 1048576,
-            "output": 65536
+            "output": 128000
           },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
+          "variants": {
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
-        "gemini-3-flash-preview": {
-          "name": "Gemini 3 Flash Preview (Gemini CLI)",
+        "google/gemini-3.1-flash-lite-preview": {
+          "name": "Google Gemini 3.1 Flash Lite Preview",
           "limit": {
             "context": 1048576,
-            "output": 65536
+            "output": 128000
           },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        },
-        "gemini-3-pro-preview": {
-          "name": "Gemini 3 Pro Preview (Gemini CLI)",
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        },
-        "gemini-3.1-pro-preview": {
-          "name": "Gemini 3.1 Pro Preview (Gemini CLI)",
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        },
-        "gemini-3.1-pro-preview-customtools": {
-          "name": "Gemini 3.1 Pro Preview Custom Tools (Gemini CLI)",
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
+          "variants": {
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         }
       }
