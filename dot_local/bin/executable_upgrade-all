@@ -215,7 +215,7 @@ if has_cmd git && [ -d "$HOME/.local/share/chezmoi/" ]; then
   echo "Updating dotfiles..."
   (
     cd "$HOME/.local/share/chezmoi/" || exit 1
-    git pull --tags --rebase --autostash
+    git pull -ftr --autostash
   )
   echo "Dotfiles updated successfully!"
 fi
@@ -284,7 +284,7 @@ if has_cmd docker; then
 fi
 if has_cmd git; then
   echo "Running git garbage collection..."
-  find "$HOME" -type d -name ".git" -prune -exec sh -c 'cd "$(dirname "{}")" && git gc --auto' \;
+  find "$HOME" -type d -name ".git" -prune -exec sh -c 'cd "$(dirname "{}")" && git gc --auto' \; >/dev/null 2>&1
   echo "Git garbage collection completed successfully!"
 fi
 

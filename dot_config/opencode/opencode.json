@@ -12,12 +12,12 @@
     },
     "google_search": "deny",
     "chrome-devtools*": "deny",
-    "codesearch": "ask",
-    "context7*": "ask",
-    "deepwiki*": "ask",
-    "grep-app*": "ask",
+    "codesearch": "allow",
+    "context7*": "allow",
+    "deepwiki*": "allow",
+    "grep-app*": "allow",
     "webfetch": "ask",
-    "websearch": "ask"
+    "websearch": "allow"
   },
   "agent": {
     "build": {
