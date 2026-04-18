@@ -1,5 +1,8 @@
 # See https://git-scm.com/docs/git-config
 
+[core]
+  excludesfile = ~/.config/git/ignore
+
 [alias]
   clone = clone --recurse-submodules
   cl = clone --recurse-submodules
