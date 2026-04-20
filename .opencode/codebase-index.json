@@ -1,0 +1,66 @@
+{
+  "embeddingProvider": "custom",
+  "scope": "project",
+  "customProvider": {
+    "model": "openai/text-embedding-3-small",
+    "baseUrl": "{env:LITELLM_API_URL}",
+    "apiKey": "{env:LITELLM_API_KEY}",
+    "dimensions": 1536,
+    "maxTokens": 8192,
+    "timeoutMs": 30000,
+    "concurrency": 5,
+    "requestIntervalMs": 1000,
+    "maxBatchSize": 64
+  },
+  "include": [],
+  "exclude": [],
+  "additionalInclude": [
+    "**/*"
+  ],
+  "knowledgeBases": [],
+  "indexing": {
+    "autoIndex": true,
+    "watchFiles": true,
+    "maxFileSize": 1048576,
+    "maxChunksPerFile": 100,
+    "semanticOnly": false,
+    "retries": 3,
+    "retryDelayMs": 1000,
+    "autoGc": true,
+    "gcIntervalDays": 7,
+    "gcOrphanThreshold": 100,
+    "requireProjectMarker": true,
+    "maxDepth": 5,
+    "maxFilesPerDirectory": 100,
+    "fallbackToTextOnMaxChunks": true
+  },
+  "search": {
+    "maxResults": 20,
+    "minScore": 0.1,
+    "hybridWeight": 0.5,
+    "fusionStrategy": "rrf",
+    "rrfK": 60,
+    "rerankTopN": 20,
+    "contextLines": 0,
+    "routingHints": true
+  },
+  "reranker": {
+    "enabled": true,
+    "provider": "custom",
+    "model": "voyage/rerank-2.5-lite",
+    "baseUrl": "{env:LITELLM_API_URL}",
+    "apiKey": "{env:LITELLM_API_KEY}",
+    "topN": 15,
+    "timeoutMs": 10000
+  },
+  "debug": {
+    "enabled": false,
+    "logLevel": "info",
+    "logSearch": true,
+    "logEmbedding": true,
+    "logCache": true,
+    "logGc": true,
+    "logBranch": true,
+    "metrics": false
+  }
+}

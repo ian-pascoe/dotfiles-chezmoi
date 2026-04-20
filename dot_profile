@@ -18,8 +18,10 @@ export XDG_PUBLICSHARE_DIR="$HOME/Public"
 export XDG_TEMPLATES_DIR="$HOME/Templates"
 
 ## OpenCode
-export OPENCODE_EXPERIMENTAL=0
-export OPENCODE_ENABLE_EXA=1
+export OPENCODE_ENABLE_EXA=true
+export OPENCODE_EXPERIMENTAL=false
+export OPENCODE_EXPERIMENTAL_LSP_TOOL=true
+export OPENCODE_EXPERIMENTAL_OXFMT=true
 
 ## Editor
 if command -v nvim &>/dev/null; then

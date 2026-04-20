@@ -1,0 +1,17 @@
+[Unit]
+Description=Kimaki OpenCode Discord Bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/home/ianpascoe
+ExecStart=/home/linuxbrew/.linuxbrew/bin/zsh -lc "kimaki"
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+TimeoutStartSec=30
+SuccessExitStatus=0 143
+KillMode=control-group
+
+[Install]
+WantedBy=default.target

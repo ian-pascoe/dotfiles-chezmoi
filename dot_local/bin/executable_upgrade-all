@@ -210,12 +210,19 @@ if has_cmd systemctl && has_service opencode.service; then
 fi
 
 ####################################################################
+# Kimaki Server
+if has_cmd systemctl && has_service kimaki.service; then
+  echo "Restarting Kimaki server..."
+  systemctl --user restart kimaki.service
+  echo "Kimaki server restarted successfully!"
+fi
+
+####################################################################
 # Dotfiles
-if has_cmd git && [ -d "$HOME/.local/share/chezmoi/" ]; then
+if has_cmd chezmoi; then
   echo "Updating dotfiles..."
   (
-    cd "$HOME/.local/share/chezmoi/" || exit 1
-    git pull -ftr --autostash
+    chezmoi git -- pull -ftr --autostash
   )
   echo "Dotfiles updated successfully!"
 fi

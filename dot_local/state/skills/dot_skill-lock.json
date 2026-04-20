@@ -1,0 +1,383 @@
+{
+  "version": 3,
+  "skills": {
+    "writing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/writing-plans/SKILL.md",
+      "skillFolderHash": "704e240d4b281baf8a339e1418baa249860197f7",
+      "installedAt": "2026-04-16T10:17:35.855Z",
+      "updatedAt": "2026-04-16T10:22:01.162Z"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/skills.git",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "skillFolderHash": "3013fdeb8a11b10b1eb795ec3ae8bfca38f7c26d",
+      "installedAt": "2026-04-16T10:17:41.778Z",
+      "updatedAt": "2026-04-16T10:17:41.778Z"
+    },
+    "executing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/executing-plans/SKILL.md",
+      "skillFolderHash": "20087d25fb28f5f54578d873dc198ab24b34f967",
+      "installedAt": "2026-04-16T10:19:05.653Z",
+      "updatedAt": "2026-04-16T10:21:58.700Z"
+    },
+    "systematic-debugging": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/systematic-debugging/SKILL.md",
+      "skillFolderHash": "828c239ac986cc1fc7edd10292f66e4a3640e9c0",
+      "installedAt": "2026-04-16T10:20:33.658Z",
+      "updatedAt": "2026-04-16T10:21:59.983Z"
+    },
+    "brainstorming": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/brainstorming/SKILL.md",
+      "skillFolderHash": "f260c775073816860fef8a37c032ac77e2ff5821",
+      "installedAt": "2026-04-16T10:21:58.400Z",
+      "updatedAt": "2026-04-16T10:21:58.400Z"
+    },
+    "finishing-a-development-branch": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/finishing-a-development-branch/SKILL.md",
+      "skillFolderHash": "7656b8ebe0c9659ea548ba2981b078b333d1846e",
+      "installedAt": "2026-04-16T10:21:59.031Z",
+      "updatedAt": "2026-04-16T10:21:59.031Z"
+    },
+    "receiving-code-review": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/receiving-code-review/SKILL.md",
+      "skillFolderHash": "7750c56fddb8b2f1cbdb1550a6e3e40d2eeac5f1",
+      "installedAt": "2026-04-16T10:21:59.345Z",
+      "updatedAt": "2026-04-16T10:21:59.345Z"
+    },
+    "requesting-code-review": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/requesting-code-review/SKILL.md",
+      "skillFolderHash": "ed265b1a03114cc400d5524afc5c961a4aa9ea8b",
+      "installedAt": "2026-04-16T10:21:59.677Z",
+      "updatedAt": "2026-04-16T10:21:59.677Z"
+    },
+    "test-driven-development": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/test-driven-development/SKILL.md",
+      "skillFolderHash": "98904a7d8e0e04b9bd46220b9b17298f45fe0b72",
+      "installedAt": "2026-04-16T10:22:00.289Z",
+      "updatedAt": "2026-04-16T10:22:00.289Z"
+    },
+    "using-git-worktrees": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/using-git-worktrees/SKILL.md",
+      "skillFolderHash": "a5b3f5965f321175a7f07dcadff0bb79adb9e9f7",
+      "installedAt": "2026-04-16T10:22:00.594Z",
+      "updatedAt": "2026-04-16T10:22:00.594Z"
+    },
+    "verification-before-completion": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/verification-before-completion/SKILL.md",
+      "skillFolderHash": "ceb2f1f67f4cadb29b32a06e54d3d0be832071f5",
+      "installedAt": "2026-04-16T10:22:00.876Z",
+      "updatedAt": "2026-04-16T10:22:00.876Z"
+    },
+    "writing-skills": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/writing-skills/SKILL.md",
+      "skillFolderHash": "80e8c7d3be99d55d5d76c9516cc45a1e7f48f281",
+      "installedAt": "2026-04-16T10:22:01.560Z",
+      "updatedAt": "2026-04-16T10:22:01.560Z"
+    },
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-browser.git",
+      "skillPath": "skills/agent-browser/SKILL.md",
+      "skillFolderHash": "121eecacd86c0aab06aef5cd4663e80c5397cd41",
+      "installedAt": "2026-04-16T10:23:20.892Z",
+      "updatedAt": "2026-04-18T09:50:35.022Z"
+    },
+    "skill-creator": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/anthropics/skills.git",
+      "skillPath": "skills/skill-creator/SKILL.md",
+      "skillFolderHash": "98a510d1cfef9f82c3b1eec200229ca68725e613",
+      "pluginName": "example-skills",
+      "installedAt": "2026-04-16T10:23:55.690Z",
+      "updatedAt": "2026-04-16T10:23:55.690Z"
+    },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/shadcn/ui.git",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "skillFolderHash": "a7903e883aaeead6ed509468b499310729968ad9",
+      "installedAt": "2026-04-16T10:24:21.136Z",
+      "updatedAt": "2026-04-16T10:24:21.136Z"
+    },
+    "adapt": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/adapt/SKILL.md",
+      "skillFolderHash": "3066c474cfe70dc936b3c8c86664f0913e1b228b",
+      "installedAt": "2026-04-16T13:30:48.148Z",
+      "updatedAt": "2026-04-16T13:30:48.148Z"
+    },
+    "animate": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/animate/SKILL.md",
+      "skillFolderHash": "614c17ccc214d6f194bcddf4765184071d6b7306",
+      "installedAt": "2026-04-16T13:30:48.444Z",
+      "updatedAt": "2026-04-16T13:30:48.444Z"
+    },
+    "audit": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/audit/SKILL.md",
+      "skillFolderHash": "a7401fdb75408b788e2dfbfc2450306d58221362",
+      "installedAt": "2026-04-16T13:30:48.732Z",
+      "updatedAt": "2026-04-16T13:30:48.732Z"
+    },
+    "bolder": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/bolder/SKILL.md",
+      "skillFolderHash": "442096e8807e1782157f2af19a6851e289252843",
+      "installedAt": "2026-04-16T13:30:49.025Z",
+      "updatedAt": "2026-04-16T13:30:49.025Z"
+    },
+    "clarify": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/clarify/SKILL.md",
+      "skillFolderHash": "ca60ad29dd972bcfb95500fe0645a9b616e0facd",
+      "installedAt": "2026-04-16T13:30:49.324Z",
+      "updatedAt": "2026-04-16T13:30:49.324Z"
+    },
+    "colorize": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/colorize/SKILL.md",
+      "skillFolderHash": "3db845ae8453436ffd048d2e8b75fa5473a7fc64",
+      "installedAt": "2026-04-16T13:30:49.605Z",
+      "updatedAt": "2026-04-16T13:30:49.605Z"
+    },
+    "critique": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/critique/SKILL.md",
+      "skillFolderHash": "b5e69d508a74f806e251412bb401cdf9393b490f",
+      "installedAt": "2026-04-16T13:30:49.942Z",
+      "updatedAt": "2026-04-16T13:30:49.942Z"
+    },
+    "delight": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/delight/SKILL.md",
+      "skillFolderHash": "91a8624bf4bc516d7535d40a6d419389f5df6631",
+      "installedAt": "2026-04-16T13:30:50.191Z",
+      "updatedAt": "2026-04-16T13:30:50.191Z"
+    },
+    "distill": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/distill/SKILL.md",
+      "skillFolderHash": "c6a2eed1c30a6a3c232253bbcca4fdb1f2f99f5e",
+      "installedAt": "2026-04-16T13:30:50.452Z",
+      "updatedAt": "2026-04-16T13:30:50.452Z"
+    },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "skillFolderHash": "e06e0b8cc19ef6792c27ea34db4a73497c74954e",
+      "installedAt": "2026-04-16T13:30:50.747Z",
+      "updatedAt": "2026-04-16T13:30:50.747Z"
+    },
+    "layout": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/layout/SKILL.md",
+      "skillFolderHash": "a69d79063a6e6e0bc859b3d7b2a1962cc53f31a2",
+      "installedAt": "2026-04-16T13:30:51.002Z",
+      "updatedAt": "2026-04-16T13:30:51.002Z"
+    },
+    "optimize": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/optimize/SKILL.md",
+      "skillFolderHash": "e00f2fc4c03e6722dde7cb247b7da2c5e5eea65d",
+      "installedAt": "2026-04-16T13:30:51.480Z",
+      "updatedAt": "2026-04-16T13:30:51.480Z"
+    },
+    "overdrive": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/overdrive/SKILL.md",
+      "skillFolderHash": "06328e36925f552e01f433e10b2e29cc028c04a2",
+      "installedAt": "2026-04-16T13:30:51.730Z",
+      "updatedAt": "2026-04-16T13:30:51.730Z"
+    },
+    "polish": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/polish/SKILL.md",
+      "skillFolderHash": "9160920cb415f359532f590bc303d5b44430f97a",
+      "installedAt": "2026-04-16T13:30:51.995Z",
+      "updatedAt": "2026-04-16T13:30:51.995Z"
+    },
+    "quieter": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/quieter/SKILL.md",
+      "skillFolderHash": "16735975da51620d399c59323c7b801d1ceb5d3d",
+      "installedAt": "2026-04-16T13:30:52.293Z",
+      "updatedAt": "2026-04-16T13:30:52.293Z"
+    },
+    "shape": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/shape/SKILL.md",
+      "skillFolderHash": "cbacd0f3c585129ff464e004291aa27fbffcacdf",
+      "installedAt": "2026-04-16T13:30:52.572Z",
+      "updatedAt": "2026-04-16T13:30:52.572Z"
+    },
+    "typeset": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "skillPath": ".agents/skills/typeset/SKILL.md",
+      "skillFolderHash": "1db3ed28dcd69e92d574e039d74e8ef3fcc4855f",
+      "installedAt": "2026-04-16T13:30:52.858Z",
+      "updatedAt": "2026-04-16T13:30:52.858Z"
+    },
+    "hindsight-docs": {
+      "source": "vectorize-io/hindsight",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vectorize-io/hindsight.git",
+      "skillPath": "skills/hindsight-docs/SKILL.md",
+      "skillFolderHash": "dd611edf0185a489ff6cd4f6c7ddb8821c97fac8",
+      "installedAt": "2026-04-16T13:31:46.092Z",
+      "updatedAt": "2026-04-20T10:35:35.013Z"
+    },
+    "hindsight-architect": {
+      "source": "vectorize-io/hindsight",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vectorize-io/hindsight.git",
+      "skillPath": "skills/hindsight-architect/SKILL.md",
+      "skillFolderHash": "8e881a35b75894da1f34359109a7b296c090a354",
+      "installedAt": "2026-04-16T13:32:18.477Z",
+      "updatedAt": "2026-04-16T13:32:18.477Z"
+    },
+    "hindsight-self-hosted": {
+      "source": "vectorize-io/hindsight",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vectorize-io/hindsight.git",
+      "skillPath": "skills/hindsight-self-hosted/SKILL.md",
+      "skillFolderHash": "38a67f1634dc12aa545d1cd0ac1e0f83c1c828d7",
+      "installedAt": "2026-04-16T13:32:18.918Z",
+      "updatedAt": "2026-04-16T13:32:18.918Z"
+    },
+    "git-commit": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/github/awesome-copilot.git",
+      "skillPath": "skills/git-commit/SKILL.md",
+      "skillFolderHash": "883a6a7466f55a9cd9f22cf1cce2d9333fc9b998",
+      "installedAt": "2026-04-16T14:17:36.198Z",
+      "updatedAt": "2026-04-16T14:17:36.198Z"
+    },
+    "gh-cli": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/github/awesome-copilot.git",
+      "skillPath": "skills/gh-cli/SKILL.md",
+      "skillFolderHash": "437437f7f20bcdbbdb3081cf164435a388c0a39a",
+      "installedAt": "2026-04-16T14:17:55.060Z",
+      "updatedAt": "2026-04-16T14:17:55.060Z"
+    },
+    "prd": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/github/awesome-copilot.git",
+      "skillPath": "skills/prd/SKILL.md",
+      "skillFolderHash": "b4af69e637f8f2bf620c55273680669ccca3e73c",
+      "installedAt": "2026-04-16T14:18:53.391Z",
+      "updatedAt": "2026-04-16T14:18:53.391Z"
+    },
+    "subagent-driven-development": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/subagent-driven-development/SKILL.md",
+      "skillFolderHash": "fbcd94ffcf589754a8ecfa59861cc8843313590e",
+      "installedAt": "2026-04-16T17:08:56.562Z",
+      "updatedAt": "2026-04-16T17:08:56.562Z"
+    },
+    "frontend-skill": {
+      "source": "openai/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/openai/skills.git",
+      "skillPath": "skills/.curated/frontend-skill/SKILL.md",
+      "skillFolderHash": "8d2160222d05058efd40179672343422b67685a6",
+      "installedAt": "2026-04-20T10:39:21.243Z",
+      "updatedAt": "2026-04-20T10:39:21.243Z"
+    }
+  },
+  "dismissed": {
+    "findSkillsPrompt": true
+  },
+  "lastSelectedAgents": [
+    "amp",
+    "antigravity",
+    "cline",
+    "codex",
+    "cursor",
+    "deepagents",
+    "firebender",
+    "gemini-cli",
+    "github-copilot",
+    "kimi-cli",
+    "opencode",
+    "warp"
+  ]
+}

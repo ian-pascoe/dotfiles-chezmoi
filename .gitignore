@@ -4,6 +4,8 @@
 .stglobalignore
 *.sync-conflict*
 
+.opencode/index/
+
 *.log
 *.tmp
 *.bak

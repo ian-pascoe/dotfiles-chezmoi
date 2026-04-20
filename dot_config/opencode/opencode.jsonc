@@ -1,97 +1,81 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "@vectorize-io/opencode-hindsight",
-    "context-mode",
-    [
-      "opencode-lcm",
-      {
-        "interop": {
-          "contextMode": true,
-          "neverOverrideCompactionPrompt": true,
-          "ignoreToolPrefixes": [
-            "ctx_"
-          ]
-        }
-      }
-    ]
+    "@franlol/opencode-md-table-formatter",
+    "@vectorize-io/opencode-hindsight", // Memory
+    "opencode-codebase-index",
+    "opencode-lcm",
+    "opencode-pty"
   ],
   "autoupdate": "notify",
   "permission": {
+    // Built-in tools
+    "bash": "allow",
+    "codesearch": "allow",
+    "doom_loop": "ask",
+    "edit": "allow",
+    // Don't care if the agent can read/write these
     "external_directory": {
       "*": "ask",
-      "/tmp/**": "allow",
-      "~/.config/opencode/**": "allow"
+      "/tmp": "allow",
+      "/tmp/*": "allow",
+      "/private/tmp": "allow",
+      "/private/tmp/*": "allow",
+      "~/.config/opencode": "allow",
+      "~/.config/opencode/*": "allow"
     },
-    "google_search": "deny",
-    "chrome-devtools*": "deny",
-    "codesearch": "allow",
+    "list": "allow",
+    "lsp": "allow",
+    "glob": "allow",
+    "google_search": "deny", // Use exa instead
+    "grep": "allow",
+    "question": "allow",
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow"
+    },
+    "skill": "allow",
+    "task": "allow",
+    "todoread": "allow",
+    "todowrite": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    // MCP Tools
     "context7*": "allow",
     "deepwiki*": "allow",
     "grep-app*": "allow",
-    "webfetch": "ask",
-    "websearch": "allow"
+    "playwright*": "allow"
   },
   "agent": {
+    // Customized built-in agents
     "build": {
       "model": "litellm/openai/gpt-5.4",
       "variant": "high"
     },
     "plan": {
-      "model": "litellm/openai/gpt-5.4",
-      "variant": "high",
-      "permission": {
-        "edit": {
-          "*": "deny",
-          "AGENTS.md": "allow",
-          "**/AGENTS.md": "allow",
-          ".opencode/plans/**": "allow"
-        }
-      }
+      "disable": true // plan mode is for newbs
     },
     "explore": {
       "description": "Codebase exploration agent for local repository understanding. Use it to inspect project structure, find files/symbols, trace implementations, and answer questions about how code in this repo works. Prefer research for internet or external-source investigation.",
       "model": "litellm/openai/gpt-5.4-mini",
       "permission": {
-        "skill": "allow",
-        "codesearch": "deny",
-        "webfetch": "deny",
-        "websearch": "deny",
-        "context7*": "deny",
-        "deepwiki*": "deny",
-        "grep-app*": "deny"
+        "skill": "allow", // disabled by default
       }
     },
     "general": {
-      "description": "Default balanced agent for most engineering tasks. Use for everyday coding, debugging, file edits, and command execution when you need solid quality without extreme latency or extreme depth. Escalate to quick for tiny tasks, deep for high-complexity analysis, and frontend-expert for UI-heavy work.",
+      "description": "Default balanced agent for most engineering tasks. Use for everyday coding, debugging, file edits, and command execution when you need solid quality without extreme latency or extreme depth.",
       "model": "litellm/openai/gpt-5.4",
       "variant": "medium"
     },
-    "research": {
-      "description": "Web research subagent for external information gathering and synthesis. Use it for internet search, reading external docs/articles/issues, comparing sources, and producing evidence-based summaries. Prefer explore for local codebase inspection and in-repo implementation tracing.",
-      "mode": "subagent",
-      "model": "litellm/openai/gpt-5.4-mini",
-      "permission": {
-        "*": "deny",
-        "bash": "allow",
-        "read": "allow",
-        "list": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "skill": "allow",
-        "codesearch": "allow",
-        "context7*": "allow",
-        "deepwiki*": "allow",
-        "grep-app*": "allow",
-        "webfetch": "allow",
-        "websearch": "allow"
-      }
-    },
+    // Custom agents
     "quick": {
       "description": "Speed-first subagent for low-complexity work. Use for quick lookups, short summaries, single-command checks, and small isolated edits where correctness is straightforward. If scope grows, uncertainty appears, or multiple systems are involved, switch to general or deep.",
       "mode": "subagent",
       "model": "litellm/openai/gpt-5.4",
       "variant": "low",
+      // Same permissions as general
       "permission": {
         "todoread": "deny",
         "todowrite": "deny"
@@ -102,20 +86,13 @@
       "mode": "subagent",
       "model": "litellm/openai/gpt-5.4",
       "variant": "high",
+      // Same permissions as general
       "permission": {
         "todoread": "deny",
         "todowrite": "deny"
       }
     },
-    "frontend-expert": {
-      "description": "Specialist for frontend and UX tasks. Use for building or refining components/pages, HTML/CSS/JavaScript framework work, responsive behavior, accessibility, visual polish, and browser-side debugging. Prefer this whenever the main challenge is UI behavior or design quality.",
-      "mode": "all",
-      "model": "litellm/google/gemini-3.1-pro-preview",
-      "variant": "high",
-      "permission": {
-        "chrome-devtools*": "allow"
-      }
-    },
+    // Utility agents
     "summary": {
       "model": "litellm/openrouter/free"
     },
@@ -127,27 +104,10 @@
     }
   },
   "mcp": {
-    "chrome-devtools": {
-      "enabled": true,
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "chrome-devtools-mcp@latest"
-      ]
-    },
     "context7": {
       "enabled": true,
       "type": "remote",
       "url": "https://mcp.context7.com/mcp/oauth"
-    },
-    "context-mode": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "context-mode"
-      ]
     },
     "deepwiki": {
       "enabled": true,
@@ -158,6 +118,15 @@
       "enabled": true,
       "type": "remote",
       "url": "https://mcp.grep.app"
+    },
+    "playwright": {
+      "enabled": true,
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp@latest"
+      ]
     }
   },
   "lsp": {

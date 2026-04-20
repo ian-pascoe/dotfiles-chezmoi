@@ -1,0 +1,7 @@
+[edit]
+command = "nvim"
+args = []
+
+[merge]
+command = "nvim"
+args = ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
