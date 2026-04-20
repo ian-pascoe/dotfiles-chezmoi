@@ -3,7 +3,6 @@
   "plugin": [
     "@franlol/opencode-md-table-formatter",
     "@vectorize-io/opencode-hindsight", // Memory
-    "opencode-codebase-index",
     "opencode-lcm",
     "opencode-pty"
   ],
