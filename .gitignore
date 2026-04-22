@@ -4,8 +4,14 @@
 .stglobalignore
 *.sync-conflict*
 
-.opencode/index/
+# Playwright
+.playwright-mcp/
 
+# Python
+.ruff_cache/
+__pycache__/
+
+# Misc
 *.log
 *.tmp
 *.bak

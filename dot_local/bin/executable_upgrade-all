@@ -127,59 +127,6 @@ if [ ${#SKILLS_CMD[@]} -ne 0 ]; then
 fi
 
 #########################################################################
-# OpenClaw
-if has_cmd openclaw && [ -d "$HOME/openclaw/" ]; then
-  echo "Updating OpenClaw and its dependencies..."
-  openclaw update --yes
-  echo "OpenClaw and its dependencies updated successfully!"
-fi
-
-CLAWHUB_CMD=()
-if has_cmd clawhub; then
-  CLAWHUB_CMD=(clawhub)
-elif has_cmd npx; then
-  CLAWHUB_CMD=("npx" "--yes" "clawhub@latest")
-elif has_cmd pnpm; then
-  CLAWHUB_CMD=("pnpm" "dlx" "clawhub@latest")
-elif has_cmd bunx; then
-  CLAWHUB_CMD=("bunx" "clawhub@latest")
-fi
-
-if [ -d "$HOME/.openclaw" ]; then
-  (
-    cd "$HOME/.openclaw" || exit 1
-    if [ ${#SKILLS_CMD[@]} -ne 0 ]; then
-      echo "Updating global OpenClaw skills..."
-      "${SKILLS_CMD[@]}" update
-      echo "Global OpenClaw skills updated successfully!"
-    fi
-    if [ ${#CLAWHUB_CMD[@]} -ne 0 ]; then
-      echo "Updating global ClawHub skills..."
-      "${CLAWHUB_CMD[@]}" update --all --force
-      echo "Global ClawHub skills updated successfully!"
-    fi
-
-    for workspace in ./workspace*/; do
-      [ -d "$workspace" ] || continue
-      (
-        echo "Updating agent workspace: $workspace"
-        cd "$workspace" || exit 1
-        if [ ${#SKILLS_CMD[@]} -ne 0 ]; then
-          echo "Updating OpenClaw skills in workspace: $workspace"
-          "${SKILLS_CMD[@]}" update
-          echo "OpenClaw skills updated in workspace: $workspace"
-        fi
-        if [ ${#CLAWHUB_CMD[@]} -ne 0 ]; then
-          echo "Updating ClawHub skills in workspace: $workspace"
-          "${CLAWHUB_CMD[@]}" update --all --force
-          echo "ClawHub skills updated in workspace: $workspace"
-        fi
-      )
-    done
-  )
-fi
-
-#########################################################################
 # Yazi
 if has_cmd ya; then
   echo "Updating Yazi packages..."
@@ -187,18 +134,12 @@ if has_cmd ya; then
   echo "Yazi packages updated successfully!"
 fi
 
-#########################################################################
-# Hermes
-if has_cmd hermes && [ -d "$HOME/.hermes" ]; then
-  echo "Updating Hermes agent and its dependencies..."
-  (
-    if [ -x "$HOME/.hermes/bin/upgrade" ]; then
-      "$HOME/.hermes/bin/upgrade" --restart
-    else
-      echo -e "y\n" | hermes update
-    fi
-  )
-  echo "Hermes agent and its dependencies updated successfully!"
+####################################################################
+# Camoufox browser
+if has_cmd camoufox; then
+  echo "Updating Camoufox browser..."
+  camoufox fetch
+  echo "Camoufox browser updated successfully!"
 fi
 
 ####################################################################

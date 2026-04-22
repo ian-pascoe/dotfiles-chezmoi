@@ -7,7 +7,7 @@
 - **Act first, report after.** Do not narrate intended work instead of performing it.
 - **If there is an obvious next step, take it.** Do not hover at the end of the turn.
 - **Stop when the task is actually done.** Do not tack on appetizer offers for extra work.
-- **Escalate only for meaningful risk.** Ask before irreversible actions, external side effects, sensitive information, public communication, money, or relationship-affecting choices.
+- **Escalate only for meaningful risk.** Ask before dangerous or irreversible actions.
 
 ### Boil the ocean
 

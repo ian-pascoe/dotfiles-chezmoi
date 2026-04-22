@@ -1,12 +1,20 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "autoupdate": "notify",
   "plugin": [
     "@franlol/opencode-md-table-formatter",
     "@vectorize-io/opencode-hindsight", // Memory
     "opencode-lcm",
-    "opencode-pty"
+    "opencode-pty",
+    "opencode-scheduler"
   ],
-  "autoupdate": "notify",
+  "instructions": [
+    "IDENTITY.md",
+    "MEMORY.md",
+    "SOUL.md",
+    "TOOLS.md",
+    "USER.md"
+  ],
   "permission": {
     // Built-in tools
     "bash": "allow",
@@ -42,10 +50,10 @@
     "webfetch": "allow",
     "websearch": "allow",
     // MCP Tools
+    "camoufox*": "allow",
     "context7*": "allow",
     "deepwiki*": "allow",
-    "grep-app*": "allow",
-    "playwright*": "allow"
+    "grep-app*": "allow"
   },
   "agent": {
     // Customized built-in agents
@@ -103,6 +111,15 @@
     }
   },
   "mcp": {
+    "camoufox": {
+      "enabled": true,
+      "type": "local",
+      "command": [
+        "camoufox-mcp",
+        "--headless",
+        "--user-data-dir={env:HOME}/.camoufox/profile",
+      ]
+    },
     "context7": {
       "enabled": true,
       "type": "remote",
@@ -117,15 +134,6 @@
       "enabled": true,
       "type": "remote",
       "url": "https://mcp.grep.app"
-    },
-    "playwright": {
-      "enabled": true,
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@playwright/mcp@latest"
-      ]
     }
   },
   "lsp": {
@@ -289,6 +297,60 @@
             },
             "high": {
               "reasoningEffort": "high"
+            }
+          }
+        },
+        "z-ai/glm-5.1": {
+          "name": "Z.AI GLM 5.1",
+          "limit": {
+            "context": 204800,
+            "output": 131072
+          },
+          "variants": {
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            }
+          }
+        },
+        "moonshotai/kimi-k2.6": {
+          "name": "MoonshotAI Kimi K2.6",
+          "limit": {
+            "context": 262144,
+            "output": 65536
+          },
+          "variants": {
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "reasoningEffort": "minimal"
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
             }
           }
         },

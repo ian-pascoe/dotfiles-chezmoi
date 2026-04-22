@@ -26,4 +26,11 @@ return {
     'ThePrimeagen/vim-be-good',
     cmd = 'VimBeGood',
   },
+  {
+    'ThePrimeagen/refactoring.nvim',
+    dependencies = {
+      'lewis6991/async.nvim',
+    },
+    lazy = false,
+  },
 }

@@ -7,6 +7,6 @@
   "recallBudget": "mid",
   "recallMaxTokens": 4096,
   "retainEveryNTurns": 1,
-  "dynamicBankId": true,
+  "dynamicBankId": false,
   "debug": false
 }
