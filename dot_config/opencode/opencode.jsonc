@@ -1,20 +1,7 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "autoupdate": "notify",
-  "plugin": [
-    "@franlol/opencode-md-table-formatter",
-    "@vectorize-io/opencode-hindsight", // Memory
-    "opencode-lcm",
-    "opencode-pty",
-    "opencode-scheduler"
-  ],
-  "instructions": [
-    "IDENTITY.md",
-    "MEMORY.md",
-    "SOUL.md",
-    "TOOLS.md",
-    "USER.md"
-  ],
+  "plugin": ["@franlol/opencode-md-table-formatter", "opencode-pty"],
   "permission": {
     // Built-in tools
     "bash": "allow",
@@ -29,19 +16,19 @@
       "/private/tmp": "allow",
       "/private/tmp/*": "allow",
       "~/.config/opencode": "allow",
-      "~/.config/opencode/*": "allow"
+      "~/.config/opencode/*": "allow",
     },
     "list": "allow",
     "lsp": "allow",
     "glob": "allow",
-    "google_search": "deny", // Use exa instead
+    "google_search": "deny", // Use websearch (exa) instead
     "grep": "allow",
     "question": "allow",
     "read": {
       "*": "allow",
       "*.env": "deny",
       "*.env.*": "deny",
-      "*.env.example": "allow"
+      "*.env.example": "allow",
     },
     "skill": "allow",
     "task": "allow",
@@ -49,99 +36,66 @@
     "todowrite": "allow",
     "webfetch": "allow",
     "websearch": "allow",
-    // MCP Tools
-    "camoufox*": "allow",
-    "context7*": "allow",
-    "deepwiki*": "allow",
-    "grep-app*": "allow"
   },
   "agent": {
     // Customized built-in agents
     "build": {
-      "model": "litellm/openai/gpt-5.4",
-      "variant": "high"
+      "model": "openai/gpt-5.4",
+      "variant": "high",
     },
     "plan": {
-      "disable": true // plan mode is for newbs
+      "disable": true, // plan mode is for newbs
     },
     "explore": {
       "description": "Codebase exploration agent for local repository understanding. Use it to inspect project structure, find files/symbols, trace implementations, and answer questions about how code in this repo works. Prefer research for internet or external-source investigation.",
-      "model": "litellm/openai/gpt-5.4-mini",
+      "model": "openai/gpt-5.4-mini",
       "permission": {
         "skill": "allow", // disabled by default
-      }
+      },
     },
     "general": {
       "description": "Default balanced agent for most engineering tasks. Use for everyday coding, debugging, file edits, and command execution when you need solid quality without extreme latency or extreme depth.",
-      "model": "litellm/openai/gpt-5.4",
-      "variant": "medium"
+      "model": "openai/gpt-5.4",
+      "variant": "medium",
     },
     // Custom agents
     "quick": {
       "description": "Speed-first subagent for low-complexity work. Use for quick lookups, short summaries, single-command checks, and small isolated edits where correctness is straightforward. If scope grows, uncertainty appears, or multiple systems are involved, switch to general or deep.",
       "mode": "subagent",
-      "model": "litellm/openai/gpt-5.4",
+      "model": "openai/gpt-5.4",
       "variant": "low",
       // Same permissions as general
       "permission": {
         "todoread": "deny",
-        "todowrite": "deny"
-      }
+        "todowrite": "deny",
+      },
     },
     "deep": {
       "description": "Thorough reasoning subagent for complex or high-risk tasks. Use for difficult debugging, architecture decisions, multi-file refactors, root-cause analysis, and work with subtle trade-offs or edge cases. Prefer this when accuracy and completeness matter more than speed.",
       "mode": "subagent",
-      "model": "litellm/openai/gpt-5.4",
+      "model": "openai/gpt-5.4",
       "variant": "high",
       // Same permissions as general
       "permission": {
         "todoread": "deny",
-        "todowrite": "deny"
-      }
+        "todowrite": "deny",
+      },
     },
     // Utility agents
     "summary": {
-      "model": "litellm/openrouter/free"
+      "model": "openrouter/openrouter/free",
     },
     "title": {
-      "model": "litellm/openrouter/free"
+      "model": "openrouter/openrouter/free",
     },
     "compaction": {
-      "model": "litellm/google/gemini-3.1-flash-lite-preview"
-    }
-  },
-  "mcp": {
-    "camoufox": {
-      "enabled": true,
-      "type": "local",
-      "command": [
-        "camoufox-mcp",
-        "--headless",
-        "--user-data-dir={env:HOME}/.camoufox/profile",
-      ]
+      "model": "openai/gpt-5.4-mini",
+      "variant": "medium",
     },
-    "context7": {
-      "enabled": true,
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp/oauth"
-    },
-    "deepwiki": {
-      "enabled": true,
-      "type": "remote",
-      "url": "https://mcp.deepwiki.com/mcp"
-    },
-    "grep-app": {
-      "enabled": true,
-      "type": "remote",
-      "url": "https://mcp.grep.app"
-    }
   },
   "lsp": {
     "biome": {
-      "command": [
-        "biome",
-        "lsp-proxy"
-      ],
+      "command": ["biome", "lsp-proxy"],
       "extensions": [
         ".ts",
         ".tsx",
@@ -154,215 +108,19 @@
         ".json",
         ".jsonc",
         ".css",
-        ".html"
-      ]
-    }
+        ".html",
+      ],
+    },
   },
   "formatter": {
     "stylua": {
-      "command": [
-        "stylua",
-        "--search-parent-directories",
-        "--stdin-filepath",
-        "$FILE"
-      ],
-      "extensions": [
-        ".lua",
-        ".luau"
-      ]
+      "command": ["stylua", "--search-parent-directories", "--stdin-filepath", "$FILE"],
+      "extensions": [".lua", ".luau"],
     },
     "markdownlint-cli2": {
-      "command": [
-        "markdownlint-cli2",
-        "--fix",
-        "$FILE"
-      ],
-      "extensions": [
-        ".md",
-        ".mdx"
-      ]
-    }
+      "command": ["markdownlint-cli2", "--fix", "$FILE"],
+      "extensions": [".md", ".mdx"],
+    },
   },
-  "provider": {
-    "litellm": {
-      "name": "LiteLLM",
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "{env:LITELLM_API_URL}",
-        "apiKey": "{env:LITELLM_API_KEY}"
-      },
-      "models": {
-        "openai/gpt-5.4": {
-          "name": "OpenAI GPT-5.4",
-          "limit": {
-            "context": 1050000,
-            "output": 128000
-          },
-          "variants": {
-            "none": {
-              "reasoningEffort": "none"
-            },
-            "minimal": {
-              "reasoningEffort": "minimal"
-            },
-            "low": {
-              "reasoningEffort": "low"
-            },
-            "medium": {
-              "reasoningEffort": "medium"
-            },
-            "high": {
-              "reasoningEffort": "high"
-            },
-            "xhigh": {
-              "reasoningEffort": "xhigh"
-            }
-          }
-        },
-        "openai/gpt-5.4-mini": {
-          "name": "OpenAI GPT-5.4 Mini",
-          "limit": {
-            "context": 400000,
-            "output": 128000
-          },
-          "variants": {
-            "none": {
-              "reasoningEffort": "none"
-            },
-            "minimal": {
-              "reasoningEffort": "minimal"
-            },
-            "low": {
-              "reasoningEffort": "low"
-            },
-            "medium": {
-              "reasoningEffort": "medium"
-            },
-            "high": {
-              "reasoningEffort": "high"
-            },
-            "xhigh": {
-              "reasoningEffort": "xhigh"
-            }
-          }
-        },
-        "google/gemini-3.1-pro-preview": {
-          "name": "Google Gemini 3.1 Pro Preview",
-          "limit": {
-            "context": 1048576,
-            "output": 128000
-          },
-          "variants": {
-            "none": {
-              "reasoningEffort": "none"
-            },
-            "low": {
-              "reasoningEffort": "low"
-            },
-            "high": {
-              "reasoningEffort": "high"
-            }
-          }
-        },
-        "google/gemini-3-flash-preview": {
-          "name": "Google Gemini 3 Flash Preview",
-          "limit": {
-            "context": 1048576,
-            "output": 128000
-          },
-          "variants": {
-            "none": {
-              "reasoningEffort": "none"
-            },
-            "low": {
-              "reasoningEffort": "low"
-            },
-            "high": {
-              "reasoningEffort": "high"
-            }
-          }
-        },
-        "google/gemini-3.1-flash-lite-preview": {
-          "name": "Google Gemini 3.1 Flash Lite Preview",
-          "limit": {
-            "context": 1048576,
-            "output": 128000
-          },
-          "variants": {
-            "none": {
-              "reasoningEffort": "none"
-            },
-            "low": {
-              "reasoningEffort": "low"
-            },
-            "high": {
-              "reasoningEffort": "high"
-            }
-          }
-        },
-        "z-ai/glm-5.1": {
-          "name": "Z.AI GLM 5.1",
-          "limit": {
-            "context": 204800,
-            "output": 131072
-          },
-          "variants": {
-            "none": {
-              "reasoningEffort": "none"
-            },
-            "minimal": {
-              "reasoningEffort": "minimal"
-            },
-            "low": {
-              "reasoningEffort": "low"
-            },
-            "medium": {
-              "reasoningEffort": "medium"
-            },
-            "high": {
-              "reasoningEffort": "high"
-            },
-            "xhigh": {
-              "reasoningEffort": "xhigh"
-            }
-          }
-        },
-        "moonshotai/kimi-k2.6": {
-          "name": "MoonshotAI Kimi K2.6",
-          "limit": {
-            "context": 262144,
-            "output": 65536
-          },
-          "variants": {
-            "none": {
-              "reasoningEffort": "none"
-            },
-            "minimal": {
-              "reasoningEffort": "minimal"
-            },
-            "low": {
-              "reasoningEffort": "low"
-            },
-            "medium": {
-              "reasoningEffort": "medium"
-            },
-            "high": {
-              "reasoningEffort": "high"
-            },
-            "xhigh": {
-              "reasoningEffort": "xhigh"
-            }
-          }
-        },
-        "openrouter/free": {
-          "name": "OpenRouter Free",
-          "limit": {
-            "context": 128000,
-            "output": 4096
-          }
-        }
-      }
-    }
-  },
-  "username": "Ian"
+  "username": "Ian",
 }

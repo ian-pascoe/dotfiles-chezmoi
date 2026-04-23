@@ -11,7 +11,12 @@
 .ruff_cache/
 __pycache__/
 
+# Node
+node_modules/
+
 # Misc
+tmp/
+log/
 *.log
 *.tmp
 *.bak

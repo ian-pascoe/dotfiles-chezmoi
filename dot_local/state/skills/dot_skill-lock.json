@@ -294,9 +294,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/vectorize-io/hindsight.git",
       "skillPath": "skills/hindsight-docs/SKILL.md",
-      "skillFolderHash": "b1afde9403aec796c4ea1eb53a42b47988849471",
+      "skillFolderHash": "be6e14b268aab145fb3c6867a707d8074bd8620c",
       "installedAt": "2026-04-16T13:31:46.092Z",
-      "updatedAt": "2026-04-22T10:26:17.342Z"
+      "updatedAt": "2026-04-23T08:36:37.238Z"
     },
     "hindsight-architect": {
       "source": "vectorize-io/hindsight",
@@ -360,6 +360,16 @@
       "skillFolderHash": "8d2160222d05058efd40179672343422b67685a6",
       "installedAt": "2026-04-20T10:39:21.243Z",
       "updatedAt": "2026-04-20T10:39:21.243Z"
+    },
+    "linear-cli": {
+      "source": "schpet/linear-cli",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/schpet/linear-cli.git",
+      "skillPath": "skills/linear-cli/SKILL.md",
+      "skillFolderHash": "6f29c4345b675d4787e82ded44b90dd78625d50a",
+      "pluginName": "linear-cli",
+      "installedAt": "2026-04-22T12:50:20.550Z",
+      "updatedAt": "2026-04-22T12:50:20.550Z"
     }
   },
   "dismissed": {

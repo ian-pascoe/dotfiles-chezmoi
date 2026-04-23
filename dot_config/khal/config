@@ -26,22 +26,6 @@ color = light magenta
 path = ~/.local/share/vdirsyncer/calendars/ian/297c79dc-d98f-40b8-b323-4eeb3f5449cc/
 color = light gray
 
-# === MK's Calendars (from MK's iCloud) ===
-# Keep only calendars that appear unique in khal output.
-# Duplicated shared calendars remain synced by vdirsyncer but are hidden here:
-#   mk_03E6  ~= mk_calendar
-#   mk_2cc8  ~= ians_work
-#   mk_3ac3  ~= pascoe_family
-#   mk_95bc  ~= ians_shared
-
-[[mk_home]]
-path = ~/.local/share/vdirsyncer/calendars/mk/home/
-color = light magenta
-
-[[mk_9f4d]]
-path = ~/.local/share/vdirsyncer/calendars/mk/9f4dfb1f-547a-4881-8a6a-fde8bbb22c7c/
-color = light red
-
 [default]
 default_calendar = ians_work
 highlight_event_days = True

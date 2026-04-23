@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@byterover/brv-bridge": "^1.1.0",
+    "@opencode-ai/plugin": "^1.14.22",
+    "@opencode-ai/sdk": "^1.14.22"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.46.0",
+    "oxlint": "^1.61.0"
+  }
+}

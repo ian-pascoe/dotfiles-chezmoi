@@ -1,1 +1,0 @@
-# Camoufox MCP

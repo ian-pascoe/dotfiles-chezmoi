@@ -1,19 +1,23 @@
-README.md
+**/README.md
 AGENTS.md
+
+**/node_modules/**
 
 # Syncthing
 .stfolder
 .stignore
-*.sync-conflict*
-.*.sync-conflict*
+**/*.sync-conflict*
+**/.*.sync-conflict*
 
 # Git
 .gitignore
 .gitkeep
 
-*.log
-*.tmp
-*.bak
+**/tmp/**
+**/log/**
+**/*.log
+**/*.tmp
+**/*.bak
 
 # Non-Darwin
 {{ if ne .chezmoi.os "darwin" }}
