@@ -1,0 +1,1 @@
+Byterover plugin curation should use structured JSON with truncated tool output and omit reasoning to avoid brittle delimiter-based ingestion and noisy memory recall.

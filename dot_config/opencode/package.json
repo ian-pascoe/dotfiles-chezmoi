@@ -1,6 +1,12 @@
 {
+  "scripts": {
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
-    "@byterover/brv-bridge": "^1.1.0",
     "@opencode-ai/plugin": "^1.14.22",
     "@opencode-ai/sdk": "^1.14.22"
   },

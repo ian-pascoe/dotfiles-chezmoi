@@ -1,0 +1,1 @@
+Recommend adding a best-effort recall timeout, renaming the curation prompt label to Conversation, and optionally logging recall window size to improve startup responsiveness and clarity.

@@ -1,0 +1,1 @@
+Byterover recall now uses a separate bounded recent window of up to 3 user turns or 4096 characters, while curation remains limited to the current completed turn.

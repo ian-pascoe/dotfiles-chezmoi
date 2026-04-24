@@ -1,0 +1,1 @@
+ByteRover/OpenClaw context engine curates only lasting-value messages, strips metadata and noise, and performs best-effort recall from the latest cleaned user query with timeout safeguards.

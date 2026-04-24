@@ -1,0 +1,1 @@
+ByteRover plugin recall and curation now include the latest user message, skip empty inputs, verify bridge readiness, use blocking persist checks, and surface background curation failures.

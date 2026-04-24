@@ -20,3 +20,7 @@ log/
 *.log
 *.tmp
 *.bak
+/.brv/_queue_status.json
+/.brv/config.json
+/.brv/dream-state.json
+/.brv/review-backups

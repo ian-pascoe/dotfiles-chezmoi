@@ -1,0 +1,51 @@
+{
+  "active_context": [
+    {
+      "order": 3,
+      "path": "_index.md",
+      "tokens": 1187,
+      "type": "summary"
+    },
+    {
+      "abstractPath": "architecture/opencode/byterover_context_engine_ideas.abstract.md",
+      "abstractTokens": 47,
+      "importance": 50,
+      "path": "architecture/opencode/byterover_context_engine_ideas.md",
+      "tokens": 47,
+      "type": "context"
+    },
+    {
+      "abstractPath": "architecture/opencode/byterover_plugin_curation_and_recall.abstract.md",
+      "abstractTokens": 42,
+      "importance": 50,
+      "path": "architecture/opencode/byterover_plugin_curation_and_recall.md",
+      "tokens": 42,
+      "type": "context"
+    },
+    {
+      "abstractPath": "architecture/opencode/byterover_plugin_recall_and_curation.abstract.md",
+      "abstractTokens": 47,
+      "importance": 50,
+      "path": "architecture/opencode/byterover_plugin_recall_and_curation.md",
+      "tokens": 47,
+      "type": "context"
+    },
+    {
+      "abstractPath": "architecture/opencode/byterover_recall_window_update.abstract.md",
+      "abstractTokens": 41,
+      "importance": 50,
+      "path": "architecture/opencode/byterover_recall_window_update.md",
+      "tokens": 41,
+      "type": "context"
+    }
+  ],
+  "generated_at": "2026-04-24T10:49:13.603Z",
+  "lane_tokens": {
+    "contexts": 177,
+    "stubs": 0,
+    "summaries": 1187
+  },
+  "source_fingerprint": "e7bf80c518a16ad1a724731cefae3bb146365879106de1ea6848a6549c4a1991",
+  "total_tokens": 1364,
+  "version": 1
+}
