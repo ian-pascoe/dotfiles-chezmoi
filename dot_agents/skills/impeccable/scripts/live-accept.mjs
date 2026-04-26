@@ -149,13 +149,16 @@ function handleAccept(id, variantNum, lines, targetFile, paramValues) {
   const replacement = [];
 
   if (cssContent) {
+    const isJsx = commentSyntax.open === '{/*';
     replacement.push(indent + commentSyntax.open + ' impeccable-carbonize-start ' + id + ' ' + commentSyntax.close);
-    replacement.push(indent + '<style data-impeccable-css="' + id + '">');
+    // JSX targets need the CSS body wrapped in a template literal so that the
+    // `{` and `}` in CSS rules don't get parsed as JSX expressions.
+    replacement.push(indent + '<style data-impeccable-css="' + id + '">' + (isJsx ? '{`' : ''));
     // Re-indent CSS content to match
     for (const cssLine of cssContent) {
       replacement.push(indent + cssLine.trimStart());
     }
-    replacement.push(indent + '</style>');
+    replacement.push(indent + (isJsx ? '`}</style>' : '</style>'));
     if (paramValues && Object.keys(paramValues).length > 0) {
       // Preserve the user's knob positions for the carbonize-cleanup agent
       // to bake into the final CSS when it collapses scoped rules.
@@ -169,8 +172,14 @@ function handleAccept(id, variantNum, lines, targetFile, paramValues) {
   // in a data-impeccable-variant="N" div with `display: contents` (so layout
   // isn't affected). The carbonize agent strips this attribute + wrapper when
   // it moves the CSS to a proper stylesheet.
+  //
+  // Style attribute syntax has to follow the host file's flavor — JSX files
+  // need the object form, otherwise React 19 throws "Failed to set indexed
+  // property [0] on CSSStyleDeclaration" while parsing the string char-by-char.
   if (cssContent) {
-    replacement.push(indent + '<div data-impeccable-variant="' + variantNum + '" style="display: contents">');
+    const isJsx = commentSyntax.open === '{/*';
+    const styleAttr = isJsx ? "style={{ display: 'contents' }}" : 'style="display: contents"';
+    replacement.push(indent + '<div data-impeccable-variant="' + variantNum + '" ' + styleAttr + '>');
     replacement.push(...restored);
     replacement.push(indent + '</div>');
   } else {
@@ -344,7 +353,11 @@ function extractCss(lines, block, id) {
     }
 
     if (inStyle) {
-      if (line.trimStart().startsWith('</style>')) break;
+      // Detect </style> anywhere on the line — JSX template-literal closes
+      // (`}</style>`) put the close mid-line, and we don't want to absorb the
+      // template-literal punctuation as CSS content.
+      const closeIdx = line.indexOf('</style>');
+      if (closeIdx !== -1) break;
       content.push(line);
     }
   }

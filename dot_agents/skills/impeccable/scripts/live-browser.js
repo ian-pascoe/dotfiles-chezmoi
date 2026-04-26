@@ -905,7 +905,12 @@
     pill.addEventListener('click', (e) => { e.stopPropagation(); toggleActionPicker(); });
     row.appendChild(pill);
 
-    // Freeform input
+    // Freeform input. Focus state shows an accent-colored border only —
+    // an earlier version tinted the background with `BP.accentSoft`, which
+    // composited against the dark bar surface to a murky purple where the
+    // browser's default placeholder gray was unreadable. Placeholder color
+    // is set explicitly via a one-shot stylesheet keyed off this input's id
+    // so it picks up the bar's `textDim` token in both themes.
     const input = document.createElement('input');
     input.id = PREFIX + '-input';
     input.type = 'text';
@@ -916,15 +921,20 @@
       border: '1px solid transparent', background: 'transparent',
       fontFamily: FONT, fontSize: '12px', color: BP.text,
       outline: 'none',
-      transition: 'border-color 0.15s ease, background 0.15s ease',
+      transition: 'border-color 0.15s ease',
     });
+    if (!document.getElementById(PREFIX + '-input-style')) {
+      const s = document.createElement('style');
+      s.id = PREFIX + '-input-style';
+      s.textContent =
+        '#' + PREFIX + '-input::placeholder { color: ' + BP.textDim + '; opacity: 1; }';
+      document.head.appendChild(s);
+    }
     input.addEventListener('focus', () => {
-      input.style.borderColor = BP.hairline;
-      input.style.background = BP.accentSoft;
+      input.style.borderColor = BP.accent;
     });
     input.addEventListener('blur', () => {
       input.style.borderColor = 'transparent';
-      input.style.background = 'transparent';
     });
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.stopPropagation(); e.preventDefault(); handleGo(); return; }
@@ -2011,7 +2021,16 @@
       for (const m of mutations) {
         if (m.target.closest?.('[data-impeccable-variants]')) { dominated = true; break; }
         for (const n of m.addedNodes) {
-          if (n.nodeType === 1 && (n.dataset?.impeccableVariants || n.dataset?.impeccableVariant)) {
+          if (n.nodeType !== 1) continue;
+          // Direct hit: the added node itself is the wrapper or a variant.
+          if (n.dataset?.impeccableVariants || n.dataset?.impeccableVariant) {
+            dominated = true; break;
+          }
+          // Subtree hit: framework HMR (notably SvelteKit) sometimes replaces
+          // a whole subtree where the wrapper is a descendant of the added
+          // node. Without this check, the observer ignores those mutations
+          // and the session stays in GENERATING forever.
+          if (n.querySelector?.('[data-impeccable-variants],[data-impeccable-variant]')) {
             dominated = true; break;
           }
         }
@@ -2126,17 +2145,20 @@
             }
             break;
           }
-          // HMR didn't propagate in time. Give it a 2s grace window, then
-          // reload the page. resumeSession counts variants off the rendered
-          // DOM on load and transitions straight to CYCLING — reload is the
-          // one universal recovery path: HTML, JSX/TSX, Vue, Svelte, static
-          // servers, anything. We used to try DOMParser on the raw source,
-          // but JSX expressions aren't valid HTML and the parse fails.
+          // Variants are in source but not in the DOM yet. Common when the
+          // picked element lived inside conditional render (closed modal,
+          // hidden tab, a route the user navigated away from). The variant
+          // MutationObserver stays armed and auto-transitions to CYCLING
+          // the moment the wrapper actually mounts. Nudge the user toward
+          // that path with a toast — better than the prior force-reload
+          // which reset framework state and left the session stuck.
           setTimeout(() => {
             if (arrivedVariants >= expectedVariants && expectedVariants > 0) return;
             if (state !== 'GENERATING') return;
-            saveSession();
-            window.location.reload();
+            showToast(
+              "Variants ready. If the picked element isn't visible, retrace the path that revealed it — they'll appear automatically.",
+              15000,
+            );
           }, 2000);
           break;
         case 'error':
@@ -2236,6 +2258,60 @@
     showBar('configure');
     startScrollTracking();
     maybePrefetchPage();
+    maybeWarnConditionalAncestor(selectedElement);
+  }
+
+  /**
+   * Surface a brief, non-blocking heads-up when the picked element lives
+   * inside a container whose visibility is gated by ephemeral state — modals,
+   * collapsible panels, popovers, off-screen tab panels. If HMR remounts the
+   * parent during generation (Vite Fast Refresh, SvelteKit page reload), the
+   * variants land in source but stay invisible until the user re-opens the
+   * container. Telling the user upfront is much friendlier than the silent
+   * timeout-then-toast that they'd otherwise hit.
+   *
+   * Heuristic, intentionally narrow — only fires for unambiguous cases so
+   * we don't cry wolf on every nested element.
+   */
+  function maybeWarnConditionalAncestor(el) {
+    let node = el?.parentElement;
+    let depth = 0;
+    while (node && depth < 12) {
+      // 1. Active dialog / modal
+      if (node.getAttribute && node.getAttribute('role') === 'dialog'
+          && node.getAttribute('aria-modal') === 'true') {
+        showToast('Heads up: this element lives inside a dialog. If state resets during generation, you may need to re-open it.', 6000);
+        return;
+      }
+      // 2. Common Radix / shadcn / headless-ui open-state attribute
+      if (node.dataset && node.dataset.state === 'open') {
+        showToast('Heads up: this element lives inside an open panel. If state resets during generation, you may need to re-open it.', 6000);
+        return;
+      }
+      // 3. Tab panel — only meaningful when the page also shows ANOTHER
+      // tab as selected. A single tabpanel with no tablist is just a static
+      // section in disguise and isn't conditional.
+      if (node.getAttribute && node.getAttribute('role') === 'tabpanel') {
+        const list = document.querySelector('[role="tablist"]');
+        if (list) {
+          const tabs = list.querySelectorAll('[role="tab"]');
+          if (tabs.length > 1) {
+            showToast('Heads up: this element lives in a tab panel. If state resets during generation, switch back to this tab.', 6000);
+            return;
+          }
+        }
+      }
+      // 4. Collapsible: aria-expanded sibling. Look for the trigger button.
+      if (node.id) {
+        const trigger = document.querySelector(`[aria-controls="${CSS.escape(node.id)}"][aria-expanded="true"]`);
+        if (trigger) {
+          showToast('Heads up: this element lives inside an expandable section. If state resets during generation, re-expand it.', 6000);
+          return;
+        }
+      }
+      node = node.parentElement;
+      depth++;
+    }
   }
 
   // Fire a lightweight prefetch event the first time the user selects an
@@ -2694,7 +2770,13 @@ void main() {
       const img = document.createElement('img');
       img.src = URL.createObjectURL(blob);
       img.id = PREFIX + '-shader';
-      Object.assign(img.style, canvas.style, { outline: '2px dashed ' + C.brand, outlineOffset: '-2px' });
+      // Copy positioning via cssText. Object.assign across CSSStyleDeclaration
+      // throws in modern Chromium because the source's indexed properties
+      // (style[0], [1], ...) are read-only and the engine forbids writing
+      // them on the destination.
+      img.style.cssText = canvas.style.cssText;
+      img.style.outline = '2px dashed ' + C.brand;
+      img.style.outlineOffset = '-2px';
       document.body.appendChild(img);
       shaderState = { canvas: img, gl: null, program: null, texture: null, rafId: 0, startTime: 0 };
       return;
@@ -4577,6 +4659,18 @@ void main() {
     // Check for an active session to resume (variant wrapper already in DOM after HMR)
     if (!resumeSession()) {
       console.log('[impeccable] Live variant mode ready. Hover over elements to pick one.');
+      // SvelteKit (and any framework that hydrates after HTML parse) may add
+      // the variant wrapper AFTER init runs. Watch for it and retry resume
+      // once it appears. Disconnect on first hit.
+      const scout = new MutationObserver(() => {
+        const wrapper = document.querySelector('[data-impeccable-variants]');
+        if (!wrapper) return;
+        scout.disconnect();
+        if (resumeSession()) {
+          console.log('[impeccable] Resumed deferred session ' + currentSessionId + ' (post-hydration).');
+        }
+      });
+      scout.observe(document.body, { childList: true, subtree: true });
     } else {
       console.log('[impeccable] Resumed active variant session ' + currentSessionId + ' (' + arrivedVariants + '/' + expectedVariants + ' variants).');
     }

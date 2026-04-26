@@ -2,6 +2,18 @@
 
 Build a feature with impeccable UX and UI quality through a structured process: shape the design, load the right references, then build and iterate visually until the result is delightful.
 
+## Real Example: Neon Mirai
+
+Neon Mirai is the full craft loop in public. A retro-futurist AI design conference started with generated brand and hi-fi reference images, then shipped as a responsive static site in `public/neon-mirai`.
+
+Repro command:
+
+```bash
+$impeccable craft retro-futurist AI design conference website
+```
+
+The important detail is the artifact chain: brand toolkit, north-star mock, semantic implementation, regenerated assets, browser iteration, responsive fixes. The mock was not treated as a screenshot to trace. It was used as direction for a real page.
+
 ## Step 1: Shape the Design
 
 Run $impeccable shape, passing along whatever feature description the user provided.

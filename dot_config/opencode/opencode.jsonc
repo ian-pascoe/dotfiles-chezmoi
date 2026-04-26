@@ -3,21 +3,17 @@
   "autoupdate": "notify",
   "plugin": [
     "@franlol/opencode-md-table-formatter",
+    "opencode-adaptive-thinking",
     [
       "opencode-byterover",
       {
-        "maxRecallTurns": 5,
+        "maxRecallTurns": 4,
         "maxRecallTokens": 8192,
       },
     ],
     "opencode-pty",
   ],
   "permission": {
-    // Built-in tools
-    "bash": "allow",
-    "codesearch": "allow",
-    "doom_loop": "ask",
-    "edit": "allow",
     // Don't care if the agent can read/write these
     "external_directory": {
       "*": "ask",
@@ -28,70 +24,30 @@
       "~/.config/opencode": "allow",
       "~/.config/opencode/*": "allow",
     },
-    "list": "allow",
-    "lsp": "allow",
-    "glob": "allow",
     "google_search": "deny", // Use websearch (exa) instead
-    "grep": "allow",
-    "question": "allow",
-    "read": {
-      "*": "allow",
-      "*.env": "deny",
-      "*.env.*": "deny",
-      "*.env.example": "allow",
-    },
-    "skill": "allow",
-    "task": "allow",
-    "todoread": "allow",
-    "todowrite": "allow",
-    "webfetch": "allow",
-    "websearch": "allow",
+    "lsp": "allow", // Disabled by default
   },
   "agent": {
-    // Customized built-in agents
     "build": {
       "model": "openai/gpt-5.5",
-      "variant": "medium",
     },
     "plan": {
-      "disable": true, // plan mode is for newbs
+      "disable": true, // plan mode is for noobs
     },
     "explore": {
       "description": "Codebase exploration agent for local repository understanding. Use it to inspect project structure, find files/symbols, trace implementations, and answer questions about how code in this repo works. Prefer research for internet or external-source investigation.",
       "model": "openai/gpt-5.4-mini",
       "permission": {
-        "skill": "allow", // disabled by default
+        "skill": "allow", // Disabled by default
       },
     },
     "general": {
-      "description": "Default balanced agent for most engineering tasks. Use for everyday coding, debugging, file edits, and command execution when you need solid quality without extreme latency or extreme depth.",
       "model": "openai/gpt-5.5",
-      "variant": "medium",
-    },
-    // Custom agents
-    "quick": {
-      "description": "Speed-first subagent for low-complexity work. Use for quick lookups, short summaries, single-command checks, and small isolated edits where correctness is straightforward. If scope grows, uncertainty appears, or multiple systems are involved, switch to general or deep.",
-      "mode": "subagent",
-      "model": "openai/gpt-5.5",
-      "variant": "low",
-      // Same permissions as general
       "permission": {
-        "todoread": "deny",
-        "todowrite": "deny",
+        "todoread": "allow", // Disabled by default
+        "todowrite": "allow", // Disabled by default
       },
     },
-    "deep": {
-      "description": "Thorough reasoning subagent for complex or high-risk tasks. Use for difficult debugging, architecture decisions, multi-file refactors, root-cause analysis, and work with subtle trade-offs or edge cases. Prefer this when accuracy and completeness matter more than speed.",
-      "mode": "subagent",
-      "model": "openai/gpt-5.5",
-      "variant": "high",
-      // Same permissions as general
-      "permission": {
-        "todoread": "deny",
-        "todowrite": "deny",
-      },
-    },
-    // Utility agents
     "summary": {
       "model": "openrouter/openrouter/free",
     },
@@ -100,7 +56,6 @@
     },
     "compaction": {
       "model": "openai/gpt-5.4-mini",
-      "variant": "high",
     },
   },
   "lsp": {

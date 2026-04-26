@@ -6,6 +6,7 @@
 
 # Playwright
 .playwright-mcp/
+.playwright-cli/
 
 # Python
 .ruff_cache/
