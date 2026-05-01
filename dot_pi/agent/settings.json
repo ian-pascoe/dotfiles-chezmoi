@@ -1,0 +1,47 @@
+{
+  "lastChangelogVersion": "0.71.1",
+  "packages": [
+    "npm:context-mode",
+    "npm:pi-subagents",
+    "npm:pi-intercom",
+    "npm:pi-lens",
+    "npm:pi-markdown-preview",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:pi-terminal-theme",
+    "npm:pi-byterover"
+  ],
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "theme": "terminal",
+  "treeFilterMode": "default",
+  "quietStartup": true,
+  "collapseChangelog": true,
+  "transport": "auto",
+  "editorPaddingX": 0,
+  "showHardwareCursor": true,
+  "subagents": {
+    "agentOverrides": {
+      "worker": {
+        "thinking": "low"
+      },
+      "scout": {
+        "model": "openai-codex/gpt-5.4-mini",
+        "thinking": "medium"
+      },
+      "researcher": {
+        "model": "openai-codex/gpt-5.4-mini",
+        "thinking": "high"
+      },
+      "context-builder": {
+        "model": "openai-codex/gpt-5.4-mini",
+        "thinking": "high"
+      },
+      "reviewer": {
+        "thinking": "medium"
+      },
+      "planner": {
+        "thinking": "medium"
+      }
+    }
+  }
+}

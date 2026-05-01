@@ -1,4 +1,4 @@
-model = "gpt-5.4"
+model = "gpt-5.5"
 personality = "pragmatic"
 model_reasoning_effort = "medium"
 [projects."/Users/ianpascoe/.dotfiles"]
@@ -25,3 +25,6 @@ multi_agent = true
 
 [plugins."github@openai-curated"]
 enabled = true
+
+[tui.model_availability_nux]
+"gpt-5.5" = 1

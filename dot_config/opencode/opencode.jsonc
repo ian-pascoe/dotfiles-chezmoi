@@ -3,6 +3,7 @@
   "autoupdate": "notify",
   "plugin": [
     "@franlol/opencode-md-table-formatter",
+    "context-mode",
     "opencode-adaptive-thinking",
     [
       "opencode-byterover",
@@ -56,6 +57,12 @@
     },
     "compaction": {
       "model": "openai/gpt-5.4-mini",
+    },
+  },
+  "mcp": {
+    "context-mode": {
+      "type": "local",
+      "command": ["context-mode"],
     },
   },
   "lsp": {
