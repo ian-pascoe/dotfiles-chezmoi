@@ -1,13 +1,18 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": "notify",
   "plugin": [
     "@franlol/opencode-md-table-formatter",
     "context-mode",
-    "opencode-adaptive-thinking",
+    [
+      "opencode-adaptive-thinking",
+      {
+        "enabled": false,
+      },
+    ],
     [
       "opencode-byterover",
       {
+        "enabled": true,
         "maxRecallTurns": 4,
         "maxRecallTokens": 8192,
       },
@@ -19,35 +24,44 @@
     "external_directory": {
       "*": "ask",
       "/tmp": "allow",
-      "/tmp/*": "allow",
+      "/tmp/**": "allow",
       "/private/tmp": "allow",
-      "/private/tmp/*": "allow",
+      "/private/tmp/**": "allow",
       "~/.config/opencode": "allow",
-      "~/.config/opencode/*": "allow",
+      "~/.config/opencode/**": "allow",
     },
     "google_search": "deny", // Use websearch (exa) instead
     "lsp": "allow", // Disabled by default
   },
   "agent": {
+    // built-in agents with customizations
     "build": {
       "model": "openai/gpt-5.5",
+      "variant": "medium",
     },
     "plan": {
-      "disable": true, // plan mode is for noobs
+      "model": "openai/gpt-5.5",
+      "variant": "high",
+      "permission": {
+        "edit": {
+          "*": "deny",
+          "**/plans": "allow",
+          "**/plans/**": "allow",
+          "**/specs": "allow",
+          "**/specs/**": "allow",
+        },
+      },
     },
     "explore": {
-      "description": "Codebase exploration agent for local repository understanding. Use it to inspect project structure, find files/symbols, trace implementations, and answer questions about how code in this repo works. Prefer research for internet or external-source investigation.",
       "model": "openai/gpt-5.4-mini",
       "permission": {
         "skill": "allow", // Disabled by default
       },
     },
     "general": {
+      "description": "Balanced default agent for scoped implementation, debugging, and analysis where moderate exploration and verification are enough. Use when the task is clear, repo-local, and needs reliable execution without the cost of deep/oracle-level reasoning.",
       "model": "openai/gpt-5.5",
-      "permission": {
-        "todoread": "allow", // Disabled by default
-        "todowrite": "allow", // Disabled by default
-      },
+      "variant": "medium",
     },
     "summary": {
       "model": "openrouter/openrouter/free",
@@ -56,7 +70,55 @@
       "model": "openrouter/openrouter/free",
     },
     "compaction": {
-      "model": "openai/gpt-5.4-mini",
+      "model": "openai/gpt-5.5",
+      "variant": "none",
+    },
+    // custom agents
+    "quick": {
+      "mode": "subagent",
+      "description": "Fast, low-overhead agent for narrow, low-risk tasks with obvious success criteria: small lookups, simple file checks, concise summaries, or targeted edits in known locations. Do not use for ambiguous bugs, architecture decisions, broad searches, or work where missed edge cases are costly.",
+      "model": "openai/gpt-5.5",
+      "variant": "low",
+      "permission": {
+        "todoread": "deny",
+        "todowrite": "deny",
+      },
+    },
+    "deep": {
+      "mode": "subagent",
+      "description": "Thorough agent for complex or ambiguous work that needs careful codebase exploration, multi-step reasoning, or stronger verification: tricky bugs, cross-file changes, design tradeoffs, migrations, and root-cause analysis. Use when general may be too shallow but oracle would be excessive.",
+      "model": "openai/gpt-5.5",
+      "variant": "high",
+      "permission": {
+        "todoread": "deny",
+        "todowrite": "deny",
+      },
+    },
+    "oracle": {
+      "mode": "subagent",
+      "description": "Highest-depth agent for rare, high-stakes problems where correctness matters more than latency or cost: subtle regressions, security-sensitive changes, data-loss risk, conflicting evidence, or decisions that need exhaustive reasoning. Use only when deep is insufficient or the cost of being wrong is unusually high.",
+      "model": "openai/gpt-5.5",
+      "variant": "xhigh",
+      "permission": {
+        "todoread": "deny",
+        "todowrite": "deny",
+      },
+    },
+    "review": {
+      "mode": "subagent",
+      "description": "Evidence-first review agent for evaluating diffs, plans, PRs, or completed work. Use after implementation or when you need independent scrutiny of correctness, regressions, missing tests, security risk, scope creep, or plan feasibility. Prefer deep/oracle for solving the problem; use review to judge the solution and report actionable findings.",
+      "model": "openai/gpt-5.5",
+      "variant": "high",
+      "prompt": "{file:~/.config/opencode/prompt/review.md}",
+      "permission": {
+        "edit": {
+          "*": "deny",
+          "**/reviews": "allow",
+          "**/reviews/**": "allow",
+        },
+        "todoread": "deny",
+        "todowrite": "deny",
+      },
     },
   },
   "mcp": {

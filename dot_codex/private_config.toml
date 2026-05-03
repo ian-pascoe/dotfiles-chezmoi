@@ -22,9 +22,51 @@ trust_level = "trusted"
 
 [features]
 multi_agent = true
+memories = true
 
 [plugins."github@openai-curated"]
 enabled = true
 
+[plugins."browser-use@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."gmail@openai-curated"]
+enabled = true
+
+[plugins."linear@openai-curated"]
+enabled = true
+
+[plugins."google-drive@openai-curated"]
+enabled = true
+
+[plugins."codex-security@openai-curated"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
 [tui.model_availability_nux]
 "gpt-5.5" = 1
+
+[marketplaces.openai-bundled]
+last_updated = "2026-05-02T08:57:32Z"
+source_type = "local"
+source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-05-02T09:52:30Z"
+source_type = "local"
+source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[memories]
+generate_memories = true
+use_memories = true

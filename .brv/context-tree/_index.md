@@ -1,85 +1,111 @@
 ---
-children_hash: a1508d6573d288901d0ac60dc8c0375f3ea5e5d7d1c18aa97e15f6ac1357ec0c
-compression_ratio: 0.9331761006289309
+children_hash: 6afd09963984274c1b7f3eeaf71858d230e65ecb1d506acb254b81d01b88221b
+compression_ratio: 0.9559164733178654
 condensation_order: 3
 covers: [architecture/_index.md]
-covers_token_total: 1272
+covers_token_total: 1293
 summary_level: d3
-token_count: 1187
+token_count: 1236
 type: summary
 ---
-## architecture
+# architecture
 
-This set of entries documents the evolution of `dot_config/opencode/plugins/byterover.ts` into a bounded, noise-resistant memory system that separates **durable memory ingestion** from **runtime recall**. The overall direction is consistent across the child entries: keep only lasting-value content, make recall best-effort and timeout-bounded, and avoid indiscriminate history ingestion.
+## ByteRover / OpenCode context engine and plugin behavior
 
-### Core architectural direction
-- Durable memory preserves only facts, decisions, technical details, preferences, and notable outcomes.
-- Non-durable content is excluded: chatter, acknowledgments, tool noise, reasoning traces, transport metadata, and empty/near-empty content.
-- Recall is constrained and protected by timeouts so it cannot block the agent path.
-- Curation and recall are explicit, bounded paths rather than full-conversation persistence.
+This cluster captures a memory architecture that **curates durable signal from chat** and **recalls it safely at runtime**. The design is split between:
 
-### Entry drill-down map
+- **Curation/persistence**: save only lasting-value content from completed turns
+- **Recall/injection**: restore a bounded, cleaned recent context into the system prompt
 
-#### `byterover_context_engine_ideas.md`
-Covers the broader context-engine model:
-- After-turn persistence stores only new turn messages.
-- Recall prefers the latest cleaned user query, falling back to history scanning only when needed.
-- Cleaning strips user metadata and assistant wrapper tags before persistence and recall.
-- Tool results and trivial chatter are skipped.
-- Recall ignores trivially short queries and uses a timeout guard.
+## Core architectural principles
 
-Use this entry for the general **noise control + selective persistence + best-effort recall** design.
+- **Selective memory**: keep facts, decisions, technical details, preferences, and notable outcomes; skip greetings, acknowledgments, tool noise, and trivial chatter.
+- **Clean memory**: remove metadata, sender/timestamp noise, assistant wrapper tags, reasoning, and transport artifacts before persistence or recall.
+- **Safe memory**: enforce timeout protection and empty/trivial input guards so startup and turn processing remain responsive.
+- **Structured memory**: move away from delimiter-heavy pseudo-XML toward structured JSON serialization for durable ingestion.
 
-#### `byterover_plugin_curation_and_recall.md`
-Focuses on message serialization and the recall pipeline:
-- Turn messages are fetched and serialized for idle/compaction persistence or system-transform recall injection.
-- The current formatter uses bracketed role headers, reasoning tags, file tags, tool tags, and separator lines.
-- Recommended direction is **structured JSON serialization** rather than delimiter-based pseudo-XML due to delimiter collisions, undefined JSON values, and large tool outputs.
-- `brvBridge.ready()` was removed from the curation/persist path and retained only for recall.
-- Idle and compaction triggers remain part of curation behavior.
+## Key design decisions
 
-Best drill-down for **serialization strategy**, **bridge readiness behavior**, **recall injection format**, and **tool-output truncation/capping**.
+- **Curation stays narrow; recall can widen**
+  - Curation is limited to the **current completed turn**.
+  - Recall may use a **recent history window** to improve context.
 
-#### `byterover_plugin_recall_and_curation.md`
-Covers reliability and correctness improvements:
-- The latest user message is included in serialized turns for recall and curation.
-- Empty text-only inputs, empty serialized turns, and empty recall results are skipped.
-- `brvBridge.ready()` guards both recall and curation.
-- Curation completion uses `persist(..., { detach: false })`.
-- Idle curation is wrapped in an observed background promise.
-- Background failures are surfaced through `client.app.log`.
-- Recall prompt formatting and a typo were corrected.
+- **Prefer the latest cleaned user query**
+  - Fall back to history scanning only when needed.
+  - Skip trivially short queries to avoid unnecessary recall work.
 
-Use this entry for **safety checks**, **empty-input handling**, and **observability** behavior.
+- **Recall is best-effort**
+  - Use a timeout guard / `AbortController` so startup is not blocked.
 
-#### `byterover_recall_window_update.md`
-Describes the bounded recent-window policy for recall:
-- Recall uses a separate recent context window capped at **3 recent user turns** or **4096 formatted characters**.
-- Curation still uses only the **current completed turn**.
-- Serialization remains **main-text-only**, excluding tools, files, and reasoning.
-- The update keeps recall bounded while improving historical context availability.
+- **Serialization must be robust**
+  - Avoid delimiter collisions and oversized payloads.
+  - Cap or truncate tool output.
+  - Omit reasoning from durable memory.
 
-Best drill-down for the **recall window policy** and the separation between recall scope and curation scope.
+## Shared implementation patterns
 
-### Shared relationships across entries
-- All entries point back to `dot_config/opencode/plugins/byterover.ts` as the implementation site.
-- The system converges on a two-path model:
-  - **Curation/persistence**: current-turn, lasting-value content only.
-  - **Recall**: bounded recent context, cleaned and injected into system-prompt flow.
-- Reliability patterns recur throughout:
-  - readiness checks
-  - empty-result skipping
-  - timeout/best-effort behavior
-  - explicit bridge failure logging
-  - validation via formatter/linter/typecheck
+Across the entries, the same flow appears repeatedly:
 
-### Recurring formatting and exclusion patterns
-- Cleaned transcript formatting uses role-prefixed lines such as `[user]: ...` and `[assistant]: ...`.
-- Recall injection wraps recalled text in a context container.
-- Preservation rules consistently exclude reasoning, tool output noise, trivial acknowledgments, metadata wrappers, and empty or near-empty content.
+- current-turn message fetching and formatting as the base path
+- idle/compaction triggers driving curation persistence
+- system transform driving recall injection
+- bridge readiness checks, empty-input handling, and failure visibility as reliability controls
 
-### Best drill-down by concern
-- **General context-engine philosophy** → `byterover_context_engine_ideas.md`
-- **Serialization and memory ingestion format** → `byterover_plugin_curation_and_recall.md`
-- **Reliability, readiness, and empty-input handling** → `byterover_plugin_recall_and_curation.md`
-- **Bounded recent-history recall window** → `byterover_recall_window_update.md`
+## Drill-down entries
+
+### `byterover_context_engine_ideas.md`
+High-level context engine design:
+- after-turn persistence vs assemble-time recall
+- only retain lasting-value content
+- strip metadata, sender/timestamp noise, and assistant tags
+- use the latest cleaned user prompt for recall
+- best-effort recall with timeout protection
+
+### `byterover_plugin_curation_and_recall.md`
+Serialization strategy in `dot_config/opencode/plugins/byterover.ts`:
+- current formatter serializes message parts with role labels and separators
+- risks include delimiter collisions, `undefined` JSON values, and oversized tool outputs
+- recommendation is structured JSON serialization with truncation
+- preserves idle/compaction persistence and system-transform recall injection flow
+
+### `byterover_plugin_recall_and_curation.md`
+Reliability improvements in the plugin:
+- include the latest user message in serialized turns
+- skip empty text-only serialization and empty recall results
+- check `brvBridge.ready()` before recall and curation
+- use blocking persist status checks with `detach: false`
+- observe background curation failures
+- wire bridge logging into `client.app.log`
+
+### `byterover_recall_window_update.md`
+Recall-window behavior change:
+- recall gets a separate recent window
+- limit window to **3 recent user turns** or **4096 formatted characters**
+- curation remains current-turn only
+- serialization stays text-only, excluding tools, files, and reasoning
+
+### `recall_and_curation_improvements.md`
+Follow-up improvements to the same architecture:
+- add a best-effort recall timeout
+- rename the curation prompt label to **Conversation**
+- optionally log recall window size
+- consider deduping repeated idle curation
+- handle oversize first-message edge cases carefully
+
+### `review_agent_prompt_refinement.md`
+Adjacent prompt-quality work, not memory handling:
+- refines reviewer prompt toward evidence-based reviewing
+- clarifies severity ordering and no-edit behavior
+- review output format is fixed to **Correct / Fixed / Blocker / Note**
+- verification passed except `markdownlint-cli2` was unavailable
+
+## Relationships and dependencies
+
+- The plugin behavior entries are tightly linked through `dot_config/opencode/plugins/byterover.ts`.
+- The recall-window update builds on the earlier curation/recall design and narrows recall to bounded recent history.
+- The improvement recommendations extend the same architecture with timeout, labeling, and debug-logging suggestions.
+- The review prompt refinement is separate infrastructure work focused on review discipline rather than memory handling.
+
+## Overall takeaway
+
+The system converges on one operational principle: **capture only durable signal, clean it aggressively, and recall it in a bounded, failure-tolerant way**. The main priorities are selective persistence, structured serialization, recent-window recall, and defensive guards around bridge readiness, empty inputs, and startup latency.

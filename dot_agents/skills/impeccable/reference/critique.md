@@ -39,7 +39,7 @@ Return structured findings covering: AI slop verdict, heuristic scores, cognitiv
 
 #### Assessment B: Automated Detection
 
-Run the bundled deterministic detector, which flags 25 specific patterns (AI slop tells + general design quality).
+Run the bundled deterministic detector, which flags 27 specific patterns (AI slop tells + general design quality).
 
 **CLI scan**:
 ```bash
