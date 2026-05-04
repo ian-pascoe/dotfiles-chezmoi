@@ -7,8 +7,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@opencode-ai/plugin": "^1.14.31",
-    "@opencode-ai/sdk": "^1.14.31"
+    "@opencode-ai/plugin": "^1.14.33",
+    "@opencode-ai/sdk": "^1.14.33"
   },
   "devDependencies": {
     "oxfmt": "^0.47.0",
