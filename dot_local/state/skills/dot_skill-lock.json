@@ -222,9 +222,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "814b17f8a8d1a801a5a6a5418917854def29bfdd",
+      "skillFolderHash": "ea8a9f3bcf6025a511dcbd178c127479271ec331",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-05-03T08:34:16.612Z"
+      "updatedAt": "2026-05-04T18:02:22.974Z"
     },
     "layout": {
       "source": "pbakaus/impeccable",
