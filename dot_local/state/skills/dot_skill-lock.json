@@ -343,6 +343,15 @@
       "pluginName": "linear-cli",
       "installedAt": "2026-04-22T12:50:20.550Z",
       "updatedAt": "2026-04-22T12:50:20.550Z"
+    },
+    "gpt-image-2": {
+      "source": "agentspace-so/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/agentspace-so/agent-skills.git",
+      "skillPath": "gpt-image-2/SKILL.md",
+      "skillFolderHash": "15b3a48babf955f2460520833bc82c772ce71417",
+      "installedAt": "2026-05-04T17:25:39.041Z",
+      "updatedAt": "2026-05-04T17:25:39.041Z"
     }
   },
   "dismissed": {
@@ -355,6 +364,7 @@
     "codex",
     "cursor",
     "deepagents",
+    "dexto",
     "firebender",
     "gemini-cli",
     "github-copilot",
