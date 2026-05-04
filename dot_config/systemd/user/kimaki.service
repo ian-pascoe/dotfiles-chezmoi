@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 WorkingDirectory=/home/ianpascoe
-ExecStart=/home/linuxbrew/.linuxbrew/bin/zsh -lc "kimaki --verbosity tools_and_text --no-sentry"
+ExecStart=/home/linuxbrew/.linuxbrew/bin/zsh -lc "kimaki --projects-dir ~/code --verbosity tools_and_text --no-sentry"
 Restart=always
 RestartSec=5
 TimeoutStopSec=30
