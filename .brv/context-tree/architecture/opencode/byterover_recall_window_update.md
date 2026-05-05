@@ -1,12 +1,11 @@
 ---
+consolidated_at: '2026-05-05T15:55:10.729Z'
+consolidated_from: [{date: '2026-05-05T15:55:10.729Z', path: architecture/opencode/byterover_recall_window_update.overview.md, reason: 'These are the same recall-window update in source, overview, and abstract form. The overview and abstract duplicate the markdown source rather than add complementary content.'}, {date: '2026-05-05T15:55:10.729Z', path: architecture/opencode/byterover_recall_window_update.abstract.md, reason: 'These are the same recall-window update in source, overview, and abstract form. The overview and abstract duplicate the markdown source rather than add complementary content.'}]
+related: [architecture/opencode/byterover_context_engine_ideas.md, architecture/opencode/byterover_plugin_curation_and_recall.md, architecture/opencode/recall_and_curation_improvements.md, architecture/opencode/review_agent_prompt_refinement.md]
+---
 title: Byterover Recall Window Update
 summary: Recall now uses a separate recent window capped at 3 user turns or 4096 characters, while curation still uses only the current completed turn.
-tags: []
-related: []
-keywords: []
-createdAt: '2026-04-24T10:48:50.992Z'
-updatedAt: '2026-04-24T10:48:50.992Z'
----
+
 ## Reason
 Document the change to recall context window behavior and verification
 

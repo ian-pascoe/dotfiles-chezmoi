@@ -22,6 +22,8 @@ setopt hist_save_no_dups
 ## ZPlug
 if command -v brew &>/dev/null; then
   export ZPLUG_HOME="$(brew --prefix zplug 2>/dev/null)"
+elif [ -d "$HOME/.zplug" ]; then
+  export ZPLUG_HOME="$HOME/.zplug"
 fi
 if [ -n "${ZPLUG_HOME:-}" ] && [ -d "${ZPLUG_HOME}" ]; then
   source "${ZPLUG_HOME}/init.zsh"

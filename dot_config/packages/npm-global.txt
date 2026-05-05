@@ -1,0 +1,24 @@
+# npm global packages
+# One package spec per line.
+@biomejs/biome
+@googleworkspace/cli
+@juicesharp/rpiv-todo
+@mariozechner/pi-coding-agent
+@playwright/cli
+byterover-cli
+context-mode
+critique
+ctx7
+just-bash
+kimaki
+mcporter
+oxfmt
+oxlint
+pi-byterover
+pi-intercom
+pi-lens
+pi-markdown-preview
+pi-subagents
+pi-terminal-theme
+skills
+turbo

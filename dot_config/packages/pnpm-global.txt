@@ -1,0 +1,2 @@
+# pnpm global packages
+# One package spec per line.

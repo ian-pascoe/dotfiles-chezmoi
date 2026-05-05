@@ -1,12 +1,11 @@
 ---
-title: Recall and Curation Improvements
-summary: 'Recommended improvements: add recall timeout, rename curation prompt label to Conversation, and optionally log recall window size.'
-tags: []
-related: [architecture/opencode/byterover_recall_window_update.md, architecture/opencode/byterover_plugin_curation_and_recall.md]
-keywords: []
-createdAt: '2026-04-24T10:52:57.048Z'
-updatedAt: '2026-04-24T10:52:57.048Z'
+consolidated_at: '2026-05-05T15:55:10.732Z'
+consolidated_from: [{date: '2026-05-05T15:55:10.732Z', path: architecture/opencode/recall_and_curation_improvements.overview.md, reason: 'These are the same recommendation note in source, overview, and abstract form. The overview and abstract are summaries of the markdown source, so they are redundant in a single-topic context tree.'}, {date: '2026-05-05T15:55:10.732Z', path: architecture/opencode/recall_and_curation_improvements.abstract.md, reason: 'These are the same recommendation note in source, overview, and abstract form. The overview and abstract are summaries of the markdown source, so they are redundant in a single-topic context tree.'}]
+related: [architecture/opencode/byterover_context_engine_ideas.md, architecture/opencode/byterover_plugin_curation_and_recall.md, architecture/opencode/byterover_recall_window_update.md, architecture/opencode/review_agent_prompt_refinement.md]
 ---
+title: Recall and Curation Improvements
+summary: Recommended improvements: add recall timeout, rename curation prompt label to Conversation, and optionally log recall window size.
+
 ## Reason
 Capture durable recommendations for improving recall startup behavior and curation labeling.
 

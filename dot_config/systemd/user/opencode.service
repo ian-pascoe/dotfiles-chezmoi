@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 WorkingDirectory=/home/ianpascoe
-ExecStart=/home/linuxbrew/.linuxbrew/bin/zsh -lc "opencode serve --port 4096 --print-logs --log-level WARN"
+ExecStart=/usr/bin/env zsh -lc "opencode serve --port 4096 --print-logs --log-level WARN"
 Restart=always
 RestartSec=5
 TimeoutStopSec=30

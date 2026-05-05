@@ -1,0 +1,14 @@
+# cargo-installed binaries
+# One crate spec per line.
+cargo-audit
+cargo-binstall
+cargo-deny
+cargo-edit
+cargo-nextest
+cargo-outdated
+cargo-run-bin
+cargo-update
+cargo-watch
+cargo-zigbuild
+cross
+sccache

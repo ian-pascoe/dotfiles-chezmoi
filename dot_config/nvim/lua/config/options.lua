@@ -5,6 +5,13 @@
 -- enable prettier only if a config file is present in the project
 vim.g.lazyvim_prettier_needs_config = true
 
+-- Use the terminal clipboard over SSH. LazyVim leaves 'clipboard' empty in SSH
+-- sessions for OSC52 auto-detection, but that makes normal yanks skip `+`.
+if vim.env.SSH_CONNECTION then
+  vim.g.clipboard = 'osc52'
+  vim.opt.clipboard = 'unnamedplus'
+end
+
 -- use pwsh as terminal on windows
 if LazyVim.is_win() then
   if vim.fn.executable('pwsh') == 1 then

@@ -145,6 +145,14 @@ if has_cmd camoufox; then
 fi
 
 ####################################################################
+# Package manifests
+if has_cmd sync-package-manifests; then
+  echo "Refreshing package manifests..."
+  sync-package-manifests
+  echo "Package manifests refreshed successfully!"
+fi
+
+####################################################################
 # OpenCode Server
 if has_cmd systemctl && has_service opencode.service; then
   echo "Restarting OpenCode server..."

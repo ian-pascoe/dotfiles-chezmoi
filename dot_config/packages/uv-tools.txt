@@ -1,0 +1,6 @@
+# uv tools
+# One tool spec per line.
+camoufox
+khal
+nano-pdf
+vdirsyncer

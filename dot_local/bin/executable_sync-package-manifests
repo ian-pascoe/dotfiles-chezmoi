@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+has_cmd() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+write_manifest() {
+  local file="$1"
+  local title="$2"
+  local description="$3"
+  local tmp
+
+  tmp="$(mktemp)"
+  {
+    printf '# %s\n' "$title"
+    printf '# %s\n' "$description"
+    sort -u | sed '/^[[:space:]]*$/d'
+  } >"$tmp"
+
+  if [ -f "$file" ] && cmp -s "$tmp" "$file"; then
+    rm -f "$tmp"
+  else
+    mv "$tmp" "$file"
+  fi
+}
+
+if ! has_cmd chezmoi; then
+  echo "chezmoi is required to locate the source directory" >&2
+  exit 1
+fi
+
+SOURCE_DIR="$(chezmoi source-path)"
+MANIFEST_DIR="$SOURCE_DIR/dot_config/packages"
+mkdir -p "$MANIFEST_DIR"
+
+if has_cmd apt-mark; then
+  apt-mark showmanual
+fi | write_manifest "$MANIFEST_DIR/apt.txt" "Debian/Ubuntu apt packages" "One package name per line."
+
+if has_cmd npm; then
+  npm_root="$(npm root -g)"
+  npm ls -g --depth=0 --parseable 2>/dev/null |
+    while IFS= read -r path; do
+      case "$path" in
+        "$npm_root"/*) printf '%s\n' "${path#"$npm_root/"}" ;;
+      esac
+    done
+fi | write_manifest "$MANIFEST_DIR/npm-global.txt" "npm global packages" "One package spec per line."
+
+if has_cmd bun; then
+  bun pm ls -g 2>/dev/null |
+    sed -E 's/[├└│─]+/ /g; s/^[[:space:]]*//; /^[[:space:]]*$/d; /^bun[[:space:]]/d; s/[[:space:]].*$//; s/@[^/@]+$//' || true
+fi | write_manifest "$MANIFEST_DIR/bun-global.txt" "Bun global packages" "One package spec per line."
+
+if has_cmd pnpm && has_cmd node; then
+  pnpm list -g --depth=0 --json 2>/dev/null |
+    node -e '
+      const fs = require("fs");
+      const input = fs.readFileSync(0, "utf8").trim();
+      if (!input) process.exit(0);
+      const data = JSON.parse(input);
+      for (const item of data) {
+        for (const name of Object.keys(item.dependencies || {})) console.log(name);
+      }
+    ' || true
+fi | write_manifest "$MANIFEST_DIR/pnpm-global.txt" "pnpm global packages" "One package spec per line."
+
+if has_cmd uv; then
+  uv tool list 2>/dev/null |
+    awk '/^[^-[:space:]][^[:space:]]+[[:space:]]+v[0-9]/ { print $1 }'
+fi | write_manifest "$MANIFEST_DIR/uv-tools.txt" "uv tools" "One tool spec per line."
+
+if has_cmd cargo; then
+  cargo install --list 2>/dev/null |
+    awk '/^[A-Za-z0-9_-]+[[:space:]]+v[0-9]/ { print $1 }'
+fi | write_manifest "$MANIFEST_DIR/cargo-install.txt" "cargo-installed binaries" "One crate spec per line."
+
+if has_cmd pipx && has_cmd python3; then
+  pipx list --json 2>/dev/null |
+    python3 -c 'import json, sys; print("\n".join(sorted(json.load(sys.stdin).get("venvs", {}).keys())))' || true
+fi | write_manifest "$MANIFEST_DIR/pipx.txt" "pipx tools" "One package spec per line."

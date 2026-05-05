@@ -1,12 +1,11 @@
 ---
-title: ByteRover Context Engine Ideas
-summary: 'OpenClaw context engine ideas: curate only lasting-value content, skip tool/heartbeat noise, strip metadata and assistant tags, use latest clean user query for recall, and keep recall best-effort with timeout protection.'
-tags: []
-related: [architecture/opencode/byterover_plugin_curation_and_recall.md]
-keywords: []
-createdAt: '2026-04-24T10:35:50.282Z'
-updatedAt: '2026-04-24T10:35:50.282Z'
+consolidated_at: '2026-05-05T15:55:10.724Z'
+consolidated_from: [{date: '2026-05-05T15:55:10.724Z', path: architecture/opencode/byterover_context_engine_ideas.overview.md, reason: 'These are the same topic in three representations of one note: the markdown source, its overview, and its abstract. The overview and abstract are derivative summaries of the source content, so they are redundant rather than complementary.'}, {date: '2026-05-05T15:55:10.724Z', path: architecture/opencode/byterover_context_engine_ideas.abstract.md, reason: 'These are the same topic in three representations of one note: the markdown source, its overview, and its abstract. The overview and abstract are derivative summaries of the source content, so they are redundant rather than complementary.'}]
+related: [architecture/opencode/byterover_plugin_curation_and_recall.md, architecture/opencode/byterover_recall_window_update.md, architecture/opencode/recall_and_curation_improvements.md, architecture/opencode/review_agent_prompt_refinement.md]
 ---
+title: ByteRover Context Engine Ideas
+summary: OpenClaw context engine ideas: curate only lasting-value content, skip tool/heartbeat noise, strip metadata and assistant tags, use latest clean user query for recall, and keep recall best-effort with timeout protection.
+
 ## Reason
 Capture transferable implementation ideas from the OpenClaw context engine discussion
 

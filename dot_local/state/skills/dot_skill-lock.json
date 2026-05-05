@@ -6,9 +6,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/obra/superpowers.git",
       "skillPath": "skills/writing-plans/SKILL.md",
-      "skillFolderHash": "704e240d4b281baf8a339e1418baa249860197f7",
+      "skillFolderHash": "8fe8e8b6ee9e5cbe53cb172a36f0dc31f9875847",
       "installedAt": "2026-04-16T10:17:35.855Z",
-      "updatedAt": "2026-04-16T10:22:01.162Z"
+      "updatedAt": "2026-05-05T08:34:14.672Z"
     },
     "find-skills": {
       "source": "vercel-labs/skills",
@@ -24,18 +24,18 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/obra/superpowers.git",
       "skillPath": "skills/executing-plans/SKILL.md",
-      "skillFolderHash": "20087d25fb28f5f54578d873dc198ab24b34f967",
+      "skillFolderHash": "7c20d2bd7ff7b166ea3064e21b1e5f0455750878",
       "installedAt": "2026-04-16T10:19:05.653Z",
-      "updatedAt": "2026-04-16T10:21:58.700Z"
+      "updatedAt": "2026-05-05T08:34:16.423Z"
     },
     "systematic-debugging": {
       "source": "obra/superpowers",
       "sourceType": "github",
       "sourceUrl": "https://github.com/obra/superpowers.git",
       "skillPath": "skills/systematic-debugging/SKILL.md",
-      "skillFolderHash": "828c239ac986cc1fc7edd10292f66e4a3640e9c0",
+      "skillFolderHash": "e96f5f2620c17069d668be1880d5492e34c84ceb",
       "installedAt": "2026-04-16T10:20:33.658Z",
-      "updatedAt": "2026-04-16T10:21:59.983Z"
+      "updatedAt": "2026-05-05T08:34:18.221Z"
     },
     "brainstorming": {
       "source": "obra/superpowers",
@@ -51,9 +51,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/obra/superpowers.git",
       "skillPath": "skills/finishing-a-development-branch/SKILL.md",
-      "skillFolderHash": "7656b8ebe0c9659ea548ba2981b078b333d1846e",
+      "skillFolderHash": "782e09faa5dcf7e9a7a173bd14b5622e35b80169",
       "installedAt": "2026-04-16T10:21:59.031Z",
-      "updatedAt": "2026-04-16T10:21:59.031Z"
+      "updatedAt": "2026-05-05T08:34:19.985Z"
     },
     "receiving-code-review": {
       "source": "obra/superpowers",
@@ -69,9 +69,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/obra/superpowers.git",
       "skillPath": "skills/requesting-code-review/SKILL.md",
-      "skillFolderHash": "ed265b1a03114cc400d5524afc5c961a4aa9ea8b",
+      "skillFolderHash": "ff419ec159bdf5ff2f2d83c7e544c586bcde69bb",
       "installedAt": "2026-04-16T10:21:59.677Z",
-      "updatedAt": "2026-04-16T10:21:59.677Z"
+      "updatedAt": "2026-05-05T08:34:21.730Z"
     },
     "test-driven-development": {
       "source": "obra/superpowers",
@@ -87,9 +87,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/obra/superpowers.git",
       "skillPath": "skills/using-git-worktrees/SKILL.md",
-      "skillFolderHash": "a5b3f5965f321175a7f07dcadff0bb79adb9e9f7",
+      "skillFolderHash": "13a9643fb9e4b236173f7d4b56b15dac10394f1b",
       "installedAt": "2026-04-16T10:22:00.594Z",
-      "updatedAt": "2026-04-16T10:22:00.594Z"
+      "updatedAt": "2026-05-05T08:34:23.424Z"
     },
     "verification-before-completion": {
       "source": "obra/superpowers",
@@ -222,9 +222,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "ea8a9f3bcf6025a511dcbd178c127479271ec331",
+      "skillFolderHash": "cefccfd89a8ee7dcd452c30116c3a0b6af58d3ea",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-05-04T18:02:22.974Z"
+      "updatedAt": "2026-05-05T08:34:30.681Z"
     },
     "layout": {
       "source": "pbakaus/impeccable",
@@ -321,9 +321,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/obra/superpowers.git",
       "skillPath": "skills/subagent-driven-development/SKILL.md",
-      "skillFolderHash": "fbcd94ffcf589754a8ecfa59861cc8843313590e",
+      "skillFolderHash": "73b43347c1bdc10f6ab81a5cdb036dd1c8098cc0",
       "installedAt": "2026-04-16T17:08:56.562Z",
-      "updatedAt": "2026-04-16T17:08:56.562Z"
+      "updatedAt": "2026-05-05T08:34:32.540Z"
     },
     "frontend-skill": {
       "source": "openai/skills",

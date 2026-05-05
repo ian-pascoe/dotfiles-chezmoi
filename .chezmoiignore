@@ -1,5 +1,6 @@
 **/README.md
 AGENTS.md
+docs/**
 
 **/node_modules/**
 
@@ -21,6 +22,7 @@ AGENTS.md
 
 # Non-Darwin
 {{ if ne .chezmoi.os "darwin" }}
+Brewfile
 .hammerspoon
 .config/aerospace
 .config/borders

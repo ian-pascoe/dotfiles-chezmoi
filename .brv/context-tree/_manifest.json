@@ -3,65 +3,49 @@
     {
       "order": 3,
       "path": "_index.md",
-      "tokens": 1236,
+      "tokens": 1045,
       "type": "summary"
     },
     {
-      "abstractPath": "architecture/opencode/byterover_context_engine_ideas.abstract.md",
-      "abstractTokens": 47,
       "importance": 50,
-      "path": "architecture/opencode/byterover_context_engine_ideas.md",
-      "tokens": 47,
+      "path": "_index.sync-conflict-20260503-134830-QVX6PJM.md",
+      "tokens": 1112,
       "type": "context"
     },
     {
-      "abstractPath": "architecture/opencode/byterover_plugin_curation_and_recall.abstract.md",
-      "abstractTokens": 42,
       "importance": 50,
-      "path": "architecture/opencode/byterover_plugin_curation_and_recall.md",
-      "tokens": 42,
+      "path": "_index.sync-conflict-20260503-134835-QVX6PJM.md",
+      "tokens": 1112,
       "type": "context"
     },
     {
-      "abstractPath": "architecture/opencode/byterover_plugin_recall_and_curation.abstract.md",
-      "abstractTokens": 47,
       "importance": 50,
-      "path": "architecture/opencode/byterover_plugin_recall_and_curation.md",
-      "tokens": 47,
+      "path": "architecture/_index.sync-conflict-20260503-134830-QVX6PJM.md",
+      "tokens": 1135,
       "type": "context"
     },
     {
-      "abstractPath": "architecture/opencode/byterover_recall_window_update.abstract.md",
-      "abstractTokens": 41,
       "importance": 50,
-      "path": "architecture/opencode/byterover_recall_window_update.md",
-      "tokens": 41,
+      "path": "architecture/opencode/byterover_recall_window_update.sync-conflict-20260503-134824-QVX6PJM.md",
+      "tokens": 605,
       "type": "context"
     },
     {
-      "abstractPath": "architecture/opencode/recall_and_curation_improvements.abstract.md",
-      "abstractTokens": 47,
+      "abstractPath": "architecture/opencode/neovim_ssh_clipboard_fix.abstract.md",
+      "abstractTokens": 36,
       "importance": 50,
-      "path": "architecture/opencode/recall_and_curation_improvements.md",
-      "tokens": 47,
-      "type": "context"
-    },
-    {
-      "abstractPath": "architecture/opencode/review_agent_prompt_refinement.abstract.md",
-      "abstractTokens": 53,
-      "importance": 50,
-      "path": "architecture/opencode/review_agent_prompt_refinement.md",
-      "tokens": 53,
+      "path": "architecture/opencode/neovim_ssh_clipboard_fix.md",
+      "tokens": 36,
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-03T10:35:19.834Z",
+  "generated_at": "2026-05-05T16:58:10.303Z",
   "lane_tokens": {
-    "contexts": 277,
+    "contexts": 4000,
     "stubs": 0,
-    "summaries": 1236
+    "summaries": 1045
   },
-  "source_fingerprint": "90957a417a6ef741c18b23856c753a500031f0bfc48b84d3bab509a76fdb6258",
-  "total_tokens": 1513,
+  "source_fingerprint": "65864d839ed500df52f2a88bb013e0cc41e76e8c341681c5f8add95fdd7823cd",
+  "total_tokens": 5045,
   "version": 1
 }

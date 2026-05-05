@@ -1,0 +1,2 @@
+# Bun global packages
+# One package spec per line.

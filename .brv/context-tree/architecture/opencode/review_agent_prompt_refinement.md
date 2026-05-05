@@ -1,12 +1,11 @@
 ---
+consolidated_at: '2026-05-05T15:55:10.733Z'
+consolidated_from: [{date: '2026-05-05T15:55:10.733Z', path: architecture/opencode/review_agent_prompt_refinement.overview.md, reason: 'These are the same review-agent prompt refinement in source, overview, and abstract form. The overview and abstract are summaries of the markdown source, not distinct knowledge.'}, {date: '2026-05-05T15:55:10.733Z', path: architecture/opencode/review_agent_prompt_refinement.abstract.md, reason: 'These are the same review-agent prompt refinement in source, overview, and abstract form. The overview and abstract are summaries of the markdown source, not distinct knowledge.'}]
+related: [architecture/opencode/byterover_context_engine_ideas.md, architecture/opencode/byterover_plugin_curation_and_recall.md, architecture/opencode/byterover_recall_window_update.md, architecture/opencode/recall_and_curation_improvements.md]
+---
 title: Review Agent Prompt Refinement
 summary: Review agent prompt was refined to emphasize evidence-based reviewing, severity ordering, no-edit behavior, and clear review output; verification checks passed except markdownlint-cli2 missing.
-tags: []
-related: []
-keywords: []
-createdAt: '2026-05-03T10:34:59.851Z'
-updatedAt: '2026-05-03T10:34:59.851Z'
----
+
 ## Reason
 Document the review agent prompt refinement and verification outcomes
 
