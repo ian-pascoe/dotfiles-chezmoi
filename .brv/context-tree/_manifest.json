@@ -39,13 +39,13 @@
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-05T16:58:10.303Z",
+  "generated_at": "2026-05-05T17:20:26.045Z",
   "lane_tokens": {
     "contexts": 4000,
     "stubs": 0,
     "summaries": 1045
   },
-  "source_fingerprint": "65864d839ed500df52f2a88bb013e0cc41e76e8c341681c5f8add95fdd7823cd",
+  "source_fingerprint": "ca6994217de68463a0b1456d985844434a3d04e3b502e182c4f69dd172404416",
   "total_tokens": 5045,
   "version": 1
 }

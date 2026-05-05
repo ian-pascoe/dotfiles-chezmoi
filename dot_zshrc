@@ -88,7 +88,16 @@ if command -v starship &>/dev/null; then
   if ((${precmd_functions[(Ie)__sanitize_prompt]} == 0)); then
     precmd_functions+=(__sanitize_prompt)
   fi
-  eval "$(starship init zsh)"
+
+  # Starship's zsh init wraps zle-keymap-select. Re-running it makes the wrapper
+  # preserve itself, then Escape in vi mode recurses until FUNCNEST is reached.
+  if (($+functions[prompt_starship_precmd] == 0)); then
+    eval "$(starship init zsh)"
+  elif [[ ${widgets[zle-keymap-select]:-} == user:starship_zle-keymap-select-wrapped && \
+    ${__starship_preserved_zle_keymap_select:-} == starship_zle-keymap-select-wrapped ]]; then
+    zle -N zle-keymap-select starship_zle-keymap-select
+    unset __starship_preserved_zle_keymap_select
+  fi
 fi
 
 ## Apply Base Path Order
