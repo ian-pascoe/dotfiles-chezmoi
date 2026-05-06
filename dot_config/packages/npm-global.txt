@@ -6,7 +6,6 @@
 @mariozechner/pi-coding-agent
 @playwright/cli
 byterover-cli
-context-mode
 critique
 ctx7
 just-bash
@@ -21,4 +20,5 @@ pi-markdown-preview
 pi-subagents
 pi-terminal-theme
 skills
+t3
 turbo

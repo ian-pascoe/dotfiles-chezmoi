@@ -1,0 +1,191 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DRY_RUN=0
+YES=0
+MANIFEST_DIR="${PACKAGE_MANIFEST_DIR:-$HOME/.config/packages}"
+
+usage() {
+  cat <<'EOF'
+Usage: install-package-manifests [--dry-run] [--yes] [--manifest-dir DIR]
+
+Install packages listed in ~/.config/packages manifests.
+
+Options:
+  --dry-run          Print install commands without running them.
+  --yes             Install without interactive confirmation.
+  --manifest-dir    Read manifests from DIR instead of ~/.config/packages.
+  -h, --help        Show this help.
+EOF
+}
+
+has_cmd() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+read_packages() {
+  local file="$1"
+
+  if [ ! -f "$file" ]; then
+    return 0
+  fi
+
+  sed -E 's/[[:space:]]*#.*$//; /^[[:space:]]*$/d; s/^[[:space:]]+//; s/[[:space:]]+$//;' "$file"
+}
+
+print_command() {
+  printf '+'
+  printf ' %q' "$@"
+  printf '\n'
+}
+
+run_command() {
+  if [ "$DRY_RUN" -eq 1 ]; then
+    print_command "$@"
+  else
+    "$@"
+  fi
+}
+
+install_each() {
+  local manager="$1"
+  local command_name="$2"
+  local manifest="$3"
+  shift 3
+  local packages=()
+
+  mapfile -t packages < <(read_packages "$manifest")
+  if [ "${#packages[@]}" -eq 0 ]; then
+    echo "Skipping $manager: no packages listed."
+    return 0
+  fi
+
+  if ! has_cmd "$command_name"; then
+    echo "Skipping $manager: $command_name is not installed." >&2
+    return 0
+  fi
+
+  echo "Installing $manager packages (${#packages[@]})..."
+  for package in "${packages[@]}"; do
+    run_command "$@" "$package"
+  done
+}
+
+install_each_missing() {
+  local manager="$1"
+  local command_name="$2"
+  local manifest="$3"
+  local installed_command="$4"
+  shift 4
+  local packages=()
+  local installed
+
+  mapfile -t packages < <(read_packages "$manifest")
+  if [ "${#packages[@]}" -eq 0 ]; then
+    echo "Skipping $manager: no packages listed."
+    return 0
+  fi
+
+  if ! has_cmd "$command_name"; then
+    echo "Skipping $manager: $command_name is not installed." >&2
+    return 0
+  fi
+
+  installed="$($installed_command)"
+  echo "Installing missing $manager packages (${#packages[@]})..."
+  for package in "${packages[@]}"; do
+    if grep -Fxq "$package" <<<"$installed"; then
+      echo "Skipping $manager package already installed: $package"
+    else
+      run_command "$@" "$package"
+    fi
+  done
+}
+
+list_uv_tools() {
+  uv tool list 2>/dev/null | awk '/^[^-[:space:]][^[:space:]]+[[:space:]]+v[0-9]/ { print $1 }' || true
+}
+
+list_cargo_installed() {
+  cargo install --list 2>/dev/null | awk '/^[A-Za-z0-9_-]+[[:space:]]+v[0-9]/ { print $1 }' || true
+}
+
+list_pipx_installed() {
+  pipx list --json 2>/dev/null | python3 -c 'import json, sys; print("\n".join(sorted(json.load(sys.stdin).get("venvs", {}).keys())))' || true
+}
+
+install_apt() {
+  local manifest="$1"
+  local packages=()
+
+  mapfile -t packages < <(read_packages "$manifest")
+  if [ "${#packages[@]}" -eq 0 ]; then
+    echo "Skipping apt: no packages listed."
+    return 0
+  fi
+
+  if ! has_cmd apt-get; then
+    echo "Skipping apt: apt-get is not installed." >&2
+    return 0
+  fi
+
+  echo "Installing apt packages (${#packages[@]})..."
+  run_command sudo apt-get update
+  run_command sudo apt-get install -y "${packages[@]}"
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --dry-run)
+      DRY_RUN=1
+      ;;
+    --yes)
+      YES=1
+      ;;
+    --manifest-dir)
+      if [ "$#" -lt 2 ]; then
+        echo "--manifest-dir requires a directory" >&2
+        exit 2
+      fi
+      MANIFEST_DIR="$2"
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+if [ ! -d "$MANIFEST_DIR" ]; then
+  echo "Manifest directory not found: $MANIFEST_DIR" >&2
+  exit 1
+fi
+
+if [ "$DRY_RUN" -eq 0 ] && [ "$YES" -eq 0 ]; then
+  printf 'Install packages from %s? [y/N] ' "$MANIFEST_DIR"
+  read -r answer
+  case "$answer" in
+    y | Y | yes | YES)
+      ;;
+    *)
+      echo "Aborted."
+      exit 1
+      ;;
+  esac
+fi
+
+install_apt "$MANIFEST_DIR/apt.txt"
+install_each "npm global" npm "$MANIFEST_DIR/npm-global.txt" npm install -g
+install_each "Bun global" bun "$MANIFEST_DIR/bun-global.txt" bun add -g
+install_each "pnpm global" pnpm "$MANIFEST_DIR/pnpm-global.txt" pnpm add -g
+install_each_missing "uv tool" uv "$MANIFEST_DIR/uv-tools.txt" list_uv_tools uv tool install
+install_each_missing "cargo" cargo "$MANIFEST_DIR/cargo-install.txt" list_cargo_installed cargo install
+install_each_missing "pipx" pipx "$MANIFEST_DIR/pipx.txt" list_pipx_installed pipx install

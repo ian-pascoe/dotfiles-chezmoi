@@ -1,0 +1,17 @@
+[Unit]
+Description=Codex App Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/home/ianpascoe
+ExecStart=/usr/bin/env zsh -lc "codex app-server --listen ws://127.0.0.1:8192"
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+TimeoutStartSec=30
+SuccessExitStatus=0 143
+KillMode=control-group
+
+[Install]
+WantedBy=default.target

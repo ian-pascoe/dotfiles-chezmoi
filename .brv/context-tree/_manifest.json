@@ -3,7 +3,19 @@
     {
       "order": 3,
       "path": "_index.md",
-      "tokens": 1045,
+      "tokens": 1055,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "dot_config/_index.md",
+      "tokens": 281,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "facts/_index.md",
+      "tokens": 343,
       "type": "summary"
     },
     {
@@ -26,8 +38,14 @@
     },
     {
       "importance": 50,
-      "path": "architecture/opencode/byterover_recall_window_update.sync-conflict-20260503-134824-QVX6PJM.md",
-      "tokens": 605,
+      "path": "architecture/opencode/byterover_context_engine_ideas.md",
+      "tokens": 343,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/opencode/byterover_recall_window_update.md",
+      "tokens": 259,
       "type": "context"
     },
     {
@@ -39,13 +57,13 @@
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-05T17:20:26.045Z",
+  "generated_at": "2026-05-06T09:55:36.918Z",
   "lane_tokens": {
-    "contexts": 4000,
+    "contexts": 3997,
     "stubs": 0,
-    "summaries": 1045
+    "summaries": 1679
   },
-  "source_fingerprint": "ca6994217de68463a0b1456d985844434a3d04e3b502e182c4f69dd172404416",
-  "total_tokens": 5045,
+  "source_fingerprint": "4084130e7d378c2dff8fca58185c655f01b2a437fc2acb161002f14fd079d4fd",
+  "total_tokens": 5676,
   "version": 1
 }

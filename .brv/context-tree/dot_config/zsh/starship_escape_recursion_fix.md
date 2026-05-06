@@ -2,10 +2,15 @@
 title: Starship Escape Recursion Fix
 summary: Starship zsh init was made idempotent to prevent recursive zle-keymap-select wrapping on Escape; repair path added for already-broken shells.
 tags: []
-related: [architecture/opencode/neovim_ssh_clipboard_fix.md]
+related:
+  - architecture/opencode/neovim_ssh_clipboard_fix.md
 keywords: []
 createdAt: '2026-05-05T17:20:26.017Z'
 updatedAt: '2026-05-05T17:20:26.017Z'
+consolidated_at: '2026-05-06T09:48:36.940Z'
+consolidated_from:
+  - {date: '2026-05-06T09:48:36.940Z', path: dot_config/zsh/starship_escape_recursion_fix.abstract.md, reason: 'These three files describe the same Starship zsh Escape recursion fix. The .md file is the richest source with full front matter, raw concept, narrative, and facts; the abstract and overview are redundant summaries that repeat the same core details.'}
+  - {date: '2026-05-06T09:48:36.940Z', path: dot_config/zsh/starship_escape_recursion_fix.overview.md, reason: 'These three files describe the same Starship zsh Escape recursion fix. The .md file is the richest source with full front matter, raw concept, narrative, and facts; the abstract and overview are redundant summaries that repeat the same core details.'}
 ---
 ## Reason
 Document the idempotent Starship init fix for recursive zle-keymap-select wrapping
@@ -51,3 +56,12 @@ Verified by running zsh -n dot_zshrc and sourcing dot_zshrc twice, which returne
 - **starship_init_guard**: Starship init now only runs if prompt_starship_precmd is not already defined. [project]
 - **starship_wrapper_repair**: A repair path was added for shells that had already entered the recursive wrapper state. [project]
 - **starship_fix_verification**: Verification included zsh -n dot_zshrc and re-sourcing dot_zshrc twice returning nonrecursive. [project]
+
+## Consolidated Overview
+- Fixes a zsh/Starship bug where pressing Escape triggered recursive wrapping of `zle-keymap-select`, leading to `FUNCNEST` errors.
+- The Starship init block in `dot_zshrc` was made idempotent so it only initializes once, even if the file is sourced multiple times.
+- A repair path was added for shells already stuck in the broken recursive-wrapper state, not just new sessions.
+- Verification included parsing safety checks with `zsh -n dot_zshrc` and confirming that sourcing the config twice remains nonrecursive.
+- The solution preserves normal zsh prompt behavior and avoids Starship wrapping its own widget.
+- The guard condition uses `prompt_starship_precmd` as the sentinel for prior initialization.
+- Notable entities/patterns: Starship zsh integration, `zle-keymap-select`, `prompt_starship_precmd`, `dot_zshrc`, `FUNCNEST`, and the idempotent-init / repair pattern.

@@ -2,7 +2,7 @@
 title: Retry Plugin Backoff
 summary: Retry plugin now uses exponential backoff with full jitter, per-session retry tracking, state reset on non-overloaded errors, and verified formatting/lint success.
 tags: []
-related: [architecture/opencode/recall_window_and_curation_pipeline.overview.md]
+related: [architecture/opencode/recall_window_and_curation_pipeline.overview.md, architecture/opencode/package_manifest_sync_workflow.md, architecture/opencode/neovim_ssh_clipboard_fix.md]
 keywords: []
 createdAt: '2026-05-05T16:13:50.397Z'
 updatedAt: '2026-05-05T16:13:50.397Z'

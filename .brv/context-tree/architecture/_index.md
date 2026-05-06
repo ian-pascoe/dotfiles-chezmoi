@@ -1,71 +1,47 @@
 ---
-children_hash: 915e0fffc2944bd1e133acd99d450902107c17e29cfffbb4fd62848f0ddf50d9
-compression_ratio: 0.2918502202643172
+children_hash: ff0fbbba609a4565b94246d7c99b3d6e505e3c80e6f95c3aa3b03355f6bd808c
+compression_ratio: 0.2870939420544337
 condensation_order: 2
 covers: [_index.sync-conflict-20260503-134830-QVX6PJM.md, _index.sync-conflict-20260503-134835-QVX6PJM.md, opencode/_index.md]
-covers_token_total: 3632
+covers_token_total: 3417
 summary_level: d2
-token_count: 1060
+token_count: 981
 type: summary
 ---
-# ByteRover / Opencode Recall-Curation and Review Refinements
+# ByteRover / Opencode Architecture Notes
 
-This d2 cluster summarizes a connected set of Opencode/ByteRover architecture notes focused on memory handling, bounded recall, and review-agent discipline. The memory thread progresses from conceptual design to plugin implementation, then to narrowed recall scope and follow-up hardening ideas; the review prompt work is adjacent but shares the same environment.
+This d2 cluster summarizes a connected set of Opencode/Byterover changes focused on memory durability, bounded recall, and review discipline. The memory-related entries form a progression from conceptual design to implementation, then to scope tightening and hardening ideas.
 
-## Memory-engine foundations
-- **`byterover_context_engine_ideas.md`** establishes the core context-engine strategy:
+## Memory engine and recall/curation pipeline
+- **`byterover_context_engine_ideas.md`** defines the core memory strategy:
   - curate only lasting-value content
   - strip metadata, assistant wrapper tags, and tool noise
   - prefer the latest cleaned user query for recall
   - keep recall best-effort with timeout protection
-- The design cleanly separates:
-  - **after-turn persistence**: serialize only the new turn
-  - **assemble-time recall**: inject curated knowledge as a system prompt addition
-- Supporting mechanics include metadata stripping, sender/timestamp extraction, assistant-tag removal, and abort-controller timeout guards.
-
-## Plugin curation, persistence, and recall
-- **`byterover_plugin_curation_and_recall.md`** is the canonical implementation note for `dot_config/opencode/plugins/byterover.ts`.
-- It documents the turn pipeline:
-  - fetch messages in the current turn
+- **`byterover_plugin_curation_and_recall.md`** documents the concrete plugin behavior in `dot_config/opencode/plugins/byterover.ts`:
+  - fetch current-turn messages
   - format role-labeled parts
   - persist on idle/compaction
   - recall during system transform
-- Key decisions and findings:
-  - readiness checks were removed from the persist/curation path
-  - `brvBridge.ready()` remains only for recall
-  - first-run bootstrap is preserved when `.brv` does not yet exist
-  - `persist(..., { detach: false })` is used when completion status must be checked
-  - delimiter-based pseudo-XML formatting is brittle
-  - structured JSON serialization is preferred
-  - reasoning parts are excluded from durable memory ingestion
-  - tool outputs are capped or truncated
-  - empty inputs and empty recall results are skipped
-  - bridge failures surface through `client.app.log`
-- Verification included formatter, linter, and TypeScript checks.
-
-## Bounded recall window
-- **`byterover_recall_window_update.md`** narrows the recall path for `dot_config/opencode/plugins/byterover.ts`.
-- Recall now uses a separate recent window bounded by:
-  - **3 recent user turns**
-  - **4096 formatted characters**
-- Curation remains limited to the **current completed turn**.
-- Serialization stays **main-text only**, excluding tools, files, and reasoning.
-- Use this entry for the exact recall-window limits and the curation-vs-recall split.
-
-## Follow-up hardening ideas
-- **`recall_and_curation_improvements.md`** records recommended next steps:
-  - add a best-effort recall timeout with `AbortController`
-  - rename the curation prompt label to **Conversation**
+  - readiness checks removed from persist/curation, while `brvBridge.ready()` remains for recall
+  - `.brv` bootstrap behavior preserved
+  - structured JSON serialization preferred over brittle delimiter-based pseudo-XML
+  - reasoning content excluded from durable memory ingestion; tool output is capped/truncated; empty inputs/results are skipped
+- **`byterover_recall_window_update.md`** narrows recall scope:
+  - separate recent window limited to **3 recent user turns** and **4096 formatted characters**
+  - curation stays limited to the **current completed turn**
+  - serialization remains **main-text only**; tools, files, and reasoning are excluded
+- **`recall_and_curation_improvements.md`** captures follow-up hardening ideas:
+  - add AbortController-based recall timeout
+  - rename the curation label to **Conversation**
   - optionally log recall window size
   - consider deduping repeated idle curation
-  - handle oversize first-message edge cases
-- It also preserves a key heuristic:
+  - handle oversize first-message edge cases carefully
   - do not blindly skip short but meaningful messages like “Do it”, “yes”, or “same”
-  - trivial chatter can still be skipped when clearly non-referential
 
 ## Review-agent prompt refinement
-- **`review_agent_prompt_refinement.md`** is adjacent infrastructure work in `dot_config/opencode/prompt/review.md` and `dot_config/opencode/opencode.jsonc`.
-- The prompt was refined to emphasize:
+- **`review_agent_prompt_refinement.md`** is adjacent infrastructure work in the same Opencode/Byterover environment.
+- It updates `dot_config/opencode/prompt/review.md` and `dot_config/opencode/opencode.jsonc` to emphasize:
   - review vs. solving separation
   - evidence-based findings
   - severity ordering
@@ -73,10 +49,25 @@ This d2 cluster summarizes a connected set of Opencode/ByteRover architecture no
   - concise output sections: **Correct, Fixed, Blocker, Note**
 - Verification succeeded for JSONC parsing, markdown structure, and `git diff --check`; `markdownlint-cli2` was unavailable.
 
-## Relationships across the cluster
-- The memory-focused entries form a progression:
-  - **`byterover_context_engine_ideas.md`** sets the conceptual rules
-  - **`byterover_plugin_curation_and_recall.md`** captures the concrete plugin behavior
-  - **`byterover_recall_window_update.md`** constrains recall scope with explicit bounds
-  - **`recall_and_curation_improvements.md`** proposes next-step stabilization
-- **`review_agent_prompt_refinement.md`** shares the same Opencode/ByteRover environment but focuses on review discipline rather than memory serialization.
+## Relationships
+- The first four entries form one coherent memory-handling thread:
+  - **`byterover_context_engine_ideas.md`** = conceptual rules
+  - **`byterover_plugin_curation_and_recall.md`** = implementation and validation findings
+  - **`byterover_recall_window_update.md`** = bounded recall behavior
+  - **`recall_and_curation_improvements.md`** = next-step hardening recommendations
+- **`review_agent_prompt_refinement.md`** is related but distinct: it targets review behavior rather than memory serialization.
+
+## Related neighboring plugin/workflow notes
+- **`retry_plugin_backoff.md`** documents retry handling for overloaded API errors:
+  - exponential backoff with full jitter
+  - per-session retry tracking
+  - retry state reset on non-overloaded errors
+  - format/lint passed; typecheck blocked by missing `tsc`
+- **`package_manifest_sync_workflow.md`** documents manifest refresh automation:
+  - `dot_local/bin/executable_sync-package-manifests`
+  - `dot_local/bin/executable_upgrade-all` runs sync before dotfiles pull
+  - verification matched exported manifests; no `run_once_*` or `run_onchange_*` hooks were added
+- **`neovim_ssh_clipboard_fix.md`** records the SSH clipboard fix:
+  - force OSC52 clipboard provider in SSH sessions
+  - set `clipboard=unnamedplus`
+  - verified with `stylua --check` and an SSH startup check returning `ssh clipboard ok`

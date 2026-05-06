@@ -15,6 +15,7 @@ bind9-host
 bison
 bsdutils
 btop
+bubblewrap
 build-essential
 bzip2
 ca-certificates
@@ -184,6 +185,7 @@ reportbug
 screen
 sed
 socat
+speedtest
 sqv
 ssh-import-id
 sudo
@@ -215,6 +217,8 @@ vim-tiny
 wget
 whiptail
 xar
+xclip
+xsel
 xterm
 xz-utils
 zip

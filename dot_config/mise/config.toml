@@ -8,6 +8,7 @@ bat = "latest"
 btop = "1.4.6"               # newest version has a tbz mismatch
 bun = "latest"
 chezmoi = "latest"
+codex = "latest"
 fd = "latest"
 fzf = "latest"
 gcloud = "latest"

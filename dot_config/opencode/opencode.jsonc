@@ -2,7 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "@franlol/opencode-md-table-formatter",
-    "context-mode",
     [
       "opencode-adaptive-thinking",
       {
@@ -127,12 +126,7 @@
       },
     },
   },
-  "mcp": {
-    "context-mode": {
-      "type": "local",
-      "command": ["context-mode"],
-    },
-  },
+  "mcp": {},
   "lsp": {
     "biome": {
       "command": ["biome", "lsp-proxy"],

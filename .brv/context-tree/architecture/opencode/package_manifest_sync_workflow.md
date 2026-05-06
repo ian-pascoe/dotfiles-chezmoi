@@ -2,7 +2,7 @@
 title: Package Manifest Sync Workflow
 summary: sync-package-manifests refreshes package manifests and upgrade-all now invokes it before dotfiles pull; verification confirmed matching exports and no hooks added
 tags: []
-related: []
+related: [architecture/opencode/retry_plugin_backoff.md, architecture/opencode/neovim_ssh_clipboard_fix.md]
 keywords: []
 createdAt: '2026-05-05T16:42:22.708Z'
 updatedAt: '2026-05-05T16:42:22.708Z'

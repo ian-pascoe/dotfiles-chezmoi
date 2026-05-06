@@ -1,33 +1,13 @@
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "medium"
-[projects."/Users/ianpascoe/.dotfiles"]
-trust_level = "trusted"
-
-[projects."/Users/ianpascoe/code/crosspack"]
-trust_level = "trusted"
-
-[projects."/Users/ianpascoe/code/crosspack/crosspack"]
-trust_level = "trusted"
-
-[projects."/"]
-trust_level = "trusted"
-
-[projects."/home/ianpascoe"]
-trust_level = "trusted"
-
-[notice.model_migrations]
-"gpt-5.2-codex" = "gpt-5.3-codex"
-"gpt-5.3-codex" = "gpt-5.4"
+model_reasoning_effort = "low"
 
 [features]
 multi_agent = true
 memories = true
+remote_connections = true
 
 [plugins."github@openai-curated"]
-enabled = true
-
-[plugins."browser-use@openai-bundled"]
 enabled = true
 
 [plugins."computer-use@openai-bundled"]
@@ -54,19 +34,47 @@ enabled = true
 [plugins."presentations@openai-primary-runtime"]
 enabled = true
 
+[plugins."context7@claude-plugins-official"]
+enabled = true
+
+[plugins."frontend-design@claude-plugins-official"]
+enabled = true
+
+[plugins."ralph-loop@claude-plugins-official"]
+enabled = true
+
+[plugins."browser-use@openai-bundled"]
+enabled = true
+
+[plugins."superpowers@openai-curated"]
+enabled = true
+
+[plugins."build-web-apps@openai-curated"]
+enabled = true
+
 [tui.model_availability_nux]
 "gpt-5.5" = 1
 
 [marketplaces.openai-bundled]
-last_updated = "2026-05-02T08:57:32Z"
+last_updated = "2026-05-05T20:00:13Z"
 source_type = "local"
 source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-05-02T09:52:30Z"
+last_updated = "2026-05-05T20:52:01Z"
 source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[marketplaces.claude-plugins-official]
+last_updated = "2026-05-06T13:14:10Z"
+last_revision = "06f52cd3ac3e47ecb45228a86183ea2a86e9d6ff"
+source_type = "git"
+source = "https://github.com/anthropics/claude-plugins-official.git"
 
 [memories]
 generate_memories = true
 use_memories = true
+
+[[skills.config]]
+name = "build-web-apps:supabase-postgres-best-practices"
+enabled = false

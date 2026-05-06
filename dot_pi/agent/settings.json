@@ -1,7 +1,6 @@
 {
-  "lastChangelogVersion": "0.71.1",
+  "lastChangelogVersion": "0.73.0",
   "packages": [
-    "npm:context-mode",
     "npm:pi-subagents",
     "npm:pi-intercom",
     "npm:pi-lens",

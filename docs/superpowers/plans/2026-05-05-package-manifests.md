@@ -20,6 +20,7 @@
 - Create `dot_config/packages/cargo-install.txt`: cargo-installed binary selections.
 - Create `dot_config/packages/pipx.txt`: pipx tool selections.
 - Create `dot_local/bin/executable_sync-package-manifests`: refreshes source manifests.
+- Create `dot_local/bin/executable_install-package-manifests`: installs deployed manifests on demand.
 - Modify `dot_local/bin/executable_upgrade-all`: calls the refresh command during normal upgrades.
 
 Each file is store-only, one package spec per line, with comments allowed.
@@ -211,8 +212,45 @@ Expected: both commands exit with status `0`.
 
 Compare each manifest against direct package-manager exports. Expected current counts are apt `223`, npm `22`, bun `0`, pnpm `0`, uv `4`, cargo `12`, and pipx `0`, with `0` missing and `0` extra for every manager.
 
+### Task 4: Add Explicit Manifest Installer
+
+**Files:**
+
+- Create: `dot_local/bin/executable_install-package-manifests`
+- Modify: `docs/superpowers/specs/2026-05-05-package-manifests-design.md`
+
+- [ ] **Step 1: Add installer command**
+
+Create `dot_local/bin/executable_install-package-manifests`. The command reads manifests from `~/.config/packages` by default, accepts `--manifest-dir DIR`, supports `--dry-run`, and requires `--yes` or interactive confirmation before making changes.
+
+- [ ] **Step 2: Implement manager install commands**
+
+Use these commands:
+
+```text
+apt: sudo apt-get update; sudo apt-get install -y <all apt packages>
+npm: npm install -g <package>
+Bun: bun add -g <package>
+pnpm: pnpm add -g <package>
+uv: uv tool install <tool>, skipping already-installed tools
+cargo: cargo install <crate>, skipping already-installed crates
+pipx: pipx install <package>, skipping already-installed tools
+```
+
+- [ ] **Step 3: Verify installer help and dry run**
+
+Run:
+
+```bash
+bash -n dot_local/bin/executable_install-package-manifests
+bash dot_local/bin/executable_install-package-manifests --help
+bash dot_local/bin/executable_install-package-manifests --dry-run --manifest-dir dot_config/packages
+```
+
+Expected: syntax check exits `0`, help documents `--dry-run`, `--yes`, and `--manifest-dir`, and dry-run prints planned commands without installing packages.
+
 ## Self-Review
 
-- Spec coverage: plan creates every requested manifest under `dot_config/packages/`, adds automatic refresh during `upgrade-all`, and keeps `chezmoi apply` store-only.
+- Spec coverage: plan creates every requested manifest under `dot_config/packages/`, adds automatic refresh during `upgrade-all`, adds explicit on-demand installation, and keeps `chezmoi apply` store-only.
 - Placeholder scan: no TBD/TODO placeholders remain.
 - Scope check: no installer or apply-time package-manager mutation is included.
