@@ -2,6 +2,7 @@
 # One crate spec per line.
 cargo-audit
 cargo-binstall
+cargo-cache
 cargo-deny
 cargo-edit
 cargo-nextest

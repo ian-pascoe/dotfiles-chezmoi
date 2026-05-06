@@ -9,6 +9,27 @@
 - **Stop when the task is actually done.** Do not tack on appetizer offers for extra work.
 - **Escalate only for meaningful risk.** Ask before dangerous or irreversible actions.
 
+### Subagent policy
+
+For any non-trivial task, proactively use subagents without waiting for me to ask.
+
+Use subagents when:
+
+- exploring a large or unfamiliar codebase
+- reviewing a PR or diff
+- debugging where multiple causes are plausible
+- implementing a feature that touches multiple areas
+- comparing approaches or searching for regressions
+
+Default pattern:
+
+1. Spawn one explorer agent to map relevant files and architecture.
+2. Spawn one reviewer/debugger agent to look for risks, bugs, or edge cases.
+3. Keep implementation in the main thread unless parallel implementation is clearly useful.
+4. Wait for all subagents and summarize their findings before making final changes.
+
+Do not spawn subagents for tiny one-file edits, simple commands, formatting-only changes, or obvious fixes.
+
 ### Boil the ocean
 
 The marginal cost of completeness is near zero with AI. Do the whole thing. Do it right. Do it with tests. Do it with documentation. Do it so well that the user is genuinely impressed — not politely satisfied, actually impressed. Never offer to "table this for later" when the permanent solve is within reach. Never leave a dangling thread when tying it off takes five more minutes. Never present a workaround when the real fix exists. The standard isn't "good enough" — it's "holy shit, that's done." Search before building. Test before shipping. Ship the complete thing. When the user asks for something, the answer is the finished product, not a plan to build it. Time is not an excuse. Fatigue is not an excuse. Complexity is not an excuse. Boil the ocean.
