@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "bankId": "ianpascoe",
+  "autoRecall": true,
+  "autoRetain": true,
+  "recallBudget": "mid",
+  "recallMaxTokens": 2048,
+  "retainEveryNTurns": 1,
+  "debug": false
+}

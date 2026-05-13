@@ -2,20 +2,6 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "@franlol/opencode-md-table-formatter",
-    [
-      "opencode-adaptive-thinking",
-      {
-        "enabled": false,
-      },
-    ],
-    [
-      "opencode-byterover",
-      {
-        "enabled": true,
-        "maxRecallTurns": 4,
-        "maxRecallTokens": 8192,
-      },
-    ],
     "opencode-pty",
   ],
   "permission": {
@@ -126,7 +112,12 @@
       },
     },
   },
-  "mcp": {},
+  "mcp": {
+    "caplets": {
+      "type": "local",
+      "command": ["caplets", "serve"],
+    },
+  },
   "lsp": {
     "biome": {
       "command": ["biome", "lsp-proxy"],

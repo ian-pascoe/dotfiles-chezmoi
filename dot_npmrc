@@ -1,1 +1,4 @@
 prefix = ${HOME}/.npm-global
+min-release-age=3
+minimumReleaseAge=4320
+minimum-release-age=4320

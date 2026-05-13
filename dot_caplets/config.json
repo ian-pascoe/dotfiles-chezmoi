@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/spiritledsoftware/caplets/main/schemas/caplets-config.schema.json",
+  "defaultSearchLimit": 20,
+  "maxSearchLimit": 50,
+  "mcpServers": {
+    "deepwiki": {
+      "name": "DeepWiki",
+      "description": "DeepWiki provides up-to-date documentation you can talk to, for every repo in the world. Think Deep Research for GitHub - powered by Devin.",
+      "url": "https://mcp.deepwiki.com/mcp"
+    }
+  }
+}

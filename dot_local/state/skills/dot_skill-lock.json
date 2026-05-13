@@ -114,9 +114,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/vercel-labs/agent-browser.git",
       "skillPath": "skills/agent-browser/SKILL.md",
-      "skillFolderHash": "121eecacd86c0aab06aef5cd4663e80c5397cd41",
+      "skillFolderHash": "c1470a475a0472fceda2401ea6763708a91680a8",
       "installedAt": "2026-04-16T10:23:20.892Z",
-      "updatedAt": "2026-04-21T17:00:58.317Z"
+      "updatedAt": "2026-05-09T08:31:08.354Z"
     },
     "skill-creator": {
       "source": "anthropics/skills",
@@ -222,9 +222,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "cefccfd89a8ee7dcd452c30116c3a0b6af58d3ea",
+      "skillFolderHash": "354ad24f4a6ed5b96baec525d44e12c5a1908e0a",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-05-05T08:34:30.681Z"
+      "updatedAt": "2026-05-13T08:30:34.056Z"
     },
     "layout": {
       "source": "pbakaus/impeccable",

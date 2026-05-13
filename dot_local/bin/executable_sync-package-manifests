@@ -31,8 +31,7 @@ if ! has_cmd chezmoi; then
   exit 1
 fi
 
-SOURCE_DIR="$(chezmoi source-path)"
-MANIFEST_DIR="$SOURCE_DIR/dot_config/packages"
+MANIFEST_DIR="${MANIFEST_DIR:-$HOME/.config/packages}"
 mkdir -p "$MANIFEST_DIR"
 
 if has_cmd apt-mark; then
@@ -44,7 +43,7 @@ if has_cmd npm; then
   npm ls -g --depth=0 --parseable 2>/dev/null |
     while IFS= read -r path; do
       case "$path" in
-        "$npm_root"/*) printf '%s\n' "${path#"$npm_root/"}" ;;
+      "$npm_root"/*) printf '%s\n' "${path#"$npm_root/"}" ;;
       esac
     done
 fi | write_manifest "$MANIFEST_DIR/npm-global.txt" "npm global packages" "One package spec per line."

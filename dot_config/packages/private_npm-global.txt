@@ -4,13 +4,16 @@
 @googleworkspace/cli
 @juicesharp/rpiv-todo
 @mariozechner/pi-coding-agent
+@openai/codex
 @playwright/cli
 byterover-cli
+caplets
 critique
 ctx7
 just-bash
 kimaki
 mcporter
+opencode-ai
 oxfmt
 oxlint
 pi-byterover

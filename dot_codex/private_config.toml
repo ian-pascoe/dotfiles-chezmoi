@@ -1,11 +1,23 @@
 model = "gpt-5.5"
-personality = "pragmatic"
+personality = "none"
 model_reasoning_effort = "low"
+plan_mode_reasoning_effort = "high"
 
 [features]
+hooks = true
 multi_agent = true
-memories = true
 remote_connections = true
+undo = true
+goals = true
+memories = true
+
+[memories]
+generate_memories = true
+use_memories = true
+
+[mcp_servers.caplets]
+command = "caplets"
+args = ["serve"]
 
 [plugins."github@openai-curated"]
 enabled = true
@@ -34,26 +46,14 @@ enabled = true
 [plugins."presentations@openai-primary-runtime"]
 enabled = true
 
-[plugins."context7@claude-plugins-official"]
-enabled = true
-
-[plugins."frontend-design@claude-plugins-official"]
-enabled = true
-
-[plugins."ralph-loop@claude-plugins-official"]
-enabled = true
-
 [plugins."browser-use@openai-bundled"]
-enabled = true
-
-[plugins."superpowers@openai-curated"]
 enabled = true
 
 [plugins."build-web-apps@openai-curated"]
 enabled = true
 
 [tui.model_availability_nux]
-"gpt-5.5" = 1
+"gpt-5.5" = 4
 
 [marketplaces.openai-bundled]
 last_updated = "2026-05-05T20:00:13Z"
@@ -65,16 +65,27 @@ last_updated = "2026-05-05T20:52:01Z"
 source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
-[marketplaces.claude-plugins-official]
-last_updated = "2026-05-06T13:14:10Z"
-last_revision = "06f52cd3ac3e47ecb45228a86183ea2a86e9d6ff"
-source_type = "git"
-source = "https://github.com/anthropics/claude-plugins-official.git"
-
-[memories]
-generate_memories = true
-use_memories = true
-
 [[skills.config]]
 name = "build-web-apps:supabase-postgres-best-practices"
 enabled = false
+
+[projects."/home/ianpascoe"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/code/commissary-2"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/code/caplets"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/code/caplets"]
+trust_level = "trusted"
