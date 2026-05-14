@@ -7,6 +7,15 @@
       "name": "DeepWiki",
       "description": "DeepWiki provides up-to-date documentation you can talk to, for every repo in the world. Think Deep Research for GitHub - powered by Devin.",
       "url": "https://mcp.deepwiki.com/mcp"
+    },
+    "github": {
+      "name": "GitHub",
+      "description": "Inspect and manage GitHub repositories, issues, pull requests, branches, commits, and code review workflows.",
+      "url": "https://api.githubcopilot.com/mcp",
+      "auth": {
+        "type": "bearer",
+        "token": "$env:GH_TOKEN"
+      }
     }
   }
 }

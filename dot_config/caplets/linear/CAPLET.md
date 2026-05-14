@@ -14,7 +14,6 @@ mcpServer:
   auth:
     type: oauth2
 ---
-
 # Linear
 
 Use this Caplet when the agent needs live product planning context from Linear or needs to keep
