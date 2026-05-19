@@ -8,6 +8,7 @@ tags:
   - frameworks
   - api-reference
 mcpServer:
+  transport: http
   url: https://mcp.context7.com/mcp/oauth
   auth: 
     type: oauth2

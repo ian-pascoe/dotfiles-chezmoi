@@ -3,6 +3,15 @@
   "defaultSearchLimit": 20,
   "maxSearchLimit": 50,
   "mcpServers": {
+    "browser": {
+      "name": "Browser",
+      "description": "Web browsing capabilities to fetch real-time information from the internet, including web pages, APIs, and other online resources.",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--headless"
+      ]
+    },
     "deepwiki": {
       "name": "DeepWiki",
       "description": "DeepWiki provides up-to-date documentation you can talk to, for every repo in the world. Think Deep Research for GitHub - powered by Devin.",
@@ -17,14 +26,10 @@
         "token": "$env:GH_TOKEN"
       }
     },
-    "browser": {
-      "name": "Browser",
-      "description": "Web browsing capabilities to fetch real-time information from the internet, including web pages, APIs, and other online resources.",
-      "command": "npx",
-      "args": [
-        "@playwright/mcp@latest",
-        "--headless"
-      ]
+    "grep": {
+      "name": "Grep.app",
+      "description": "Grep.app provides powerful code search capabilities across a vast index of open source repositories, allowing you to quickly find relevant code snippets and examples.",
+      "url": "https://mcp.grep.app"
     },
     "stealth-browser": {
       "name": "Stealth Browser",
@@ -33,8 +38,9 @@
       "args": [
         "@playwright/mcp@latest",
         "--headless",
-        "--user-data-dir=$HOME/.camoufox/profile",
-        "--executable-path=$HOME/.cache/camoufox/camoufox",
+        "--browser=firefox",
+        "--user-data-dir=$env:HOME/.camoufox/profile",
+        "--executable-path=$env:HOME/.cache/camoufox/camoufox",
         "--caps=--headless=virtual"
       ]
     }

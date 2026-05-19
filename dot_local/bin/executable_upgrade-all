@@ -109,6 +109,14 @@ if has_cmd mise; then
 fi
 
 #########################################################################
+# Pi
+if has_cmd pi; then
+  echo "Updating Pi packages..."
+  pi update
+  echo "Pi packages updated successfully!"
+fi
+
+#########################################################################
 # Skills
 SKILLS_CMD=()
 if has_cmd skills; then
