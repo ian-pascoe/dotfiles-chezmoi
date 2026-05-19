@@ -26,7 +26,7 @@
         "token": "$env:GH_TOKEN"
       }
     },
-    "grep": {
+    "grep-app": {
       "name": "Grep.app",
       "description": "Grep.app provides powerful code search capabilities across a vast index of open source repositories, allowing you to quickly find relevant code snippets and examples.",
       "url": "https://mcp.grep.app"

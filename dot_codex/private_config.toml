@@ -68,8 +68,8 @@ source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.caplets]
-last_updated = "2026-05-18T14:25:08Z"
-last_revision = "ef926b536a506497283a1c5ae4b1ef0224e6b904"
+last_updated = "2026-05-19T16:21:00Z"
+last_revision = "ed50a5424ee8be9e4dbdab1abe5cb71dc0c31971"
 source_type = "git"
 source = "https://github.com/spiritledsoftware/caplets.git"
 
