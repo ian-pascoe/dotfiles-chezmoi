@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+# Compatibility shim for plugins that still call fzf-tmux.
+# The mise fzf install provides `fzf` with native tmux popup support, but not
+# the legacy `fzf-tmux` helper script.
+
+tmux_opts=""
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -p)
+      shift
+      tmux_opts="$1"
+      shift
+      ;;
+    -p*)
+      tmux_opts="${1#-p}"
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [ -n "$tmux_opts" ]; then
+  case "$tmux_opts" in
+    center*|top*|bottom*|left*|right*) ;;
+    *) tmux_opts="center,$tmux_opts" ;;
+  esac
+
+  exec fzf --tmux="$tmux_opts" "$@"
+fi
+
+exec fzf "$@"

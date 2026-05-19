@@ -193,6 +193,7 @@ psmisc
 python3
 qemu-guest-agent
 reportbug
+resvg
 rustc
 screen
 sed

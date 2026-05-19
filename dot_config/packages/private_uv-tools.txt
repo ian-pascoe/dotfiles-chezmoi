@@ -3,4 +3,5 @@
 camoufox
 khal
 nano-pdf
+rembg
 vdirsyncer

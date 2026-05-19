@@ -1,9 +1,8 @@
 # npm global packages
 # One package spec per line.
 @biomejs/biome
+@earendil-works/pi-coding-agent
 @googleworkspace/cli
-@juicesharp/rpiv-todo
-@mariozechner/pi-coding-agent
 @openai/codex
 @playwright/cli
 byterover-cli
@@ -16,12 +15,6 @@ mcporter
 opencode-ai
 oxfmt
 oxlint
-pi-byterover
-pi-intercom
-pi-lens
-pi-markdown-preview
-pi-subagents
-pi-terminal-theme
 skills
 t3
 turbo

@@ -2,6 +2,9 @@ model = "gpt-5.5"
 personality = "none"
 model_reasoning_effort = "low"
 plan_mode_reasoning_effort = "high"
+approval_policy = "never"
+approvals_reviewer = "user"
+sandbox_mode = "danger-full-access"
 
 [features]
 hooks = true
@@ -14,10 +17,6 @@ memories = true
 [memories]
 generate_memories = true
 use_memories = true
-
-[mcp_servers.caplets]
-command = "caplets"
-args = ["serve"]
 
 [plugins."github@openai-curated"]
 enabled = true
@@ -52,6 +51,9 @@ enabled = true
 [plugins."build-web-apps@openai-curated"]
 enabled = true
 
+[plugins."caplets@caplets"]
+enabled = true
+
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 
@@ -64,6 +66,12 @@ source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
 last_updated = "2026-05-05T20:52:01Z"
 source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[marketplaces.caplets]
+last_updated = "2026-05-18T14:25:08Z"
+last_revision = "ef926b536a506497283a1c5ae4b1ef0224e6b904"
+source_type = "git"
+source = "https://github.com/spiritledsoftware/caplets.git"
 
 [[skills.config]]
 name = "build-web-apps:supabase-postgres-best-practices"
@@ -88,4 +96,10 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/Users/ianpascoe/code/caplets"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/code/secretary"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/code/veil"]
 trust_level = "trusted"

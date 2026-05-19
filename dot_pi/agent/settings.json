@@ -1,22 +1,28 @@
 {
-  "lastChangelogVersion": "0.73.0",
+  "lastChangelogVersion": "0.75.3",
   "packages": [
-    "npm:pi-subagents",
+    "npm:@caplets/pi",
+    "npm:@howaboua/pi-codex-conversion",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-btw",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:@narumitw/pi-goal",
+    "npm:@victor-software-house/pi-curated-themes",
     "npm:pi-intercom",
     "npm:pi-lens",
     "npm:pi-markdown-preview",
-    "npm:@juicesharp/rpiv-todo",
-    "npm:pi-terminal-theme",
-    "npm:pi-byterover"
+    "npm:pi-mcp-adapter",
+    "npm:pi-memory-md",
+    "npm:pi-subagents",
+    "npm:pi-subdir-context",
+    "npm:pi-terminal-theme"
   ],
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "theme": "terminal",
-  "treeFilterMode": "default",
+  "defaultThinkingLevel": "low",
+  "theme": "catppuccin-mocha",
   "quietStartup": true,
   "collapseChangelog": true,
-  "transport": "auto",
-  "editorPaddingX": 0,
   "showHardwareCursor": true,
   "subagents": {
     "agentOverrides": {
@@ -41,6 +47,17 @@
       "planner": {
         "thinking": "medium"
       }
+    }
+  },
+  "powerline": {
+    "preset": "default",
+    "fixedEditor": false
+  },
+  "pi-memory-md": {
+    "memoryDir": {
+      "repoUrl": "https://github.com/ian-pascoe/memory-md.git",
+      "localPath": "~/.pi/memory-md",
+      "globalMemory": "global"
     }
   }
 }

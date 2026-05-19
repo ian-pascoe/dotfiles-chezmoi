@@ -1,0 +1,8 @@
+{
+  "fast": false,
+  "imageGeneration": true,
+  "statusLine": false,
+  "useOnAllModels": false,
+  "webSearch": true,
+  "verbosity": "low"
+}
