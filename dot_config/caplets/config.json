@@ -16,6 +16,27 @@
         "type": "bearer",
         "token": "$env:GH_TOKEN"
       }
+    },
+    "browser": {
+      "name": "Browser",
+      "description": "Web browsing capabilities to fetch real-time information from the internet, including web pages, APIs, and other online resources.",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--headless"
+      ]
+    },
+    "stealth-browser": {
+      "name": "Stealth Browser",
+      "description": "A stealth web browser that can evade anti-bot measures and access content that may be restricted to regular automated browsers.",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--headless",
+        "--user-data-dir=$HOME/.camoufox/profile",
+        "--executable-path=$HOME/.cache/camoufox/camoufox",
+        "--caps=--headless=virtual"
+      ]
     }
   }
 }
