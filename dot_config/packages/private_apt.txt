@@ -56,6 +56,7 @@ git
 git-lfs
 gnupg
 google-chrome-stable
+gpg
 grep
 grub-cloud-amd64
 gzip
@@ -175,6 +176,7 @@ ncurses-bin
 netbase
 netplan.io
 ninja-build
+nushell
 openbox
 openssh-server
 openssl
@@ -220,6 +222,7 @@ traceroute
 tzdata
 ufw
 unattended-upgrades
+universal-ctags
 unzip
 util-linux
 uuid-dev

@@ -12,8 +12,7 @@
     "npm:pi-markdown-preview",
     "npm:pi-mcp-adapter",
     "npm:pi-subagents",
-    "npm:pi-subdir-context",
-    "npm:pi-hashline-edit"
+    "npm:pi-subdir-context"
   ],
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",

@@ -1,0 +1,5 @@
+{
+  "enabled": true,
+  "maxRecallTurns": 5,
+  "maxRecallChars": 8192
+}

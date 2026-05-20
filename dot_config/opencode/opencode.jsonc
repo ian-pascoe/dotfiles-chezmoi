@@ -3,7 +3,14 @@
   "plugin": [
     "@caplets/opencode@latest",
     "@franlol/opencode-md-table-formatter@latest",
-    "opencode-byterover@latest",
+    [
+      "opencode-byterover@latest",
+      {
+        "enabled": true,
+        "maxRecallTurns": 5,
+        "maxRecallChars": 8192,
+      },
+    ],
     "opencode-pty@latest",
   ],
   "permission": {

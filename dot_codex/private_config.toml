@@ -68,8 +68,8 @@ source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.caplets]
-last_updated = "2026-05-19T16:21:00Z"
-last_revision = "ed50a5424ee8be9e4dbdab1abe5cb71dc0c31971"
+last_updated = "2026-05-19T21:52:02Z"
+last_revision = "f261bbd9a5e2e06078a28c1da49735b119e9e13a"
 source_type = "git"
 source = "https://github.com/spiritledsoftware/caplets.git"
 
@@ -102,4 +102,7 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/home/ianpascoe/code/veil"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/Documents/Codex/2026-05-19/try-using-caplets-tools"]
 trust_level = "trusted"
