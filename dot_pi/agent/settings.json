@@ -7,10 +7,10 @@
     "npm:@juicesharp/rpiv-todo",
     "npm:@juicesharp/rpiv-web-tools",
     "npm:@narumitw/pi-goal",
+    "npm:pi-byterover",
     "npm:pi-lens",
     "npm:pi-markdown-preview",
     "npm:pi-mcp-adapter",
-    "npm:pi-memory-md",
     "npm:pi-subagents",
     "npm:pi-subdir-context",
     "npm:pi-hashline-edit"

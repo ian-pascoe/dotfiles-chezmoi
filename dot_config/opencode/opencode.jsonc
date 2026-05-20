@@ -3,6 +3,7 @@
   "plugin": [
     "@caplets/opencode@latest",
     "@franlol/opencode-md-table-formatter@latest",
+    "opencode-byterover@latest",
     "opencode-pty@latest",
   ],
   "permission": {
