@@ -473,8 +473,7 @@
 .media-menu .btn {
   font-size: var(--font-md);
   font-weight: 400;
-  margin: var(--spacing-lg) var(--spacing-2xs) var(--spacing-0)
-    var(--spacing-2xs);
+  margin: var(--spacing-lg) var(--spacing-2xs) var(--spacing-0) var(--spacing-2xs);
   min-width: var(--size-massive);
   max-width: var(--size-massive);
   min-height: var(--size-massive);

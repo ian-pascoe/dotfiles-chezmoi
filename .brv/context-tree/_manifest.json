@@ -3,7 +3,7 @@
     {
       "order": 3,
       "path": "_index.md",
-      "tokens": 1055,
+      "tokens": 1436,
       "type": "summary"
     },
     {
@@ -13,39 +13,27 @@
       "type": "summary"
     },
     {
-      "order": 2,
-      "path": "facts/_index.md",
-      "tokens": 343,
-      "type": "summary"
-    },
-    {
       "importance": 50,
-      "path": "_index.sync-conflict-20260503-134830-QVX6PJM.md",
-      "tokens": 1112,
-      "type": "context"
-    },
-    {
-      "importance": 50,
-      "path": "_index.sync-conflict-20260503-134835-QVX6PJM.md",
-      "tokens": 1112,
-      "type": "context"
-    },
-    {
-      "importance": 50,
-      "path": "architecture/_index.sync-conflict-20260503-134830-QVX6PJM.md",
-      "tokens": 1135,
+      "path": "architecture/idempotent-initialization-as-a-hardening-pattern.md",
+      "tokens": 382,
       "type": "context"
     },
     {
       "importance": 50,
       "path": "architecture/opencode/byterover_context_engine_ideas.md",
-      "tokens": 343,
+      "tokens": 356,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/opencode/byterover_plugin_curation_and_recall.md",
+      "tokens": 350,
       "type": "context"
     },
     {
       "importance": 50,
       "path": "architecture/opencode/byterover_recall_window_update.md",
-      "tokens": 259,
+      "tokens": 272,
       "type": "context"
     },
     {
@@ -55,15 +43,83 @@
       "path": "architecture/opencode/neovim_ssh_clipboard_fix.md",
       "tokens": 36,
       "type": "context"
+    },
+    {
+      "abstractPath": "architecture/opencode/package_manifest_sync_workflow.abstract.md",
+      "abstractTokens": 39,
+      "importance": 50,
+      "path": "architecture/opencode/package_manifest_sync_workflow.md",
+      "tokens": 39,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/opencode/recall_and_curation_improvements.md",
+      "tokens": 286,
+      "type": "context"
+    },
+    {
+      "abstractPath": "architecture/opencode/recall_window_and_curation_pipeline.abstract.md",
+      "abstractTokens": 44,
+      "importance": 50,
+      "path": "architecture/opencode/recall_window_and_curation_pipeline.md",
+      "tokens": 44,
+      "type": "context"
+    },
+    {
+      "abstractPath": "architecture/opencode/retry_plugin_backoff.abstract.md",
+      "abstractTokens": 41,
+      "importance": 50,
+      "path": "architecture/opencode/retry_plugin_backoff.md",
+      "tokens": 41,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/opencode/review_agent_prompt_refinement.md",
+      "tokens": 254,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/prefer-structured-state-over-brittle-text-heuristics.md",
+      "tokens": 332,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "dot_config/zsh/starship_escape_recursion_fix.md",
+      "tokens": 1009,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "facts/bounded-best-effort-processing-over-perfect-completeness.md",
+      "tokens": 344,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "facts/project/context.md",
+      "tokens": 59,
+      "type": "context"
+    },
+    {
+      "abstractPath": "facts/project/curation_workflow_rules.abstract.md",
+      "abstractTokens": 50,
+      "importance": 50,
+      "path": "facts/project/curation_workflow_rules.md",
+      "tokens": 50,
+      "type": "context"
     }
   ],
-  "generated_at": "2026-05-06T09:55:36.918Z",
+  "generated_at": "2026-05-20T16:22:38.526Z",
   "lane_tokens": {
-    "contexts": 3997,
+    "contexts": 3854,
     "stubs": 0,
-    "summaries": 1679
+    "summaries": 1717
   },
-  "source_fingerprint": "4084130e7d378c2dff8fca58185c655f01b2a437fc2acb161002f14fd079d4fd",
-  "total_tokens": 5676,
+  "source_fingerprint": "9cdc094db0e108a2311bc9a2e403f9f35a2df91827ec4e827e90169a4b72d63d",
+  "total_tokens": 5571,
   "version": 1
 }

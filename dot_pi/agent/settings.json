@@ -2,17 +2,18 @@
   "lastChangelogVersion": "0.75.3",
   "packages": [
     "npm:@caplets/pi",
+    "npm:@juicesharp/rpiv-args",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-btw",
     "npm:@juicesharp/rpiv-todo",
-    "npm:@juicesharp/rpiv-web-tools",
     "npm:@narumitw/pi-goal",
     "npm:pi-byterover",
     "npm:pi-lens",
     "npm:pi-markdown-preview",
     "npm:pi-mcp-adapter",
     "npm:pi-subagents",
-    "npm:pi-subdir-context"
+    "npm:pi-subdir-context",
+    "npm:pi-web-access"
   ],
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
@@ -21,6 +22,7 @@
   "subagents": {
     "agentOverrides": {
       "worker": {
+        "model": "openai-codex/gpt-5.5",
         "thinking": "low"
       },
       "scout": {
@@ -29,25 +31,20 @@
       },
       "researcher": {
         "model": "openai-codex/gpt-5.4-mini",
-        "thinking": "high"
+        "thinking": "medium"
       },
       "context-builder": {
         "model": "openai-codex/gpt-5.4-mini",
-        "thinking": "high"
+        "thinking": "medium"
       },
       "reviewer": {
-        "thinking": "medium"
+        "model": "openai-codex/gpt-5.5",
+        "thinking": "high"
       },
       "planner": {
-        "thinking": "medium"
+        "model": "openai-codex/gpt-5.5",
+        "thinking": "high"
       }
-    }
-  },
-  "pi-memory-md": {
-    "memoryDir": {
-      "repoUrl": "https://github.com/ian-pascoe/memory-md.git",
-      "localPath": "~/.pi/memory-md",
-      "globalMemory": "global"
     }
   }
 }

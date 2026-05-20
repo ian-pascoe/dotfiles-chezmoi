@@ -1,18 +1,23 @@
 **/README.md
 AGENTS.md
-docs/**
+docs
 
-**/node_modules/**
+node_modules
+package.json
+package-lock.json
+pnpm-lock.yaml
+bun.lock
+pnpm-workspace.yaml
 
 # Syncthing
-.stfolder
-.stignore
+**/.stfolder
+**/.stignore
 **/*.sync-conflict*
 **/.*.sync-conflict*
 
 # Git
-.gitignore
-.gitkeep
+**/.gitignore
+**/.gitkeep
 
 **/tmp/**
 **/log/**

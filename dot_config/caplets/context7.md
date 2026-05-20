@@ -10,9 +10,10 @@ tags:
 mcpServer:
   transport: http
   url: https://mcp.context7.com/mcp/oauth
-  auth: 
+  auth:
     type: oauth2
 ---
+
 # Context7
 
 Use this Caplet when the agent needs up-to-date library, SDK, framework, CLI, or cloud-service

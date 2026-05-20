@@ -7,10 +7,7 @@
       "name": "Browser",
       "description": "Web browsing capabilities to fetch real-time information from the internet, including web pages, APIs, and other online resources.",
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest",
-        "--headless"
-      ]
+      "args": ["@playwright/mcp@latest", "--headless"]
     },
     "deepwiki": {
       "name": "DeepWiki",
