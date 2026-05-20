@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
-
 DRY_RUN=0
 YES=0
 MANIFEST_DIR="${PACKAGE_MANIFEST_DIR:-$HOME/.config/packages}"
@@ -137,29 +135,29 @@ install_apt() {
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
-    --dry-run)
-      DRY_RUN=1
-      ;;
-    --yes)
-      YES=1
-      ;;
-    --manifest-dir)
-      if [ "$#" -lt 2 ]; then
-        echo "--manifest-dir requires a directory" >&2
-        exit 2
-      fi
-      MANIFEST_DIR="$2"
-      shift
-      ;;
-    -h | --help)
-      usage
-      exit 0
-      ;;
-    *)
-      echo "Unknown option: $1" >&2
-      usage >&2
+  --dry-run)
+    DRY_RUN=1
+    ;;
+  --yes)
+    YES=1
+    ;;
+  --manifest-dir)
+    if [ "$#" -lt 2 ]; then
+      echo "--manifest-dir requires a directory" >&2
       exit 2
-      ;;
+    fi
+    MANIFEST_DIR="$2"
+    shift
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  *)
+    echo "Unknown option: $1" >&2
+    usage >&2
+    exit 2
+    ;;
   esac
   shift
 done
@@ -173,12 +171,12 @@ if [ "$DRY_RUN" -eq 0 ] && [ "$YES" -eq 0 ]; then
   printf 'Install packages from %s? [y/N] ' "$MANIFEST_DIR"
   read -r answer
   case "$answer" in
-    y | Y | yes | YES)
-      ;;
-    *)
-      echo "Aborted."
-      exit 1
-      ;;
+  y | Y | yes | YES)
+    ;;
+  *)
+    echo "Aborted."
+    exit 1
+    ;;
   esac
 fi
 
