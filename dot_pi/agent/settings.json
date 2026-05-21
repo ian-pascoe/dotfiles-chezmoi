@@ -1,50 +1,36 @@
 {
-  "lastChangelogVersion": "0.75.3",
+  "lastChangelogVersion": "0.75.4",
   "packages": [
+    "git:github.com/code-yeongyu/pi-apply-patch",
+    "git:github.com/code-yeongyu/pi-ast-grep",
+    "git:github.com/code-yeongyu/pi-lsp-client",
+    "git:github.com/code-yeongyu/pi-goal",
+    "git:github.com/code-yeongyu/pi-nested-agents-md",
+    "git:github.com/code-yeongyu/pi-openai-api-parallel-tool-calls",
+    "git:github.com/code-yeongyu/pi-openai-code-interpreter",
     "npm:@caplets/pi",
+    "npm:@gotgenes/pi-permission-system",
     "npm:@juicesharp/rpiv-args",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-btw",
     "npm:@juicesharp/rpiv-todo",
-    "npm:@narumitw/pi-goal",
     "npm:pi-byterover",
-    "npm:pi-lens",
-    "npm:pi-markdown-preview",
     "npm:pi-mcp-adapter",
-    "npm:pi-subagents",
-    "npm:pi-subdir-context",
+    "npm:pi-terminal-theme",
     "npm:pi-web-access"
   ],
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "low",
-  "theme": "terminal-ansi",
-  "subagents": {
-    "agentOverrides": {
-      "worker": {
-        "model": "openai-codex/gpt-5.5",
-        "thinking": "low"
-      },
-      "scout": {
-        "model": "openai-codex/gpt-5.4-mini",
-        "thinking": "medium"
-      },
-      "researcher": {
-        "model": "openai-codex/gpt-5.4-mini",
-        "thinking": "medium"
-      },
-      "context-builder": {
-        "model": "openai-codex/gpt-5.4-mini",
-        "thinking": "medium"
-      },
-      "reviewer": {
-        "model": "openai-codex/gpt-5.5",
-        "thinking": "high"
-      },
-      "planner": {
-        "model": "openai-codex/gpt-5.5",
-        "thinking": "high"
-      }
-    }
-  }
+  "hideThinkingBlock": false,
+  "theme": "terminal",
+  "enabledModels": [
+    "openai-codex/gpt-5.5",
+    "openai-codex/gpt-5.4-mini",
+    "opencode-go/kimi-k2.6",
+    "opencode-go/deepseek-v4-flash",
+    "opencode-go/deepseek-v4-pro",
+    "opencode-go/minimax-m2.7",
+    "opencode-go/glm-5.1"
+  ]
 }
