@@ -1,18 +1,18 @@
 ---
 title: Curation Workflow Rules
-summary: RLM curation workflow rules covering reconnaissance, extraction, chunking, verification, UPSERT preference, and preservation requirements.
+summary: RLM curation workflow rules, verification expectations, and best-effort retention guidance for working module findings
 tags: []
-related: [facts/project/context.md, facts/conventions/rlm_curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md]
+related: [facts/project/context.md, facts/conventions/rlm_curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md, facts/conventions/rlm_curation_approach.md, facts/project/working_module_findings_retention.md]
 keywords: []
 createdAt: '2026-05-06T09:33:21.664Z'
-updatedAt: '2026-05-22T10:17:26.784Z'
+updatedAt: '2026-05-22T11:27:35.143Z'
 ---
 ## Reason
-Preserve the workflow rules and constraints described in the RLM curation context
+Curate the provided RLM workflow rules and project facts into durable knowledge
 
 ## Raw Concept
 **Task:**
-Document the RLM curation workflow rules and operating constraints used for context-tree curation.
+Document the curation workflow rules and retention guidance for the working module
 
 **Changes:**
 - Recorded that recon was precomputed and suggested single-pass mode
@@ -37,47 +37,47 @@ Document the RLM curation workflow rules and operating constraints used for cont
 - Captured the recommended single-pass handling for small contexts
 - Recorded the required mapExtract timeout rule
 - Preserved the verification rule that relies on applied file paths
+- Use recon first when available
+- Use mapExtract for chunked extraction when needed
+- Prefer UPSERT for curation operations
+- Verify applied file paths after curation
+- Captured the RLM curation approach and single-pass recon guidance
+- Recorded verification expectations and raw-context handling restrictions
+- Preserved working module knowledge retention as a durable context rule
 
 **Flow:**
-recon -> choose single-pass or chunked extraction -> curate via UPSERT -> verify applied file paths -> record progress
+context provided -> recon computed -> single-pass extraction -> curate durable knowledge -> verify applied file paths
 
-**Timestamp:** 2026-05-22T10:17:05.230Z
+**Timestamp:** 2026-05-22T11:27:25.991Z
 
 **Author:** ByteRover context engineer
 
 **Patterns:**
-- `^timeout:\s*300000$` - Required timeout for code_exec calls containing mapExtract
+- `- `apply: true` must:` - Workflow rule or constraint preserved from context
 
 ## Narrative
 ### Structure
-The workflow distinguishes between single-pass and chunked curation based on recon output, then applies UPSERT-based curation and verifies success from the curate result.
+This knowledge captures the workflow rules used when curating context: use the precomputed recon result, proceed in single-pass mode for small contexts, and keep the extracted content durable in the context tree.
 
 ### Dependencies
-Relies on tools.curation.recon, mapExtract, dedup, groupBySubject, and tools.curate.
+Relies on the RLM curation process, the task id for extraction operations, and the curate result summary for verification.
 
 ### Highlights
-The context emphasizes preservation of exact workflow constraints, no raw context printing, and direct verification from curate results.
+The rules emphasize not printing raw context, not reading files just to verify curate outcomes, and retaining working module findings as durable knowledge.
 
 ### Rules
-Recon already computed must be respected.
-Do not call tools.curation.recon again when precomputed recon is provided.
-If suggestedMode is single-pass, skip chunking entirely.
-Any code_exec call containing mapExtract MUST use timeout: 300000 on the code_exec tool call itself.
-Use tools.curation.groupBySubject() and tools.curation.dedup() to organize extractions.
-Verify via result.applied[].filePath — do NOT call readFile for verification.
-UPSERT is preferred over ADD, UPDATE, and MERGE.
+Do NOT print raw context. Do NOT call tools.curation.recon when recon is already precomputed. Verify via result.applied[].filePath and do NOT call readFile for verification.
 
 ### Examples
-When a context is small, use single-pass processing after recon. When a context is chunked, use tools.curation.mapExtract with the provided taskId and then deduplicate/group facts before curating.
+Use single-pass curation for compact contexts; preserve working module findings in the knowledge base rather than leaving them only in chat history.
 
 ## Facts
-- **curation_reconnaissance**: Reconnaissance must be performed first for curation tasks, unless recon has already been computed and provided. [convention]
-- **single_pass_curation**: For single-pass contexts, chunking should be skipped entirely. [convention]
-- **map_extract_task_id**: When chunked extraction is needed, tools.curation.mapExtract() should be used with taskId passed as a bare variable. [convention]
-- **map_extract_timeout**: Any code_exec call containing mapExtract must use timeout: 300000 on the code_exec tool call itself. [convention]
-- **dedup_and_grouping**: tools.curation.groupBySubject() and tools.curation.dedup() should be used to organize extractions. [convention]
-- **verification_method**: Verification should use result.applied[].filePath and should not call readFile for verification. [convention]
-- **upsert_preference**: UPSERT is the preferred curation operation over ADD, UPDATE, or MERGE when creating or updating knowledge. [convention]
+- **curation_approach**: The context uses an RLM approach for curation. [convention]
+- **recon_mode**: Recon has already been computed and suggested single-pass mode for this context. [convention]
+- **raw_context_printing**: The context explicitly forbids printing raw context during curation. [convention]
+- **verification_method**: Verification should use result.applied[].filePath and must not call readFile for verification. [convention]
+- **working_module_findings_retention**: Working module findings should be preserved as durable knowledge instead of chat-only context. [project]
+- **processing_policy**: Best-effort processing is preferred over perfect completeness when curating working module findings. [convention]
 
 ---
 

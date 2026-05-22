@@ -105,21 +105,21 @@
       "type": "context"
     },
     {
-      "abstractPath": "facts/conventions/rlm_curation_workflow_rules.abstract.md",
-      "abstractTokens": 55,
+      "abstractPath": "facts/conventions/rlm_curation_approach.abstract.md",
+      "abstractTokens": 47,
       "importance": 50,
-      "path": "facts/conventions/rlm_curation_workflow_rules.md",
-      "tokens": 55,
+      "path": "facts/conventions/rlm_curation_approach.md",
+      "tokens": 47,
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-22T11:08:40.101Z",
+  "generated_at": "2026-05-22T11:32:10.084Z",
   "lane_tokens": {
-    "contexts": 3990,
+    "contexts": 3982,
     "stubs": 0,
     "summaries": 1901
   },
-  "source_fingerprint": "f664dbc090fdd6d59c77d701c7098c62acd22ef9c5a9e6b171230b3050c1a05e",
-  "total_tokens": 5891,
+  "source_fingerprint": "899464abc0787b36382c96b99d040d61f2c27b8920f019941834e55404566442",
+  "total_tokens": 5883,
   "version": 1
 }
