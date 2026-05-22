@@ -1,18 +1,18 @@
 ---
 title: RLM Curation Workflow Rules
-summary: 'RLM curation workflow rules: use recon first, single-pass for small contexts, mapExtract for chunked contexts, then dedup, group, curate, and verify failed===0.'
+summary: RLM curation workflow guidance for single-pass contexts, verification, and fact preservation.
 tags: []
 related: [facts/conventions/rlm_curation_workflow_rules.md, facts/project/curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md]
 keywords: []
 createdAt: '2026-05-22T10:22:30.174Z'
-updatedAt: '2026-05-22T11:37:46.987Z'
+updatedAt: '2026-05-22T11:55:29.558Z'
 ---
 ## Reason
-Curate extracted curation workflow rules and project facts from the provided RLM context
+Curate RLM context instructions and workflow rules
 
 ## Raw Concept
 **Task:**
-Document the RLM curation workflow rules and execution pattern for context engineering.
+Document the RLM curation workflow guidance for this session
 
 **Changes:**
 - Captured recon-guided single-pass behavior for small contexts
@@ -38,35 +38,33 @@ Document the RLM curation workflow rules and execution pattern for context engin
 - Captured recon-first workflow for curation tasks
 - Captured single-pass and chunked processing guidance
 - Captured verification and output handling rules
+- Follow recon recommendation and proceed directly to extraction and curation
+
+**Files:**
+- dot_config/opencode/plugins/ast-grep/index.ts
 
 **Flow:**
-recon -> decide single-pass or chunked -> extract if needed -> curate with UPSERT -> verify result.summary.failed === 0 -> report status
+recon -> extract -> curate -> verify -> report
 
-**Timestamp:** 2026-05-22T11:37:33.530Z
+**Timestamp:** 2026-05-22T11:55:08.294Z
 
-**Author:** ByteRover context engineering guidance
+**Author:** ByteRover context engineer
 
 **Patterns:**
 - `timeout: 300000` - Required timeout for code_exec calls that contain mapExtract
 
 ## Narrative
 ### Structure
-This knowledge sits in facts/project because it describes operating rules for curation workflow rather than a product feature. The workflow distinguishes single-pass handling for small contexts from chunked extraction for larger ones.
+The workflow uses precomputed recon output to choose single-pass processing for small contexts and avoids unnecessary chunking.
 
 ### Dependencies
-Depends on tools.curation.recon, tools.curation.mapExtract, tools.curation.dedup, tools.curation.groupBySubject, and tools.curate.
+Requires verification through curate result status and applied file paths rather than read-back reads.
 
 ### Highlights
-The process is optimized for small contexts by skipping unnecessary chunking, and it requires post-curation verification with failed equal to zero.
+Suggested mode was single-pass with one chunk for a 1151-character context. Do not call recon again when it has already been computed.
 
 ### Rules
-Do NOT print raw context. Do NOT call tools.curation.recon when recon is already computed. Verify via result.applied[].filePath and do NOT call readFile for verification.
+Do NOT print raw context. Do NOT call tools.curation.recon when precomputed output exists. Use taskId as a bare variable for mapExtract when needed. Verify via result.applied[].filePath.
 
 ## Facts
-- **curation_recon_step**: Use recon first to assess metadata, history, and preview before curation. [convention]
-- **single_pass_mode**: When recon suggests single-pass, skip chunking and curate in two code_exec calls: recon plus curate. [convention]
-- **map_extract_chunked_mode**: For chunked contexts, use tools.curation.mapExtract with chunkSize 8000 and process chunks in parallel. [convention]
-- **curate_operation_default**: Always use UPSERT by default for curation operations. [convention]
-- **curation_verification_rule**: After curation, verify that result.summary.failed equals 0. [convention]
-- **no_raw_context_printing**: Do not print raw context during curate mode because stdout is capped. [convention]
-- **verification_method**: For verification, rely on result.applied[].filePath and do not call readFile. [convention]
+- **rlm_curation_mode**: Use RLM single-pass curation when recon recommends single-pass for small contexts. [convention]

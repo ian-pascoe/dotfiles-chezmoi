@@ -67,7 +67,6 @@ function context(directory = root, ask?: (input: unknown) => Promise<unknown>) {
       ask ??
       (async (input: unknown) => {
         askCalls.push(input);
-        return { type: "allow" };
       }),
   } as never;
 }
@@ -249,16 +248,29 @@ describe("ast-grep plugin", () => {
     );
   });
 
-  test("rejects paths outside the worktree", async () => {
+  test("asks external directory permission for paths outside the worktree", async () => {
+    const { tools } = await pluginTools(runner("[]"));
+
+    await tools.ast_grep_search.execute(
+      { pattern: "$A", lang: "ts", paths: ["../outside"] },
+      context(),
+    );
+
+    assert.equal(commands.length, 1);
+    assert.match(JSON.stringify(askCalls[0]), /external_directory/);
+    assert.match(commands[0]?.args.at(-1) ?? "", /outside$/);
+  });
+
+  test("external directory paths fail closed without permission", async () => {
     const { tools } = await pluginTools();
 
     await assert.rejects(
       () =>
         tools.ast_grep_search.execute(
           { pattern: "$A", lang: "ts", paths: ["../outside"] },
-          context(),
+          contextWithoutAsk(),
         ),
-      /outside worktree/i,
+      /external directory permission.*unavailable/i,
     );
     assert.equal(commands.length, 0);
   });
@@ -425,6 +437,33 @@ describe("ast-grep plugin", () => {
         ),
       /denied/i,
     );
+  });
+
+  test("replace apply treats non-throwing edit permission as allowed", async () => {
+    const preview = JSON.stringify([
+      {
+        file: "src/app.ts",
+        text: "var a = 1",
+        range: { start: { line: 0, column: 0 }, end: { line: 0, column: 9 } },
+      },
+    ]);
+    const outputs = [preview, "", "[]"];
+    const { tools } = await pluginTools(async (bin, args) => {
+      commands.push({ bin, args });
+      return { stdout: outputs.shift() ?? "[]", stderr: "", exitCode: 0 };
+    });
+
+    const result = String(
+      await tools.ast_grep_replace.execute(
+        { pattern: "var $A = $B", rewrite: "let $A = $B", lang: "ts", paths: ["src"], apply: true },
+        context(root, async (input) => {
+          askCalls.push(input);
+        }),
+      ),
+    );
+
+    assert.match(result, /Remaining matches: 0/);
+    assert.equal(commands.length, 3);
   });
 
   test("replace apply preserves literal --json pattern, rewrite, and glob values", async () => {
@@ -600,7 +639,7 @@ describe("ast-grep plugin", () => {
   test("debug pattern runs debug-query against empty input and normalizes stderr output", async () => {
     const { tools } = await pluginTools(async (bin, args) => {
       commands.push({ bin, args });
-      return { stdout: "repo search match", stderr: "debug tree", exitCode: 0 };
+      return { stdout: "repo search match", stderr: "debug tree", exitCode: 1 };
     });
 
     const result = String(

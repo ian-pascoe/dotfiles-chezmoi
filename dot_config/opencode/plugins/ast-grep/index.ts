@@ -70,16 +70,47 @@ function isInsideWorktree(path: string, worktree: string): boolean {
   return rel === "" || (!rel.startsWith("..") && !rel.startsWith(`..${sep}`) && !isAbsolute(rel));
 }
 
-function resolvePath(input: string, context: ToolContext): string {
+async function askExternalDirectory(context: ToolContext, path: string) {
+  const ask = context.ask as unknown as ((input: unknown) => Promise<unknown>) | undefined;
+  if (typeof ask !== "function") {
+    throw new Error(`External directory permission unavailable for ast-grep path: ${path}`);
+  }
+  let result: unknown;
+  try {
+    result = await ask({
+      permission: "external_directory",
+      patterns: [path],
+      always: [],
+      metadata: { tool: "ast-grep" },
+    });
+  } catch (error) {
+    throw new Error(
+      `External directory permission denied for ast-grep path ${path}: ${(error as Error).message}`,
+    );
+  }
+  if (
+    result &&
+    typeof result === "object" &&
+    "type" in result &&
+    (result as { type?: string }).type !== "allow"
+  ) {
+    throw new Error(`External directory permission denied for ast-grep path: ${path}`);
+  }
+}
+
+async function resolvePath(input: string, context: ToolContext): Promise<string> {
   const worktree = resolve(context.worktree);
   const directory = resolve(context.directory);
   const absolute = resolve(directory, input);
-  if (!isInsideWorktree(absolute, worktree)) throw new Error(`Path is outside worktree: ${input}`);
+  if (!isInsideWorktree(absolute, worktree)) {
+    await askExternalDirectory(context, absolute);
+    return absolute;
+  }
   return relative(directory, absolute) || ".";
 }
 
-function resolvePaths(paths: string[] | undefined, context: ToolContext): string[] {
-  return (paths?.length ? paths : ["."]).map((path) => resolvePath(path, context));
+function resolvePaths(paths: string[] | undefined, context: ToolContext): Promise<string[]> {
+  return Promise.all((paths?.length ? paths : ["."]).map((path) => resolvePath(path, context)));
 }
 
 function addCommonRunArgs(args: string[], input: RunInput) {
@@ -254,7 +285,7 @@ function validateScanRuleSource(input: {
   }
 }
 
-function buildScanArgs(
+async function buildScanArgs(
   input: {
     rule_file?: string | undefined;
     inline_rules?: string | undefined;
@@ -268,9 +299,9 @@ function buildScanArgs(
 ) {
   const args = ["scan"];
   if (options.json) args.push("--json");
-  if (input.rule_file) args.push("--rule", resolvePath(input.rule_file, context));
+  if (input.rule_file) args.push("--rule", await resolvePath(input.rule_file, context));
   if (input.inline_rules) args.push("--inline-rules", input.inline_rules);
-  if (input.config) args.push("--config", resolvePath(input.config, context));
+  if (input.config) args.push("--config", await resolvePath(input.config, context));
   if (input.filter) args.push("--filter", input.filter);
   for (const glob of input.globs ?? []) args.push("--globs", glob);
   if (options.updateAll) args.push("--update-all");
@@ -290,9 +321,9 @@ async function askEdit(context: ToolContext, paths: string[]) {
     throw new Error(`Edit permission denied for ast-grep apply: ${(error as Error).message}`);
   }
   if (
-    !result ||
-    typeof result !== "object" ||
-    !("type" in result) ||
+    result &&
+    typeof result === "object" &&
+    "type" in result &&
     (result as { type?: string }).type !== "allow"
   ) {
     throw new Error("Edit permission denied for ast-grep apply.");
@@ -318,7 +349,7 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
           context: z.number().int().nonnegative().optional(),
         },
         execute: async (input, context) => {
-          const args = buildRunArgs(input, resolvePaths(input.paths, context), true);
+          const args = buildRunArgs(input, await resolvePaths(input.paths, context), true);
           const result = await runAstGrep(runner, args, context);
           return formatMatches(parseJsonMatches(result.stdout, { maxResults: input.max_results }), {
             contextLines: input.context,
@@ -338,7 +369,7 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
           apply: z.boolean().default(false),
         },
         execute: async (input, context) => {
-          const paths = resolvePaths(input.paths, context);
+          const paths = await resolvePaths(input.paths, context);
           const previewArgs = buildReplaceArgs(input, paths, { json: true });
           const previewOutput = (await runAstGrep(runner, previewArgs, context)).stdout;
           const uncappedPreview = parseJsonMatches(previewOutput, {
@@ -375,8 +406,8 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
         },
         execute: async (input, context) => {
           validateScanRuleSource(input);
-          const paths = resolvePaths(input.paths, context);
-          const args = buildScanArgs(input, paths, context, { json: true });
+          const paths = await resolvePaths(input.paths, context);
+          const args = await buildScanArgs(input, paths, context, { json: true });
           const previewOutput = (await runAstGrep(runner, args, context)).stdout;
           const uncappedPreview = parseJsonMatches(previewOutput, {
             maxResults: Number.MAX_SAFE_INTEGER,
@@ -388,7 +419,7 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
           await askEdit(context, files);
           await runAstGrep(
             runner,
-            buildScanArgs(input, paths, context, { updateAll: true }),
+            await buildScanArgs(input, paths, context, { updateAll: true }),
             context,
           );
           const remaining = parseJsonMatches((await runAstGrep(runner, args, context)).stdout, {
@@ -410,14 +441,16 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
           const args = ["test"];
           const permissionPaths: string[] = [];
           if (input.test_dir) {
-            args.push("--test-dir", resolvePath(input.test_dir, context));
-            permissionPaths.push(resolvePath(input.test_dir, context));
+            const testDir = await resolvePath(input.test_dir, context);
+            args.push("--test-dir", testDir);
+            permissionPaths.push(testDir);
           }
           if (input.snapshot_dir) {
-            args.push("--snapshot-dir", resolvePath(input.snapshot_dir, context));
-            permissionPaths.push(resolvePath(input.snapshot_dir, context));
+            const snapshotDir = await resolvePath(input.snapshot_dir, context);
+            args.push("--snapshot-dir", snapshotDir);
+            permissionPaths.push(snapshotDir);
           }
-          if (input.config) args.push("--config", resolvePath(input.config, context));
+          if (input.config) args.push("--config", await resolvePath(input.config, context));
           if (input.filter) args.push("--filter", input.filter);
           if (input.update_snapshots) {
             await askEdit(context, permissionPaths.length ? permissionPaths : ["."]);
@@ -440,8 +473,8 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
           ]),
         },
         execute: async (input, context) => {
-          const result = await runAstGrep(
-            runner,
+          const result = await runner(
+            astGrepBin(),
             [
               "run",
               "--pattern",
@@ -451,9 +484,11 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
               `--debug-query=${input.format}`,
               "/dev/null",
             ],
-            context,
+            { cwd: context.directory, signal: context.abort },
           );
           const debugOutput = result.stderr || result.stdout;
+          if (!debugOutput && result.exitCode !== 0)
+            throw new Error(`ast-grep exited with code ${result.exitCode}`);
           return `ast-grep debug-query output:\n${debugOutput}`;
         },
       }),

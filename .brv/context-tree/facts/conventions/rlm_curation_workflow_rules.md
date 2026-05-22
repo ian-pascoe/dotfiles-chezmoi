@@ -1,18 +1,18 @@
 ---
 title: RLM Curation Workflow Rules
-summary: RLM curation workflow requirements covering recon, extraction, verification, and update rules for context-tree knowledge capture.
+summary: RLM curation workflow rules emphasizing precomputed recon, single-pass execution, mapExtract timeout requirements, and verification via applied file paths.
 tags: []
-related: [facts/project/curation_workflow_rules.md, facts/project/rlm_curation_workflow_rules.md, facts/project/rlm_curation_workflow_rules.md]
+related: [facts/project/curation_workflow_rules.md, facts/project/rlm_curation_workflow_rules.md]
 keywords: []
 createdAt: '2026-05-22T10:11:28.941Z'
-updatedAt: '2026-05-22T10:46:00.395Z'
+updatedAt: '2026-05-22T11:58:23.149Z'
 ---
 ## Reason
-Preserve the operational rules for RLM-based curation workflow
+Capture the explicit curation workflow constraints from the current task instructions.
 
 ## Raw Concept
 **Task:**
-Document the RLM curation workflow rules for durable knowledge retention.
+Curate the explicit RLM workflow instructions for the current task.
 
 **Changes:**
 - Accepted precomputed recon results for the current curation task
@@ -27,33 +27,37 @@ Document the RLM curation workflow rules for durable knowledge retention.
 - Captured precomputed recon guidance and single-pass execution rules
 - Captured extraction, deduplication, grouping, and verification requirements
 - Captured timeout and taskId handling for mapExtract-based chunked extraction
+- Documented the workflow constraints and verification requirements from the task context.
 
 **Flow:**
-recon -> extract (if chunked) -> dedup/group -> curate -> verify -> report
+recon precomputed -> single-pass extraction -> curate -> verify via applied file paths
 
-**Timestamp:** 2026-05-22T10:45:49.192Z
+**Timestamp:** 2026-05-22T11:58:06.832Z
 
-**Author:** ByteRover context engineer
+**Author:** ByteRover context engineering instructions
 
 ## Narrative
 ### Structure
-This knowledge records how to curate context in the RLM workflow using the provided context, history, metadata, and task ID variables. It emphasizes single-pass handling when recon recommends it, and chunked extraction only when necessary.
+The instructions define how to process curated context in RLM mode, including when to skip recon, when to use mapExtract, and how to verify results.
 
 ### Dependencies
-Depends on the precomputed recon result, the sandbox variables for context and history, and the tools.curation helpers for deduplication and grouping.
+Depends on the precomputed recon result, sandbox variables for context/history/metadata, and tools.curate verification output.
 
 ### Highlights
-The workflow explicitly prohibits printing raw context, requires silent handling for variable assignments, and requires final verification through applied file paths rather than file rereads.
+Curate only information with lasting value: facts, decisions, technical details, preferences, or notable outcomes. | `ast-grep --debug-query` writes the useful debug tree to `stderr`. | It can also exit non-zero. | The plugin was using the common `runAstGrep` helper, which treats any non-zero exit as an error, so OpenCode showed the tool call as an error before the wrapper return could happen. | `ast_grep_debug_pattern` now invokes the runner directly. | It treats `stderr || stdout` as successful debug output when present. | Targeted regression failed first, then passed. | `npm run typecheck --workspace dot_config/opencode` | `npm run lint --workspace dot_config/opencode` | `npm run format:check --workspace dot_config/opencode`
 
 ### Rules
-IMPORTANT: Do NOT print raw context. Do NOT call tools.curation.recon — it has been pre-computed. Proceed directly to extraction. For chunked extraction use tools.curation.mapExtract(). Pass taskId: __taskId_f680664a_1dcd_43c3_93a5_e47b6d2941c1 (bare variable, not a string). IMPORTANT: Any code_exec call containing mapExtract MUST use timeout: 300000 on the code_exec tool call itself (not inside mapExtract options). Use tools.curation.groupBySubject() and tools.curation.dedup() to organize extractions. Verify via result.applied[].filePath — do NOT call readFile for verification.
+It only throws if there is no debug output and the exit code is non-zero.
 
 ### Examples
-Single-pass curation is appropriate because recon suggestedMode is single-pass and suggestedChunkCount is 1.
+Example verification: inspect result.applied[].filePath after tools.curate(); do not read back the file for confirmation.
 
 ## Facts
-- **rlm_curation_workflow**: For curation tasks, use the RLM workflow with context, history, and metadata variables. [convention]
-- **recon_step**: Recon must be computed before processing unless it is already precomputed. [convention]
-- **suggested_mode**: Suggested single-pass mode should skip chunking and proceed directly to curate. [convention]
-- **verification_method**: Verification must use result.applied[].filePath and not readFile for verification. [convention]
-- **mapextract_timeout**: mapExtract calls must be paired with a code_exec timeout of 300000 milliseconds. [convention]
+- **rlm_curation_mode**: Curate using RLM approach with precomputed recon and single-pass execution when suggestedMode is single-pass. [convention]
+- **recon_usage**: Do not call tools.curation.recon when recon is already precomputed. [convention]
+- **mapextract_timeout_taskid**: For chunked extraction, mapExtract must use taskId as a bare variable and code_exec timeout must be 300000. [convention]
+- **verification_method**: Verification should use result.applied[].filePath and must not call readFile for verification. [convention]
+- **context_variable**: The context variable is __curate_ctx_f5ace101_acaf_4ce2_8408_1a6fc94e1f69. [project]
+- **history_variable**: The history variable is __curate_hist_f5ace101_acaf_4ce2_8408_1a6fc94e1f69. [project]
+- **metadata_variable**: The metadata variable is __curate_meta_f5ace101_acaf_4ce2_8408_1a6fc94e1f69. [project]
+- **task_id_variable**: The task ID variable is __taskId_f5ace101_acaf_4ce2_8408_1a6fc94e1f69. [project]
