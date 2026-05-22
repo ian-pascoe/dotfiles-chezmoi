@@ -1,18 +1,18 @@
 ---
 title: RLM Curation Workflow Rules
-summary: Active RLM curation workflow note capturing single-pass recon guidance, context size, and verification expectations.
+summary: 'Rules for curating with RLM: use recon, single-pass for small contexts, preserve facts, curate durable knowledge, and verify success.'
 tags: []
-related: [facts/conventions/rlm_curation_workflow_rules.md, facts/project/curation_workflow_rules.md]
+related: [facts/conventions/rlm_curation_workflow_rules.md, facts/project/curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md]
 keywords: []
 createdAt: '2026-05-22T10:22:30.174Z'
-updatedAt: '2026-05-22T10:50:35.091Z'
+updatedAt: '2026-05-22T11:05:59.473Z'
 ---
 ## Reason
-Curate the active RLM curation workflow metadata and size constraints
+Curate the current curation workflow rules and best-effort retention guidance
 
 ## Raw Concept
 **Task:**
-Document the active RLM curation workflow for this session
+Document the RLM curation workflow rules and the instruction to preserve working module findings as durable knowledge.
 
 **Changes:**
 - Captured recon-guided single-pass behavior for small contexts
@@ -28,11 +28,14 @@ Document the active RLM curation workflow for this session
 - Recorded that recon was already computed before curation
 - Captured the single-pass recommendation
 - Preserved context size and verification constraints
+- Captured the recommended RLM workflow for curation
+- Recorded the single-pass decision for small contexts
+- Recorded verification requirements and durable knowledge retention guidance
 
 **Flow:**
-recon precomputed -> single-pass extraction -> curate -> verify applied file paths
+recon -> single-pass or chunked extraction -> curate -> verify applied file paths -> record progress
 
-**Timestamp:** 2026-05-22T10:50:27.183Z
+**Timestamp:** 2026-05-22T11:05:47.720Z
 
 **Author:** ByteRover context engineer
 
@@ -41,18 +44,21 @@ recon precomputed -> single-pass extraction -> curate -> verify applied file pat
 
 ## Narrative
 ### Structure
-This note records operational guidance for handling the current curated context with a single-pass workflow.
+This context describes the operational rules for curation: start with recon, use single-pass when suggested, otherwise extract with mapExtract, then curate and verify using applied file paths.
 
 ### Dependencies
-Depends on the precomputed recon result and the provided context/history/metadata variables.
+Depends on the RLM curation helpers and the history tracking mechanism for recording progress.
 
 ### Highlights
-Verification should rely on result.applied[].filePath, and raw context should not be printed.
+The workflow emphasizes bounded effort, durable knowledge retention, and verification without extra file reads.
 
 ### Rules
-Do NOT print raw context. Do NOT call tools.curation.recon when it has been pre-computed. For chunked extraction, use tools.curation.mapExtract() and pass taskId as a bare variable. Verify via result.applied[].filePath and do NOT call readFile for verification.
+Do not print raw context. Do not call tools.curation.recon when recon has already been computed. Use tools.curation.mapExtract for chunked extraction. Verify via result.applied[].filePath and do not call readFile for verification.
 
 ## Facts
-- **curation_approach**: Current context is being curated using the RLM approach. [project]
-- **context_size**: The context variable contains 1931 characters across 16 lines and 0 messages. [project]
-- **recon_mode**: Recon was already computed and suggested single-pass mode with one chunk. [project]
+- **curation_recon_step**: Use tools.curation.recon before processing curation contexts. [convention]
+- **single_pass_mode**: If recon suggests single-pass, skip chunking entirely for small contexts. [convention]
+- **mapextract_taskid_usage**: For chunked contexts, use tools.curation.mapExtract with taskId passed as a bare variable. [convention]
+- **verification_method**: Verify curation via result.applied[].filePath and do not call readFile for verification. [convention]
+- **durable_knowledge_retention**: Curate durable knowledge instead of leaving it as chat-only context. [project]
+- **working_module_findings**: Preserve working module findings as durable knowledge in the context tree. [project]
