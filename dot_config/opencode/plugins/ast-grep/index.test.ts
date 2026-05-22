@@ -581,7 +581,7 @@ describe("ast-grep plugin", () => {
       "rules",
       "--snapshot-dir",
       "__snapshots__",
-      "--update",
+      "--update-all",
     ]);
     assert.equal(askCalls.length, 1);
     assert.match(result, /tests passed/);
@@ -594,11 +594,14 @@ describe("ast-grep plugin", () => {
 
     assert.equal(askCalls.length, 1);
     assert.match(JSON.stringify(askCalls[0]), /\./);
-    assert.deepEqual(commands[0]?.args, ["test", "--update"]);
+    assert.deepEqual(commands[0]?.args, ["test", "--update-all"]);
   });
 
-  test("debug pattern runs debug-query command", async () => {
-    const { tools } = await pluginTools(runner("debug tree"));
+  test("debug pattern runs debug-query against empty input and normalizes stderr output", async () => {
+    const { tools } = await pluginTools(async (bin, args) => {
+      commands.push({ bin, args });
+      return { stdout: "repo search match", stderr: "debug tree", exitCode: 0 };
+    });
 
     const result = String(
       await tools.ast_grep_debug_pattern.execute(
@@ -614,7 +617,10 @@ describe("ast-grep plugin", () => {
       "--lang",
       "ts",
       "--debug-query=ast",
+      "/dev/null",
     ]);
+    assert.match(result, /ast-grep debug-query output:/);
+    assert.doesNotMatch(result, /repo search match/);
     assert.match(result, /debug tree/);
   });
 });

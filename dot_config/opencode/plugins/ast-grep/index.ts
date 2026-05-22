@@ -421,7 +421,7 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
           if (input.filter) args.push("--filter", input.filter);
           if (input.update_snapshots) {
             await askEdit(context, permissionPaths.length ? permissionPaths : ["."]);
-            args.push("--update");
+            args.push("--update-all");
           }
           const result = await runAstGrep(runner, args, context);
           return result.stdout || result.stderr || "ast-grep tests passed.";
@@ -449,10 +449,12 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
               "--lang",
               input.lang,
               `--debug-query=${input.format}`,
+              "/dev/null",
             ],
             context,
           );
-          return result.stdout || result.stderr;
+          const debugOutput = result.stderr || result.stdout;
+          return `ast-grep debug-query output:\n${debugOutput}`;
         },
       }),
     },

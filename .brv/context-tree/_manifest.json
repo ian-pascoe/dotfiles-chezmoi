@@ -113,13 +113,13 @@
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-22T11:44:08.481Z",
+  "generated_at": "2026-05-22T11:52:40.609Z",
   "lane_tokens": {
     "contexts": 3984,
     "stubs": 0,
     "summaries": 1901
   },
-  "source_fingerprint": "865813b854648961c5293bac38d2106989a59b5dbbf6d8b5e5e9834baed6bff9",
+  "source_fingerprint": "08343b525e4f3a2cbdc96f79b60cacde9b805bae214f27802fe8a81ac7ad3292",
   "total_tokens": 5885,
   "version": 1
 }

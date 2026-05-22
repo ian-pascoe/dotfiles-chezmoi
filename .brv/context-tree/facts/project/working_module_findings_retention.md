@@ -1,18 +1,18 @@
 ---
 title: Working Module Findings Retention
-summary: Working module findings should be retained as durable knowledge with recon-first, extract, dedup, curate, and verify workflow rules.
+summary: Working module findings should be retained as durable knowledge in the context tree instead of remaining chat-only context.
 tags: []
-related: [facts/conventions/rlm_curation_workflow_rules.md, facts/project/working_module_findings_retention.md]
+related: [facts/conventions/rlm_curation_workflow_rules.md, facts/project/working_module_findings_retention.md, facts/conventions/rlm_curation_approach.md]
 keywords: []
 createdAt: '2026-05-22T10:37:33.249Z'
-updatedAt: '2026-05-22T10:51:05.163Z'
+updatedAt: '2026-05-22T11:50:40.690Z'
 ---
 ## Reason
-Persist durable findings from the working module context using RLM curation workflow
+Curate the working module findings retention guidance from the provided context
 
 ## Raw Concept
 **Task:**
-Curate working module findings into durable context-tree knowledge
+Document the rule that working module findings must be retained in durable knowledge storage.
 
 **Changes:**
 - Stored working module findings beyond chat-only context
@@ -22,23 +22,31 @@ Curate working module findings into durable context-tree knowledge
 - Use mapExtract for chunked or structured extraction when needed
 - Deduplicate extracted facts before curating
 - Verify curation by checking applied file paths
+- Preserve findings as durable knowledge rather than chat-only context
+- Curate findings into the context tree for later recall
+- Use the RLM approach for extraction and curation
+- Established retention of working module findings as curated knowledge
 
 **Flow:**
-recon -> extract -> dedup/group -> curate -> verify
+findings identified -> preserved as knowledge -> curated into context tree
 
-**Timestamp:** 2026-05-22T10:50:56.391Z
+**Timestamp:** 2026-05-22T11:50:34.068Z
 
-**Author:** ByteRover context engineer
+**Author:** ByteRover context engineering workflow
 
 ## Narrative
 ### Structure
-Curation workflow is organized around RLM processing with durable knowledge retention in the context tree.
+This knowledge captures the retention policy for working module findings within the project context tree.
 
 ### Dependencies
-Relies on tools.curation.recon, tools.curation.mapExtract, tools.curation.dedup, tools.curation.groupBySubject, and tools.curate.
+Depends on the RLM curation workflow and the existing context tree structure.
 
 ### Highlights
-The working module findings are preserved as durable knowledge rather than chat-only context.
+The key outcome is that useful findings are not left only in conversation history; they are preserved in durable knowledge.
 
 ### Rules
-Always start curation with recon when required by the workflow. Do not print raw context. Verify success via result.summary and applied file paths.
+Preserve working module findings as durable knowledge instead of chat-only context.
+
+## Facts
+- **working_module_findings_retention**: Working module findings should be preserved as durable knowledge rather than chat-only context. [project]
+- **working_module_findings_curation**: The findings should be curated into the context tree. [project]
