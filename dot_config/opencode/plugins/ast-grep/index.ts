@@ -88,6 +88,28 @@ function addCommonRunArgs(args: string[], input: RunInput) {
   for (const glob of input.globs ?? []) args.push("--globs", glob);
 }
 
+function buildRunArgs(input: RunInput, paths: string[], json: boolean) {
+  const args: string[] = [];
+  addCommonRunArgs(args, input);
+  if (json) args.splice(5, 0, "--json");
+  args.push(...paths);
+  return args;
+}
+
+function buildReplaceArgs(
+  input: RunInput & { rewrite: string },
+  paths: string[],
+  options: { json?: boolean; updateAll?: boolean } = {},
+) {
+  const args: string[] = [];
+  addCommonRunArgs(args, input);
+  if (options.json) args.splice(5, 0, "--json");
+  args.push("--rewrite", input.rewrite);
+  if (options.updateAll) args.push("--update-all");
+  args.push(...paths);
+  return args;
+}
+
 function normalizeMatches(raw: unknown): unknown[] {
   if (Array.isArray(raw)) return raw;
   if (raw && typeof raw === "object") {
@@ -114,10 +136,35 @@ function rangeOf(item: Record<string, unknown>) {
   };
 }
 
+function lineCount(text: string): number {
+  return text.length === 0 ? 0 : text.split("\n").length;
+}
+
+function matchLineIndex(lines: string[], match: Match): number {
+  const firstTextLine = match.text.split("\n")[0] ?? "";
+  const columnIndex = Math.max(0, match.start.column - 1);
+  if (firstTextLine) {
+    const columnMatch = lines.findIndex((line) =>
+      line.slice(columnIndex).startsWith(firstTextLine),
+    );
+    if (columnMatch >= 0) return columnMatch;
+
+    const substringMatch = lines.findIndex((line) => line.includes(firstTextLine));
+    if (substringMatch >= 0) return substringMatch;
+  }
+
+  return 0;
+}
+
 export function parseJsonMatches(stdout: string, options: ParseOptions = {}) {
   const maxResults = options.maxResults ?? DEFAULT_MAX_RESULTS;
   const maxTextLength = options.maxTextLength ?? MAX_TEXT_LENGTH;
-  const parsed = stdout.trim() ? JSON.parse(stdout) : [];
+  let parsed: unknown;
+  try {
+    parsed = stdout.trim() ? JSON.parse(stdout) : [];
+  } catch (error) {
+    throw new Error(`Invalid ast-grep JSON output: ${(error as Error).message}`);
+  }
   const raw = normalizeMatches(parsed);
   const matches: Match[] = raw.slice(0, maxResults).map((entry) => {
     const item = (entry && typeof entry === "object" ? entry : {}) as Record<string, unknown>;
@@ -140,11 +187,12 @@ export function parseJsonMatches(stdout: string, options: ParseOptions = {}) {
 
 function contextSnippet(match: Match, contextLines: number | undefined): string | undefined {
   if (!match.snippet) return undefined;
-  if (contextLines === undefined || contextLines > 0) return match.snippet;
   const lines = match.snippet.split("\n");
-  const matchIndex = Math.max(0, Math.min(lines.length - 1, match.start.line - 1));
-  const start = Math.max(0, matchIndex - contextLines);
-  const end = Math.min(lines.length, matchIndex + contextLines + 1);
+  const matchLines = lineCount(match.text);
+  const before = matchLineIndex(lines, match);
+  const availableContext = contextLines ?? Math.max(lines.length, matchLines);
+  const start = Math.max(0, before - availableContext);
+  const end = Math.min(lines.length, before + matchLines + availableContext);
   return lines.slice(start, end).join("\n");
 }
 
@@ -206,22 +254,53 @@ function validateScanRuleSource(input: {
   }
 }
 
+function buildScanArgs(
+  input: {
+    rule_file?: string | undefined;
+    inline_rules?: string | undefined;
+    config?: string | undefined;
+    filter?: string | undefined;
+    globs?: string[] | undefined;
+  },
+  paths: string[],
+  context: ToolContext,
+  options: { json?: boolean; updateAll?: boolean } = {},
+) {
+  const args = ["scan"];
+  if (options.json) args.push("--json");
+  if (input.rule_file) args.push("--rule", resolvePath(input.rule_file, context));
+  if (input.inline_rules) args.push("--inline-rules", input.inline_rules);
+  if (input.config) args.push("--config", resolvePath(input.config, context));
+  if (input.filter) args.push("--filter", input.filter);
+  for (const glob of input.globs ?? []) args.push("--globs", glob);
+  if (options.updateAll) args.push("--update-all");
+  args.push(...paths);
+  return args;
+}
+
 async function askEdit(context: ToolContext, paths: string[]) {
-  if (paths.length === 0) return;
+  if (paths.length === 0)
+    throw new Error("Edit permission unavailable: no affected paths to approve.");
   const ask = context.ask as unknown as ((input: unknown) => Promise<unknown>) | undefined;
-  const result = await ask?.({ type: "edit", paths });
+  if (typeof ask !== "function") throw new Error("Edit permission unavailable for ast-grep apply.");
+  let result: unknown;
+  try {
+    result = await ask({ type: "edit", paths });
+  } catch (error) {
+    throw new Error(`Edit permission denied for ast-grep apply: ${(error as Error).message}`);
+  }
   if (
-    result &&
-    typeof result === "object" &&
-    "type" in result &&
-    (result as { type?: string }).type === "deny"
+    !result ||
+    typeof result !== "object" ||
+    !("type" in result) ||
+    (result as { type?: string }).type !== "allow"
   ) {
     throw new Error("Edit permission denied for ast-grep apply.");
   }
 }
 
-const schema = tool.schema;
-const stringArray = schema.array(schema.string().min(1)).optional();
+const z = tool.schema;
+const stringArray = z.array(z.string().min(1)).optional();
 
 export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
   const runner = options.runner ?? defaultRunner;
@@ -230,19 +309,16 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
       ast_grep_search: tool({
         description: "Run structural ast-grep search across files or directories.",
         args: {
-          pattern: schema.string().min(1),
-          lang: schema.string().min(1),
+          pattern: z.string().min(1),
+          lang: z.string().min(1),
           paths: stringArray,
           globs: stringArray,
-          strictness: schema.string().optional(),
-          max_results: schema.number().int().positive().optional(),
-          context: schema.number().int().nonnegative().optional(),
+          strictness: z.string().optional(),
+          max_results: z.number().int().positive().optional(),
+          context: z.number().int().nonnegative().optional(),
         },
         execute: async (input, context) => {
-          const args: string[] = [];
-          addCommonRunArgs(args, input);
-          args.splice(5, 0, "--json");
-          args.push(...resolvePaths(input.paths, context));
+          const args = buildRunArgs(input, resolvePaths(input.paths, context), true);
           const result = await runAstGrep(runner, args, context);
           return formatMatches(parseJsonMatches(result.stdout, { maxResults: input.max_results }), {
             contextLines: input.context,
@@ -252,21 +328,18 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
       ast_grep_replace: tool({
         description: "Preview or apply structural ast-grep replacements.",
         args: {
-          pattern: schema.string().min(1),
-          rewrite: schema.string().min(1),
-          lang: schema.string().min(1),
+          pattern: z.string().min(1),
+          rewrite: z.string().min(1),
+          lang: z.string().min(1),
           paths: stringArray,
           globs: stringArray,
-          strictness: schema.string().optional(),
-          max_results: schema.number().int().positive().optional(),
-          apply: schema.boolean().default(false),
+          strictness: z.string().optional(),
+          max_results: z.number().int().positive().optional(),
+          apply: z.boolean().default(false),
         },
         execute: async (input, context) => {
           const paths = resolvePaths(input.paths, context);
-          const previewArgs: string[] = [];
-          addCommonRunArgs(previewArgs, input);
-          previewArgs.splice(5, 0, "--json");
-          previewArgs.push("--rewrite", input.rewrite, ...paths);
+          const previewArgs = buildReplaceArgs(input, paths, { json: true });
           const previewOutput = (await runAstGrep(runner, previewArgs, context)).stdout;
           const uncappedPreview = parseJsonMatches(previewOutput, {
             maxResults: Number.MAX_SAFE_INTEGER,
@@ -276,13 +349,9 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
 
           const files = affectedFiles(uncappedPreview);
           await askEdit(context, files);
-          const applyArgs = previewArgs.filter((arg) => arg !== "--json");
-          applyArgs.push("--update-all");
+          const applyArgs = buildReplaceArgs(input, paths, { updateAll: true });
           await runAstGrep(runner, applyArgs, context);
-          const verifyArgs: string[] = [];
-          addCommonRunArgs(verifyArgs, input);
-          verifyArgs.splice(5, 0, "--json");
-          verifyArgs.push(...paths);
+          const verifyArgs = buildRunArgs(input, paths, true);
           const remaining = parseJsonMatches(
             (await runAstGrep(runner, verifyArgs, context)).stdout,
             {
@@ -296,24 +365,18 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
         description: "Run ast-grep rule-config or inline YAML scans.",
         args: {
           paths: stringArray,
-          rule_file: schema.string().min(1).optional(),
-          inline_rules: schema.string().min(1).optional(),
-          config: schema.string().min(1).optional(),
-          filter: schema.string().min(1).optional(),
+          rule_file: z.string().min(1).optional(),
+          inline_rules: z.string().min(1).optional(),
+          config: z.string().min(1).optional(),
+          filter: z.string().min(1).optional(),
           globs: stringArray,
-          max_results: schema.number().int().positive().optional(),
-          apply: schema.boolean().default(false),
+          max_results: z.number().int().positive().optional(),
+          apply: z.boolean().default(false),
         },
         execute: async (input, context) => {
           validateScanRuleSource(input);
           const paths = resolvePaths(input.paths, context);
-          const args = ["scan", "--json"];
-          if (input.rule_file) args.push("--rule", resolvePath(input.rule_file, context));
-          if (input.inline_rules) args.push("--inline-rules", input.inline_rules);
-          if (input.config) args.push("--config", resolvePath(input.config, context));
-          if (input.filter) args.push("--filter", input.filter);
-          for (const glob of input.globs ?? []) args.push("--globs", glob);
-          args.push(...paths);
+          const args = buildScanArgs(input, paths, context, { json: true });
           const previewOutput = (await runAstGrep(runner, args, context)).stdout;
           const uncappedPreview = parseJsonMatches(previewOutput, {
             maxResults: Number.MAX_SAFE_INTEGER,
@@ -325,7 +388,7 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
           await askEdit(context, files);
           await runAstGrep(
             runner,
-            [...args.filter((arg) => arg !== "--json"), "--update-all"],
+            buildScanArgs(input, paths, context, { updateAll: true }),
             context,
           );
           const remaining = parseJsonMatches((await runAstGrep(runner, args, context)).stdout, {
@@ -337,11 +400,11 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
       ast_grep_rule_test: tool({
         description: "Run ast-grep test for reusable rule development.",
         args: {
-          test_dir: schema.string().min(1).optional(),
-          snapshot_dir: schema.string().min(1).optional(),
-          config: schema.string().min(1).optional(),
-          filter: schema.string().min(1).optional(),
-          update_snapshots: schema.boolean().default(false),
+          test_dir: z.string().min(1).optional(),
+          snapshot_dir: z.string().min(1).optional(),
+          config: z.string().min(1).optional(),
+          filter: z.string().min(1).optional(),
+          update_snapshots: z.boolean().default(false),
         },
         execute: async (input, context) => {
           const args = ["test"];
@@ -367,13 +430,13 @@ export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
       ast_grep_debug_pattern: tool({
         description: "Run ast-grep debug-query to inspect query parsing.",
         args: {
-          pattern: schema.string().min(1),
-          lang: schema.string().min(1),
-          format: schema.union([
-            schema.literal("ast"),
-            schema.literal("cst"),
-            schema.literal("sexp"),
-            schema.literal("pattern"),
+          pattern: z.string().min(1),
+          lang: z.string().min(1),
+          format: z.union([
+            z.literal("ast"),
+            z.literal("cst"),
+            z.literal("sexp"),
+            z.literal("pattern"),
           ]),
         },
         execute: async (input, context) => {

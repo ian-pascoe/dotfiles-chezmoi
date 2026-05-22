@@ -54,7 +54,7 @@ async function pluginTools(commandRunner = runner()) {
   return { hooks, tools: hooks.tool as AstGrepTools };
 }
 
-function context(directory = root) {
+function context(directory = root, ask?: (input: unknown) => Promise<unknown>) {
   return {
     sessionID: "session-1",
     messageID: "message-1",
@@ -63,11 +63,19 @@ function context(directory = root) {
     worktree: root,
     abort: new AbortController().signal,
     metadata() {},
-    ask(input: unknown) {
-      askCalls.push(input);
-      return Promise.resolve({ type: "allow" });
-    },
+    ask:
+      ask ??
+      (async (input: unknown) => {
+        askCalls.push(input);
+        return { type: "allow" };
+      }),
   } as never;
+}
+
+function contextWithoutAsk() {
+  const ctx = context() as Record<string, unknown>;
+  delete ctx.ask;
+  return ctx as never;
 }
 
 beforeEach(async () => {
@@ -177,6 +185,68 @@ describe("ast-grep plugin", () => {
     assert.match(result, /after/);
     assert.match(result, /truncated: false/);
     assert.match(result, /results_truncated: false/);
+  });
+
+  test("search bounds context snippets for zero, one, and multi-line matches", async () => {
+    const stdout = JSON.stringify([
+      {
+        file: "src/app.ts",
+        lines: "before\nfirst match\nsecond match\nafter",
+        text: "first match\nsecond match",
+        range: { start: { line: 10, column: 0 }, end: { line: 11, column: 12 } },
+      },
+    ]);
+    const { tools } = await pluginTools(runner(stdout));
+
+    const zero = String(
+      await tools.ast_grep_search.execute(
+        { pattern: "$A", lang: "ts", paths: ["src"], context: 0 },
+        context(),
+      ),
+    );
+    const one = String(
+      await tools.ast_grep_search.execute(
+        { pattern: "$A", lang: "ts", paths: ["src"], context: 1 },
+        context(),
+      ),
+    );
+
+    assert.match(zero, /snippet: first match\nsecond match/);
+    assert.doesNotMatch(zero, /before/);
+    assert.doesNotMatch(zero, /after/);
+    assert.match(one, /snippet: before\nfirst match\nsecond match\nafter/);
+  });
+
+  test("search context zero locates expression inside a full source line", async () => {
+    const stdout = JSON.stringify([
+      {
+        file: "src/app.ts",
+        lines: "const before = 1;\nconst value = console.log(input);\nconst after = 2;",
+        text: "console.log(input)",
+        range: { start: { line: 21, column: 14 }, end: { line: 21, column: 32 } },
+      },
+    ]);
+    const { tools } = await pluginTools(runner(stdout));
+
+    const result = String(
+      await tools.ast_grep_search.execute(
+        { pattern: "console.log($A)", lang: "ts", paths: ["src"], context: 0 },
+        context(),
+      ),
+    );
+
+    assert.match(result, /snippet: const value = console\.log\(input\);/);
+    assert.doesNotMatch(result, /const before = 1/);
+    assert.doesNotMatch(result, /const after = 2/);
+  });
+
+  test("reports malformed ast-grep JSON output clearly", async () => {
+    const { tools } = await pluginTools(runner("not json"));
+
+    await assert.rejects(
+      () => tools.ast_grep_search.execute({ pattern: "$A", lang: "ts", paths: ["src"] }, context()),
+      /invalid ast-grep json/i,
+    );
   });
 
   test("rejects paths outside the worktree", async () => {
@@ -313,6 +383,81 @@ describe("ast-grep plugin", () => {
     assert.match(JSON.stringify(askCalls[0]), /src\/two\.ts/);
   });
 
+  test("replace apply fails closed without edit permission support or when denied", async () => {
+    const preview = JSON.stringify([
+      {
+        file: "src/app.ts",
+        text: "var a = 1",
+        range: { start: { line: 0, column: 0 }, end: { line: 0, column: 9 } },
+      },
+    ]);
+    const { tools: missingTools } = await pluginTools(runner(preview));
+    const { tools: deniedTools } = await pluginTools(runner(preview));
+
+    await assert.rejects(
+      () =>
+        missingTools.ast_grep_replace.execute(
+          {
+            pattern: "var $A = $B",
+            rewrite: "let $A = $B",
+            lang: "ts",
+            paths: ["src"],
+            apply: true,
+          },
+          contextWithoutAsk(),
+        ),
+      /edit permission.*unavailable/i,
+    );
+    await assert.rejects(
+      () =>
+        deniedTools.ast_grep_replace.execute(
+          {
+            pattern: "var $A = $B",
+            rewrite: "let $A = $B",
+            lang: "ts",
+            paths: ["src"],
+            apply: true,
+          },
+          context(root, async (input) => {
+            askCalls.push(input);
+            return { type: "deny" };
+          }),
+        ),
+      /denied/i,
+    );
+  });
+
+  test("replace apply preserves literal --json pattern, rewrite, and glob values", async () => {
+    const preview = JSON.stringify([
+      {
+        file: "src/app.ts",
+        text: "--json",
+        range: { start: { line: 0, column: 0 }, end: { line: 0, column: 6 } },
+      },
+    ]);
+    const outputs = [preview, "", "[]"];
+    const { tools } = await pluginTools(async (bin, args) => {
+      commands.push({ bin, args });
+      return { stdout: outputs.shift() ?? "[]", stderr: "", exitCode: 0 };
+    });
+
+    await tools.ast_grep_replace.execute(
+      {
+        pattern: "--json",
+        rewrite: "--json",
+        lang: "ts",
+        paths: ["src"],
+        globs: ["--json"],
+        apply: true,
+      },
+      context(),
+    );
+
+    const applyArgs = commands[1]?.args ?? [];
+    assert.equal(applyArgs.filter((arg) => arg === "--json").length, 3);
+    assert.ok(applyArgs.includes("--update-all"));
+  });
+
   test("scan supports previews and apply with update-all", async () => {
     const stdout = JSON.stringify([
       {
@@ -388,6 +533,36 @@ describe("ast-grep plugin", () => {
     assert.match(JSON.stringify(askCalls[0]), /src\/app\.ts/);
     assert.match(result, /Changed files: src\/app\.ts/);
     assert.match(result, /Remaining matches: 0/);
+  });
+
+  test("scan apply preserves literal --json filter and glob values", async () => {
+    const preview = JSON.stringify([
+      {
+        file: "src/app.ts",
+        text: "problem",
+        range: { start: { line: 0, column: 0 }, end: { line: 0, column: 7 } },
+      },
+    ]);
+    const outputs = [preview, "", "[]"];
+    const { tools } = await pluginTools(async (bin, args) => {
+      commands.push({ bin, args });
+      return { stdout: outputs.shift() ?? "[]", stderr: "", exitCode: 0 };
+    });
+
+    await tools.ast_grep_scan.execute(
+      {
+        paths: ["src"],
+        rule_file: "rules/no-debug.yml",
+        filter: "--json",
+        globs: ["--json"],
+        apply: true,
+      },
+      context(),
+    );
+
+    const applyArgs = commands[1]?.args ?? [];
+    assert.equal(applyArgs.filter((arg) => arg === "--json").length, 2);
+    assert.ok(applyArgs.includes("--update-all"));
   });
 
   test("rule test requests permission when updating snapshots", async () => {

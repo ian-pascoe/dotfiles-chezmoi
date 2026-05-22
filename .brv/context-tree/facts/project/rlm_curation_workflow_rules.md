@@ -1,18 +1,18 @@
 ---
 title: RLM Curation Workflow Rules
-summary: RLM curation workflow guidance covering recon-first processing, single-pass handling for small contexts, mapExtract for chunked contexts, verification requirements, and safe curation practices.
+summary: 'RLM curation workflow rules: use recon first, single-pass for small contexts, mapExtract for chunked contexts, then dedup, group, curate, and verify failed===0.'
 tags: []
 related: [facts/conventions/rlm_curation_workflow_rules.md, facts/project/curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md]
 keywords: []
 createdAt: '2026-05-22T10:22:30.174Z'
-updatedAt: '2026-05-22T11:32:10.039Z'
+updatedAt: '2026-05-22T11:37:46.987Z'
 ---
 ## Reason
-Curate the provided RLM curation workflow instructions and constraints
+Curate extracted curation workflow rules and project facts from the provided RLM context
 
 ## Raw Concept
 **Task:**
-Document RLM curation workflow rules and operational constraints
+Document the RLM curation workflow rules and execution pattern for context engineering.
 
 **Changes:**
 - Captured recon-guided single-pass behavior for small contexts
@@ -35,48 +35,38 @@ Document RLM curation workflow rules and operational constraints
 - Capture recon-first workflow guidance
 - Preserve single-pass vs chunked extraction decision rules
 - Record verification and curation safety requirements
+- Captured recon-first workflow for curation tasks
+- Captured single-pass and chunked processing guidance
+- Captured verification and output handling rules
 
 **Flow:**
-recon -> choose single-pass or chunked extraction -> dedup/group -> curate -> verify
+recon -> decide single-pass or chunked -> extract if needed -> curate with UPSERT -> verify result.summary.failed === 0 -> report status
 
-**Timestamp:** 2026-05-22T11:32:02.890Z
+**Timestamp:** 2026-05-22T11:37:33.530Z
 
-**Author:** ByteRover context engineering instructions
+**Author:** ByteRover context engineering guidance
 
 **Patterns:**
 - `timeout: 300000` - Required timeout for code_exec calls that contain mapExtract
 
 ## Narrative
 ### Structure
-Defines how to handle RLM curation tasks with precomputed recon, extraction, grouping, curation, and verification steps.
+This knowledge sits in facts/project because it describes operating rules for curation workflow rather than a product feature. The workflow distinguishes single-pass handling for small contexts from chunked extraction for larger ones.
 
 ### Dependencies
-Depends on preloaded context/history/metadata variables and tools.curation helpers such as mapExtract, dedup, groupBySubject, and recordProgress.
+Depends on tools.curation.recon, tools.curation.mapExtract, tools.curation.dedup, tools.curation.groupBySubject, and tools.curate.
 
 ### Highlights
-Recon is precomputed here; single-pass is recommended for this small context; mapExtract requires timeout 300000 on the code_exec call when used; verification should use result.applied[].filePath.
+The process is optimized for small contexts by skipping unnecessary chunking, and it requires post-curation verification with failed equal to zero.
 
 ### Rules
-Do not print raw context. Do not call tools.curation.recon when recon has already been computed. Use tools.curation.mapExtract for chunked extraction. Verify via result.applied[].filePath and do not call readFile for verification.
+Do NOT print raw context. Do NOT call tools.curation.recon when recon is already computed. Verify via result.applied[].filePath and do NOT call readFile for verification.
 
 ## Facts
-- **curation_workflow**: Curate only information with lasting value: facts, decisions, technical details, preferences, or notable outcomes. [project]
-- **curation_workflow**: Conversation: [project]
-- **curation_workflow**: -- [project]
-- **curation_workflow**: [user]: Re-review the ast-grep plugin implementation for compliance with the approved plan after fixes. Do not edit files. Focus only on whether implementation matches the plan and previous spec findings are resolved. [project]
-- **curation_workflow**: Repo: /home/ianpascoe/.local/share/chezmoi [project]
-- **curation_workflow**: Relevant files: [project]
-- **curation_workflow**: dot_config/opencode/plugins/ast-grep.ts [project]
-- **curation_workflow**: dot_config/opencode/plugins/ast-grep/index.ts [project]
-- **curation_workflow**: dot_config/opencode/plugins/ast-grep/index.test.ts [project]
-- **curation_workflow**: docs/superpowers/plans/2026-05-22-opencode-ast-grep-plugin.md [project]
-- **curation_workflow**: Return exactly: [project]
-- **curation_workflow**: status: APPROVED or REJECTED [project]
-- **curation_workflow**: findings with file/line references for any spec gaps [project]
-- **curation_workflow**: residual risks if approved [project]
-- **curation_workflow**: [assistant]: status: APPROVED [project]
-- **curation_workflow**: findings: [project]
-- **curation_workflow**: none [project]
-- **curation_workflow**: residual risks if approved: [project]
-- **curation_workflow**: Verification used mocked runner tests, typecheck, lint, and format check; it did not execute against a real `ast-grep` binary. [project]
-- **curation_workflow**: OpenCode runtime plugin loading was not exercised; only exported hook/tool registration was tested. [project]
+- **curation_recon_step**: Use recon first to assess metadata, history, and preview before curation. [convention]
+- **single_pass_mode**: When recon suggests single-pass, skip chunking and curate in two code_exec calls: recon plus curate. [convention]
+- **map_extract_chunked_mode**: For chunked contexts, use tools.curation.mapExtract with chunkSize 8000 and process chunks in parallel. [convention]
+- **curate_operation_default**: Always use UPSERT by default for curation operations. [convention]
+- **curation_verification_rule**: After curation, verify that result.summary.failed equals 0. [convention]
+- **no_raw_context_printing**: Do not print raw context during curate mode because stdout is capped. [convention]
+- **verification_method**: For verification, rely on result.applied[].filePath and do not call readFile. [convention]
