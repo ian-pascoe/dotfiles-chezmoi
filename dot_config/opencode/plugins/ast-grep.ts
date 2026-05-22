@@ -1,1 +1,1 @@
-export { default as ast_grep } from "./ast-grep/index";
+export { default as astGrep } from "./ast-grep/index";
