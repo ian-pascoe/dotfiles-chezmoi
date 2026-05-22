@@ -1,43 +1,26 @@
 ---
 title: Curation Workflow Rules
-summary: "Curation workflow rules: use RLM approach, recon first, single-pass for small contexts, mapExtract for chunked extraction, verify curate results, and preserve facts and temporal markers."
+summary: RLM curation workflow rules covering reconnaissance, extraction, chunking, verification, UPSERT preference, and preservation requirements.
 tags: []
-related:
-  [facts/project/curation_workflow_rules.md, facts/conventions/rlm_curation_workflow_rules.md]
+related: [facts/project/context.md, facts/conventions/rlm_curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md]
 keywords: []
-createdAt: "2026-05-06T09:33:21.664Z"
-updatedAt: "2026-05-20T16:06:53.173Z"
-consolidated_at: "2026-05-20T16:22:04.058Z"
-consolidated_from:
-  [
-    {
-      date: "2026-05-20T16:22:04.058Z",
-      path: facts/conventions/rlm_curation_workflow_rules.md,
-      reason: "These two files describe the same RLM curation workflow rules with highly overlapping content: precomputed recon, single-pass for small contexts, mapExtract for chunked extraction, taskId/timeout constraints, and verification via result.applied[].filePath. The project version is richer and more complete, so it should be the merge target.",
-    },
-  ]
+createdAt: '2026-05-06T09:33:21.664Z'
+updatedAt: '2026-05-22T10:17:26.784Z'
 ---
-
 ## Reason
-
-Persist compact curation workflow rules from the provided context
+Preserve the workflow rules and constraints described in the RLM curation context
 
 ## Raw Concept
-
 **Task:**
-Document the curation workflow for RLM-based processing of compact contexts
+Document the RLM curation workflow rules and operating constraints used for context-tree curation.
 
 **Changes:**
-
 - Recorded that recon was precomputed and suggested single-pass mode
 - Captured taskId and timeout requirements for mapExtract usage
 - Captured verification rule for curate results
 - Captured single-pass execution guidance for small contexts
-- Captured chunked extraction guidance using mapExtract
+- Captured chunked extraction guidance using mapExtract, dedup, and groupBySubject
 - Captured UPSERT preference and verification constraints
-- Captured recon-driven single-pass workflow
-- Captured chunked extraction workflow with mapExtract, dedup, and groupBySubject
-- Captured UPSERT preference and verification guidance
 - Established that recon may already be computed and should be reused
 - Specified single-pass processing without chunking
 - Set timeout requirement for mapExtract-containing code_exec calls
@@ -45,42 +28,61 @@ Document the curation workflow for RLM-based processing of compact contexts
 - Captured precomputed recon guidance for a 526-character context
 - Recorded the single-pass recommendation for small contexts
 - Recorded verification guidance using curate results instead of readFile
+- Specified UPSERT as the preferred default operation
+- Defined the RLM query and curation workflows
+- Captured bounded-best-effort processing guidance
+- Captured the requirement to use RLM curation mode with precomputed recon when available.
+- Preserved rules for using UPSERT by default, avoiding unnecessary file reads, and verifying via applied file paths.
+- Recorded the requirement to use mapExtract for chunked contexts and to keep raw context out of console output.
+- Captured the recommended single-pass handling for small contexts
+- Recorded the required mapExtract timeout rule
+- Preserved the verification rule that relies on applied file paths
 
 **Flow:**
-recon already computed -> skip recon -> proceed directly to extraction -> curate -> verify via applied file paths
+recon -> choose single-pass or chunked extraction -> curate via UPSERT -> verify applied file paths -> record progress
 
-**Timestamp:** 2026-05-20T16:06:46.831Z
+**Timestamp:** 2026-05-22T10:17:05.230Z
 
 **Author:** ByteRover context engineer
 
+**Patterns:**
+- `^timeout:\s*300000$` - Required timeout for code_exec calls containing mapExtract
+
 ## Narrative
-
 ### Structure
-
-This context defines a compact curation workflow with explicit instructions for single-pass handling, chunked extraction fallback, and result-based verification.
+The workflow distinguishes between single-pass and chunked curation based on recon output, then applies UPSERT-based curation and verifies success from the curate result.
 
 ### Dependencies
-
-Depends on precomputed recon metadata and the curation tool output structure.
+Relies on tools.curation.recon, mapExtract, dedup, groupBySubject, and tools.curate.
 
 ### Highlights
-
-The context explicitly says not to print raw context, not to call tools.curation.recon again, and to use the taskId variable as a bare variable when needed.
+The context emphasizes preservation of exact workflow constraints, no raw context printing, and direct verification from curate results.
 
 ### Rules
+Recon already computed must be respected.
+Do not call tools.curation.recon again when precomputed recon is provided.
+If suggestedMode is single-pass, skip chunking entirely.
+Any code_exec call containing mapExtract MUST use timeout: 300000 on the code_exec tool call itself.
+Use tools.curation.groupBySubject() and tools.curation.dedup() to organize extractions.
+Verify via result.applied[].filePath — do NOT call readFile for verification.
+UPSERT is preferred over ADD, UPDATE, and MERGE.
 
-IMPORTANT: Do NOT print raw context. Do NOT call tools.curation.recon — it has been pre-computed. Proceed directly to extraction. For chunked extraction use tools.curation.mapExtract(). Pass taskId as a bare variable, not a string. Use tools.curation.groupBySubject() and tools.curation.dedup() to organize extractions. Verify via result.applied[].filePath — do NOT call readFile for verification.
+### Examples
+When a context is small, use single-pass processing after recon. When a context is chunked, use tools.curation.mapExtract with the provided taskId and then deduplicate/group facts before curating.
 
 ## Facts
+- **curation_reconnaissance**: Reconnaissance must be performed first for curation tasks, unless recon has already been computed and provided. [convention]
+- **single_pass_curation**: For single-pass contexts, chunking should be skipped entirely. [convention]
+- **map_extract_task_id**: When chunked extraction is needed, tools.curation.mapExtract() should be used with taskId passed as a bare variable. [convention]
+- **map_extract_timeout**: Any code_exec call containing mapExtract must use timeout: 300000 on the code_exec tool call itself. [convention]
+- **dedup_and_grouping**: tools.curation.groupBySubject() and tools.curation.dedup() should be used to organize extractions. [convention]
+- **verification_method**: Verification should use result.applied[].filePath and should not call readFile for verification. [convention]
+- **upsert_preference**: UPSERT is the preferred curation operation over ADD, UPDATE, or MERGE when creating or updating knowledge. [convention]
 
-- **curation_approach**: Curation tasks should use the RLM approach. [convention]
-- **curation_mode**: For compact contexts, suggestedMode can be single-pass. [convention]
-- **chunked_extraction_tool**: When extraction is needed for chunked contexts, use tools.curation.mapExtract(). [convention]
-- **verification_method**: Curation verification should use result.applied[].filePath and not readFile for verification. [convention]
-- **rlm_curate_mode**: RLM curate workflow for small contexts uses single-pass mode after recon. [convention]
-- **mapextract_task_id**: For chunked extraction, mapExtract requires taskId passed as a bare variable. [convention]
-- **mapextract_timeout**: Any code_exec call containing mapExtract must use timeout 300000 on the tool call itself. [convention]
+---
 
 ## Consolidated Summary
-
 The file captures RLM curation workflow instructions for a single-pass session, emphasizing that recon was already precomputed and should not be rerun. Key operational requirements include passing taskId as a bare variable (not a string) and using timeout 300000 on any code_exec call that includes mapExtract. Verification must be performed by checking result.applied[].filePath rather than calling readFile. The document frames the flow as precomputed recon -> extract or curate -> verify applied file paths. It notes the provided context size and that there are no messages, reinforcing that this is instruction capture rather than interactive processing. Structure includes Reason, Raw Concept, Narrative, Facts, and Consolidated Summary sections. Notable entities/patterns: RLM-based knowledge processing, mapExtract, curate result object, taskId, and filePath-based verification.
+
+## Canonical Merge Note
+This file now serves as the canonical consolidated workflow rule document. Preserve the RLM-specific guidance here and keep any future updates synchronized with this topic.

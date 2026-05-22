@@ -1,9 +1,6 @@
 
 # BEGIN opencode-byterover
 # Dream state and logs
-
-# BEGIN pi-byterover
-# Dream state and logs
 dream-log/
 dream-state.json
 dream.lock
@@ -19,9 +16,4 @@ _manifest.json
 _index.md
 *.abstract.md
 *.overview.md
-# END pi-byterover
-
-# Review backups
-
-# Generated files
 # END opencode-byterover

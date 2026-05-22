@@ -104,3 +104,5 @@ fi
 if (($+functions[_zsh_apply_base_path_order])); then
   _zsh_apply_base_path_order
 fi
+fpath=(~/.zsh/completions $fpath)
+autoload -Uz compinit && compinit

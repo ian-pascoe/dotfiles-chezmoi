@@ -5,3 +5,4 @@ khal
 nano-pdf
 rembg
 vdirsyncer
+yt-dlp

@@ -8,6 +8,7 @@ package-lock.json
 pnpm-lock.yaml
 bun.lock
 pnpm-workspace.yaml
+vitest.config.ts
 
 # Syncthing
 **/.stfolder

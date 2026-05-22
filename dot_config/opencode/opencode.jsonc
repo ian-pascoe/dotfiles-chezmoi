@@ -151,5 +151,6 @@
       "extensions": [".md", ".mdx"],
     },
   },
+  "enabled_providers": ["openai", "openrouter", "opencode", "opencode-go"],
   "username": "Ian",
 }

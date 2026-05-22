@@ -1,8 +1,0 @@
-packages:
-  - ./dot_pi/agent
-  - ./dot_config/opencode
-allowBuilds:
-  "@google/genai": true
-  koffi: true
-  msgpackr-extract: true
-  protobufjs: true

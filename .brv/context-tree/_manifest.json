@@ -3,7 +3,7 @@
     {
       "order": 3,
       "path": "_index.md",
-      "tokens": 1436,
+      "tokens": 1620,
       "type": "summary"
     },
     {
@@ -34,6 +34,12 @@
       "importance": 50,
       "path": "architecture/opencode/byterover_recall_window_update.md",
       "tokens": 272,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/opencode/context.md",
+      "tokens": 108,
       "type": "context"
     },
     {
@@ -82,6 +88,12 @@
     },
     {
       "importance": 50,
+      "path": "architecture/opencode/review_of_codex_style_goal_plan.md",
+      "tokens": 426,
+      "type": "context"
+    },
+    {
+      "importance": 50,
       "path": "architecture/prefer-structured-state-over-brittle-text-heuristics.md",
       "tokens": 332,
       "type": "context"
@@ -93,33 +105,21 @@
       "type": "context"
     },
     {
+      "abstractPath": "facts/conventions/rlm_curation_workflow_rules.abstract.md",
+      "abstractTokens": 55,
       "importance": 50,
-      "path": "facts/bounded-best-effort-processing-over-perfect-completeness.md",
-      "tokens": 344,
-      "type": "context"
-    },
-    {
-      "importance": 50,
-      "path": "facts/project/context.md",
-      "tokens": 59,
-      "type": "context"
-    },
-    {
-      "abstractPath": "facts/project/curation_workflow_rules.abstract.md",
-      "abstractTokens": 50,
-      "importance": 50,
-      "path": "facts/project/curation_workflow_rules.md",
-      "tokens": 50,
+      "path": "facts/conventions/rlm_curation_workflow_rules.md",
+      "tokens": 55,
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-20T16:22:38.526Z",
+  "generated_at": "2026-05-22T10:51:07.277Z",
   "lane_tokens": {
-    "contexts": 3854,
+    "contexts": 3990,
     "stubs": 0,
-    "summaries": 1717
+    "summaries": 1901
   },
-  "source_fingerprint": "9cdc094db0e108a2311bc9a2e403f9f35a2df91827ec4e827e90169a4b72d63d",
-  "total_tokens": 5571,
+  "source_fingerprint": "ebb716223133fc09d31aa027fc23ed90a33e38bc70dffb261311ad6b0d77e5a4",
+  "total_tokens": 5891,
   "version": 1
 }
