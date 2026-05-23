@@ -1,18 +1,18 @@
 ---
 title: Curation Workflow Rules
-summary: RLM curation workflow rules, verification expectations, and best-effort retention guidance for working module findings
+summary: RLM curation workflow rules for extracting, preserving, and curating context into the knowledge tree with verification requirements.
 tags: []
-related: [facts/project/context.md, facts/conventions/rlm_curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md, facts/conventions/rlm_curation_approach.md, facts/project/working_module_findings_retention.md]
+related: [facts/project/context.md, facts/conventions/rlm_curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md, facts/conventions/rlm_curation_approach.md, facts/project/working_module_findings_retention.md, facts/project/rlm_curation_approach.md, facts/project/rlm_curation_context.md]
 keywords: []
 createdAt: '2026-05-06T09:33:21.664Z'
-updatedAt: '2026-05-22T11:27:35.143Z'
+updatedAt: '2026-05-22T16:00:17.236Z'
 ---
 ## Reason
-Curate the provided RLM workflow rules and project facts into durable knowledge
+Capture the repo-specific RLM curation workflow and constraints from the provided context.
 
 ## Raw Concept
 **Task:**
-Document the curation workflow rules and retention guidance for the working module
+Document the RLM curation workflow rules and execution constraints used for curating context into the knowledge tree.
 
 **Changes:**
 - Recorded that recon was precomputed and suggested single-pass mode
@@ -44,11 +44,14 @@ Document the curation workflow rules and retention guidance for the working modu
 - Captured the RLM curation approach and single-pass recon guidance
 - Recorded verification expectations and raw-context handling restrictions
 - Preserved working module knowledge retention as a durable context rule
+- Established single-pass handling for small contexts
+- Defined chunked extraction flow with mapExtract for larger contexts
+- Required verification of curate results through summary and applied file paths
 
 **Flow:**
-context provided -> recon computed -> single-pass extraction -> curate durable knowledge -> verify applied file paths
+recon -> choose single-pass or chunked extraction -> curate with UPSERT -> verify result summary and applied file paths
 
-**Timestamp:** 2026-05-22T11:27:25.991Z
+**Timestamp:** 2026-05-22T16:00:04.872Z
 
 **Author:** ByteRover context engineer
 
@@ -57,13 +60,13 @@ context provided -> recon computed -> single-pass extraction -> curate durable k
 
 ## Narrative
 ### Structure
-This knowledge captures the workflow rules used when curating context: use the precomputed recon result, proceed in single-pass mode for small contexts, and keep the extracted content durable in the context tree.
+This context defines how to curate RLM-derived knowledge into the .brv/context-tree using UPSERT by default, with extraction and verification rules tailored to context size.
 
 ### Dependencies
-Relies on the RLM curation process, the task id for extraction operations, and the curate result summary for verification.
+Relies on tools.curation.recon, tools.curation.mapExtract, tools.curate, and history recording helpers.
 
 ### Highlights
-The rules emphasize not printing raw context, not reading files just to verify curate outcomes, and retaining working module findings as durable knowledge.
+The workflow explicitly forbids printing raw context, requires preserving factual statements, and mandates verification after curation.
 
 ### Rules
 Do NOT print raw context. Do NOT call tools.curation.recon when recon is already precomputed. Verify via result.applied[].filePath and do NOT call readFile for verification.
@@ -72,12 +75,10 @@ Do NOT print raw context. Do NOT call tools.curation.recon when recon is already
 Use single-pass curation for compact contexts; preserve working module findings in the knowledge base rather than leaving them only in chat history.
 
 ## Facts
-- **curation_approach**: The context uses an RLM approach for curation. [convention]
-- **recon_mode**: Recon has already been computed and suggested single-pass mode for this context. [convention]
-- **raw_context_printing**: The context explicitly forbids printing raw context during curation. [convention]
-- **verification_method**: Verification should use result.applied[].filePath and must not call readFile for verification. [convention]
-- **working_module_findings_retention**: Working module findings should be preserved as durable knowledge instead of chat-only context. [project]
-- **processing_policy**: Best-effort processing is preferred over perfect completeness when curating working module findings. [convention]
+- **curation_approach**: Use the RLM approach for curation tasks. [project]
+- **single_pass_curation_mode**: For single-pass contexts, skip chunking entirely and curate in two code_exec calls: recon plus curate. [convention]
+- **chunked_extraction_method**: For chunked contexts, use tools.curation.mapExtract for parallel extraction. [convention]
+- **verification_method**: Curation operations should be verified via result.summary.failed and result.applied[].filePath. [convention]
 
 ---
 

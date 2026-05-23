@@ -2,14 +2,10 @@
 title: Neovim SSH Clipboard Fix
 summary: Neovim over SSH was fixed by forcing the OSC52 clipboard provider in SSH sessions and enabling unnamedplus so yanks route through the terminal/system clipboard.
 tags: []
-related:
-  [
-    architecture/opencode/package_manifest_sync_workflow.md,
-    architecture/opencode/retry_plugin_backoff.md,
-  ]
+related: [architecture/opencode/package_manifest_sync_workflow.md, architecture/opencode/retry_plugin_backoff.md, architecture/opencode/opencode_permission_handling_fix.md]
 keywords: []
-createdAt: "2026-05-05T16:39:53.496Z"
-updatedAt: "2026-05-05T16:39:53.496Z"
+createdAt: '2026-05-05T16:39:53.496Z'
+updatedAt: '2026-05-05T16:39:53.496Z'
 ---
 
 ## Reason

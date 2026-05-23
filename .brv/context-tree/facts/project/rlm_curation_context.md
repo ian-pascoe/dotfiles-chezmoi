@@ -1,41 +1,33 @@
 ---
-title: RLM Curation Context
-summary: RLM curation uses recon, single-pass or chunked extraction, deduplication, grouping, UPSERT-based curating, and result verification.
-tags: []
-related: []
-keywords: []
-createdAt: '2026-05-22T12:02:35.823Z'
-updatedAt: '2026-05-22T12:02:35.823Z'
+consolidated_at: '2026-05-23T09:32:30.318Z'
+consolidated_from: [{date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curation_context_workflow.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curate_context_approach.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curate_context_from_current_task.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/curate_rlm_context_from_current_task.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curate_context_from_current_task.abstract.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curation_context.abstract.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curation_context.overview.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curation_context_workflow.abstract.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curation_context_workflow.overview.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curate_context_approach.abstract.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/rlm_curate_context_approach.overview.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/curate_rlm_context_from_current_task.abstract.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}, {date: '2026-05-23T09:32:30.318Z', path: facts/project/curate_rlm_context_from_current_task.overview.md, reason: 'These files all describe the same current-task RLM curation/session workflow from slightly different angles: precomputed recon, single-pass handling for small contexts, chunked mapExtract fallback, dedup/group helpers, UPSERT, and verification via applied file paths. They are overlapping enough to consolidate into one canonical project topic.'}]
 ---
-## Reason
-Capture the RLM curation workflow and constraints from the current task context.
+# Title: RLM Curation Context
 
-## Raw Concept
-**Task:**
-Document the RLM curation approach for the current task flow.
+This document captures the current-task RLM curation workflow and session constraints for preserving durable knowledge in the context tree.
 
-**Changes:**
-- Established the use of pre-computed recon output as the decision point for extraction mode.
-- Documented the requirement to pass taskId as a bare variable to mapExtract when chunking is needed.
-- Recorded the verification rule that curated file paths must be checked from result.applied[].filePath.
+## Scope
+- Use precomputed recon as the decision point for extraction mode.
+- Prefer single-pass curation for small or compact contexts.
+- Use mapExtract only when chunked extraction is required.
+- Organize extracted facts with deduplication and subject grouping before curation.
+- Curate with UPSERT and verify using result.summary.failed and result.applied[].filePath.
+- Do not print raw context or rerun recon when it has already been computed.
 
-**Flow:**
-recon -> choose extraction mode -> extract facts -> dedup/group -> curate -> verify applied file paths
+## Workflow
+precomputed recon -> extract facts or chunk with mapExtract -> dedup/group -> UPSERT -> verify applied file paths
 
-**Timestamp:** 2026-05-22T12:02:26.153Z
+## Session constraints
+- If recon suggests single-pass, skip chunking and curate directly.
+- If chunked extraction is needed, pass taskId as a bare variable and use timeout 300000 on code_exec calls that include mapExtract.
+- Verification must use result.applied[].filePath and must not use readFile.
 
 ## Narrative
-### Structure
-The workflow is centered on a single-pass path for small contexts and a chunked extraction path for larger contexts, with deduplication and grouping performed before curation.
-
-### Dependencies
-Depends on the pre-computed recon result, the current taskId variable, and curation helper methods for extraction and organization.
-
-### Highlights
-The context explicitly forbids re-running recon, printing raw context, and using readFile for verification. It also emphasizes UPSERT as the preferred curation operation.
+This topic exists to preserve the RLM workflow guidance as durable project knowledge. It records the operational conventions for turning current-task context into lasting entries in the knowledge tree while minimizing unnecessary tool usage and avoiding raw-context output.
 
 ## Facts
-- **rlm_recon_mode**: RLM curation uses a pre-computed recon result to decide whether to use single-pass or chunked extraction. [project]
-- **map_extract_timeout**: For chunked extraction, tools.curation.mapExtract() must be called with timeout: 300000 on the code_exec tool call itself. [project]
-- **curation_organization_helpers**: Use tools.curation.groupBySubject() and tools.curation.dedup() to organize extracted facts. [project]
-- **curation_verification**: Verify curation via result.applied[].filePath and do not call readFile for verification. [project]
+- Recon was already precomputed for this session.
+- Single-pass mode was recommended for the current small context.
+- mapExtract is reserved for chunked extraction.
+- taskId must be passed as a bare variable when chunking.
+- Verification must rely on result.applied[].filePath.

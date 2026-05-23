@@ -7,13 +7,7 @@ import { tmpdir } from "node:os";
 import astGrepPlugin, { createAstGrepPlugin, parseJsonMatches } from "./index";
 
 type AstGrepTools = NonNullable<Awaited<ReturnType<typeof plugin>>["tool"]> & {
-  ast_grep_search: NonNullable<Awaited<ReturnType<typeof plugin>>["tool"]>["ast_grep_search"];
-  ast_grep_replace: NonNullable<Awaited<ReturnType<typeof plugin>>["tool"]>["ast_grep_replace"];
-  ast_grep_scan: NonNullable<Awaited<ReturnType<typeof plugin>>["tool"]>["ast_grep_scan"];
-  ast_grep_rule_test: NonNullable<Awaited<ReturnType<typeof plugin>>["tool"]>["ast_grep_rule_test"];
-  ast_grep_debug_pattern: NonNullable<
-    Awaited<ReturnType<typeof plugin>>["tool"]
-  >["ast_grep_debug_pattern"];
+  ast_grep: NonNullable<Awaited<ReturnType<typeof plugin>>["tool"]>["ast_grep"];
 };
 
 type Command = { bin: string; args: string[] };
@@ -46,11 +40,7 @@ async function plugin(commandRunner = runner()) {
 
 async function pluginTools(commandRunner = runner()) {
   const hooks = await plugin(commandRunner);
-  assert.ok(hooks.tool?.ast_grep_search);
-  assert.ok(hooks.tool.ast_grep_replace);
-  assert.ok(hooks.tool.ast_grep_scan);
-  assert.ok(hooks.tool.ast_grep_rule_test);
-  assert.ok(hooks.tool.ast_grep_debug_pattern);
+  assert.ok(hooks.tool?.ast_grep);
   return { hooks, tools: hooks.tool as AstGrepTools };
 }
 
@@ -92,7 +82,7 @@ afterAll(async () => {
 });
 
 describe("ast-grep plugin", () => {
-  test("exports OpenCode hooks with five ast-grep tools", async () => {
+  test("exports OpenCode hooks with one ast-grep tool", async () => {
     const hooks = await astGrepPlugin({
       client: {},
       project: { id: "project-1" },
@@ -103,16 +93,9 @@ describe("ast-grep plugin", () => {
       $: {},
     } as never);
 
-    assert.ok(hooks.tool?.ast_grep_search);
-    assert.ok(hooks.tool.ast_grep_replace);
-    assert.ok(hooks.tool.ast_grep_scan);
-    assert.ok(hooks.tool.ast_grep_rule_test);
-    assert.ok(hooks.tool.ast_grep_debug_pattern);
-    assert.equal(typeof hooks.tool.ast_grep_search.execute, "function");
-    assert.equal(typeof hooks.tool.ast_grep_replace.execute, "function");
-    assert.equal(typeof hooks.tool.ast_grep_scan.execute, "function");
-    assert.equal(typeof hooks.tool.ast_grep_rule_test.execute, "function");
-    assert.equal(typeof hooks.tool.ast_grep_debug_pattern.execute, "function");
+    assert.ok(hooks.tool?.ast_grep);
+    assert.equal(Object.keys(hooks.tool).filter((name) => name.startsWith("ast_grep")).length, 1);
+    assert.equal(typeof hooks.tool.ast_grep.execute, "function");
   });
 
   test("builds search command args and formats JSON matches with 1-based ranges", async () => {
@@ -128,8 +111,9 @@ describe("ast-grep plugin", () => {
     const { tools } = await pluginTools(runner(stdout));
 
     const result = String(
-      await tools.ast_grep_search.execute(
+      await tools.ast_grep.execute(
         {
+          operation: "search",
           pattern: "console.log($A)",
           lang: "ts",
           paths: ["src"],
@@ -173,8 +157,8 @@ describe("ast-grep plugin", () => {
     const { tools } = await pluginTools(runner(stdout));
 
     const result = String(
-      await tools.ast_grep_search.execute(
-        { pattern: "console.log($A)", lang: "ts", paths: ["src"], context: 1 },
+      await tools.ast_grep.execute(
+        { operation: "search", pattern: "console.log($A)", lang: "ts", paths: ["src"], context: 1 },
         context(),
       ),
     );
@@ -198,14 +182,14 @@ describe("ast-grep plugin", () => {
     const { tools } = await pluginTools(runner(stdout));
 
     const zero = String(
-      await tools.ast_grep_search.execute(
-        { pattern: "$A", lang: "ts", paths: ["src"], context: 0 },
+      await tools.ast_grep.execute(
+        { operation: "search", pattern: "$A", lang: "ts", paths: ["src"], context: 0 },
         context(),
       ),
     );
     const one = String(
-      await tools.ast_grep_search.execute(
-        { pattern: "$A", lang: "ts", paths: ["src"], context: 1 },
+      await tools.ast_grep.execute(
+        { operation: "search", pattern: "$A", lang: "ts", paths: ["src"], context: 1 },
         context(),
       ),
     );
@@ -228,8 +212,8 @@ describe("ast-grep plugin", () => {
     const { tools } = await pluginTools(runner(stdout));
 
     const result = String(
-      await tools.ast_grep_search.execute(
-        { pattern: "console.log($A)", lang: "ts", paths: ["src"], context: 0 },
+      await tools.ast_grep.execute(
+        { operation: "search", pattern: "console.log($A)", lang: "ts", paths: ["src"], context: 0 },
         context(),
       ),
     );
@@ -243,7 +227,11 @@ describe("ast-grep plugin", () => {
     const { tools } = await pluginTools(runner("not json"));
 
     await assert.rejects(
-      () => tools.ast_grep_search.execute({ pattern: "$A", lang: "ts", paths: ["src"] }, context()),
+      () =>
+        tools.ast_grep.execute(
+          { operation: "search", pattern: "$A", lang: "ts", paths: ["src"] },
+          context(),
+        ),
       /invalid ast-grep json/i,
     );
   });
@@ -251,8 +239,8 @@ describe("ast-grep plugin", () => {
   test("asks external directory permission for paths outside the worktree", async () => {
     const { tools } = await pluginTools(runner("[]"));
 
-    await tools.ast_grep_search.execute(
-      { pattern: "$A", lang: "ts", paths: ["../outside"] },
+    await tools.ast_grep.execute(
+      { operation: "search", pattern: "$A", lang: "ts", paths: ["../outside"] },
       context(),
     );
 
@@ -266,8 +254,8 @@ describe("ast-grep plugin", () => {
 
     await assert.rejects(
       () =>
-        tools.ast_grep_search.execute(
-          { pattern: "$A", lang: "ts", paths: ["../outside"] },
+        tools.ast_grep.execute(
+          { operation: "search", pattern: "$A", lang: "ts", paths: ["../outside"] },
           contextWithoutAsk(),
         ),
       /external directory permission.*unavailable/i,
@@ -308,15 +296,18 @@ describe("ast-grep plugin", () => {
 
     await assert.rejects(
       () =>
-        missingTools.ast_grep_search.execute(
-          { pattern: "$A", lang: "ts", paths: ["."] },
+        missingTools.ast_grep.execute(
+          { operation: "search", pattern: "$A", lang: "ts", paths: ["."] },
           context(),
         ),
       /ast-grep binary not found/i,
     );
     await assert.rejects(
       () =>
-        invalidTools.ast_grep_search.execute({ pattern: "(", lang: "ts", paths: ["."] }, context()),
+        invalidTools.ast_grep.execute(
+          { operation: "search", pattern: "(", lang: "ts", paths: ["."] },
+          context(),
+        ),
       /invalid pattern/i,
     );
   });
@@ -336,8 +327,15 @@ describe("ast-grep plugin", () => {
     });
 
     const result = String(
-      await tools.ast_grep_replace.execute(
-        { pattern: "var $A = $B", rewrite: "let $A = $B", lang: "ts", paths: ["src"], apply: true },
+      await tools.ast_grep.execute(
+        {
+          operation: "replace",
+          pattern: "var $A = $B",
+          rewrite: "let $A = $B",
+          lang: "ts",
+          paths: ["src"],
+          apply: true,
+        },
         context(),
       ),
     );
@@ -354,10 +352,36 @@ describe("ast-grep plugin", () => {
       "let $A = $B",
     ]);
     assert.ok(commands[1]?.args.includes("--update-all"));
+    assert.equal(commands[1]?.args.at(-1), "src/app.ts");
+    assert.notEqual(commands[1]?.args.at(-1), "src");
     assert.equal(askCalls.length, 1);
     assert.match(JSON.stringify(askCalls[0]), /src\/app\.ts/);
     assert.match(result, /Changed files: src\/app\.ts/);
     assert.match(result, /Remaining matches: 0/);
+  });
+
+  test("replace apply with no matches is a no-op without edit permission", async () => {
+    const { tools } = await pluginTools(async (bin, args) => {
+      commands.push({ bin, args });
+      return { stdout: "[]", stderr: "", exitCode: 0 };
+    });
+
+    const result = String(
+      await tools.ast_grep.execute(
+        {
+          operation: "replace",
+          pattern: "var $A = $B",
+          rewrite: "let $A = $B",
+          lang: "ts",
+          paths: ["src"],
+          apply: true,
+        },
+        contextWithoutAsk(),
+      ),
+    );
+
+    assert.equal(result, "Changed files: none\nRemaining matches: 0");
+    assert.equal(commands.length, 1);
   });
 
   test("replace apply requests permission for every uncapped affected file", async () => {
@@ -379,8 +403,9 @@ describe("ast-grep plugin", () => {
       return { stdout: outputs.shift() ?? "[]", stderr: "", exitCode: 0 };
     });
 
-    await tools.ast_grep_replace.execute(
+    await tools.ast_grep.execute(
       {
+        operation: "replace",
         pattern: "var $A = $B",
         rewrite: "let $A = $B",
         lang: "ts",
@@ -408,8 +433,9 @@ describe("ast-grep plugin", () => {
 
     await assert.rejects(
       () =>
-        missingTools.ast_grep_replace.execute(
+        missingTools.ast_grep.execute(
           {
+            operation: "replace",
             pattern: "var $A = $B",
             rewrite: "let $A = $B",
             lang: "ts",
@@ -422,8 +448,9 @@ describe("ast-grep plugin", () => {
     );
     await assert.rejects(
       () =>
-        deniedTools.ast_grep_replace.execute(
+        deniedTools.ast_grep.execute(
           {
+            operation: "replace",
             pattern: "var $A = $B",
             rewrite: "let $A = $B",
             lang: "ts",
@@ -454,8 +481,15 @@ describe("ast-grep plugin", () => {
     });
 
     const result = String(
-      await tools.ast_grep_replace.execute(
-        { pattern: "var $A = $B", rewrite: "let $A = $B", lang: "ts", paths: ["src"], apply: true },
+      await tools.ast_grep.execute(
+        {
+          operation: "replace",
+          pattern: "var $A = $B",
+          rewrite: "let $A = $B",
+          lang: "ts",
+          paths: ["src"],
+          apply: true,
+        },
         context(root, async (input) => {
           askCalls.push(input);
         }),
@@ -480,8 +514,9 @@ describe("ast-grep plugin", () => {
       return { stdout: outputs.shift() ?? "[]", stderr: "", exitCode: 0 };
     });
 
-    await tools.ast_grep_replace.execute(
+    await tools.ast_grep.execute(
       {
+        operation: "replace",
         pattern: "--json",
         rewrite: "--json",
         lang: "ts",
@@ -508,8 +543,14 @@ describe("ast-grep plugin", () => {
     const { tools } = await pluginTools(runner(stdout));
 
     const result = String(
-      await tools.ast_grep_scan.execute(
-        { paths: ["src"], rule_file: "rules/no-debug.yml", filter: "no-debug", apply: false },
+      await tools.ast_grep.execute(
+        {
+          operation: "scan",
+          paths: ["src"],
+          rule_file: "rules/no-debug.yml",
+          filter: "no-debug",
+          apply: false,
+        },
         context(),
       ),
     );
@@ -530,13 +571,19 @@ describe("ast-grep plugin", () => {
     const { tools } = await pluginTools();
 
     await assert.rejects(
-      () => tools.ast_grep_scan.execute({ paths: ["src"], apply: false }, context()),
+      () => tools.ast_grep.execute({ operation: "scan", paths: ["src"], apply: false }, context()),
       /exactly one/i,
     );
     await assert.rejects(
       () =>
-        tools.ast_grep_scan.execute(
-          { paths: ["src"], rule_file: "rules/a.yml", inline_rules: "id: a", apply: false },
+        tools.ast_grep.execute(
+          {
+            operation: "scan",
+            paths: ["src"],
+            rule_file: "rules/a.yml",
+            inline_rules: "id: a",
+            apply: false,
+          },
           context(),
         ),
       /exactly one/i,
@@ -559,19 +606,38 @@ describe("ast-grep plugin", () => {
     });
 
     const result = String(
-      await tools.ast_grep_scan.execute(
-        { paths: ["src"], rule_file: "rules/no-debug.yml", apply: true },
+      await tools.ast_grep.execute(
+        { operation: "scan", paths: ["src"], rule_file: "rules/no-debug.yml", apply: true },
         context(),
       ),
     );
 
     assert.equal(commands.length, 3);
     assert.ok(commands[1]?.args.includes("--update-all"));
+    assert.equal(commands[1]?.args.at(-1), "src/app.ts");
+    assert.notEqual(commands[1]?.args.at(-1), "src");
     assert.equal(commands[2]?.args.includes("--json"), true);
     assert.equal(askCalls.length, 1);
     assert.match(JSON.stringify(askCalls[0]), /src\/app\.ts/);
     assert.match(result, /Changed files: src\/app\.ts/);
     assert.match(result, /Remaining matches: 0/);
+  });
+
+  test("scan apply with no matches is a no-op without edit permission", async () => {
+    const { tools } = await pluginTools(async (bin, args) => {
+      commands.push({ bin, args });
+      return { stdout: "[]", stderr: "", exitCode: 0 };
+    });
+
+    const result = String(
+      await tools.ast_grep.execute(
+        { operation: "scan", paths: ["src"], rule_file: "rules/no-debug.yml", apply: true },
+        contextWithoutAsk(),
+      ),
+    );
+
+    assert.equal(result, "Changed files: none\nRemaining matches: 0");
+    assert.equal(commands.length, 1);
   });
 
   test("scan apply preserves literal --json filter and glob values", async () => {
@@ -588,8 +654,9 @@ describe("ast-grep plugin", () => {
       return { stdout: outputs.shift() ?? "[]", stderr: "", exitCode: 0 };
     });
 
-    await tools.ast_grep_scan.execute(
+    await tools.ast_grep.execute(
       {
+        operation: "scan",
         paths: ["src"],
         rule_file: "rules/no-debug.yml",
         filter: "--json",
@@ -608,8 +675,13 @@ describe("ast-grep plugin", () => {
     const { tools } = await pluginTools(runner("tests passed"));
 
     const result = String(
-      await tools.ast_grep_rule_test.execute(
-        { test_dir: "rules", snapshot_dir: "__snapshots__", update_snapshots: true },
+      await tools.ast_grep.execute(
+        {
+          operation: "ruleTest",
+          test_dir: "rules",
+          snapshot_dir: "__snapshots__",
+          update_snapshots: true,
+        },
         context(),
       ),
     );
@@ -629,7 +701,7 @@ describe("ast-grep plugin", () => {
   test("rule test requests default write permission when updating default snapshots", async () => {
     const { tools } = await pluginTools(runner("updated snapshots"));
 
-    await tools.ast_grep_rule_test.execute({ update_snapshots: true }, context());
+    await tools.ast_grep.execute({ operation: "ruleTest", update_snapshots: true }, context());
 
     assert.equal(askCalls.length, 1);
     assert.match(JSON.stringify(askCalls[0]), /\./);
@@ -643,8 +715,8 @@ describe("ast-grep plugin", () => {
     });
 
     const result = String(
-      await tools.ast_grep_debug_pattern.execute(
-        { pattern: "console.log($A)", lang: "ts", format: "ast" },
+      await tools.ast_grep.execute(
+        { operation: "debugPattern", pattern: "console.log($A)", lang: "ts", format: "ast" },
         context(),
       ),
     );

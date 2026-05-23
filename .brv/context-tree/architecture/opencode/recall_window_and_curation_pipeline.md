@@ -2,16 +2,10 @@
 title: Recall Window and Curation Pipeline
 summary: Guidance for curation workflow emphasizing recon, extraction, UPSERT-based updates, and verification of applied file paths.
 tags: []
-related:
-  [
-    architecture/opencode/byterover_context_engine_ideas.md,
-    architecture/opencode/byterover_plugin_curation_and_recall.md,
-    architecture/opencode/recall_and_curation_improvements.md,
-    architecture/opencode/recall_window_and_curation_pipeline.md,
-  ]
+related: [architecture/opencode/byterover_context_engine_ideas.md, architecture/opencode/byterover_plugin_curation_and_recall.md, architecture/opencode/recall_and_curation_improvements.md, architecture/opencode/recall_window_and_curation_pipeline.md, architecture/opencode/lsp_tools_plan.md]
 keywords: []
-createdAt: "2026-05-05T15:35:12.673Z"
-updatedAt: "2026-05-05T16:58:10.270Z"
+createdAt: '2026-05-05T15:35:12.673Z'
+updatedAt: '2026-05-05T16:58:10.270Z'
 ---
 
 ## Reason

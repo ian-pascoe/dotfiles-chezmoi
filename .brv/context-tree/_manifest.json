@@ -3,19 +3,19 @@
     {
       "order": 3,
       "path": "_index.md",
-      "tokens": 1620,
-      "type": "summary"
-    },
-    {
-      "order": 2,
-      "path": "dot_config/_index.md",
-      "tokens": 281,
+      "tokens": 1781,
       "type": "summary"
     },
     {
       "importance": 50,
       "path": "architecture/idempotent-initialization-as-a-hardening-pattern.md",
       "tokens": 382,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-.md",
+      "tokens": 333,
       "type": "context"
     },
     {
@@ -27,7 +27,7 @@
     {
       "importance": 50,
       "path": "architecture/opencode/byterover_plugin_curation_and_recall.md",
-      "tokens": 350,
+      "tokens": 364,
       "type": "context"
     },
     {
@@ -40,6 +40,14 @@
       "importance": 50,
       "path": "architecture/opencode/context.md",
       "tokens": 108,
+      "type": "context"
+    },
+    {
+      "abstractPath": "architecture/opencode/lsp_tools_plan.abstract.md",
+      "abstractTokens": 62,
+      "importance": 50,
+      "path": "architecture/opencode/lsp_tools_plan.md",
+      "tokens": 62,
       "type": "context"
     },
     {
@@ -64,6 +72,14 @@
       "importance": 50,
       "path": "architecture/opencode/package_manifest_sync_workflow.md",
       "tokens": 39,
+      "type": "context"
+    },
+    {
+      "abstractPath": "architecture/opencode/plugin_ideas_for_write_and_diagnostics_capability.abstract.md",
+      "abstractTokens": 54,
+      "importance": 50,
+      "path": "architecture/opencode/plugin_ideas_for_write_and_diagnostics_capability.md",
+      "tokens": 54,
       "type": "context"
     },
     {
@@ -108,18 +124,30 @@
     },
     {
       "importance": 50,
-      "path": "dot_config/zsh/starship_escape_recursion_fix.md",
-      "tokens": 1009,
+      "path": "facts/bounded-best-effort-processing-over-perfect-completeness.md",
+      "tokens": 344,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "facts/context.md",
+      "tokens": 127,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "facts/conventions/context.md",
+      "tokens": 64,
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-22T12:05:21.712Z",
+  "generated_at": "2026-05-23T09:53:07.790Z",
   "lane_tokens": {
-    "contexts": 3999,
+    "contexts": 3988,
     "stubs": 0,
-    "summaries": 1901
+    "summaries": 1781
   },
-  "source_fingerprint": "a46357d6f1d50183579a04c51505ade2366ed9dfb3470dedc3213e06a03043ef",
-  "total_tokens": 5900,
+  "source_fingerprint": "e532aa900626f1c8621d3c95cab978772ade908a63220727ebfbb8c2d616c792",
+  "total_tokens": 5769,
   "version": 1
 }

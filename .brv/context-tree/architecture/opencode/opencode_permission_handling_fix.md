@@ -2,7 +2,7 @@
 title: Opencode Permission Handling Fix
 summary: The opencode plugin now routes outside-worktree paths through external_directory permission checks, treats non-throwing context.ask as allow, keeps explicit deny objects fail-closed, and applies the same behavior to edit permission checks; verified by test, typecheck, lint, and format checks.
 tags: []
-related: []
+related: [architecture/opencode/lsp_tools_plan.md, architecture/opencode/plugin_ideas_for_write_and_diagnostics_capability.md, architecture/opencode/neovim_ssh_clipboard_fix.md, architecture/opencode/retry_plugin_backoff.md]
 keywords: []
 createdAt: '2026-05-22T12:05:04.653Z'
 updatedAt: '2026-05-22T12:05:04.653Z'

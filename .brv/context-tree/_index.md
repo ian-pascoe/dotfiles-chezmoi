@@ -1,133 +1,137 @@
 ---
-children_hash: 36e236ccbed20e284f8d287828a9be0a04f180601964736505fe6a0c096fa7a5
-compression_ratio: 0.6269349845201239
+children_hash: 0a045588577fc71f46518bd70adee07961bfd3d4ce2ad93ba71aafcdad2ebec3
+compression_ratio: 0.5743308610125766
 condensation_order: 3
 covers: [architecture/_index.md, dot_config/_index.md, facts/_index.md]
-covers_token_total: 2584
+covers_token_total: 3101
 summary_level: d3
-token_count: 1620
+token_count: 1781
 type: summary
 ---
-# D3 Structural Summary
+# d3 Structural Summary
 
-## Architecture domain
-The architecture domain is organized around two durable principles:
+This level aggregates three major knowledge clusters: **architecture**, **dot_config**, and **facts**. Together they describe a consistent engineering style built around **idempotent startup**, **structured state**, and **bounded, verifiable curation/recall**.
 
-- **Idempotent, resilient initialization** for repeated startup/bootstrap paths.
-- **Structured state over brittle text heuristics** for serialization, validation, and verification.
+## 1) Architecture: hardening patterns and OpenCode/Byterover workflow
+Drill down: `architecture/_index.md`
 
-These principles recur across shell startup fixes, plugin curation/recall workflows, and manifest synchronization. The architecture summaries emphasize reducing failure modes in repeated execution paths and relying on explicit state rather than delimiter-heavy or reread-based checks.
+The architecture cluster combines cross-cutting reliability patterns with a larger set of OpenCode/Byterover implementation notes.
 
-### Key drill-down topics
-- **idempotent-initialization-as-a-hardening-pattern.md** — overarching hardening pattern for repeated execution and recovery
-- **opencode/_index.md** — main OpenCode / Byterover topic overview
-- **prefer-structured-state-over-brittle-text-heuristics.md** — structured-state principle and verification model
+### Core patterns
+- **Idempotent initialization as a hardening strategy**
+  - See `idempotent-initialization-as-a-hardening-pattern.md`
+  - See `idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-paths.md`
+  - Applies across repeated startup paths, shell sourcing, and plugin bootstrap/recovery.
+- **Prefer structured state over brittle text heuristics**
+  - See `prefer-structured-state-over-brittle-text-heuristics.md`
+  - Replaces delimiter-heavy parsing with explicit JSON/metadata and machine-readable verification.
 
-## OpenCode / Byterover workflow cluster
-The OpenCode-related entries describe a command-first goal workflow and a constrained memory/curation pipeline that is deliberately non-exhaustive.
+### OpenCode / Byterover themes
+Drill down into `opencode/_index.md` for the detailed cluster:
+- **Plugin capability expansion**
+  - `lsp_tools_plan.md`: lightweight JSON-RPC LSP client; preview-first; permission-gated writes; MVP covers diagnostics, formatting, organize imports, fix-all.
+  - `plugin_ideas_for_write_and_diagnostics_capability.md`: write-capable semantic edits and diagnostics aggregation are key missing capabilities.
+  - `opencode_permission_handling_fix.md`: external paths use `context.ask({ permission: "external_directory" })`; non-throwing asks count as allow; explicit deny fails closed.
+  - `retry_plugin_backoff.md`: session-scoped retries with exponential backoff and full jitter.
 
-### Goal workflow design
-See **review_of_codex_style_goal_plan.md**.
+- **Recall and curation workflow**
+  - `recall_window_and_curation_pipeline.md`: canonical flow is recon → extract → curate → verify; recall is bounded; current-turn-only curation; verification uses `result.applied[].filePath`.
+  - `byterover_plugin_curation_and_recall.md`: structured JSON serialization, omit reasoning, truncate tool output, include latest user message, preserve bridge logging/validation details.
+  - `byterover_recall_window_update.md`: preserves bounded recall-window policy and current-turn-only curation scope.
+  - `byterover_context_engine_ideas.md`: selective curation, noise filtering, metadata stripping, assistant-tag removal, timeout-protected best-effort recall.
+  - `recall_and_curation_improvements.md`: best-effort recall timeout, prompt-label cleanup, idle deduplication, oversize first-message handling.
 
-- Recommends a **command-first** goal workflow instead of embedding a non-trivial inline agent in `opencode.jsonc`.
-- Treats **pause / resume / clear** as prompt-driven controls rather than true background lifecycle management.
-- Highlights **`progress.md` collision risk** and requires **OpenCode JSONC/schema validation** plus restart/load verification.
-- The lifecycle centers on:
-  - goal objective
-  - status / pause / resume / clear prompts
-  - checkpoints and validation
-  - progress log updates
-  - stop on done, blocker, pause, or clear
-- Plugin support is deferred because it adds complexity without guaranteeing true background execution.
+- **Workflow review and prompt design**
+  - `review_of_codex_style_goal_plan.md` and `context.md`: prefer a command-first design over an inline background agent; use JSONC/schema validation and restart/load verification.
+  - `review_agent_prompt_refinement.md`: evidence-based review posture, severity ordering, no-edit rule, strict output constraints.
 
-### Recall and curation pipeline
-See **byterover_context_engine_ideas.md**, **byterover_plugin_curation_and_recall.md**, **byterover_recall_window_update.md**, and **recall_and_curation_improvements.md**.
+### Overall architecture stance
+The collection converges on a single operating style:
+- idempotent bootstrap over one-shot init
+- structured metadata over heuristic parsing
+- bounded recall over unbounded history
+- preview-first and permission-aware actions over destructive automation
+- direct verification over assumed success
 
-- The system favors **selective curation** over broad ingestion.
-- Recall is **best-effort**, guarded by timeout/abort safeguards, and must not block the agent.
-- Curation is bounded to the **current turn**, using a recent recall window only.
-- Recall window limits are explicitly **up to 3 user turns or 4096 characters**.
-- Recommended workflow:
+## 2) dot_config: zsh prompt safety and Starship recursion fix
+Drill down: `dot_config/_index.md`
+
+This cluster is narrowly focused on one shell integration issue:
+- `starship_escape_recursion_fix.md` documents a zsh/Starship bug where pressing `Escape` caused recursive wrapping of `zle-keymap-select` until `FUNCNEST` was reached.
+- The fix makes the Starship init block in `dot_zshrc` **idempotent**, so it runs only once even if sourced multiple times.
+- It also includes recovery for sessions already stuck in the broken recursive-wrapper state.
+- `prompt_starship_precmd` is used as the sentinel to detect prior initialization.
+- Verification included both:
+  - `zsh -n dot_zshrc`
+  - sourcing `dot_zshrc` twice to confirm nonrecursive behavior
+
+### Key pattern
+- **Idempotent initialization with recovery for already-corrupted state**
+- Preserves normal zsh prompt behavior while preventing Starship from wrapping its own widget.
+
+## 3) Facts: durable operational rules for bounded curation
+Drill down: `facts/_index.md`
+
+The facts domain stores durable process knowledge rather than product implementation details. Its purpose is to preserve reusable operational guidance for context engineering.
+
+### Main entry points
+- `bounded-best-effort-processing-over-perfect-completeness.md`
+  - Central operating principle: prefer **bounded, best-effort processing** with explicit verification over exhaustive reprocessing.
+  - Recall is limited to a recent window with timeout protection.
+  - Curation avoids noisy or empty inputs and uses single-pass handling when possible.
+  - Verification is done via **applied file paths**, not rereading files.
+
+- `context.md`
+  - Defines the `facts` domain as the home for durable process rules and operational curation guidance.
+  - Excludes product docs, implementation source code, and unrelated notes.
+
+### Conventions and session rules
+Drill down into `conventions/_index.md` and `rlm_curation_session_constraints.md`:
+- canonical workflow is:
+  - precomputed recon
+  - direct extraction or curation
+  - verification via `result.applied[].filePath`
+- if recon is already available, do not rerun it
+- for chunked extraction, use `tools.curation.mapExtract()`
+- do not print raw context
+- do not verify by rereading files
+- pass `taskId` as a bare variable
+- use a `300000 ms` timeout for code execution containing `mapExtract`
+
+### Project-level workflow baseline
+Drill down into `project/_index.md` and related entries:
+- documents the canonical RLM curation workflow and repository baseline
+- standard flow:
   - recon
-  - extract
-  - curate
-  - verify
-- Verification should use **applied file paths**, not rereading files.
+  - choose single-pass or chunked extraction
+  - curate with UPSERT
+  - verify via curate results
+- environment baseline:
+  - working repo is the chezmoi repo at `/home/ianpascoe/.local/share/chezmoi`
+  - Linux, Node.js v26.2.0
+  - semantic tree under `.brv/context-tree/`
+  - hierarchy is domain/topic/subtopic with max depth 2
+  - `UPSERT` is preferred
+- repo verification baseline:
+  - `npm test` maps to `vitest run`
+  - one recorded run passed 7 test files and 36 tests
 
-### Supporting implementation decisions
-- **byterover_plugin_curation_and_recall.md**
-  - Structured JSON serialization
-  - No reasoning text in serialized output
-  - Truncated tool output where needed
-  - Latest user message retained in context
-  - Empty input filtered
-  - Bridge readiness checks and bridge logging
-  - Notes background curation failures and a dependency vulnerability
-- **byterover_recall_window_update.md**
-  - Confirms bounded recall behavior with the **3-turn / 4096-character** limits
-  - Preserves **main-text-only serialization**
-- **recall_and_curation_improvements.md**
-  - Best-effort recall timeout
-  - Renamed curation prompt label to **Conversation**
-  - Optional recall window size logging
-  - Idle deduplication and oversize first-message handling
-- **neovim_ssh_clipboard_fix.md**
-  - Forces **OSC52** clipboard provider for SSH sessions
-  - Enables **`unnamedplus`**
-  - Depends on terminal OSC52 support and was startup-verified
-- **package_manifest_sync_workflow.md**
-  - Adds `dot_local/bin/executable_sync-package-manifests`
-  - Updates `dot_local/bin/executable_upgrade-all` to sync before `dotfiles pull`
-  - Validates exported package manifests against installed state
-  - Explicitly avoids `run*once*_` and `run*onchange*_` hooks
-- **retry_plugin_backoff.md**
-  - Adds **exponential backoff with full jitter**
-  - Tracks retries **per session**
-  - Resets retry state on **non-overloaded** API errors
-  - Verification passed format/lint; typecheck was blocked by missing `tsc`
+### Cross-entry pattern
+Across the facts cluster, the recurring rule is:
+- keep processing bounded
+- use structured extraction when needed
+- verify through machine-readable results
+- preserve durable knowledge in context, not chat memory
 
-## dot_config / zsh
-The zsh configuration entry documents a shell startup hardening fix centered on idempotent prompt initialization.
+## 4) Unifying theme across all three clusters
+The whole set points to the same engineering philosophy:
+- **idempotent startup**
+- **structured state**
+- **bounded, verifiable processing**
+- **permission-aware actions**
+- **durable knowledge captured as reusable context**
 
-### starship_escape_recursion_fix.md
-- Documents a zsh/Starship bug where pressing `Escape` caused recursive wrapping of `zle-keymap-select`, eventually hitting `FUNCNEST`.
-- The fix makes the Starship init block in `dot_zshrc` **idempotent** so it initializes only once, even if sourced multiple times.
-- Includes a recovery path for shells already stuck in the recursive-wrapper state.
-- Uses `prompt_starship_precmd` as the sentinel for prior initialization.
-- Verification covered both `zsh -n dot_zshrc` parse safety and sourcing `dot_zshrc` twice to confirm nonrecursive behavior.
-
-### Pattern connection
-This entry is the shell-specific example of the broader architecture pattern: **idempotent initialization with recovery for already-corrupted state**.
-
-## Facts domain
-The facts domain captures the project’s operational principle: **bounded, best-effort processing over perfect completeness**.
-
-### bounded-best-effort-processing-over-perfect-completeness.md
-- Frames memory recall, curation workflow, and verification around bounded execution rather than exhaustive processing.
-- Emphasizes:
-  - bounded recall with timeout protection
-  - best-effort curation that avoids noisy or empty inputs
-  - single-pass preference when recon is already available or context is small
-  - verification via curate output and applied file paths
-
-### project/_index.md
-- Describes the canonical curation workflow:
-  - recon-first handling
-  - single-pass vs chunked processing
-  - UPSERT as default
-  - explicit status verification
-- Serves as the concrete operationalization of the bounded-best-effort principle.
-
-### Structural relationships
-- The bounded-best-effort principle explains the workflow behavior in **project/_index.md**.
-- The project workflow is the concrete sequence:
-  - **recon -> extract (single-pass or chunked) -> curate -> verify -> report status**
-- The summary set positions these rules as the reference point for future workflow updates.
-
-### Key constraints preserved
-- **UPSERT is the default** for curation updates.
-- **Do not print raw context**.
-- **Do not ask for confirmation**; execute immediately.
-- **Check `result.summary.failed` explicitly** and retry if needed.
-- **Use file paths, not rereads, for verification**.
-- **Use bounded execution windows** rather than exhaustive processing.
+### Drill-down map
+- `architecture/_index.md` for hardening patterns and OpenCode/Byterover workflow
+- `dot_config/_index.md` for zsh/Starship initialization safety
+- `facts/_index.md` for curation rules, workflow constraints, and operational baselines

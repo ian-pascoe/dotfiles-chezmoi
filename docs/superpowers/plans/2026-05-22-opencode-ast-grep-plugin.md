@@ -1,5 +1,7 @@
 # OpenCode ast-grep Plugin Plan
 
+> Superseded by `docs/superpowers/plans/2026-05-22-opencode-ast-grep-single-tool.md` for the public tool interface. The implementation now exposes one `ast_grep` tool with nested operations instead of multiple top-level ast-grep tools.
+
 ## Objective
 
 Build an auto-discovered OpenCode plugin that exposes `ast-grep` as a powerful structural coding assistant. The plugin should complement LSP tools by supporting syntax-aware discovery, previewable codemods, permission-gated writes, rule scans, rule tests, and pattern debugging.
@@ -12,7 +14,13 @@ Use the installed `ast-grep` CLI instead of adding `@ast-grep/napi` so the plugi
 
 ## Tools
 
-### `ast_grep_search`
+### `ast_grep`
+
+Run ast-grep operations through one token-efficient tool. All calls include:
+
+- `operation`: `search`, `replace`, `scan`, `ruleTest`, or `debugPattern`
+
+#### `operation: "search"`
 
 Run structural search across files or directories.
 
@@ -28,7 +36,7 @@ Inputs include:
 
 Return capped matches with file path, 1-based range, language, snippet, matched text, and truncation metadata.
 
-### `ast_grep_replace`
+#### `operation: "replace"`
 
 Preview or apply structural replacements.
 
@@ -53,7 +61,7 @@ When `apply` is true:
 - rerun search afterward;
 - return changed files and remaining-match verification.
 
-### `ast_grep_scan`
+#### `operation: "scan"`
 
 Run rule-config or inline YAML scans.
 
@@ -69,7 +77,7 @@ Inputs include:
 
 When `apply` is true, request OpenCode edit permission and run `ast-grep scan --update-all`.
 
-### `ast_grep_rule_test`
+#### `operation: "ruleTest"`
 
 Run `ast-grep test` for reusable rule development.
 
@@ -83,7 +91,7 @@ Inputs include:
 
 When updating snapshots, request OpenCode edit permission for the relevant test or snapshot directories.
 
-### `ast_grep_debug_pattern`
+#### `operation: "debugPattern"`
 
 Run `ast-grep run --debug-query=<format>` to inspect query parsing.
 
@@ -110,7 +118,7 @@ Inputs include:
 2. Add command-building helpers for `run`, `scan`, `test`, and `debug-query` invocations.
 3. Add path/worktree validation helpers.
 4. Add JSON output parsing and result formatting helpers.
-5. Register the five OpenCode tools.
+5. Register the single OpenCode `ast_grep` tool.
 6. Add Vitest coverage for registration, command args, preview parsing, path rejection, write permission flow, apply verification, scan, rule test, and debug pattern behavior.
 
 ## Verification

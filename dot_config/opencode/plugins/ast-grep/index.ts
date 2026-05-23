@@ -32,6 +32,26 @@ type RunInput = {
   strictness?: string | undefined;
   globs?: string[] | undefined;
 };
+type AstGrepInput = {
+  operation: "search" | "replace" | "scan" | "ruleTest" | "debugPattern";
+  pattern?: string | undefined;
+  rewrite?: string | undefined;
+  lang?: string | undefined;
+  paths?: string[] | undefined;
+  globs?: string[] | undefined;
+  strictness?: string | undefined;
+  max_results?: number | undefined;
+  context?: number | undefined;
+  apply?: boolean | undefined;
+  rule_file?: string | undefined;
+  inline_rules?: string | undefined;
+  config?: string | undefined;
+  filter?: string | undefined;
+  test_dir?: string | undefined;
+  snapshot_dir?: string | undefined;
+  update_snapshots?: boolean | undefined;
+  format?: "ast" | "cst" | "sexp" | "pattern" | undefined;
+};
 
 function astGrepBin(): string {
   return process.env.AST_GREP_BIN || "ast-grep";
@@ -281,7 +301,7 @@ function validateScanRuleSource(input: {
   inline_rules?: string | undefined;
 }) {
   if (Boolean(input.rule_file) === Boolean(input.inline_rules)) {
-    throw new Error("ast_grep_scan requires exactly one of rule_file or inline_rules.");
+    throw new Error('ast_grep operation "scan" requires exactly one of rule_file or inline_rules.');
   }
 }
 
@@ -316,7 +336,12 @@ async function askEdit(context: ToolContext, paths: string[]) {
   if (typeof ask !== "function") throw new Error("Edit permission unavailable for ast-grep apply.");
   let result: unknown;
   try {
-    result = await ask({ type: "edit", paths });
+    result = await ask({
+      permission: "edit",
+      patterns: paths,
+      always: [],
+      metadata: { tool: "ast-grep" },
+    });
   } catch (error) {
     throw new Error(`Edit permission denied for ast-grep apply: ${(error as Error).message}`);
   }
@@ -333,163 +358,167 @@ async function askEdit(context: ToolContext, paths: string[]) {
 const z = tool.schema;
 const stringArray = z.array(z.string().min(1)).optional();
 
+function requireString(
+  input: AstGrepInput,
+  operation: AstGrepInput["operation"],
+  field: keyof AstGrepInput,
+): string {
+  const value = input[field];
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`ast_grep operation "${operation}" requires ${String(field)}.`);
+  }
+  return value;
+}
+
+async function executeSearch(input: AstGrepInput, context: ToolContext, runner: Runner) {
+  const runInput = {
+    pattern: requireString(input, "search", "pattern"),
+    lang: requireString(input, "search", "lang"),
+    strictness: input.strictness,
+    globs: input.globs,
+  };
+  const args = buildRunArgs(runInput, await resolvePaths(input.paths, context), true);
+  const result = await runAstGrep(runner, args, context);
+  return formatMatches(parseJsonMatches(result.stdout, { maxResults: input.max_results }), {
+    contextLines: input.context,
+  });
+}
+
+async function executeReplace(input: AstGrepInput, context: ToolContext, runner: Runner) {
+  const replaceInput = {
+    pattern: requireString(input, "replace", "pattern"),
+    rewrite: requireString(input, "replace", "rewrite"),
+    lang: requireString(input, "replace", "lang"),
+    strictness: input.strictness,
+    globs: input.globs,
+  };
+  const paths = await resolvePaths(input.paths, context);
+  const previewArgs = buildReplaceArgs(replaceInput, paths, { json: true });
+  const previewOutput = (await runAstGrep(runner, previewArgs, context)).stdout;
+  const uncappedPreview = parseJsonMatches(previewOutput, {
+    maxResults: Number.MAX_SAFE_INTEGER,
+  });
+  const preview = parseJsonMatches(previewOutput, { maxResults: input.max_results });
+  if (!input.apply) return formatMatches(preview);
+
+  const files = affectedFiles(uncappedPreview);
+  if (files.length === 0) return "Changed files: none\nRemaining matches: 0";
+  await askEdit(context, files);
+  const applyArgs = buildReplaceArgs(replaceInput, files, { updateAll: true });
+  await runAstGrep(runner, applyArgs, context);
+  const verifyArgs = buildRunArgs(replaceInput, paths, true);
+  const remaining = parseJsonMatches((await runAstGrep(runner, verifyArgs, context)).stdout, {
+    maxResults: input.max_results,
+  });
+  return `Changed files: ${files.join(", ") || "none"}\nRemaining matches: ${remaining.total}`;
+}
+
+async function executeScan(input: AstGrepInput, context: ToolContext, runner: Runner) {
+  validateScanRuleSource(input);
+  const paths = await resolvePaths(input.paths, context);
+  const args = await buildScanArgs(input, paths, context, { json: true });
+  const previewOutput = (await runAstGrep(runner, args, context)).stdout;
+  const uncappedPreview = parseJsonMatches(previewOutput, {
+    maxResults: Number.MAX_SAFE_INTEGER,
+  });
+  const preview = parseJsonMatches(previewOutput, { maxResults: input.max_results });
+  if (!input.apply) return formatMatches(preview);
+
+  const files = affectedFiles(uncappedPreview);
+  if (files.length === 0) return "Changed files: none\nRemaining matches: 0";
+  await askEdit(context, files);
+  await runAstGrep(
+    runner,
+    await buildScanArgs(input, files, context, { updateAll: true }),
+    context,
+  );
+  const remaining = parseJsonMatches((await runAstGrep(runner, args, context)).stdout, {
+    maxResults: input.max_results,
+  });
+  return `Changed files: ${files.join(", ") || "none"}\nRemaining matches: ${remaining.total}`;
+}
+
+async function executeRuleTest(input: AstGrepInput, context: ToolContext, runner: Runner) {
+  const args = ["test"];
+  const permissionPaths: string[] = [];
+  if (input.test_dir) {
+    const testDir = await resolvePath(input.test_dir, context);
+    args.push("--test-dir", testDir);
+    permissionPaths.push(testDir);
+  }
+  if (input.snapshot_dir) {
+    const snapshotDir = await resolvePath(input.snapshot_dir, context);
+    args.push("--snapshot-dir", snapshotDir);
+    permissionPaths.push(snapshotDir);
+  }
+  if (input.config) args.push("--config", await resolvePath(input.config, context));
+  if (input.filter) args.push("--filter", input.filter);
+  if (input.update_snapshots) {
+    await askEdit(context, permissionPaths.length ? permissionPaths : ["."]);
+    args.push("--update-all");
+  }
+  const result = await runAstGrep(runner, args, context);
+  return result.stdout || result.stderr || "ast-grep tests passed.";
+}
+
+async function executeDebugPattern(input: AstGrepInput, context: ToolContext, runner: Runner) {
+  const pattern = requireString(input, "debugPattern", "pattern");
+  const lang = requireString(input, "debugPattern", "lang");
+  const format = requireString(input, "debugPattern", "format");
+  const result = await runner(
+    astGrepBin(),
+    ["run", "--pattern", pattern, "--lang", lang, `--debug-query=${format}`, "/dev/null"],
+    { cwd: context.directory, signal: context.abort },
+  );
+  const debugOutput = result.stderr || result.stdout;
+  if (!debugOutput && result.exitCode !== 0)
+    throw new Error(`ast-grep exited with code ${result.exitCode}`);
+  return `ast-grep debug-query output:\n${debugOutput}`;
+}
+
 export function createAstGrepPlugin(options: { runner?: Runner } = {}): Plugin {
   const runner = options.runner ?? defaultRunner;
   return async () => ({
     tool: {
-      ast_grep_search: tool({
-        description: "Run structural ast-grep search across files or directories.",
+      ast_grep: tool({
+        description:
+          "Run ast-grep structural search, replacement, scan, rule-test, or debug-pattern operations.",
         args: {
-          pattern: z.string().min(1),
-          lang: z.string().min(1),
+          operation: z.union([
+            z.literal("search"),
+            z.literal("replace"),
+            z.literal("scan"),
+            z.literal("ruleTest"),
+            z.literal("debugPattern"),
+          ]),
+          pattern: z.string().min(1).optional(),
+          rewrite: z.string().min(1).optional(),
+          lang: z.string().min(1).optional(),
           paths: stringArray,
           globs: stringArray,
           strictness: z.string().optional(),
           max_results: z.number().int().positive().optional(),
           context: z.number().int().nonnegative().optional(),
-        },
-        execute: async (input, context) => {
-          const args = buildRunArgs(input, await resolvePaths(input.paths, context), true);
-          const result = await runAstGrep(runner, args, context);
-          return formatMatches(parseJsonMatches(result.stdout, { maxResults: input.max_results }), {
-            contextLines: input.context,
-          });
-        },
-      }),
-      ast_grep_replace: tool({
-        description: "Preview or apply structural ast-grep replacements.",
-        args: {
-          pattern: z.string().min(1),
-          rewrite: z.string().min(1),
-          lang: z.string().min(1),
-          paths: stringArray,
-          globs: stringArray,
-          strictness: z.string().optional(),
-          max_results: z.number().int().positive().optional(),
           apply: z.boolean().default(false),
-        },
-        execute: async (input, context) => {
-          const paths = await resolvePaths(input.paths, context);
-          const previewArgs = buildReplaceArgs(input, paths, { json: true });
-          const previewOutput = (await runAstGrep(runner, previewArgs, context)).stdout;
-          const uncappedPreview = parseJsonMatches(previewOutput, {
-            maxResults: Number.MAX_SAFE_INTEGER,
-          });
-          const preview = parseJsonMatches(previewOutput, { maxResults: input.max_results });
-          if (!input.apply) return formatMatches(preview);
-
-          const files = affectedFiles(uncappedPreview);
-          await askEdit(context, files);
-          const applyArgs = buildReplaceArgs(input, paths, { updateAll: true });
-          await runAstGrep(runner, applyArgs, context);
-          const verifyArgs = buildRunArgs(input, paths, true);
-          const remaining = parseJsonMatches(
-            (await runAstGrep(runner, verifyArgs, context)).stdout,
-            {
-              maxResults: input.max_results,
-            },
-          );
-          return `Changed files: ${files.join(", ") || "none"}\nRemaining matches: ${remaining.total}`;
-        },
-      }),
-      ast_grep_scan: tool({
-        description: "Run ast-grep rule-config or inline YAML scans.",
-        args: {
-          paths: stringArray,
           rule_file: z.string().min(1).optional(),
           inline_rules: z.string().min(1).optional(),
           config: z.string().min(1).optional(),
           filter: z.string().min(1).optional(),
-          globs: stringArray,
-          max_results: z.number().int().positive().optional(),
-          apply: z.boolean().default(false),
-        },
-        execute: async (input, context) => {
-          validateScanRuleSource(input);
-          const paths = await resolvePaths(input.paths, context);
-          const args = await buildScanArgs(input, paths, context, { json: true });
-          const previewOutput = (await runAstGrep(runner, args, context)).stdout;
-          const uncappedPreview = parseJsonMatches(previewOutput, {
-            maxResults: Number.MAX_SAFE_INTEGER,
-          });
-          const preview = parseJsonMatches(previewOutput, { maxResults: input.max_results });
-          if (!input.apply) return formatMatches(preview);
-
-          const files = affectedFiles(uncappedPreview);
-          await askEdit(context, files);
-          await runAstGrep(
-            runner,
-            await buildScanArgs(input, paths, context, { updateAll: true }),
-            context,
-          );
-          const remaining = parseJsonMatches((await runAstGrep(runner, args, context)).stdout, {
-            maxResults: input.max_results,
-          });
-          return `Changed files: ${files.join(", ") || "none"}\nRemaining matches: ${remaining.total}`;
-        },
-      }),
-      ast_grep_rule_test: tool({
-        description: "Run ast-grep test for reusable rule development.",
-        args: {
           test_dir: z.string().min(1).optional(),
           snapshot_dir: z.string().min(1).optional(),
-          config: z.string().min(1).optional(),
-          filter: z.string().min(1).optional(),
           update_snapshots: z.boolean().default(false),
+          format: z
+            .union([z.literal("ast"), z.literal("cst"), z.literal("sexp"), z.literal("pattern")])
+            .optional(),
         },
         execute: async (input, context) => {
-          const args = ["test"];
-          const permissionPaths: string[] = [];
-          if (input.test_dir) {
-            const testDir = await resolvePath(input.test_dir, context);
-            args.push("--test-dir", testDir);
-            permissionPaths.push(testDir);
-          }
-          if (input.snapshot_dir) {
-            const snapshotDir = await resolvePath(input.snapshot_dir, context);
-            args.push("--snapshot-dir", snapshotDir);
-            permissionPaths.push(snapshotDir);
-          }
-          if (input.config) args.push("--config", await resolvePath(input.config, context));
-          if (input.filter) args.push("--filter", input.filter);
-          if (input.update_snapshots) {
-            await askEdit(context, permissionPaths.length ? permissionPaths : ["."]);
-            args.push("--update-all");
-          }
-          const result = await runAstGrep(runner, args, context);
-          return result.stdout || result.stderr || "ast-grep tests passed.";
-        },
-      }),
-      ast_grep_debug_pattern: tool({
-        description: "Run ast-grep debug-query to inspect query parsing.",
-        args: {
-          pattern: z.string().min(1),
-          lang: z.string().min(1),
-          format: z.union([
-            z.literal("ast"),
-            z.literal("cst"),
-            z.literal("sexp"),
-            z.literal("pattern"),
-          ]),
-        },
-        execute: async (input, context) => {
-          const result = await runner(
-            astGrepBin(),
-            [
-              "run",
-              "--pattern",
-              input.pattern,
-              "--lang",
-              input.lang,
-              `--debug-query=${input.format}`,
-              "/dev/null",
-            ],
-            { cwd: context.directory, signal: context.abort },
-          );
-          const debugOutput = result.stderr || result.stdout;
-          if (!debugOutput && result.exitCode !== 0)
-            throw new Error(`ast-grep exited with code ${result.exitCode}`);
-          return `ast-grep debug-query output:\n${debugOutput}`;
+          if (input.operation === "search") return executeSearch(input, context, runner);
+          if (input.operation === "replace") return executeReplace(input, context, runner);
+          if (input.operation === "scan") return executeScan(input, context, runner);
+          if (input.operation === "ruleTest") return executeRuleTest(input, context, runner);
+          if (input.operation === "debugPattern")
+            return executeDebugPattern(input, context, runner);
+          throw new Error(`Unsupported ast_grep operation: ${input.operation}`);
         },
       }),
     },

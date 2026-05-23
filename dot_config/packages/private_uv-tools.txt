@@ -3,6 +3,7 @@
 camoufox
 khal
 nano-pdf
+pytest
 rembg
 vdirsyncer
 yt-dlp
