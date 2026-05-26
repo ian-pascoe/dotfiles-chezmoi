@@ -1,6 +1,5 @@
 ---
 description: Manage the persistent OpenCode goal for this session
-agent: build
 ---
 
 # Goal

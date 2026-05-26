@@ -1,6 +1,5 @@
 ---
 description: Plan a new feature
-agent: plan
 ---
 
 # Plan

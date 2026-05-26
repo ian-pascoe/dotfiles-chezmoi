@@ -1,6 +1,5 @@
 ---
 description: Execute an approved plan.
-agent: build
 ---
 
 # Execute Plan

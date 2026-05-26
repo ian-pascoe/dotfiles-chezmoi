@@ -10,16 +10,14 @@
     },
     "external_directory": {
       "*": "ask",
-      "~/.pi": "allow",
-      "~/.pi/*": "allow",
-      "~/.agents": "allow",
-      "~/.agents/*": "allow",
       "/tmp": "allow",
-      "/tmp/*": "allow",
+      "/tmp/**": "allow",
       "/private/tmp": "allow",
-      "/private/tmp/*": "allow",
-      "/var/tmp": "allow",
-      "/var/tmp/*": "allow"
+      "/private/tmp/**": "allow",
+      "~/.pi": "allow",
+      "~/.pi/**": "allow",
+      "~/.agents": "allow",
+      "~/.agents/**": "allow"
     }
   }
 }

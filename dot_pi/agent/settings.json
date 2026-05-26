@@ -1,13 +1,6 @@
 {
   "lastChangelogVersion": "0.75.4",
   "packages": [
-    "git:github.com/code-yeongyu/pi-apply-patch",
-    "git:github.com/code-yeongyu/pi-ast-grep",
-    "git:github.com/code-yeongyu/pi-lsp-client",
-    "git:github.com/code-yeongyu/pi-goal",
-    "git:github.com/code-yeongyu/pi-nested-agents-md",
-    "git:github.com/code-yeongyu/pi-openai-api-parallel-tool-calls",
-    "git:github.com/code-yeongyu/pi-openai-code-interpreter",
     "npm:@caplets/pi",
     "npm:@gotgenes/pi-permission-system",
     "npm:@juicesharp/rpiv-args",

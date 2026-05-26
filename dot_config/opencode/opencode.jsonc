@@ -3,6 +3,7 @@
   "plugin": [
     "@caplets/opencode@latest",
     "@franlol/opencode-md-table-formatter@latest",
+    "opencode-adaptive-thinking@latest",
     [
       "opencode-byterover@latest",
       {
@@ -23,9 +24,16 @@
       "/private/tmp/**": "allow",
       "~/.config/opencode": "allow",
       "~/.config/opencode/**": "allow",
+      "~/.local/share/opencode": "allow",
+      "~/.local/share/opencode/**": "allow",
+      "~/.local/state/opencode": "allow",
+      "~/.local/state/opencode/**": "allow",
+      "~/.cache/opencode": "allow",
+      "~/.cache/opencode/**": "allow",
+      "~/.agents": "allow",
+      "~/.agents/**": "allow",
     },
     "google_search": "deny", // Use websearch (exa) instead
-    "lsp": "allow", // Disabled by default
   },
   "model": "openai/gpt-5.5",
   "small_model": "openai/gpt-5.4-mini",
@@ -36,6 +44,7 @@
       "variant": "low",
     },
     "plan": {
+      "disable": true, // plan mode is for chumps
       "model": "openai/gpt-5.5",
       "variant": "high",
       "permission": {
@@ -50,6 +59,7 @@
     },
     "explore": {
       "model": "openai/gpt-5.4-mini",
+      "variant": "low",
       "permission": {
         "skill": "allow", // Disabled by default
       },
@@ -71,43 +81,31 @@
     },
     // custom agents
     "quick": {
+      "disable": true, // No need for thinking-specific agents due to adaptive thinking plugin
       "mode": "subagent",
       "description": "Fast, low-overhead agent for narrow, low-risk tasks with obvious success criteria: small lookups, simple file checks, concise summaries, or targeted edits in known locations. Do not use for ambiguous bugs, architecture decisions, broad searches, or work where missed edge cases are costly.",
       "model": "openai/gpt-5.5",
       "variant": "none",
-      // same as general
-      "permission": {
-        "todoread": "deny",
-        "todowrite": "deny",
-      },
     },
     "deep": {
+      "disable": true, // No need for thinking-specific agents due to adaptive thinking plugin
       "mode": "subagent",
       "description": "Thorough agent for complex or ambiguous work that needs careful codebase exploration, multi-step reasoning, or stronger verification: tricky bugs, cross-file changes, design tradeoffs, migrations, and root-cause analysis. Use when general may be too shallow but oracle would be excessive.",
       "model": "openai/gpt-5.5",
       "variant": "medium",
-      // same as general
-      "permission": {
-        "todoread": "deny",
-        "todowrite": "deny",
-      },
     },
     "oracle": {
+      "disable": true, // No need for thinking-specific agents due to adaptive thinking plugin
       "mode": "subagent",
       "description": "Highest-depth agent for rare, high-stakes problems where correctness matters more than latency or cost: subtle regressions, security-sensitive changes, data-loss risk, conflicting evidence, or decisions that need exhaustive reasoning. Use only when deep is insufficient or the cost of being wrong is unusually high.",
       "model": "openai/gpt-5.5",
       "variant": "high",
-      // same as general
-      "permission": {
-        "todoread": "deny",
-        "todowrite": "deny",
-      },
     },
     "review": {
-      "mode": "subagent",
+      "mode": "all",
       "description": "Evidence-first review agent for evaluating diffs, plans, PRs, or completed work. Use after implementation or when you need independent scrutiny of correctness, regressions, missing tests, security risk, scope creep, or plan feasibility. Prefer deep/oracle for solving the problem; use review to judge the solution and report actionable findings.",
       "model": "openai/gpt-5.5",
-      "variant": "medium",
+      "variant": "low",
       "prompt": "{file:~/.config/opencode/prompts/review.md}",
       "permission": {
         "edit": {
@@ -115,10 +113,13 @@
           "**/reviews": "allow",
           "**/reviews/**": "allow",
         },
-        // same as general
-        "todoread": "deny",
-        "todowrite": "deny",
       },
+    },
+    "ui-ux": {
+      "mode": "subagent",
+      "description": "Specialized agent for UI/UX design and front-end implementation tasks that require visual reasoning, design critique, or user-centric thinking. Use for design feedback, accessibility reviews, front-end code changes, or any work where user experience is a primary concern. Not needed for purely back-end or non-UI work.",
+      "model": "opencode-go/kimi-k2.6",
+      "variant": "low",
     },
   },
   "mcp": {},
@@ -153,4 +154,7 @@
   },
   "enabled_providers": ["openai", "openrouter", "opencode", "opencode-go"],
   "username": "Ian",
+  "watcher": {
+    "ignore": ["**/node_modules/**", "**/.git/**", "**/.brv/**"],
+  },
 }

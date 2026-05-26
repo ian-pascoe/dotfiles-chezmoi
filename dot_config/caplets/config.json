@@ -7,7 +7,7 @@
       "name": "Browser",
       "description": "Web browsing capabilities to fetch real-time information from the internet, including web pages, APIs, and other online resources.",
       "command": "npx",
-      "args": ["@playwright/mcp@latest", "--headless"]
+      "args": ["-y", "@playwright/mcp@latest", "--headless"]
     },
     "deepwiki": {
       "name": "DeepWiki",
@@ -28,11 +28,18 @@
       "description": "Grep.app provides powerful code search capabilities across a vast index of open source repositories, allowing you to quickly find relevant code snippets and examples.",
       "url": "https://mcp.grep.app"
     },
+    "lsp": {
+      "name": "Language Server Protocol (LSP)",
+      "description": "Integrate with language servers to provide code analysis, autocompletion, and other language-specific features for various programming languages.",
+      "command": "npx",
+      "args": ["-y", "@spiritledsoftware/ls-mcp@latest"]
+    },
     "stealth-browser": {
       "name": "Stealth Browser",
       "description": "A stealth web browser that can evade anti-bot measures and access content that may be restricted to regular automated browsers.",
       "command": "npx",
       "args": [
+        "-y",
         "@playwright/mcp@latest",
         "--headless",
         "--browser=firefox",

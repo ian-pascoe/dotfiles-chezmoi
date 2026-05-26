@@ -141,13 +141,13 @@
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-23T09:53:07.790Z",
+  "generated_at": "2026-05-26T17:08:52.178Z",
   "lane_tokens": {
     "contexts": 3988,
     "stubs": 0,
     "summaries": 1781
   },
-  "source_fingerprint": "e532aa900626f1c8621d3c95cab978772ade908a63220727ebfbb8c2d616c792",
+  "source_fingerprint": "8eccad6a799f7cb980503b6d6df3024c1b8de30d60f85a2aeed575ac9c7fbf45",
   "total_tokens": 5769,
   "version": 1
 }

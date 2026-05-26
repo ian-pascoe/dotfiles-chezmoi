@@ -1,1 +1,1 @@
-export { default as goal } from "./goal/index";
+export { default as goalPlugin } from "./goal/index";
