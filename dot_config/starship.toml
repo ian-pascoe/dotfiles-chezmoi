@@ -1,7 +1,7 @@
 add_newline = true
 command_timeout = 1000
 
-format = "[$os$username$directory$git_branch$git_status]($style)\n$shell$character"
+format = "$os$username[@](bright-black)$hostname:$directory$git_branch$git_status\n$shell$character"
 
 [os]
 disabled = false
@@ -11,15 +11,22 @@ style = "blue"
 [username]
 disabled = false
 show_always = true
-format = "[$user]($style) "
+format = "[$user]($style)"
 style_root = "bold red"
 style_user = "bold cyan"
+
+[hostname]
+disabled = false
+ssh_only = false
+ssh_symbol = ""
+format = "[$hostname]($style)"
+style = "bold green"
 
 [directory]
 disabled = false
 truncation_length = 2
 truncation_symbol = "…/"
-read_only = "󱀰"
+read_only = "󱀰 "
 style = "bold green"
 format = "[$read_only]($read_only_style)[$path]($style)"
 before_repo_root_style = "bold green"
@@ -28,25 +35,25 @@ repo_root_format = "[$read_only]($read_only_style)[$before_root_path]($before_re
 
 [git_branch]
 disabled = false
-symbol = ""
-format = "[$symbol $branch]($style) "
+symbol = " "
+format = "[$symbol$branch]($style) "
 style = "italic purple"
 
 [git_status]
 disabled = false
-format = '[$all_status]($style) '
+format = "[$all_status]($style)"
 style = "cyan"
 ahead = "[⇡${count}](red) "
 diverged = "[⇕⇡${ahead_count} ⇣${behind_count}](red) "
 behind = "[⇣${count}](red) "
 conflicted = "[](red) "
 up_to_date = "[](green) "
-untracked = "[?](blue) "
-modified = "[](yellow) "
-stashed = ""
-staged = ""
-renamed = ""
-deleted = ""
+untracked = "[?${count}](blue) "
+modified = "[${count}](yellow) "
+stashed = "[${count}](blue) "
+staged = "[+${count}](green) "
+renamed = "[${count}](yellow) "
+deleted = "[-${count}](red) "
 
 [shell]
 disabled = false
@@ -135,9 +142,6 @@ symbol = ""
 
 [hg_branch]
 symbol = ""
-
-[hostname]
-ssh_symbol = ""
 
 [java]
 symbol = ""

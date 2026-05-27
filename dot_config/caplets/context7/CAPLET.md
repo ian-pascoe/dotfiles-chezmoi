@@ -1,6 +1,6 @@
 ---
-$schema: https://raw.githubusercontent.com/spiritledsoftware/caplets/main/schemas/caplet.schema.json
-name: Context7
+# yaml-language-server: $schema=https://raw.githubusercontent.com/spiritledsoftware/caplets/main/schemas/caplet.schema.json
+name: Context7 Documentation
 description: Fetch current library and framework documentation through Context7 before using version-sensitive APIs.
 tags:
   - docs
@@ -8,13 +8,12 @@ tags:
   - frameworks
   - api-reference
 mcpServer:
-  transport: http
   url: https://mcp.context7.com/mcp/oauth
   auth:
     type: oauth2
 ---
 
-# Context7
+# Context7 Documentation
 
 Use this Caplet when the agent needs up-to-date library, SDK, framework, CLI, or cloud-service
 documentation before writing code or giving technical instructions.
