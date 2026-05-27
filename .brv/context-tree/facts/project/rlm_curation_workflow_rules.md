@@ -1,6 +1,6 @@
 ---
-consolidated_at: '2026-05-23T09:32:30.314Z'
-consolidated_from: [{date: '2026-05-23T09:32:30.314Z', path: facts/conventions/rlm_curation_workflow_rules.md, reason: 'These files are near-duplicates covering the same RLM curation workflow rules: precomputed recon, single-pass vs chunked extraction, mapExtract timeout/taskId handling, dedup/group helpers, UPSERT preference, and verification via applied file paths. The project file is richer and includes session-specific details, so it should be the merge target.'}]
+consolidated_at: '2026-05-26T17:27:01.061Z'
+consolidated_from: [{date: '2026-05-26T17:27:01.061Z', path: facts/conventions/rlm_curation_workflow_rules.md, reason: 'These are near-duplicate workflow-rule documents covering the same recon-first, single-pass-or-chunked, UPSERT-preferred curation constraints. The project file is richer and should absorb the convention-level content.'}]
 ---
 # Title: RLM Curation Workflow Rules
 
@@ -29,3 +29,8 @@ This workflow exists to make curation deterministic, efficient, and safe for com
 - mapExtract is only for chunked extraction and requires a bare taskId variable.
 - Verification must use result.applied[].filePath.
 - UPSERT is the preferred curation operation.
+
+## Additional preserved convention details
+- Any code_exec call containing mapExtract must use timeout: 300000 on the code_exec tool call itself.
+- Verification must not use readFile.
+- The workflow should avoid raw-context output and follow the session-scoped RLM path whenever the relevant context/history/metadata variables are available.

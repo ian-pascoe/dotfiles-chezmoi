@@ -1,78 +1,60 @@
 ---
-children_hash: 81d9dfee6551e5781968d1dd3eb78d7a9085f4acfbbf6c99559411f415165ac8
-compression_ratio: 0.39276410998552824
+children_hash: e99a36c250bd8420f96a065dc585df34f08677ef1518a0070646ca71bdb0b93c
+compression_ratio: 0.2197483059051307
 condensation_order: 2
-covers: [idempotent-initialization-as-a-hardening-pattern.md, idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-.md, opencode/_index.md, prefer-structured-state-over-brittle-text-heuristics.md]
-covers_token_total: 3455
+covers: [idempotent-initialization-as-a-hardening-pattern.md, idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-.md, idempotent-startup-is-the-shared-hardening-pattern.md, opencode/_index.md, prefer-structured-state-over-brittle-text-heuristics.md, structured-state-beats-brittle-text-parsing.md]
+covers_token_total: 4132
 summary_level: d2
-token_count: 1357
+token_count: 908
 type: summary
 ---
-## d2 Structural Summary
+## d2 Structural Summary: Startup Hardening and Structured State
 
-This collection captures a small set of cross-cutting hardening and workflow principles that recur across OpenCode/Byterover notes and dot_config fixes. The dominant themes are: make startup/bootstrap idempotent, prefer structured state over brittle text heuristics, and keep recall/curation bounded, verifiable, and resilient to partial failure.
+This set condenses into two strong cross-cutting patterns:
 
-### 1) Idempotent startup and recovery as a shared hardening strategy
-The two synthesis entries — **`idempotent-initialization-as-a-hardening-pattern.md`** and **`idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-paths.md`** — describe the same structural pattern across shell and plugin startup paths:
+1. **Idempotent startup/init paths**: repeated bootstrap logic must be safe to rerun and able to recover from partially corrupted state.
+2. **Structured, machine-readable state over text heuristics**: use explicit sentinels and metadata for correctness and verification instead of fragile parsing.
 
-- **`dot_config` / Starship init**: initialization in `dot_zshrc` is made idempotent so it only runs once even if the file is sourced multiple times; it also includes recovery for shells already stuck in the recursive-wrapper state.
-- **`architecture` / Byterover plugin**: bootstrap behavior is kept stable across repeated transform/persist cycles, and brittle readiness gating is removed from durable persist/curation paths while keeping `brvBridge.ready()` for recall.
+## 1) Idempotent initialization as a hardening pattern
 
-Drill down:
-- `idempotent-initialization-as-a-hardening-pattern.md`
-- `idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-paths.md`
+The three near-duplicate syntheses — **`idempotent-initialization-as-a-hardening-pattern.md`**, **`idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-.md`**, and **`idempotent-startup-is-the-shared-hardening-pattern.md`** — all describe the same durability strategy across shell startup and plugin bootstrap:
 
-### 2) OpenCode / Byterover notes: plugin capabilities, recall pipeline, and verification discipline
-The **`opencode/_index.md`** summary groups a larger set of implementation notes into four main clusters:
+- **dot_config / Starship in `dot_zshrc`**: initialization is made idempotent so it only runs once even if the file is sourced multiple times; it also includes recovery for shells already trapped in a recursive wrapper state.
+- **architecture / Byterover plugin**: `.brv` bootstrap is kept stable across repeated transform/persist cycles, and brittle readiness gating is removed from durable paths.
+- The shared rule is: **assume startup may repeat, partially fail, or resume from broken state**; harden the init path accordingly.
 
-#### Plugin capability expansion
-Core work focuses on making the OpenCode plugin more capable while preserving safety:
-- **`lsp_tools_plan.md`**: standalone lightweight JSON-RPC LSP client; preview-first, permission-gated writes; MVP around Biome diagnostics, formatting, organize imports, and fix-all.
-- **`plugin_ideas_for_write_and_diagnostics_capability.md`**: write-capable semantic edits plus diagnostics aggregation are the highest-value missing capabilities.
-- **`opencode_permission_handling_fix.md`**: external paths route through `context.ask({ permission: "external_directory" })`; non-throwing `context.ask` counts as allow; explicit deny still fails closed.
-- **`retry_plugin_backoff.md`**: session-scoped retries with exponential backoff and full jitter, resetting on non-overloaded errors.
+### Related drill-down entries
+- **`idempotent-startup-is-the-shared-hardening-pattern.md`** — shortest summary of the shared robustness pattern.
+- **`idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-.md`** — emphasizes repeated startup paths and recovery from already-bad state.
+- **`idempotent-initialization-as-a-hardening-pattern.md`** — ties together shell recursion recovery and plugin bootstrap stability.
 
-#### Recall and curation workflow
-A second cluster standardizes how durable knowledge is gathered and preserved:
-- **`recall_window_and_curation_pipeline.md`**: canonical workflow is recon → extract → curate → verify; recall is bounded to recent context; curation remains current-turn only; verification uses `result.applied[].filePath`.
-- **`byterover_plugin_curation_and_recall.md`**: structured JSON serialization, omit reasoning, truncate tool output, include latest user message, and keep bridge logging / validation details.
-- **`byterover_recall_window_update.md`**: preserves the bounded recall-window policy and current-turn-only curation scope.
-- **`byterover_context_engine_ideas.md`**: selective curation, noise filtering, metadata stripping, assistant-tag removal, and timeout-protected best-effort recall.
-- **`recall_and_curation_improvements.md`**: recommends best-effort recall timeout, prompt-label cleanup, idle deduplication, and careful handling of oversize first-message edge cases.
+## 2) Structured state beats brittle text parsing
 
-#### Workflow review and prompt design
-- **`review_of_codex_style_goal_plan.md`** and **`context.md`**: critique a Codex-style goal workflow, preferring a command-first design over an inline background agent, with JSONC/schema validation and restart/load verification.
-- **`review_agent_prompt_refinement.md`**: preserves evidence-based review posture, severity ordering, no-edit rule, and output format constraints.
+The second cluster — **`prefer-structured-state-over-brittle-text-heuristics.md`** and **`structured-state-beats-brittle-text-parsing.md`** — captures a common design direction: prefer explicit, inspectable state over delimiter-driven or heuristic parsing.
 
-#### Canonical consolidation pattern
-Several entries are explicitly consolidation markers rather than separate new concepts:
-- **`byterover_context_engine_ideas.md`**
-- **`byterover_plugin_curation_and_recall.md`**
-- **`byterover_recall_window_update.md`**
-- **`recall_and_curation_improvements.md`**
-- **`review_agent_prompt_refinement.md`**
+- **architecture / Byterover plugin**:
+  - moved from delimiter-heavy pseudo-XML toward **structured JSON serialization**,
+  - preserves role-labeled parts,
+  - skips reasoning content,
+  - truncates tool output when needed,
+  - verifies curation using **`result.applied[].filePath`** instead of rereading files.
+- **facts**:
+  - explicitly records that verification must use `result.applied[].filePath`,
+  - and that `readFile` should not be used as the verification mechanism.
+- **dot_config / zsh startup**:
+  - uses a **sentinel** (`prompt_starship_precmd`) to detect prior initialization,
+  - preventing recursive wrapping without relying on brittle text matching.
 
-These preserve canonical notes and indicate that sync-conflict copies add no unique durable information.
+### Related drill-down entries
+- **`structured-state-beats-brittle-text-parsing.md`** — broadest framing of the structured-state preference.
+- **`prefer-structured-state-over-brittle-text-heuristics.md`** — highlights JSON serialization and result metadata as the verification model.
 
-### 3) Prefer structured state over brittle text heuristics
-The synthesis entry **`prefer-structured-state-over-brittle-text-heuristics.md`** identifies a related design direction:
+## Combined takeaway
 
-- The Byterover plugin moved from delimiter-heavy pseudo-XML toward **structured JSON serialization**.
-- It uses role-labeled parts, skips reasoning content, and caps/truncates tool output.
-- Verification relies on explicit metadata, especially **`result.applied[].filePath`**, rather than rereading files.
+Across these entries, the project consistently favors:
+- **idempotent initialization** for repeated startup/bootstrap paths,
+- **recovery-aware startup logic** for already-corrupted state,
+- **structured metadata and sentinels** for verification and correctness,
+- and **explicit result fields** over rereading or parsing raw text.
 
-This aligns with the curation workflow’s emphasis on explicit, inspectable state instead of heuristic parsing.
-
-Drill down:
-- `prefer-structured-state-over-brittle-text-heuristics.md`
-
-### Overall pattern
-Across the collection, the preferred engineering style is:
-
-- **Idempotent bootstrap over one-shot initialization**
-- **Structured metadata over brittle text matching**
-- **Bounded recall over unbounded history**
-- **Preview-first / permission-aware actions over destructive automation**
-- **Concrete verification over assumed success**
-
-The main drill-down paths are the OpenCode cluster under **`opencode/_index.md`** and the synthesis notes on **idempotent initialization** and **structured state**.
+These themes connect the **architecture / OpenCode-Byterover** notes with the **dot_config / zsh-Starship** fix, showing the same reliability strategy applied in both plugin/runtime and shell configuration contexts.

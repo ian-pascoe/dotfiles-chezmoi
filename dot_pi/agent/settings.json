@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.75.4",
+  "lastChangelogVersion": "0.75.5",
   "packages": [
     "npm:@caplets/pi",
     "npm:@gotgenes/pi-permission-system",
@@ -7,6 +7,8 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-btw",
     "npm:@juicesharp/rpiv-todo",
+    "npm:@tintinweb/pi-subagents",
+    "npm:pi-adaptive-thinking",
     "npm:pi-byterover",
     "npm:pi-mcp-adapter",
     "npm:pi-terminal-theme",

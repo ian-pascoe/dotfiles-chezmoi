@@ -1,137 +1,104 @@
 ---
-children_hash: 0a045588577fc71f46518bd70adee07961bfd3d4ce2ad93ba71aafcdad2ebec3
-compression_ratio: 0.5743308610125766
+children_hash: d4f8876e7966cf87807db8fdd30c6bcd86deb0b5f8c3beabb54cd60e738e5d44
+compression_ratio: 0.4046153846153846
 condensation_order: 3
 covers: [architecture/_index.md, dot_config/_index.md, facts/_index.md]
-covers_token_total: 3101
+covers_token_total: 2600
 summary_level: d3
-token_count: 1781
+token_count: 1052
 type: summary
 ---
-# d3 Structural Summary
+## d3 Structural Summary
 
-This level aggregates three major knowledge clusters: **architecture**, **dot_config**, and **facts**. Together they describe a consistent engineering style built around **idempotent startup**, **structured state**, and **bounded, verifiable curation/recall**.
+This layer preserves the repo’s core operating patterns across startup hardening, structured-state verification, and durable workflow knowledge.
 
-## 1) Architecture: hardening patterns and OpenCode/Byterover workflow
-Drill down: `architecture/_index.md`
+### 1) Startup hardening: repeated init must be safe
+Key entries:
+- `architecture/_index.md`
+- `dot_config/_index.md`
 
-The architecture cluster combines cross-cutting reliability patterns with a larger set of OpenCode/Byterover implementation notes.
+Shared pattern:
+- Startup/bootstrap logic is designed to be **idempotent** and safe to rerun.
+- Recovery must handle **partially corrupted or already-broken state**, not just clean startup.
+- The same reliability strategy appears in both shell config and plugin/runtime bootstrap contexts.
 
-### Core patterns
-- **Idempotent initialization as a hardening strategy**
-  - See `idempotent-initialization-as-a-hardening-pattern.md`
-  - See `idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-paths.md`
-  - Applies across repeated startup paths, shell sourcing, and plugin bootstrap/recovery.
-- **Prefer structured state over brittle text heuristics**
-  - See `prefer-structured-state-over-brittle-text-heuristics.md`
-  - Replaces delimiter-heavy parsing with explicit JSON/metadata and machine-readable verification.
+Drill-down entries:
+- `idempotent-startup-is-the-shared-hardening-pattern.md`
+- `idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-.md`
+- `idempotent-initialization-as-a-hardening-pattern.md`
+- `starship_escape_recursion_fix.md`
 
-### OpenCode / Byterover themes
-Drill down into `opencode/_index.md` for the detailed cluster:
-- **Plugin capability expansion**
-  - `lsp_tools_plan.md`: lightweight JSON-RPC LSP client; preview-first; permission-gated writes; MVP covers diagnostics, formatting, organize imports, fix-all.
-  - `plugin_ideas_for_write_and_diagnostics_capability.md`: write-capable semantic edits and diagnostics aggregation are key missing capabilities.
-  - `opencode_permission_handling_fix.md`: external paths use `context.ask({ permission: "external_directory" })`; non-throwing asks count as allow; explicit deny fails closed.
-  - `retry_plugin_backoff.md`: session-scoped retries with exponential backoff and full jitter.
+Notable details:
+- In zsh/Starship startup, `prompt_starship_precmd` is used as the sentinel to detect prior initialization.
+- The fix prevents recursive widget wrapping and avoids `FUNCNEST`.
+- Verification included both parse safety and sourcing `dot_zshrc` twice.
+- In the architecture notes, repeated startup and bootstrap cycles are treated as normal failure-prone conditions, so durable init paths must tolerate reruns.
 
-- **Recall and curation workflow**
-  - `recall_window_and_curation_pipeline.md`: canonical flow is recon → extract → curate → verify; recall is bounded; current-turn-only curation; verification uses `result.applied[].filePath`.
-  - `byterover_plugin_curation_and_recall.md`: structured JSON serialization, omit reasoning, truncate tool output, include latest user message, preserve bridge logging/validation details.
-  - `byterover_recall_window_update.md`: preserves bounded recall-window policy and current-turn-only curation scope.
-  - `byterover_context_engine_ideas.md`: selective curation, noise filtering, metadata stripping, assistant-tag removal, timeout-protected best-effort recall.
-  - `recall_and_curation_improvements.md`: best-effort recall timeout, prompt-label cleanup, idle deduplication, oversize first-message handling.
+### 2) Structured state beats brittle parsing
+Key entries:
+- `architecture/_index.md`
 
-- **Workflow review and prompt design**
-  - `review_of_codex_style_goal_plan.md` and `context.md`: prefer a command-first design over an inline background agent; use JSONC/schema validation and restart/load verification.
-  - `review_agent_prompt_refinement.md`: evidence-based review posture, severity ordering, no-edit rule, strict output constraints.
+Shared pattern:
+- Replace delimiter-heavy or heuristic parsing with **explicit structured state**.
+- Prefer machine-readable metadata and sentinels over rereading or interpreting raw text.
 
-### Overall architecture stance
-The collection converges on a single operating style:
-- idempotent bootstrap over one-shot init
-- structured metadata over heuristic parsing
-- bounded recall over unbounded history
-- preview-first and permission-aware actions over destructive automation
-- direct verification over assumed success
+Drill-down entries:
+- `structured-state-beats-brittle-text-parsing.md`
+- `prefer-structured-state-over-brittle-text-heuristics.md`
 
-## 2) dot_config: zsh prompt safety and Starship recursion fix
-Drill down: `dot_config/_index.md`
+Notable details:
+- The Byterover plugin moved from pseudo-XML/delimiter-heavy handling toward **structured JSON serialization**.
+- Role-labeled parts are preserved while reasoning content is skipped.
+- Verification uses **`result.applied[].filePath`** instead of rereading files.
+- This same principle appears in zsh startup via the sentinel-based guard rather than text matching.
 
-This cluster is narrowly focused on one shell integration issue:
-- `starship_escape_recursion_fix.md` documents a zsh/Starship bug where pressing `Escape` caused recursive wrapping of `zle-keymap-select` until `FUNCNEST` was reached.
-- The fix makes the Starship init block in `dot_zshrc` **idempotent**, so it runs only once even if sourced multiple times.
-- It also includes recovery for sessions already stuck in the broken recursive-wrapper state.
-- `prompt_starship_precmd` is used as the sentinel to detect prior initialization.
-- Verification included both:
-  - `zsh -n dot_zshrc`
-  - sourcing `dot_zshrc` twice to confirm nonrecursive behavior
+### 3) Durable workflow knowledge belongs in curated context, not chat
+Key entries:
+- `facts/_index.md`
 
-### Key pattern
-- **Idempotent initialization with recovery for already-corrupted state**
-- Preserves normal zsh prompt behavior while preventing Starship from wrapping its own widget.
+Shared pattern:
+- Operational knowledge is stored as **durable context** in the tree, not left in transient conversation state.
+- The canonical process is consistently **recon → extract/curate → verify**.
+- Workflow is bounded and best-effort rather than exhaustive.
 
-## 3) Facts: durable operational rules for bounded curation
-Drill down: `facts/_index.md`
-
-The facts domain stores durable process knowledge rather than product implementation details. Its purpose is to preserve reusable operational guidance for context engineering.
-
-### Main entry points
+Drill-down entries:
 - `bounded-best-effort-processing-over-perfect-completeness.md`
-  - Central operating principle: prefer **bounded, best-effort processing** with explicit verification over exhaustive reprocessing.
-  - Recall is limited to a recent window with timeout protection.
-  - Curation avoids noisy or empty inputs and uses single-pass handling when possible.
-  - Verification is done via **applied file paths**, not rereading files.
+- `bounded-operations-are-preferred-over-exhaustive-retries-or-rereads.md`
+- `canonical-workflow-knowledge-is-preserved-as-durable-context-not-chat-state.md`
+- `conventions/context.md`
+- `facts/context.md`
+- `project/_index.md`
 
-- `context.md`
-  - Defines the `facts` domain as the home for durable process rules and operational curation guidance.
-  - Excludes product docs, implementation source code, and unrelated notes.
+Notable details:
+- The `facts` domain stores durable process rules, constraints, and operating conventions.
+- The `conventions` summary emphasizes:
+  - no raw context output
+  - no unnecessary recon reruns
+  - chunked extraction only when needed
+  - verification from curated results
+- The broader operating rule is to prefer **single-pass, bounded execution** and verify from canonical outputs instead of chat memory.
 
-### Conventions and session rules
-Drill down into `conventions/_index.md` and `rlm_curation_session_constraints.md`:
-- canonical workflow is:
-  - precomputed recon
-  - direct extraction or curation
-  - verification via `result.applied[].filePath`
-- if recon is already available, do not rerun it
-- for chunked extraction, use `tools.curation.mapExtract()`
-- do not print raw context
-- do not verify by rereading files
-- pass `taskId` as a bare variable
-- use a `300000 ms` timeout for code execution containing `mapExtract`
+### 4) Repo-level workflow and environment reinforce the same model
+Key entries:
+- `facts/_index.md`
 
-### Project-level workflow baseline
-Drill down into `project/_index.md` and related entries:
-- documents the canonical RLM curation workflow and repository baseline
-- standard flow:
-  - recon
-  - choose single-pass or chunked extraction
-  - curate with UPSERT
-  - verify via curate results
-- environment baseline:
-  - working repo is the chezmoi repo at `/home/ianpascoe/.local/share/chezmoi`
-  - Linux, Node.js v26.2.0
-  - semantic tree under `.brv/context-tree/`
-  - hierarchy is domain/topic/subtopic with max depth 2
-  - `UPSERT` is preferred
-- repo verification baseline:
-  - `npm test` maps to `vitest run`
-  - one recorded run passed 7 test files and 36 tests
+Shared pattern:
+- Project work uses the same bounded, verify-from-results discipline.
+- Context tree structure is fixed as **domain → topic → subtopic**, with max depth 2.
 
-### Cross-entry pattern
-Across the facts cluster, the recurring rule is:
-- keep processing bounded
-- use structured extraction when needed
-- verify through machine-readable results
-- preserve durable knowledge in context, not chat memory
+Drill-down entries:
+- `working_repository_environment.md`
+- `repo_test_verification.md`
+- `opencode_ast_grep_and_lsp_plugin_implementation.md`
 
-## 4) Unifying theme across all three clusters
-The whole set points to the same engineering philosophy:
-- **idempotent startup**
-- **structured state**
-- **bounded, verifiable processing**
-- **permission-aware actions**
-- **durable knowledge captured as reusable context**
+Notable details:
+- The workspace is the chezmoi repo at `/home/ianpascoe/.local/share/chezmoi`.
+- Environment baseline: Linux, Node.js v26.2.0.
+- Verification is anchored in concrete signals like `npm test`, `vitest run`, `result.summary.failed`, and `result.applied[].filePath`.
 
-### Drill-down map
-- `architecture/_index.md` for hardening patterns and OpenCode/Byterover workflow
-- `dot_config/_index.md` for zsh/Starship initialization safety
-- `facts/_index.md` for curation rules, workflow constraints, and operational baselines
+### Combined takeaway
+Across these entries, the repository consistently favors:
+- **idempotent initialization** for repeatable startup paths,
+- **structured metadata and sentinels** over brittle text parsing,
+- **durable curated context** over chat memory,
+- and **bounded verification from canonical results** rather than exhaustive reruns.

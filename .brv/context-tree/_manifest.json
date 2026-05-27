@@ -3,7 +3,13 @@
     {
       "order": 3,
       "path": "_index.md",
-      "tokens": 1781,
+      "tokens": 1052,
+      "type": "summary"
+    },
+    {
+      "order": 2,
+      "path": "architecture/_index.md",
+      "tokens": 908,
       "type": "summary"
     },
     {
@@ -16,6 +22,12 @@
       "importance": 50,
       "path": "architecture/idempotent-initialization-is-the-shared-hardening-strategy-for-repeated-startup-.md",
       "tokens": 333,
+      "type": "context"
+    },
+    {
+      "importance": 50,
+      "path": "architecture/idempotent-startup-is-the-shared-hardening-pattern.md",
+      "tokens": 338,
       "type": "context"
     },
     {
@@ -124,12 +136,6 @@
     },
     {
       "importance": 50,
-      "path": "facts/bounded-best-effort-processing-over-perfect-completeness.md",
-      "tokens": 344,
-      "type": "context"
-    },
-    {
-      "importance": 50,
       "path": "facts/context.md",
       "tokens": 127,
       "type": "context"
@@ -141,13 +147,13 @@
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-26T17:08:52.178Z",
+  "generated_at": "2026-05-26T19:11:59.100Z",
   "lane_tokens": {
-    "contexts": 3988,
+    "contexts": 3982,
     "stubs": 0,
-    "summaries": 1781
+    "summaries": 1960
   },
-  "source_fingerprint": "8eccad6a799f7cb980503b6d6df3024c1b8de30d60f85a2aeed575ac9c7fbf45",
-  "total_tokens": 5769,
+  "source_fingerprint": "fd840cd835cbce4e8f9780dc7e2e001cbb7703a47fa74f4f94f5890d9ba29112",
+  "total_tokens": 5942,
   "version": 1
 }

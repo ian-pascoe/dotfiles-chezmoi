@@ -1,14 +1,10 @@
 ---
-title: Curation Workflow Rules
-summary: RLM curation workflow rules for extracting, preserving, and curating context into the knowledge tree with verification requirements.
-tags: []
-related: [facts/project/context.md, facts/conventions/rlm_curation_workflow_rules.md, facts/project/knowledge_retention_for_working_module_findings.md, facts/conventions/rlm_curation_approach.md, facts/project/working_module_findings_retention.md, facts/project/rlm_curation_approach.md, facts/project/rlm_curation_context.md]
-keywords: []
-createdAt: '2026-05-06T09:33:21.664Z'
-updatedAt: '2026-05-22T16:00:17.236Z'
+consolidated_at: '2026-05-26T17:27:01.063Z'
+consolidated_from: [{date: '2026-05-26T17:27:01.063Z', path: facts/project/context_tree_curation_workflow_rules.md, reason: 'These two project-level workflow documents overlap heavily and cover the same repo curation rules, verification requirements, and UPSERT preference. The canonical workflow-rules file should absorb the context-tree-specific file.'}]
 ---
-## Reason
-Capture the repo-specific RLM curation workflow and constraints from the provided context.
+# Title: Curation Workflow Rules
+
+This document defines the repo-specific RLM curation workflow and constraints used for curating context into the knowledge tree.
 
 ## Raw Concept
 **Task:**
@@ -80,10 +76,8 @@ Use single-pass curation for compact contexts; preserve working module findings 
 - **chunked_extraction_method**: For chunked contexts, use tools.curation.mapExtract for parallel extraction. [convention]
 - **verification_method**: Curation operations should be verified via result.summary.failed and result.applied[].filePath. [convention]
 
----
-
-## Consolidated Summary
-The file captures RLM curation workflow instructions for a single-pass session, emphasizing that recon was already precomputed and should not be rerun. Key operational requirements include passing taskId as a bare variable (not a string) and using timeout 300000 on any code_exec call that includes mapExtract. Verification must be performed by checking result.applied[].filePath rather than calling readFile. The document frames the flow as precomputed recon -> extract or curate -> verify applied file paths. It notes the provided context size and that there are no messages, reinforcing that this is instruction capture rather than interactive processing. Structure includes Reason, Raw Concept, Narrative, Facts, and Consolidated Summary sections. Notable entities/patterns: RLM-based knowledge processing, mapExtract, curate result object, taskId, and filePath-based verification.
-
-## Canonical Merge Note
-This file now serves as the canonical consolidated workflow rule document. Preserve the RLM-specific guidance here and keep any future updates synchronized with this topic.
+## Additional preserved convention details
+- Use precomputed recon when available and do not rerun it.
+- Any code_exec call containing mapExtract must use timeout: 300000.
+- taskId must be passed as a bare variable when using mapExtract.
+- Do not print raw context to stdout.

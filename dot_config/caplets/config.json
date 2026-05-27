@@ -3,6 +3,12 @@
   "defaultSearchLimit": 20,
   "maxSearchLimit": 50,
   "mcpServers": {
+    "ast-grep": {
+      "name": "AST Grep",
+      "description": "AST Grep is a tool that allows you to search for code snippets based on their structure and semantics, making it easy to find relevant code examples and snippets in your codebase.",
+      "command": "npx",
+      "args": ["-y", "ast-grep-mcp"]
+    },
     "browser": {
       "name": "Browser",
       "description": "Web browsing capabilities to fetch real-time information from the internet, including web pages, APIs, and other online resources.",
@@ -32,7 +38,7 @@
       "name": "Language Server Protocol (LSP)",
       "description": "Integrate with language servers to provide code analysis, autocompletion, and other language-specific features for various programming languages.",
       "command": "npx",
-      "args": ["-y", "@spiritledsoftware/ls-mcp@latest"]
+      "args": ["-y", "language-server-mcp"]
     },
     "stealth-browser": {
       "name": "Stealth Browser",

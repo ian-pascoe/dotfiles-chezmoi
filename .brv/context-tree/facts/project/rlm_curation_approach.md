@@ -1,6 +1,6 @@
 ---
-consolidated_at: '2026-05-23T09:32:30.316Z'
-consolidated_from: [{date: '2026-05-23T09:32:30.316Z', path: facts/conventions/rlm_curation_approach.md, reason: 'These files duplicate the same RLM curation approach at project and conventions levels, with the same recon-first, single-pass-or-chunked, UPSERT, and applied-file-path verification guidance. The project file is the richer session-specific version and should absorb the shared convention details.'}]
+consolidated_at: '2026-05-26T17:27:01.058Z'
+consolidated_from: [{date: '2026-05-26T17:27:01.058Z', path: facts/conventions/rlm_curation_approach.md, reason: 'These two files describe the same RLM curation approach and are highly overlapping. The project file is richer and already positioned as the canonical consolidated version, so the convention file should be merged into it.'}]
 ---
 # Title: RLM Curation Approach
 
@@ -30,3 +30,9 @@ The approach exists to make curation deterministic and safe, preserving only dur
 - Chunked extraction uses mapExtract with a bare taskId.
 - Verification must rely on result.applied[].filePath.
 - UPSERT is the preferred curate operation.
+
+## Additional preserved convention details
+- The workflow should follow the session-scoped RLM path directly when Context, History, and Metadata variables are present.
+- The process should not recompute recon when a precomputed recon result is already available.
+- The verification method must rely on the curate result object rather than file rereads.
+- The approach emphasizes avoiding raw context output and keeping extraction bounded to the mode suggested by recon.
