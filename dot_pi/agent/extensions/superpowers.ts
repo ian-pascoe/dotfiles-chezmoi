@@ -40,4 +40,72 @@ function stripFrontmatter(content: string) {
   return match?.[1] ?? content;
 }
 
-export default function (_pi: ExtensionAPI) {}
+type SuperpowersInstall = {
+  root: string;
+  skillsDir: string;
+  bootstrapPath: string;
+  available: boolean;
+};
+
+let bootstrapCache: string | null | undefined;
+
+function inspectInstall(): SuperpowersInstall {
+  const root = superpowersRoot();
+  const skillsDir = path.join(root, "skills");
+  const bootstrapPath = path.join(skillsDir, "using-superpowers", "SKILL.md");
+  return { root, skillsDir, bootstrapPath, available: false };
+}
+
+async function getInstall() {
+  const install = inspectInstall();
+  install.available =
+    (await pathExists(install.skillsDir)) && (await pathExists(install.bootstrapPath));
+  return install;
+}
+
+async function getBootstrapContent(install: SuperpowersInstall) {
+  if (!install.available) return null;
+  if (bootstrapCache !== undefined) return bootstrapCache;
+
+  const fullContent = await readFile(install.bootstrapPath, "utf8");
+  const body = stripFrontmatter(fullContent).trim();
+
+  const toolMapping = `**Tool Mapping for Pi Coding Agent:**
+When skills reference tools you don't have, substitute Pi equivalents:
+- \`TodoWrite\` → \`todo\`
+- \`Task\` tool with subagents → \`subagent\`
+- \`Skill\` tool → Pi's built-in skill loading/invocation system
+- \`Read\`, \`Write\`, \`Edit\`, \`Bash\` → Pi's native tools
+
+Use Pi's available skills list and skill invocation protocol when a skill should be loaded.`;
+
+  bootstrapCache = `<EXTREMELY_IMPORTANT>
+You have superpowers.
+
+**IMPORTANT: The using-superpowers skill content is included below. It is ALREADY LOADED - you are currently following it. Do NOT try to load "using-superpowers" again - that would be redundant.**
+
+${body}
+
+${toolMapping}
+</EXTREMELY_IMPORTANT>`;
+
+  return bootstrapCache;
+}
+
+export default function (pi: ExtensionAPI) {
+  pi.on("resources_discover", async () => {
+    const install = await getInstall();
+    if (!install.available) return;
+    return { skillPaths: [install.skillsDir] };
+  });
+
+  pi.on("before_agent_start", async (event) => {
+    if (event.systemPrompt.includes("<EXTREMELY_IMPORTANT>\nYou have superpowers.")) return;
+
+    const install = await getInstall();
+    const bootstrap = await getBootstrapContent(install);
+    if (!bootstrap) return;
+
+    return { systemPrompt: `${event.systemPrompt}\n\n${bootstrap}` };
+  });
+}
