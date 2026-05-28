@@ -8,7 +8,7 @@
       "skillPath": "skills/writing-plans/SKILL.md",
       "skillFolderHash": "8fe8e8b6ee9e5cbe53cb172a36f0dc31f9875847",
       "installedAt": "2026-04-16T10:17:35.855Z",
-      "updatedAt": "2026-05-05T08:34:14.672Z"
+      "updatedAt": "2026-05-28T17:15:12.991Z"
     },
     "find-skills": {
       "source": "vercel-labs/skills",
@@ -26,7 +26,7 @@
       "skillPath": "skills/executing-plans/SKILL.md",
       "skillFolderHash": "7c20d2bd7ff7b166ea3064e21b1e5f0455750878",
       "installedAt": "2026-04-16T10:19:05.653Z",
-      "updatedAt": "2026-05-05T08:34:16.423Z"
+      "updatedAt": "2026-05-28T17:15:12.981Z"
     },
     "systematic-debugging": {
       "source": "obra/superpowers",
@@ -35,7 +35,7 @@
       "skillPath": "skills/systematic-debugging/SKILL.md",
       "skillFolderHash": "e96f5f2620c17069d668be1880d5492e34c84ceb",
       "installedAt": "2026-04-16T10:20:33.658Z",
-      "updatedAt": "2026-05-05T08:34:18.221Z"
+      "updatedAt": "2026-05-28T17:15:12.986Z"
     },
     "brainstorming": {
       "source": "obra/superpowers",
@@ -44,7 +44,7 @@
       "skillPath": "skills/brainstorming/SKILL.md",
       "skillFolderHash": "f260c775073816860fef8a37c032ac77e2ff5821",
       "installedAt": "2026-04-16T10:21:58.400Z",
-      "updatedAt": "2026-04-16T10:21:58.400Z"
+      "updatedAt": "2026-05-28T17:15:12.979Z"
     },
     "finishing-a-development-branch": {
       "source": "obra/superpowers",
@@ -53,7 +53,7 @@
       "skillPath": "skills/finishing-a-development-branch/SKILL.md",
       "skillFolderHash": "782e09faa5dcf7e9a7a173bd14b5622e35b80169",
       "installedAt": "2026-04-16T10:21:59.031Z",
-      "updatedAt": "2026-05-05T08:34:19.985Z"
+      "updatedAt": "2026-05-28T17:15:12.981Z"
     },
     "receiving-code-review": {
       "source": "obra/superpowers",
@@ -62,7 +62,7 @@
       "skillPath": "skills/receiving-code-review/SKILL.md",
       "skillFolderHash": "7750c56fddb8b2f1cbdb1550a6e3e40d2eeac5f1",
       "installedAt": "2026-04-16T10:21:59.345Z",
-      "updatedAt": "2026-04-16T10:21:59.345Z"
+      "updatedAt": "2026-05-28T17:15:12.982Z"
     },
     "requesting-code-review": {
       "source": "obra/superpowers",
@@ -71,7 +71,7 @@
       "skillPath": "skills/requesting-code-review/SKILL.md",
       "skillFolderHash": "ff419ec159bdf5ff2f2d83c7e544c586bcde69bb",
       "installedAt": "2026-04-16T10:21:59.677Z",
-      "updatedAt": "2026-05-05T08:34:21.730Z"
+      "updatedAt": "2026-05-28T17:15:12.985Z"
     },
     "test-driven-development": {
       "source": "obra/superpowers",
@@ -80,7 +80,7 @@
       "skillPath": "skills/test-driven-development/SKILL.md",
       "skillFolderHash": "98904a7d8e0e04b9bd46220b9b17298f45fe0b72",
       "installedAt": "2026-04-16T10:22:00.289Z",
-      "updatedAt": "2026-04-16T10:22:00.289Z"
+      "updatedAt": "2026-05-28T17:15:12.987Z"
     },
     "using-git-worktrees": {
       "source": "obra/superpowers",
@@ -89,7 +89,7 @@
       "skillPath": "skills/using-git-worktrees/SKILL.md",
       "skillFolderHash": "13a9643fb9e4b236173f7d4b56b15dac10394f1b",
       "installedAt": "2026-04-16T10:22:00.594Z",
-      "updatedAt": "2026-05-05T08:34:23.424Z"
+      "updatedAt": "2026-05-28T17:15:12.988Z"
     },
     "verification-before-completion": {
       "source": "obra/superpowers",
@@ -98,7 +98,7 @@
       "skillPath": "skills/verification-before-completion/SKILL.md",
       "skillFolderHash": "ceb2f1f67f4cadb29b32a06e54d3d0be832071f5",
       "installedAt": "2026-04-16T10:22:00.876Z",
-      "updatedAt": "2026-04-16T10:22:00.876Z"
+      "updatedAt": "2026-05-28T17:15:12.990Z"
     },
     "writing-skills": {
       "source": "obra/superpowers",
@@ -107,7 +107,7 @@
       "skillPath": "skills/writing-skills/SKILL.md",
       "skillFolderHash": "80e8c7d3be99d55d5d76c9516cc45a1e7f48f281",
       "installedAt": "2026-04-16T10:22:01.560Z",
-      "updatedAt": "2026-04-16T10:22:01.560Z"
+      "updatedAt": "2026-05-28T17:15:12.992Z"
     },
     "skill-creator": {
       "source": "anthropics/skills",
@@ -161,7 +161,7 @@
       "skillPath": "skills/subagent-driven-development/SKILL.md",
       "skillFolderHash": "73b43347c1bdc10f6ab81a5cdb036dd1c8098cc0",
       "installedAt": "2026-04-16T17:08:56.562Z",
-      "updatedAt": "2026-05-05T08:34:32.540Z"
+      "updatedAt": "2026-05-28T17:15:12.985Z"
     },
     "gpt-image-2": {
       "source": "agentspace-so/agent-skills",
@@ -181,6 +181,24 @@
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-05-04T18:33:43.420Z",
       "updatedAt": "2026-05-04T18:33:43.420Z"
+    },
+    "dispatching-parallel-agents": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/dispatching-parallel-agents/SKILL.md",
+      "skillFolderHash": "ebd0490e6b0bccfdb9f9c0cc9dd6a066036c8d89",
+      "installedAt": "2026-05-28T17:15:12.980Z",
+      "updatedAt": "2026-05-28T17:15:12.980Z"
+    },
+    "using-superpowers": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/obra/superpowers.git",
+      "skillPath": "skills/using-superpowers/SKILL.md",
+      "skillFolderHash": "225dd70596c396940ff158335a954a64d93ece40",
+      "installedAt": "2026-05-28T17:15:12.989Z",
+      "updatedAt": "2026-05-28T17:15:12.989Z"
     }
   },
   "dismissed": {
