@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.75.5",
+  "lastChangelogVersion": "0.76.0",
   "packages": [
     "npm:@caplets/pi",
     "npm:@juicesharp/rpiv-args",

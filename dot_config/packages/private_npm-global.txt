@@ -5,13 +5,16 @@
 @googleworkspace/cli
 @openai/codex
 @playwright/cli
+alchemy
 byterover-cli
 caplets
 critique
 ctx7
+impeccable
 just-bash
 kimaki
 mcporter
+npm
 opencode-ai
 oxfmt
 oxlint

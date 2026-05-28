@@ -4,15 +4,9 @@
     "@caplets/opencode@latest",
     "@franlol/opencode-md-table-formatter@latest",
     "opencode-adaptive-thinking@latest",
-    [
-      "opencode-byterover@latest",
-      {
-        "enabled": true,
-        "maxRecallTurns": 5,
-        "maxRecallChars": 8192,
-      },
-    ],
     "opencode-pty@latest",
+    "superpowers@git+https://github.com/obra/superpowers.git",
+    "opencode-byterover@latest",
   ],
   "permission": {
     // Don't care if the agent can read/write these

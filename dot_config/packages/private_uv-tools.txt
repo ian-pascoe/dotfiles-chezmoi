@@ -3,6 +3,7 @@
 camoufox
 khal
 nano-pdf
+pyflakes
 pytest
 rembg
 vdirsyncer
