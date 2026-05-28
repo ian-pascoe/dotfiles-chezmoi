@@ -93,6 +93,27 @@ ${toolMapping}
 }
 
 export default function (pi: ExtensionAPI) {
+  pi.registerCommand("superpowers-status", {
+    description: "Show Superpowers package path and bootstrap status",
+    handler: async (_args, ctx) => {
+      const install = await getInstall();
+      const bootstrap = await getBootstrapContent(install);
+      const source = process.env.PI_SUPERPOWERS_DIR
+        ? "PI_SUPERPOWERS_DIR"
+        : "Pi git package cache";
+      const lines = [
+        `Superpowers source: ${source}`,
+        `Root: ${install.root}`,
+        `Skills: ${install.skillsDir}`,
+        `Bootstrap: ${install.bootstrapPath}`,
+        `Available: ${install.available ? "yes" : "no"}`,
+        `Bootstrap loaded: ${bootstrap ? "yes" : "no"}`,
+      ];
+
+      ctx.ui.notify(lines.join("\n"), install.available ? "info" : "warning");
+    },
+  });
+
   pi.on("resources_discover", async () => {
     const install = await getInstall();
     if (!install.available) return;
