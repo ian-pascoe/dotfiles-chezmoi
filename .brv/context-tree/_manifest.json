@@ -3,13 +3,13 @@
     {
       "order": 3,
       "path": "_index.md",
-      "tokens": 1052,
+      "tokens": 1143,
       "type": "summary"
     },
     {
       "order": 2,
-      "path": "architecture/_index.md",
-      "tokens": 908,
+      "path": "dot_config/_index.md",
+      "tokens": 672,
       "type": "summary"
     },
     {
@@ -147,13 +147,13 @@
       "type": "context"
     }
   ],
-  "generated_at": "2026-05-26T19:11:59.100Z",
+  "generated_at": "2026-05-27T11:30:53.458Z",
   "lane_tokens": {
     "contexts": 3982,
     "stubs": 0,
-    "summaries": 1960
+    "summaries": 1815
   },
-  "source_fingerprint": "fd840cd835cbce4e8f9780dc7e2e001cbb7703a47fa74f4f94f5890d9ba29112",
-  "total_tokens": 5942,
+  "source_fingerprint": "3ee508210de7b9610a1642f5ccc87f292b99c3d8d09de97949d7d9cb36cbac4d",
+  "total_tokens": 5797,
   "version": 1
 }

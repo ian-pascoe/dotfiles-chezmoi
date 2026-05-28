@@ -21,6 +21,8 @@ PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
 # Check window size after each command and update LINES and COLUMNS
 shopt -s checkwinsize
 
+set -o ignoreeof
+
 ## Shared Interactive Config
 if [ -f "$HOME/.config/shell/interactive.sh" ]; then
   source "$HOME/.config/shell/interactive.sh"

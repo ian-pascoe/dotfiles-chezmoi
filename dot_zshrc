@@ -18,6 +18,7 @@ setopt inc_append_history
 setopt hist_ignore_dups
 setopt hist_ignore_all_dups
 setopt hist_save_no_dups
+setopt ignore_eof
 
 ## ZPlug
 if command -v brew &>/dev/null; then
