@@ -98,9 +98,7 @@ export default function (pi: ExtensionAPI) {
     handler: async (_args, ctx) => {
       const install = await getInstall();
       const bootstrap = await getBootstrapContent(install);
-      const source = process.env.PI_SUPERPOWERS_DIR
-        ? "PI_SUPERPOWERS_DIR"
-        : "Pi git package cache";
+      const source = process.env.PI_SUPERPOWERS_DIR ? "PI_SUPERPOWERS_DIR" : "Pi git package cache";
       const lines = [
         `Superpowers source: ${source}`,
         `Root: ${install.root}`,
