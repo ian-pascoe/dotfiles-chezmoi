@@ -28,5 +28,10 @@
     "opencode-go/deepseek-v4-pro",
     "opencode-go/minimax-m2.7",
     "opencode-go/glm-5.1"
-  ]
+  ],
+  "quietStartup": true,
+  "collapseChangelog": true,
+  "enableInstallTelemetry": false,
+  "showHardwareCursor": true
 }
+
