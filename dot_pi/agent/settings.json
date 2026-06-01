@@ -3,22 +3,24 @@
   "packages": [
     "git:github.com/obra/superpowers",
     "npm:@caplets/pi",
+    "npm:@howaboua/pi-codex-conversion",
     "npm:@juicesharp/rpiv-args",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-btw",
     "npm:@juicesharp/rpiv-todo",
+    "npm:@ramarivera/pi-skill-selector",
     "npm:pi-adaptive-thinking",
     "npm:pi-byterover",
     "npm:pi-intercom",
     "npm:pi-mcp-adapter",
     "npm:pi-subagents",
+    "npm:pi-subdir-context",
     "npm:pi-terminal-theme",
-    "npm:pi-web-access",
-    "npm:@howaboua/pi-codex-conversion"
+    "npm:pi-web-access"
   ],
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "low",
+  "defaultThinkingLevel": "medium",
   "hideThinkingBlock": false,
   "theme": "terminal",
   "enabledModels": [
@@ -33,5 +35,6 @@
   "quietStartup": true,
   "collapseChangelog": true,
   "enableInstallTelemetry": false,
-  "showHardwareCursor": true
+  "showHardwareCursor": true,
+  "npmCommand": ["pnpm"]
 }

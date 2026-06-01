@@ -1,24 +1,18 @@
 {
   "name": "chezmoi",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
-  "workspaces": [
-    "./dot_pi/agent",
-    "./dot_config/opencode"
-  ],
   "type": "module",
   "scripts": {
-    "format": "oxfmt .",
-    "format:check": "oxfmt --check .",
-    "lint": "oxlint .",
-    "lint:fix": "oxlint --fix .",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "test": "vitest run",
-    "typecheck": "tsgo --noEmit",
-    "update": "npm-check-updates --workspaces -u && npm install"
+    "typecheck": "tsgo --noEmit"
   },
   "devDependencies": {
-    "@typescript/native-preview": "^7.0.0-dev.20260526.1",
-    "npm-check-updates": "^22.2.1",
+    "@typescript/native-preview": "7.0.0-dev.20260527.2",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.67.0",
     "typescript": "^6.0.3",

@@ -5,9 +5,9 @@
   "imageGeneration": true,
   "compactionModel": "gpt-5.5",
   "compactionReasoning": "current",
-  "responsesCompaction": false,
+  "responsesCompaction": true,
   "statusLine": false,
   "useOnAllModels": false,
   "webSearch": true,
-  "verbosity": "medium"
+  "verbosity": "high"
 }
