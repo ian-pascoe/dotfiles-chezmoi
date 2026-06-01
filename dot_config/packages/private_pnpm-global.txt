@@ -1,2 +1,24 @@
 # pnpm global packages
 # One package spec per line.
+@anthropic-ai/claude-code
+@biomejs/biome
+@earendil-works/pi-coding-agent
+@googleworkspace/cli
+@openai/codex
+@playwright/cli
+@pnpm/exe
+alchemy
+byterover-cli
+caplets
+critique
+ctx7
+impeccable
+just-bash
+kimaki
+mcporter
+opencode-ai
+oxfmt
+oxlint
+skills
+t3
+turbo

@@ -1,2 +1,4 @@
 # Bun global packages
 # One package spec per line.
+/home/ianpascoe/.cache/.bun/install/global
+bun

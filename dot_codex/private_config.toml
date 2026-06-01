@@ -1,6 +1,6 @@
 model = "gpt-5.5"
 personality = "none"
-model_reasoning_effort = "low"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "high"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -54,6 +54,36 @@ enabled = true
 [plugins."caplets@caplets"]
 enabled = true
 
+[plugins."superpowers@openai-curated"]
+enabled = true
+
+[plugins."build-web-data-visualization@openai-curated"]
+enabled = true
+
+[plugins."coderabbit@openai-curated"]
+enabled = true
+
+[plugins."openai-developers@openai-curated"]
+enabled = true
+
+[plugins."google-calendar@openai-curated"]
+enabled = true
+
+[plugins."build-macos-apps@openai-curated"]
+enabled = true
+
+[plugins."plugin-eval@openai-curated"]
+enabled = true
+
+[plugins."remotion@openai-curated"]
+enabled = true
+
+[plugins."build-ios-apps@openai-curated"]
+enabled = true
+
+[plugins."sentry@openai-curated"]
+enabled = true
+
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 
@@ -68,8 +98,8 @@ source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.caplets]
-last_updated = "2026-05-27T17:48:53Z"
-last_revision = "7478b7b10c4e4042d36a26f365218bd126c95ea9"
+last_updated = "2026-05-31T10:03:31Z"
+last_revision = "6a4243ee5b3cfefba5968e54b6fee86aaad38356"
 source_type = "git"
 source = "https://github.com/spiritledsoftware/caplets.git"
 
@@ -105,4 +135,19 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/home/ianpascoe/Documents/Codex/2026-05-19/try-using-caplets-tools"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/src/caplets"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/src/spiritledsoftware-website"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/src/wardrail"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/src/caplets-cloud"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/src/caplets-mono"]
 trust_level = "trusted"

@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.76.0",
+  "lastChangelogVersion": "0.77.0",
   "packages": [
     "git:github.com/obra/superpowers",
     "npm:@caplets/pi",
@@ -34,4 +34,3 @@
   "enableInstallTelemetry": false,
   "showHardwareCursor": true
 }
-

@@ -47,7 +47,7 @@ fi
 # PNPM
 if has_cmd pnpm; then
   echo "Updating global pnpm modules..."
-  pnpm -g update --latest
+  pnpm -g update --latest --yes
   echo "Global pnpm modules updated successfully!"
 fi
 

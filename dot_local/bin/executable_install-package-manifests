@@ -183,7 +183,7 @@ fi
 install_apt "$MANIFEST_DIR/apt.txt"
 install_each "npm global" npm "$MANIFEST_DIR/npm-global.txt" npm install -g
 install_each "Bun global" bun "$MANIFEST_DIR/bun-global.txt" bun add -g
-install_each "pnpm global" pnpm "$MANIFEST_DIR/pnpm-global.txt" pnpm add -g
+install_each "pnpm global" pnpm "$MANIFEST_DIR/pnpm-global.txt" pnpm add -g --yes
 install_each_missing "uv tool" uv "$MANIFEST_DIR/uv-tools.txt" list_uv_tools uv tool install
 install_each_missing "cargo" cargo "$MANIFEST_DIR/cargo-install.txt" list_cargo_installed cargo install
 install_each_missing "pipx" pipx "$MANIFEST_DIR/pipx.txt" list_pipx_installed pipx install
