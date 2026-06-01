@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.77.0",
+  "lastChangelogVersion": "0.78.0",
   "packages": [
     "git:github.com/obra/superpowers",
     "npm:@caplets/pi",
@@ -13,7 +13,8 @@
     "npm:pi-mcp-adapter",
     "npm:pi-subagents",
     "npm:pi-terminal-theme",
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "npm:@howaboua/pi-codex-conversion"
   ],
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
