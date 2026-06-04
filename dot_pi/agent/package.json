@@ -5,10 +5,10 @@
   "description": "Pi Coding Agent Config",
   "type": "module",
   "scripts": {
-    "format": "oxfmt .",
-    "format:check": "oxfmt . --check",
-    "lint": "oxlint .",
-    "lint:fix": "oxlint . --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
     "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
