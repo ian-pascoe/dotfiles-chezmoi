@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.78.0",
+  "lastChangelogVersion": "0.79.0",
   "packages": [
     "git:github.com/obra/superpowers",
     "npm:@caplets/pi",
@@ -20,7 +20,7 @@
   ],
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "hideThinkingBlock": false,
   "theme": "terminal",
   "enabledModels": [

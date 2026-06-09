@@ -20,9 +20,9 @@ undo = true
 goals = true
 memories = true
 chronicle = true
-js_repl = false
 terminal_resize_reflow = true
 prevent_idle_sleep = true
+js_repl = false
 
 [memories]
 generate_memories = true
@@ -59,9 +59,6 @@ enabled = true
 enabled = true
 
 [plugins."build-web-apps@openai-curated"]
-enabled = true
-
-[plugins."caplets@caplets"]
 enabled = true
 
 [plugins."google-calendar@openai-curated"]
@@ -103,11 +100,29 @@ enabled = true
 [plugins."alpaca@openai-curated"]
 enabled = true
 
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."vercel@openai-curated"]
+enabled = true
+
+[plugins."shutterstock@openai-curated"]
+enabled = true
+
+[plugins."posthog@openai-curated"]
+enabled = true
+
+[plugins."sentry@openai-curated"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
 [plugins."browser@openai-bundled"]
 enabled = true
 
 [marketplaces.openai-bundled]
-last_updated = "2026-06-04T08:59:29Z"
+last_updated = "2026-06-09T13:54:41Z"
 source_type = "local"
 source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
@@ -116,26 +131,22 @@ last_updated = "2026-06-02T09:52:13Z"
 source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
-[marketplaces.caplets]
-last_updated = "2026-05-30T16:49:54Z"
-last_revision = "6a4243ee5b3cfefba5968e54b6fee86aaad38356"
-source_type = "git"
-source = "https://github.com/spiritledsoftware/caplets.git"
-
 [desktop]
 appearanceLightCodeThemeId = "catppuccin"
 appearanceDarkCodeThemeId = "catppuccin"
 usePointerCursors = true
 appearanceTheme = "system"
-followUpQueueMode = "steer"
+followUpQueueMode = "queue"
 reviewDelivery = "detached"
 dictationDictionary = []
 selected-avatar-id = "custom:mini-jesus"
 keepRemoteControlAwakeWhilePluggedIn = true
 git-pull-request-merge-method = "squash"
 git-show-sidebar-pr-icons = true
-git-create-pull-request-as-draft = false
+git-create-pull-request-as-draft = true
 worktree-keep-count = 10
+git-commit-instructions = "**Always** use conventional commit messages."
+git-pr-instructions = "**Always** use a conventional commit message for PR titles."
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -170,7 +181,10 @@ diffRemoved = "#f38ba8"
 skill = "#cba6f7"
 
 [desktop.open-in-target-preferences]
-global = "ghostty"
+global = "fileManager"
+
+[desktop.open-in-target-preferences.perPath]
+"/Users/ianpascoe/src/caplets-mono" = "fileManager"
 
 [mcp_servers.caplets]
 command = "caplets"
@@ -188,14 +202,31 @@ NODE_REPL_NODE_MODULE_DIRS = ""
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
 CODEX_HOME = "/Users/ianpascoe/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "4b6bfaf4ed2ce9b5cd68e60a61642eb4927a36306ba8c8993f6058607b3530fb"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "4946b004b23af02244ece97240aceb8d123475207fa6a6fc399486bd7086049f"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.602.71036"
+SKY_CUA_SERVICE_PATH = "/Users/ianpascoe/.codex/plugins/cache/openai-bundled/computer-use/1.0.809/Codex Computer Use.app"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [projects."/Users/ianpascoe/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/src/caplets-mono"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/src/caplets"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-08/i-need-you-to-deeply-research"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-08/find-me-some-cool-women-s"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-09/files-mentioned-by-the-user-a36ce12a"]
 trust_level = "trusted"
 
 [tui]
@@ -209,6 +240,7 @@ status_line = [
 ]
 status_line_use_colors = true
 theme = "catppuccin-mocha"
+session_picker_view = "comfortable"
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4

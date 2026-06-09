@@ -33,7 +33,7 @@
         "--headless",
         "--browser=firefox",
         "--user-data-dir=$env:HOME/.camoufox/profile",
-        "--executable-path=$env:HOME/.cache/camoufox/camoufox",
+        "--executable-path=$env:HOME/.cache/camoufox",
         "--caps=--headless=virtual"
       ]
     }

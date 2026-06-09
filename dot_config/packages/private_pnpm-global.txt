@@ -1,17 +1,16 @@
 # pnpm global packages
 # One package spec per line.
-@anthropic-ai/claude-code
 @biomejs/biome
 @earendil-works/pi-coding-agent
 @googleworkspace/cli
 @openai/codex
 @playwright/cli
-@pnpm/exe
 alchemy
 byterover-cli
 caplets
 critique
 ctx7
+howcode
 impeccable
 just-bash
 kimaki

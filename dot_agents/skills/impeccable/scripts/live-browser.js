@@ -81,39 +81,18 @@
     'html', 'head', 'body', 'script', 'style', 'link', 'meta', 'noscript', 'br', 'wbr',
   ]);
 
-  // SVG icons stack above each chip label. All strokes use currentColor so the
-  // icon recolors to C.brand when its chip is selected. 20x20 render, 24-viewBox,
-  // 1.5 stroke - visually consistent with the Foundation grid on the homepage.
-  const ICON_ATTRS = 'width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block"';
-  const ICONS = {
-    impeccable: `<svg ${ICON_ATTRS}><path d="M4 20l4-1L18 9l-3-3L5 16z"/><path d="M14 7l3 3"/></svg>`,
-    bolder:     `<svg ${ICON_ATTRS}><rect x="6" y="12" width="4" height="7" rx="0.5"/><rect x="14" y="5" width="4" height="14" rx="0.5"/></svg>`,
-    quieter:    `<svg ${ICON_ATTRS}><rect x="6" y="5" width="4" height="14" rx="0.5"/><rect x="14" y="12" width="4" height="7" rx="0.5"/></svg>`,
-    distill:    `<svg ${ICON_ATTRS}><path d="M4 5h16l-6 8v7l-4-2v-5z"/></svg>`,
-    polish:     `<svg ${ICON_ATTRS}><path d="M15 3l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/><path d="M7 13l0.6 1.8 1.8 0.6-1.8 0.6-0.6 1.8-0.6-1.8-1.8-0.6 1.8-0.6z"/></svg>`,
-    typeset:    `<svg ${ICON_ATTRS}><path d="M5 6h14" stroke-width="2.6"/><path d="M5 12h9" stroke-width="1.9"/><path d="M5 18h5" stroke-width="1.3"/></svg>`,
-    colorize:   `<svg ${ICON_ATTRS}><circle cx="9" cy="10" r="5"/><circle cx="15" cy="10" r="5"/><circle cx="12" cy="15" r="5"/></svg>`,
-    layout:     `<svg ${ICON_ATTRS}><rect x="3" y="4" width="8" height="16" rx="0.5"/><rect x="13" y="4" width="8" height="7" rx="0.5"/><rect x="13" y="13" width="8" height="7" rx="0.5"/></svg>`,
-    adapt:      `<svg ${ICON_ATTRS}><rect x="2.5" y="5" width="12" height="11" rx="1"/><line x1="2.5" y1="19" x2="14.5" y2="19"/><rect x="16.5" y="8" width="5" height="11" rx="1"/></svg>`,
-    animate:    `<svg ${ICON_ATTRS}><path d="M3 18c4-4 6-10 10-10"/><path d="M13 8c3 0 5 5 8 10"/><circle cx="13" cy="8" r="1.6" fill="currentColor" stroke="none"/></svg>`,
-    delight:    `<svg ${ICON_ATTRS}><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg>`,
-    overdrive:  `<svg ${ICON_ATTRS}><path d="M13 3L5 13h5l-1 8 9-12h-6z"/></svg>`,
-  };
-
-  const ACTIONS = [
-    { value: 'impeccable', label: 'Freeform' },
-    { value: 'bolder',     label: 'Bolder' },
-    { value: 'quieter',    label: 'Quieter' },
-    { value: 'distill',    label: 'Distill' },
-    { value: 'polish',     label: 'Polish' },
-    { value: 'typeset',    label: 'Typeset' },
-    { value: 'colorize',   label: 'Colorize' },
-    { value: 'layout',     label: 'Layout' },
-    { value: 'adapt',      label: 'Adapt' },
-    { value: 'animate',    label: 'Animate' },
-    { value: 'delight',    label: 'Delight' },
-    { value: 'overdrive',  label: 'Overdrive' },
-  ];
+  // Command vocabulary (values + labels + icons) comes from the canonical source,
+  // skill/scripts/live/vocabulary.mjs, which live-server.mjs serializes into
+  // window.__IMPECCABLE_VOCAB__ when it serves /live.js (same injection path as
+  // the token/port above, so it is always present here). The icons stack above
+  // each chip label and recolor to C.brand when selected (strokes use
+  // currentColor). ACTIONS drives the picker grid; ICONS maps value -> svg.
+  const VOCAB = Array.isArray(window.__IMPECCABLE_VOCAB__) ? window.__IMPECCABLE_VOCAB__ : [];
+  const ICONS = {};
+  const ACTIONS = VOCAB.map((c) => {
+    ICONS[c.value] = c.icon;
+    return { value: c.value, label: c.label };
+  });
 
   const LIVE_CHROME_MOUNT_CONTRACT = ['root', 'transport', 'state', 'actions'];
   const LIVE_UI_SURFACES = [
@@ -1237,7 +1216,7 @@
       : (focused ? BP.accentSoft : BP.hairline);
   }
 
-  // Insert mode helpers (mirrors skill/scripts/live-insert-ui.mjs)
+  // Insert mode helpers (mirrors skill/scripts/live/insert-ui.mjs)
 
   function detectInsertAxisFromStyle(style) {
     const display = style?.display || 'block';
@@ -4524,15 +4503,17 @@
     if (origContent.id) {
       liveEl = document.getElementById(origContent.id);
     } else if (cls) {
-      const candidates = document.querySelectorAll(tag + '.' + cls.split(' ')[0]);
+      const candidates = [...document.getElementsByTagName(tag)];
       for (const c of candidates) {
         if (c.className === cls && !own(c)) { liveEl = c; break; }
       }
       if (!liveEl) {
-        const expectedClasses = String(cls).split(/\s+/).filter(Boolean);
-        for (const c of candidates) {
-          if (own(c)) continue;
-          if (expectedClasses.every((name) => c.classList.contains(name))) { liveEl = c; break; }
+        const expectedClasses = String(cls).split(/\s+/).filter((name) => /^[A-Za-z_-][\w-]*$/.test(name));
+        if (expectedClasses.length > 0) {
+          for (const c of candidates) {
+            if (own(c)) continue;
+            if (expectedClasses.every((name) => c.classList.contains(name))) { liveEl = c; break; }
+          }
         }
       }
     }
@@ -4901,7 +4882,7 @@
         const block = startIdx !== -1 && endIdx !== -1 && endIdx > startIdx
           ? html.slice(startIdx + startMark.length, endIdx).trim()
           : html;
-        const doc = parser.parseFromString(block, 'text/html');
+        const doc = parser.parseFromString(normalizeSourceFallbackBlock(block, filePath), 'text/html');
         srcWrapper = doc.querySelector('[data-impeccable-variants="' + sessionId + '"]');
         if (!srcWrapper) {
           console.warn('[impeccable] Variant wrapper not found in source file.');
@@ -4968,6 +4949,44 @@
         console.error('[impeccable] Failed to fetch source:', err);
         showToast('Could not load variants. Try refreshing the page.', 5000);
       });
+  }
+
+  function normalizeSourceFallbackBlock(block, filePath) {
+    if (!/\.[cm]?[jt]sx$/i.test(String(filePath || ''))) return block;
+    return String(block)
+      .replace(
+        /<style\b([^>]*)>\s*\{\s*`([\s\S]*?)`\s*\}\s*<\/style>/g,
+        (_match, attrs, css) => '<style' + attrs + '>' + css + '</style>',
+      )
+      .replace(/\bclassName\s*=\s*\{\s*`([^`]*?)`\s*\}/g, (_match, value) => {
+        const literalClasses = value.replace(/\$\{[^}]*\}/g, ' ').replace(/\s+/g, ' ').trim();
+        return literalClasses ? 'class="' + escapeHtml(literalClasses) + '"' : '';
+      })
+      .replace(/\bclassName\s*=/g, 'class=')
+      .replace(/\sstyle=\{\{([\s\S]*?)\}\}/g, (_match, body) => {
+        const css = jsxStyleObjectToCss(body);
+        return css ? ' style="' + escapeHtml(css) + '"' : '';
+      });
+  }
+
+  function jsxStyleObjectToCss(body) {
+    const declarations = [];
+    const re = /(["'][^"']+["']|[A-Za-z_$][\w$-]*)\s*:\s*(?:"([^"]*)"|'([^']*)'|(-?\d+(?:\.\d+)?))/g;
+    let match;
+    while ((match = re.exec(String(body || '')))) {
+      const prop = jsxStylePropToCss(match[1]);
+      const value = match[2] ?? match[3] ?? match[4] ?? '';
+      if (!prop || value === '') continue;
+      declarations.push(prop + ': ' + value);
+    }
+    return declarations.join('; ');
+  }
+
+  function jsxStylePropToCss(prop) {
+    let out = String(prop || '').trim().replace(/^["']|["']$/g, '');
+    if (!out) return '';
+    if (out.startsWith('--')) return out;
+    return out.replace(/[A-Z]/g, (ch) => '-' + ch.toLowerCase()).replace(/^-ms-/, '-ms-');
   }
 
   function buildSvelteExpressionTextMap(sourceOriginal, liveOriginal) {
@@ -5443,7 +5462,11 @@
           }
           // Source fallback when HMR did not land variants in this tab.
           if (msg.file && msg.id && state === 'GENERATING' && msg.id === currentSessionId) {
-            injectVariantsFromSource(msg.file, msg.id);
+            setTimeout(() => {
+              if (arrivedVariants >= expectedVariants && expectedVariants > 0) return;
+              if (state !== 'GENERATING' || msg.id !== currentSessionId) return;
+              injectVariantsFromSource(msg.file, msg.id);
+            }, 750);
             break;
           }
           // Variants are in source but not in the DOM yet. Common when the
@@ -5535,8 +5558,11 @@
   function sendEvent(msg, opts) {
     msg.token = TOKEN;
     function handleFailure(err) {
-      console.error('[impeccable] Failed to send event:', err);
-      if (opts && opts.throwOnError) throw err;
+      if (opts && opts.throwOnError) {
+        console.error('[impeccable] Failed to send event:', err);
+        throw err;
+      }
+      console.debug('[impeccable] Dropped optional live event:', err);
       return null;
     }
     return fetch('http://localhost:' + PORT + '/events', {
@@ -6829,7 +6855,14 @@ void main() {
 
   function scheduleAcceptCleanup(accepted) {
     setTimeout(function() {
-      if (!accepted?.isSvelteComponent) ensureAcceptedDomClean(accepted);
+      if (!accepted?.isSvelteComponent && !acceptedDomAlreadyClean(accepted)) {
+        setTimeout(function() {
+          if (pendingAcceptedSession?.id !== accepted?.id) return;
+          if (!accepted?.isSvelteComponent) ensureAcceptedDomClean(accepted);
+          cleanupAcceptedSession();
+        }, 1800);
+        return;
+      }
       cleanupAcceptedSession();
     }, 1200);
   }
@@ -6858,29 +6891,42 @@ void main() {
   function acceptedDomAlreadyClean(pending) {
     if (!pending?.acceptedSelector) return false;
     const matches = [...document.querySelectorAll(pending.acceptedSelector)];
-    return matches.some((el) => !el.closest('[data-impeccable-variants],[data-impeccable-variant]'));
+    return matches.length > 0
+      && matches.every((el) => !el.closest('[data-impeccable-variants],[data-impeccable-variant],[data-impeccable-carbonize]'));
   }
 
   function ensureAcceptedDomClean(pending) {
+    if (acceptedDomAlreadyClean(pending)) return;
     const sessionId = pending?.id;
     const variantId = pending?.variant;
-    const wrapper = document.querySelector('[data-impeccable-variants="' + sessionId + '"]');
-    const accepted = wrapper?.querySelector?.('[data-impeccable-variant="' + variantId + '"]');
-    if (!wrapper) {
+    const wrappers = findAcceptedRuntimeWrappers(sessionId);
+    if (wrappers.length === 0) {
       restoreAcceptedDomFromSnapshot(pending);
       return;
     }
-    if (!accepted) {
+    for (const wrapper of wrappers) {
+      if (!wrapper?.isConnected) continue;
+      const accepted = wrapper.querySelector?.('[data-impeccable-variant="' + variantId + '"]');
+      if (!accepted) {
+        wrapper.remove();
+        continue;
+      }
+      const parent = wrapper.parentElement;
+      if (!parent) continue;
+      while (accepted.firstChild) {
+        parent.insertBefore(accepted.firstChild, wrapper);
+      }
       wrapper.remove();
-      restoreAcceptedDomFromSnapshot(pending);
-      return;
     }
-    const parent = wrapper.parentElement;
-    if (!parent) return;
-    while (accepted.firstChild) {
-      parent.insertBefore(accepted.firstChild, wrapper);
-    }
-    wrapper.remove();
+    if (!acceptedDomAlreadyClean(pending)) restoreAcceptedDomFromSnapshot(pending);
+  }
+
+  function findAcceptedRuntimeWrappers(sessionId) {
+    if (!sessionId) return [];
+    return [...new Set([
+      ...document.querySelectorAll('[data-impeccable-variants="' + sessionId + '"]'),
+      ...document.querySelectorAll('[data-impeccable-carbonize="' + sessionId + '"]'),
+    ])];
   }
 
   function restoreAcceptedDomFromSnapshot(pending) {
