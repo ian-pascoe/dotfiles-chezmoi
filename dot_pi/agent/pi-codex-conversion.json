@@ -1,13 +1,32 @@
 {
-  "applyPatchOnly": false,
-  "fast": false,
-  "forceCachedWebSockets": true,
-  "imageGeneration": true,
-  "compactionModel": "gpt-5.5",
-  "compactionReasoning": "current",
-  "responsesCompaction": true,
-  "statusLine": false,
-  "useOnAllModels": false,
-  "webSearch": true,
-  "verbosity": "high"
+  "mode": "path",
+  "scope": {
+    "allProviders": false,
+    "additionalProviders": []
+  },
+  "tools": {
+    "webRun": true,
+    "imageGeneration": true,
+    "applyPatchOnly": false
+  },
+  "ui": {
+    "statusLine": false,
+    "toolRendering": true,
+    "backgroundShellWidget": true,
+    "backgroundShellToggleShortcut": "alt+w",
+    "backgroundShellPrevShortcut": "alt+q",
+    "backgroundShellNextShortcut": "alt+e",
+    "backgroundShellCloseShortcut": "alt+r"
+  },
+  "compaction": {
+    "responsesCompaction": true
+  },
+  "openai": {
+    "fast": false,
+    "verbosity": "high",
+    "forceCachedWebSockets": true,
+    "webSearchModel": "gpt-5.4-mini",
+    "compactionModel": "gpt-5.5",
+    "compactionReasoning": "current"
+  }
 }

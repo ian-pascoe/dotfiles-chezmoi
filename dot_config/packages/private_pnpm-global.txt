@@ -11,6 +11,7 @@ caplets
 critique
 ctx7
 howcode
+hunkdiff
 impeccable
 just-bash
 kimaki
