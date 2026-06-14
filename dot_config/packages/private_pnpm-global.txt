@@ -10,6 +10,7 @@ byterover-cli
 caplets
 critique
 ctx7
+executor
 howcode
 hunkdiff
 impeccable

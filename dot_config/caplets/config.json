@@ -3,11 +3,27 @@
   "defaultSearchLimit": 20,
   "maxSearchLimit": 50,
   "mcpServers": {
-    "browser": {
-      "name": "Browser",
+    "browser-use": {
+      "name": "Browser Use",
       "description": "Web browsing capabilities to fetch real-time information from the internet, including web pages, APIs, and other online resources.",
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest", "--headless"]
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--extension",
+        "--browser=chromium",
+        "--executable-path=$env:DEFAULT_BROWSER_EXECECUTABLE_PATH"
+      ],
+      "env": {
+        "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "$env:PLAYWRIGHT_MCP_EXTENSION_TOKEN",
+        "PWTEST_EXTENSION_USER_DATA_DIR": "$env:DEFAULT_BROWSER_USER_DATA_DIR"
+      }
+    },
+    "computer-use": {
+      "name": "Computer Use",
+      "description": "Computer use capabilities to control your computer, including opening and closing applications, opening and closing windows, and more.",
+      "command": "npx",
+      "args": ["-y", "open-computer-use@latest", "mcp"]
     },
     "deepwiki": {
       "name": "DeepWiki",
@@ -23,18 +39,33 @@
         "token": "$env:GH_TOKEN"
       }
     },
-    "stealth-browser": {
-      "name": "Stealth Browser",
+    "google-workspace": {
+      "name": "Google Workspace",
+      "description": "Manage Google Workspace, including email, calendar, and more.",
+      "command": "uvx",
+      "args": [
+        "workspace-mcp",
+        "--single-user",
+        "--tool-tier",
+        "extended"
+      ],
+      "env": {
+        "GOOGLE_CLIENT_SECRET_PATH": "$env:HOME/.config/gws/client_secret.json",
+        "USER_GOOGLE_EMAIL": "$env:GOOGLE_EMAIL"
+      }
+    },
+    "stealth-browser-use": {
+      "name": "Stealth Browser Use",
       "description": "A stealth web browser that can evade anti-bot measures and access content that may be restricted to regular automated browsers.",
       "command": "npx",
       "args": [
         "-y",
         "@playwright/mcp@latest",
-        "--headless",
+        "--config=$env:HOME/.config/caplets/stealth-playwright.json",
         "--browser=firefox",
-        "--user-data-dir=$env:HOME/.camoufox/profile",
-        "--executable-path=$env:HOME/.cache/camoufox",
-        "--caps=--headless=virtual"
+        "--executable-path=$env:CAMOUFOX_EXECECUTABLE_PATH",
+        "--user-data-dir=$env:CAMOUFOX_USER_DATA_DIR",
+        "--headless"
       ]
     }
   }

@@ -1,7 +1,7 @@
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "high"
-plan_mode_reasoning_effort = "high"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
 sandbox_mode = "danger-full-access"
@@ -19,7 +19,6 @@ remote_connections = true
 undo = true
 goals = true
 memories = true
-chronicle = true
 terminal_resize_reflow = true
 prevent_idle_sleep = true
 js_repl = false
@@ -30,106 +29,6 @@ use_memories = true
 
 [shell_environment_policy]
 inherit = "all"
-
-[plugins."github@openai-curated"]
-enabled = true
-
-[plugins."gmail@openai-curated"]
-enabled = true
-
-[plugins."linear@openai-curated"]
-enabled = true
-
-[plugins."google-drive@openai-curated"]
-enabled = true
-
-[plugins."codex-security@openai-curated"]
-enabled = true
-
-[plugins."documents@openai-primary-runtime"]
-enabled = true
-
-[plugins."spreadsheets@openai-primary-runtime"]
-enabled = true
-
-[plugins."presentations@openai-primary-runtime"]
-enabled = true
-
-[plugins."browser-use@openai-bundled"]
-enabled = true
-
-[plugins."build-web-apps@openai-curated"]
-enabled = true
-
-[plugins."google-calendar@openai-curated"]
-enabled = true
-
-[plugins."openai-developers@openai-curated"]
-enabled = true
-
-[plugins."remotion@openai-curated"]
-enabled = true
-
-[plugins."superpowers@openai-curated"]
-enabled = true
-
-[plugins."cloudflare@openai-curated"]
-enabled = true
-
-[plugins."coderabbit@openai-curated"]
-enabled = true
-
-[plugins."plugin-eval@openai-curated"]
-enabled = true
-
-[plugins."build-web-data-visualization@openai-curated"]
-enabled = true
-
-[plugins."build-ios-apps@openai-curated"]
-enabled = true
-
-[plugins."build-macos-apps@openai-curated"]
-enabled = true
-
-[plugins."weatherpromise@openai-curated"]
-enabled = true
-
-[plugins."stripe@openai-curated"]
-enabled = true
-
-[plugins."alpaca@openai-curated"]
-enabled = true
-
-[plugins."computer-use@openai-bundled"]
-enabled = true
-
-[plugins."vercel@openai-curated"]
-enabled = true
-
-[plugins."shutterstock@openai-curated"]
-enabled = true
-
-[plugins."posthog@openai-curated"]
-enabled = true
-
-[plugins."sentry@openai-curated"]
-enabled = true
-
-[plugins."chrome@openai-bundled"]
-enabled = true
-
-[plugins."browser@openai-bundled"]
-enabled = true
-
-[marketplaces.openai-bundled]
-last_updated = "2026-06-10T08:59:03Z"
-source_type = "local"
-source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
-
-[marketplaces.openai-primary-runtime]
-last_updated = "2026-06-02T09:52:13Z"
-source_type = "local"
-source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [desktop]
 appearanceLightCodeThemeId = "catppuccin"
@@ -147,6 +46,7 @@ git-create-pull-request-as-draft = true
 worktree-keep-count = 10
 git-commit-instructions = "**Always** use conventional commit messages."
 git-pr-instructions = "**Always** use a conventional commit message for PR titles."
+defaultTerminalLocation = "right"
 
 [desktop.appearanceLightChromeTheme]
 accent = "#8839ef"
@@ -181,15 +81,21 @@ diffRemoved = "#f38ba8"
 skill = "#cba6f7"
 
 [desktop.open-in-target-preferences]
-global = "fileManager"
-
-[desktop.open-in-target-preferences.perPath]
-"/Users/ianpascoe/src/caplets-mono" = "fileManager"
+global = "ghostty"
 
 [mcp_servers.caplets]
 command = "caplets"
 args = ["serve"]
-startup_timeout_sec = 120
+env_vars = [
+  "HOME",
+  "GH_TOKEN",
+  "PLAYWRIGHT_MCP_EXTENSION_TOKEN",
+  "GOOGLE_EMAIL",
+  "DEFAULT_BROWSER_EXECECUTABLE_PATH",
+  "DEFAULT_BROWSER_USER_DATA_DIR",
+  "CAMOUFOX_EXECECUTABLE_PATH",
+  "CAMOUFOX_USER_DATA_DIR",
+]
 
 [mcp_servers.node_repl]
 args = []
@@ -202,31 +108,13 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_nod
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
 CODEX_HOME = "/Users/ianpascoe/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "72614174f4dad67a58d46a3ac759cffb45c92fa48a293af4c4ea35102ba391ba"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "27dca86fd6b571c49414a4b78e46b57bcf683a46cd1319799c11fbb6cfae3110"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.608.12217"
+BROWSER_USE_CODEX_APP_VERSION = "26.609.41114"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
-
-[projects."/Users/ianpascoe/.local/share/chezmoi"]
-trust_level = "trusted"
-
-[projects."/Users/ianpascoe/src/caplets-mono"]
-trust_level = "trusted"
-
-[projects."/Users/ianpascoe/src/caplets"]
-trust_level = "trusted"
-
-[projects."/Users/ianpascoe/Documents/Codex/2026-06-08/i-need-you-to-deeply-research"]
-trust_level = "trusted"
-
-[projects."/Users/ianpascoe/Documents/Codex/2026-06-08/find-me-some-cool-women-s"]
-trust_level = "trusted"
-
-[projects."/Users/ianpascoe/Documents/Codex/2026-06-09/files-mentioned-by-the-user-a36ce12a"]
-trust_level = "trusted"
 
 [tui]
 status_line = [
@@ -243,3 +131,23 @@ session_picker_view = "comfortable"
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:71f488f69986d18cb9ce244e13c63b53775e5ae6a8b7d7496b6affff2a5f5eb0"
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:stop:0:0"]
+trusted_hash = "sha256:f4274692948de1777cf67b396b4622c680c2a5fdcb52440fe4d78a116a3b89e7"
+
+[projects."/Users/ianpascoe/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/src/caplets"]
+trust_level = "trusted"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-06-14T09:35:03Z"
+source_type = "local"
+source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[plugins."browser@openai-bundled"]
+enabled = true

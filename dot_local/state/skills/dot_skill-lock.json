@@ -132,9 +132,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "836a4c42e40b2f4bf2bd2741a2b363347231f308",
+      "skillFolderHash": "694619fc5ab0691f79a2d826fe2036c2eeadf898",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-06-10T09:03:40.764Z"
+      "updatedAt": "2026-06-14T08:35:06.317Z"
     },
     "git-commit": {
       "source": "github/awesome-copilot",
@@ -335,10 +335,18 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/productivity/teach/SKILL.md",
-      "skillFolderHash": "f04dec872f386f9b6db0cbb88fcb6605a151d34c",
-      "pluginName": "mattpocock-skills",
+      "skillFolderHash": "975430f7801bac2258ed18f4d80860024443b4f7",
       "installedAt": "2026-06-09T18:54:06.101Z",
-      "updatedAt": "2026-06-09T18:54:06.101Z"
+      "updatedAt": "2026-06-11T08:42:42.791Z"
+    },
+    "hunk-review": {
+      "source": "modem-dev/hunk",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/modem-dev/hunk.git",
+      "skillPath": "skills/hunk-review/SKILL.md",
+      "skillFolderHash": "dcdffe55e1a26317d4639174fe2b66ae71686b6c",
+      "installedAt": "2026-06-10T09:19:24.174Z",
+      "updatedAt": "2026-06-10T09:19:24.174Z"
     }
   },
   "dismissed": {

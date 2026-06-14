@@ -1,1 +1,29 @@
-{}
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /Users/ianpascoe/.codex/autoresearch-hooks/session_start.py",
+            "timeout": 5,
+            "statusMessage": "codex-autoresearch SessionStart hook"
+          }
+        ],
+        "matcher": "startup|resume|compact"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /Users/ianpascoe/.codex/autoresearch-hooks/stop.py",
+            "timeout": 10,
+            "statusMessage": "codex-autoresearch Stop hook"
+          }
+        ]
+      }
+    ]
+  }
+}
