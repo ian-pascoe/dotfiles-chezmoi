@@ -137,11 +137,13 @@ session_picker_view = "comfortable"
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 
+[hooks.state]
+
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:session_start:0:0"]
-trusted_hash = "sha256:71f488f69986d18cb9ce244e13c63b53775e5ae6a8b7d7496b6affff2a5f5eb0"
+trusted_hash = "sha256:f604111693f4d2b320b6a1c537043bd871e614f3f74ae1c2f442e505305f1fee"
 
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:stop:0:0"]
-trusted_hash = "sha256:f4274692948de1777cf67b396b4622c680c2a5fdcb52440fe4d78a116a3b89e7"
+trusted_hash = "sha256:3a8db2338d678694b66fc76a9d8ae5bc55e42d9f1548606edcfe520c3880eec9"
 
 [projects."/Users/ianpascoe/.local/share/chezmoi"]
 trust_level = "trusted"
