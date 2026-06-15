@@ -1,7 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/spiritledsoftware/caplets/main/schemas/caplets-config.schema.json",
-  "defaultSearchLimit": 20,
-  "maxSearchLimit": 50,
+  "$schema": "https://caplets.dev/config.schema.json",
   "mcpServers": {
     "browser-use": {
       "name": "Browser Use",
@@ -43,12 +41,7 @@
       "name": "Google Workspace",
       "description": "Manage Google Workspace, including email, calendar, and more.",
       "command": "uvx",
-      "args": [
-        "workspace-mcp",
-        "--single-user",
-        "--tool-tier",
-        "extended"
-      ],
+      "args": ["workspace-mcp", "--single-user", "--tool-tier", "extended"],
       "env": {
         "GOOGLE_CLIENT_SECRET_PATH": "$env:HOME/.config/gws/client_secret.json",
         "USER_GOOGLE_EMAIL": "$env:GOOGLE_EMAIL"

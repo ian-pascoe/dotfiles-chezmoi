@@ -1,6 +1,8 @@
+#:schema https://raw.githubusercontent.com/openai/codex/refs/heads/main/codex-rs/core/config.schema.json
+
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -85,9 +87,12 @@ global = "ghostty"
 
 [mcp_servers.caplets]
 command = "caplets"
-args = ["serve"]
+args = ["attach"]
 env_vars = [
   "HOME",
+  "CAPLETS_REMOTE_URL",
+  "CAPLETS_REMOTE_USER",
+  "CAPLETS_REMOTE_PASSWORD",
   "GH_TOKEN",
   "PLAYWRIGHT_MCP_EXTENSION_TOKEN",
   "GOOGLE_EMAIL",
@@ -144,10 +149,45 @@ trust_level = "trusted"
 [projects."/Users/ianpascoe/src/caplets"]
 trust_level = "trusted"
 
+[projects."/Users/ianpascoe/src/caplets-cloud"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-14/if-i-gave-you-a-few"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-15/is-there-any-way-to-have"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-15/without-searching-for-anything-what-tools"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/src/caplets-mono"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-15/doyouunderstandwhatiamsayingrightnow"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-06-14T09:35:03Z"
+last_updated = "2026-06-15T09:18:40Z"
 source_type = "local"
 source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-06-15T00:52:31Z"
+source_type = "local"
+source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
 
 [plugins."browser@openai-bundled"]
 enabled = true
