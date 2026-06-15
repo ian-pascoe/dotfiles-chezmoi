@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$HOME/.codex/autoresearch-hooks/session_start.py\"",
+            "command": "python3 \"$HOME/.codex/skills/codex-autoresearch/scripts/autoresearch_hook_session_start.py\"",
             "timeout": 5,
             "statusMessage": "codex-autoresearch SessionStart hook"
           }
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$HOME/.codex/autoresearch-hooks/stop.py\"",
+            "command": "python3 \"$HOME/.codex/skills/codex-autoresearch/scripts/autoresearch_hook_stop.py\"",
             "timeout": 10,
             "statusMessage": "codex-autoresearch Stop hook"
           }
