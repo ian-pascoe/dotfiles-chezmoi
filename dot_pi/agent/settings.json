@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.79.1",
+  "lastChangelogVersion": "0.79.7",
   "packages": [
     "git:github.com/obra/superpowers",
     "npm:@caplets/pi",
@@ -8,16 +8,15 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-btw",
     "npm:@juicesharp/rpiv-todo",
+    "npm:@ramarivera/pi-skill-selector",
     "npm:pi-adaptive-thinking",
     "npm:pi-autoresearch",
-    "npm:pi-byterover",
     "npm:pi-intercom",
     "npm:pi-mcp-adapter",
     "npm:pi-subagents",
     "npm:pi-subdir-context",
     "npm:pi-terminal-theme",
-    "npm:pi-web-access",
-    "npm:@ramarivera/pi-skill-selector"
+    "npm:pi-web-access"
   ],
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
@@ -27,11 +26,10 @@
   "enabledModels": [
     "openai-codex/gpt-5.5",
     "openai-codex/gpt-5.4-mini",
+    "opencode-go/glm-5.2",
     "opencode-go/kimi-k2.6",
-    "opencode-go/deepseek-v4-flash",
     "opencode-go/deepseek-v4-pro",
-    "opencode-go/minimax-m2.7",
-    "opencode-go/glm-5.1"
+    "opencode-go/deepseek-v4-flash"
   ],
   "quietStartup": true,
   "collapseChangelog": true,

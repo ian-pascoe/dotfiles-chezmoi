@@ -2,21 +2,23 @@
 
 ## Execution rules
 
-- **Never end with an offer.** Do not say "If you'd like, I can...", "Would you like me to...", "Let me know if you want me to...", or "I can also..."
-- **Don't ask for permission you already have.** If the next step is obvious, reversible, and inside your lane, do it.
 - **Act first, report after.** Do not narrate intended work instead of performing it.
+- **Don't ask for permission you already have.** If the next step is obvious, reversible, and inside your lane, do it.
 - **If there is an obvious next step, take it.** Do not hover at the end of the turn.
-- **Stop when the task is actually done.** Do not tack on appetizer offers for extra work.
 - **Escalate only for meaningful risk.** Ask before dangerous or irreversible actions.
+- **Don't be lazy.** You should never leave unimplemented method stubs or incomplete implementations undone unless explicitly asked to.
 
-### Boil the ocean
+<!-- BEGIN COMPOUND PI TOOL MAP -->
+## Compound Engineering (Pi compatibility)
 
-The marginal cost of completeness is near zero with AI. Do the whole thing. Do it right. Do it with tests. Do it with documentation. Do it so well that the user is genuinely impressed — not politely satisfied, actually impressed. Never offer to "table this for later" when the permanent solve is within reach. Never leave a dangling thread when tying it off takes five more minutes. Never present a workaround when the real fix exists. The standard isn't "good enough" — it's "holy shit, that's done." Search before building. Test before shipping. Ship the complete thing. When the user asks for something, the answer is the finished product, not a plan to build it. Time is not an excuse. Fatigue is not an excuse. Complexity is not an excuse. Boil the ocean.
+This block is managed by compound-plugin.
 
-## Skills
+Pi extensions used by this plugin:
 
-### The Rule
+- Required: `pi-subagents` (by nicobailon) provides the `subagent` tool used by skills that dispatch parallel agents
+- Recommended: `pi-ask-user` (by edlsh) provides the `ask_user` tool; skills fall back to numbered options in chat when it is missing
 
-- **ALWAYS** consider whether any skills apply to the task at hand.
-- If multiple skills could apply, load the best one and start there.
-- Progressively load more skills as needed.
+Install with:
+  pi install npm:pi-subagents
+  pi install npm:pi-ask-user
+<!-- END COMPOUND PI TOOL MAP -->

@@ -2,7 +2,7 @@
 
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -13,6 +13,7 @@ notify = [
   "/Users/ianpascoe/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
   "turn-ended",
 ]
+service_tier = "default"
 
 [features]
 hooks = true
@@ -89,18 +90,13 @@ global = "ghostty"
 command = "caplets"
 args = ["attach"]
 env_vars = [
-  "HOME",
   "CAPLETS_REMOTE_URL",
   "CAPLETS_REMOTE_USER",
   "CAPLETS_REMOTE_PASSWORD",
-  "GH_TOKEN",
-  "PLAYWRIGHT_MCP_EXTENSION_TOKEN",
-  "GOOGLE_EMAIL",
-  "DEFAULT_BROWSER_EXECECUTABLE_PATH",
-  "DEFAULT_BROWSER_USER_DATA_DIR",
-  "CAMOUFOX_EXECECUTABLE_PATH",
-  "CAMOUFOX_USER_DATA_DIR",
+  "CAPLETS_REMOTE_TOKEN",
+  "CAPLETS_REMOTE_WORKSPACE",
 ]
+enabled = true
 
 [mcp_servers.node_repl]
 args = []
@@ -113,12 +109,12 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_nod
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
 CODEX_HOME = "/Users/ianpascoe/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "27dca86fd6b571c49414a4b78e46b57bcf683a46cd1319799c11fbb6cfae3110"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "eb55d24cf065cd5311af6f99b16bade2b7a670790ff2db9accf60d012dd55dd1"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.609.41114"
+BROWSER_USE_CODEX_APP_VERSION = "26.611.62324"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [tui]
@@ -140,10 +136,16 @@ session_picker_view = "comfortable"
 [hooks.state]
 
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:session_start:0:0"]
-trusted_hash = "sha256:f604111693f4d2b320b6a1c537043bd871e614f3f74ae1c2f442e505305f1fee"
+trusted_hash = "sha256:35b080a7fb129f9778972c5ce8134084f61e61ee16d1f7935a9b71e41b4dfe8e"
 
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:stop:0:0"]
-trusted_hash = "sha256:3a8db2338d678694b66fc76a9d8ae5bc55e42d9f1548606edcfe520c3880eec9"
+trusted_hash = "sha256:a9874cba0d3fb14df113fd814ccc0b96a7ff4c3165d0f2cfe060bcef257ab62a"
+
+[hooks.state."/home/ianpascoe/.codex/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:35b080a7fb129f9778972c5ce8134084f61e61ee16d1f7935a9b71e41b4dfe8e"
+
+[hooks.state."/home/ianpascoe/.codex/hooks.json:stop:0:0"]
+trusted_hash = "sha256:a9874cba0d3fb14df113fd814ccc0b96a7ff4c3165d0f2cfe060bcef257ab62a"
 
 [projects."/Users/ianpascoe/.local/share/chezmoi"]
 trust_level = "trusted"
@@ -169,15 +171,36 @@ trust_level = "trusted"
 [projects."/Users/ianpascoe/Documents/Codex/2026-06-15/doyouunderstandwhatiamsayingrightnow"]
 trust_level = "trusted"
 
+[projects."/Users/ianpascoe"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-17/without-searching-for-anything-tell-me"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-17/where-does-my-wife-go-to"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-06-15T09:18:40Z"
+last_updated = "2026-06-18T10:47:37Z"
 source_type = "local"
 source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-06-15T00:52:31Z"
+last_updated = "2026-06-17T17:43:23Z"
 source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[marketplaces.compound-engineering-plugin]
+last_updated = "2026-06-18T08:54:41Z"
+last_revision = "20f1ab613ad2a7df196f1b4ac6c12bbb2bd2c2f9"
+source_type = "git"
+source = "https://github.com/EveryInc/compound-engineering-plugin.git"
+
+[plugins."compound-engineering@compound-engineering-plugin"]
+enabled = true
 
 [plugins."documents@openai-primary-runtime"]
 enabled = true
@@ -193,3 +216,9 @@ enabled = true
 
 [plugins."browser@openai-bundled"]
 enabled = true
+
+[notice]
+hide_rate_limit_model_nudge = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157]
+enabled = false

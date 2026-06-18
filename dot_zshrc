@@ -61,14 +61,8 @@ if command -v lazygit &>/dev/null; then
   alias lg="lazygit"
 fi
 
-## OpenClaw
-# NOTE: Have to use full paths with no env vars here
-# or else openclaw will constantly ask about adding
-# completions to the shell. So annoying!!
-if [ -f "/home/ianpascoe/.openclaw/completions/openclaw.zsh" ]; then
-  source "/home/ianpascoe/.openclaw/completions/openclaw.zsh"
-elif [ -f "/Users/ianpascoe/.openclaw/completions/openclaw.zsh" ]; then
-  source "/Users/ianpascoe/.openclaw/completions/openclaw.zsh"
+if command -v terraform &>/dev/null; then
+  alias tf="terraform"
 fi
 
 ## Zoxide

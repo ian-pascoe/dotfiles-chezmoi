@@ -31,7 +31,7 @@ echo "Starting upgrade process at $(date)..."
 if has_cmd brew; then
   echo "Updating Homebrew and its packages..."
   brew update
-  brew upgrade --greedy
+  brew upgrade --greedy --yes
   echo "Homebrew and its packages updated successfully!"
 fi
 

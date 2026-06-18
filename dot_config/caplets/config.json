@@ -15,13 +15,15 @@
       "env": {
         "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "$env:PLAYWRIGHT_MCP_EXTENSION_TOKEN",
         "PWTEST_EXTENSION_USER_DATA_DIR": "$env:DEFAULT_BROWSER_USER_DATA_DIR"
-      }
+      },
+      "shadowing": "allow"
     },
     "computer-use": {
       "name": "Computer Use",
       "description": "Computer use capabilities to control your computer, including opening and closing applications, opening and closing windows, and more.",
       "command": "npx",
-      "args": ["-y", "open-computer-use@latest", "mcp"]
+      "args": ["-y", "open-computer-use@latest", "mcp"],
+      "shadowing": "allow"
     },
     "deepwiki": {
       "name": "DeepWiki",
@@ -37,16 +39,6 @@
         "token": "$env:GH_TOKEN"
       }
     },
-    "google-workspace": {
-      "name": "Google Workspace",
-      "description": "Manage Google Workspace, including email, calendar, and more.",
-      "command": "uvx",
-      "args": ["workspace-mcp", "--single-user", "--tool-tier", "extended"],
-      "env": {
-        "GOOGLE_CLIENT_SECRET_PATH": "$env:HOME/.config/gws/client_secret.json",
-        "USER_GOOGLE_EMAIL": "$env:GOOGLE_EMAIL"
-      }
-    },
     "stealth-browser-use": {
       "name": "Stealth Browser Use",
       "description": "A stealth web browser that can evade anti-bot measures and access content that may be restricted to regular automated browsers.",
@@ -59,7 +51,43 @@
         "--executable-path=$env:CAMOUFOX_EXECECUTABLE_PATH",
         "--user-data-dir=$env:CAMOUFOX_USER_DATA_DIR",
         "--headless"
-      ]
+      ],
+      "shadowing": "allow"
+    }
+  },
+  "googleDiscoveryApis": {
+    "gmail": {
+      "name": "Gmail",
+      "description": "Access and manage your email inbox, including sending, reading, and deleting emails.",
+      "discoveryUrl": "https://gmail.googleapis.com/$discovery/rest?version=v1",
+      "auth": {
+        "type": "oauth2",
+        "issuer": "https://accounts.google.com",
+        "clientId": "$env:GOOGLE_CLIENT_ID",
+        "clientSecret": "$env:GOOGLE_CLIENT_SECRET"
+      }
+    },
+    "google-drive": {
+      "name": "Google Drive",
+      "description": "Access and manage your Google Drive files, including uploading, downloading, and deleting files.",
+      "discoveryUrl": "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest",
+      "auth": {
+        "type": "oauth2",
+        "issuer": "https://accounts.google.com",
+        "clientId": "$env:GOOGLE_CLIENT_ID",
+        "clientSecret": "$env:GOOGLE_CLIENT_SECRET"
+      }
+    },
+    "google-tasks": {
+      "name": "Google Tasks",
+      "description": "Access and manage your Google Tasks, including creating, updating, and deleting tasks.",
+      "discoveryUrl": "https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest",
+      "auth": {
+        "type": "oauth2",
+        "issuer": "https://accounts.google.com",
+        "clientId": "$env:GOOGLE_CLIENT_ID",
+        "clientSecret": "$env:GOOGLE_CLIENT_SECRET"
+      }
     }
   }
 }

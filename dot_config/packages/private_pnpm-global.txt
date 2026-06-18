@@ -1,10 +1,12 @@
 # pnpm global packages
 # One package spec per line.
+@anthropic-ai/claude-code
 @biomejs/biome
 @earendil-works/pi-coding-agent
 @googleworkspace/cli
 @openai/codex
 @playwright/cli
+agent-browser
 alchemy
 byterover-cli
 caplets
@@ -20,6 +22,8 @@ mcporter
 opencode-ai
 oxfmt
 oxlint
+playwright
+puppeteer
 skills
 t3
 turbo

@@ -1,3 +1,4 @@
 # npm global packages
 # One package spec per line.
+@nubjs/nub
 npm

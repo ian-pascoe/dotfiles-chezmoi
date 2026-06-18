@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 WorkingDirectory=/home/ianpascoe
-ExecStart=/usr/bin/env zsh -lic 't3 serve --host "$(tailscale ip -4)" --port 3773'
+ExecStart=/usr/bin/env zsh -lc 't3 serve --host "$(tailscale ip -4)" --port 3773'
 Restart=always
 RestartSec=5
 TimeoutStopSec=30

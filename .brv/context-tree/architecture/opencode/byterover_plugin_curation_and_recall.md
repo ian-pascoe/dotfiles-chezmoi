@@ -1,7 +1,0 @@
----
-consolidated_at: '2026-05-06T09:48:44.914Z'
-consolidated_from: [{date: '2026-05-06T09:48:44.914Z', path: architecture/opencode/byterover_plugin_curation_and_recall.sync-conflict-20260503-134830-QVX6PJM.md, reason: 'These are duplicate representations of the same Byterover plugin curation/recall review note. The sync-conflict files repeat the same facts, rules, examples, and validation details as the canonical markdown file.'}, {date: '2026-05-06T09:48:44.914Z', path: architecture/opencode/byterover_plugin_curation_and_recall.sync-conflict-20260503-134835-QVX6PJM.md, reason: 'These are duplicate representations of the same Byterover plugin curation/recall review note. The sync-conflict files repeat the same facts, rules, examples, and validation details as the canonical markdown file.'}]
-related: [architecture/opencode/lsp_tools_plan.md, architecture/opencode/recall_window_and_curation_pipeline.md]
----
-
-Keep the richer canonical note as the output file and preserve all unique durable details already present there: structured JSON serialization recommendation, omission of reasoning, truncation of tool output, latest user message inclusion, empty-input filtering, bridge readiness checks, blocking persist completion checks, observed background curation failures, bridge logging, recall prompt cleanup, validation commands, and dependency vulnerability note. The sync-conflict copies are redundant and do not add new unique information.

@@ -1,11 +1,11 @@
 tap "anomalyco/tap", trusted: true
 tap "antoniorodr/memo", trusted: true
 tap "felixkratz/formulae"
-tap "glzr-io/tap", trusted: true
 tap "manaflow-ai/cmux", trusted: true
 tap "nikitabobko/tap", trusted: true
 tap "openclaw/tap", trusted: true
 tap "oven-sh/bun", trusted: true
+tap "rjyo/moshi", trusted: true
 tap "steipete/tap", trusted: true
 tap "teamookla/speedtest", trusted: true
 tap "yakitrak/yakitrak", trusted: true
@@ -117,6 +117,8 @@ brew "rust"
 brew "rustup"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
+# Create beautiful image of your source code
+brew "silicon"
 # Editor of encrypted files
 brew "sops"
 # Command driven spotify player
@@ -133,6 +135,8 @@ brew "tailscale"
 brew "tmux"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
+# Your CLI home video recorder
+brew "vhs"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
 # Pluggable terminal workspace, with terminal multiplexer as the base feature
@@ -155,6 +159,8 @@ brew "felixkratz/formulae/borders", trusted: true
 brew "openclaw/tap/gogcli"
 # Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
 brew "oven-sh/bun/bun"
+# Portable daemon + CLI that bridges AI coding agents to the Moshi mobile app
+brew "rjyo/moshi/moshi-hook"
 # Send and read iMessage / SMS from the terminal
 brew "steipete/tap/imsg"
 # Lightning-fast macOS screenshots & AI vision analysis
@@ -198,8 +204,6 @@ cask "font-symbols-only-nerd-font"
 cask "gcloud-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# A tiling window manager for macOS and Windows
-cask "glzr-io/tap/glazewm"
 # Web browser
 cask "google-chrome"
 # Desktop automation application
