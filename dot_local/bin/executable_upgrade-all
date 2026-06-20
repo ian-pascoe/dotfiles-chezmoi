@@ -112,7 +112,7 @@ fi
 # Pi
 if has_cmd pi; then
   echo "Updating Pi packages..."
-  pi update
+  pi update --all
   echo "Pi packages updated successfully!"
 fi
 
@@ -196,7 +196,7 @@ fi
 # Cleanup
 if has_cmd brew; then
   echo "Cleaning up Homebrew cache..."
-  brew cleanup -s
+  brew cleanup --prune=all -s
   brew autoremove
   echo "Homebrew cache cleaned successfully!"
 fi
@@ -207,7 +207,7 @@ if has_cmd npm; then
 fi
 if has_cmd pnpm; then
   echo "Cleaning up pnpm cache..."
-  pnpm store prune
+  pnpm store prune --force
   pnpm cache delete
   echo "pnpm cache cleaned successfully!"
 fi
@@ -228,17 +228,17 @@ if has_cmd pipx; then
 fi
 if has_cmd uv; then
   echo "Cleaning up uv cache..."
-  uv cache clean
+  uv cache clean --force
   echo "UV cache cleaned successfully!"
 fi
 if has_cmd cargo; then
   echo "Cleaning up cargo cache..."
-  cargo cache -a
+  cargo cache -e
   echo "Cargo cache cleaned successfully!"
 fi
 if has_cmd mise; then
   echo "Cleaning up Mise cache..."
-  mise cache clear
+  mise cache clear --yes
   echo "Mise cache cleaned successfully!"
 fi
 if has_cmd docker; then

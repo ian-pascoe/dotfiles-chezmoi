@@ -6,7 +6,6 @@
     "opencode-adaptive-thinking@latest",
     "opencode-pty@latest",
     "superpowers@git+https://github.com/obra/superpowers.git",
-    "opencode-byterover@latest",
   ],
   "permission": {
     // Don't care if the agent can read/write these

@@ -28,7 +28,7 @@ function isTransient(output: string) {
 async function runWithRetry(pi: ExtensionAPI) {
   let lastOutput = "";
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const result = await pi.exec("pi", ["update"], { timeout: 180_000 });
+    const result = await pi.exec("pi", ["update", "--all"], { timeout: 180_000 });
     lastOutput = [result.stdout, result.stderr].filter(Boolean).join("\n").trim();
     if (result.code === 0) return { ok: true, output: lastOutput, attempts: attempt };
     if (attempt === 3 || !isTransient(lastOutput))
