@@ -3,6 +3,7 @@
   "plugin": [
     "@caplets/opencode@latest",
     "@franlol/opencode-md-table-formatter@latest",
+    "compound-engineering@git+https://github.com/EveryInc/compound-engineering-plugin.git",
     "opencode-adaptive-thinking@latest",
     "opencode-pty@latest",
     "superpowers@git+https://github.com/obra/superpowers.git",
