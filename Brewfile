@@ -1,6 +1,6 @@
 tap "anomalyco/tap", trusted: true
 tap "antoniorodr/memo", trusted: true
-tap "felixkratz/formulae"
+tap "felixkratz/formulae", trusted: true
 tap "manaflow-ai/cmux", trusted: true
 tap "nikitabobko/tap", trusted: true
 tap "openclaw/tap", trusted: true
@@ -155,8 +155,6 @@ brew "anomalyco/tap/opencode"
 brew "antoniorodr/memo/memo"
 # A window border system for macOS
 brew "felixkratz/formulae/borders", trusted: true
-# Google CLI for Gmail, Calendar, Drive, Docs, Sheets, and more
-brew "openclaw/tap/gogcli"
 # Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
 brew "oven-sh/bun/bun"
 # Portable daemon + CLI that bridges AI coding agents to the Moshi mobile app
@@ -257,8 +255,10 @@ uv "-"
 uv "camoufox[geoip]"
 uv "khal"
 uv "nano-pdf"
+uv "pipx"
 uv "pyflakes"
 uv "pytest"
 uv "rembg"
 uv "vdirsyncer"
 uv "yt-dlp"
+npm "@nubjs/nub"

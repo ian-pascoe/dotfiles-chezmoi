@@ -1,17 +1,22 @@
 {
   "mode": "path",
   "scope": {
-    "allProviders": false,
+    "allProviders": "off",
     "additionalProviders": []
   },
   "tools": {
     "webRun": true,
     "imageGeneration": true,
-    "applyPatchOnly": false
+    "viewImageFallback": true,
+    "applyPatchOnly": false,
+    "viewImageOnly": false,
+    "webRunOnly": false,
+    "imageGenerationOnly": false
   },
   "ui": {
     "statusLine": false,
-    "toolRendering": true,
+    "toolRenaming": true,
+    "compactTools": true,
     "backgroundShellWidget": true,
     "backgroundShellToggleShortcut": "alt+w",
     "backgroundShellPrevShortcut": "alt+q",
@@ -27,6 +32,6 @@
     "forceCachedWebSockets": true,
     "webSearchModel": "gpt-5.4-mini",
     "compactionModel": "gpt-5.5",
-    "compactionReasoning": "current"
+    "compactionReasoning": "medium"
   }
 }

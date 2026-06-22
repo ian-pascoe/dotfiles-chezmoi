@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.79.7",
+  "lastChangelogVersion": "0.79.10",
   "packages": [
     "git:github.com/obra/superpowers",
     "npm:@caplets/pi",
@@ -34,5 +34,10 @@
   "quietStartup": true,
   "collapseChangelog": true,
   "enableInstallTelemetry": false,
-  "showHardwareCursor": true
+  "showHardwareCursor": true,
+  "autocompleteMaxVisible": 7,
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "defaultProjectTrust": "always"
 }

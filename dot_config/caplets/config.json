@@ -36,7 +36,7 @@
       "url": "https://api.githubcopilot.com/mcp",
       "auth": {
         "type": "bearer",
-        "token": "$env:GH_TOKEN"
+        "token": "$vault:GH_TOKEN"
       }
     },
     "stealth-browser-use": {
@@ -63,8 +63,8 @@
       "auth": {
         "type": "oauth2",
         "issuer": "https://accounts.google.com",
-        "clientId": "$env:GOOGLE_CLIENT_ID",
-        "clientSecret": "$env:GOOGLE_CLIENT_SECRET"
+        "clientId": "$vault:GOOGLE_CLIENT_ID",
+        "clientSecret": "$vault:GOOGLE_CLIENT_SECRET"
       }
     },
     "google-drive": {
@@ -74,8 +74,8 @@
       "auth": {
         "type": "oauth2",
         "issuer": "https://accounts.google.com",
-        "clientId": "$env:GOOGLE_CLIENT_ID",
-        "clientSecret": "$env:GOOGLE_CLIENT_SECRET"
+        "clientId": "$vault:GOOGLE_CLIENT_ID",
+        "clientSecret": "$vault:GOOGLE_CLIENT_SECRET"
       }
     },
     "google-tasks": {
@@ -85,8 +85,8 @@
       "auth": {
         "type": "oauth2",
         "issuer": "https://accounts.google.com",
-        "clientId": "$env:GOOGLE_CLIENT_ID",
-        "clientSecret": "$env:GOOGLE_CLIENT_SECRET"
+        "clientId": "$vault:GOOGLE_CLIENT_ID",
+        "clientSecret": "$vault:GOOGLE_CLIENT_SECRET"
       }
     }
   }

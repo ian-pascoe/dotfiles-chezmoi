@@ -3,6 +3,7 @@
 camoufox
 khal
 nano-pdf
+pipx
 pyflakes
 pytest
 rembg
