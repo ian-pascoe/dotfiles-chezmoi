@@ -2,7 +2,7 @@
 
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -107,12 +107,12 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_nod
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
 CODEX_HOME = "/Users/ianpascoe/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "2c20141b13bec5a64cd2874d8e2df011430d5b1a70e4f5425aa10d01743311a8"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "5ee3754ef68f803b9cebf40e30f94ea22aaf446de1a0a24b109180fa2ae0bd3e"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.616.51431"
+BROWSER_USE_CODEX_APP_VERSION = "26.616.71553"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [tui]
@@ -191,18 +191,18 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-06-21T09:17:33Z"
+last_updated = "2026-06-23T09:29:22Z"
 source_type = "local"
 source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-06-20T03:52:38Z"
+last_updated = "2026-06-23T02:52:20Z"
 source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.compound-engineering-plugin]
-last_updated = "2026-06-22T17:57:20Z"
-last_revision = "858128900ef7418f49fa0431aa73ff75f8396bf0"
+last_updated = "2026-06-23T09:29:16Z"
+last_revision = "16442e866edee5c89faa6c1b2754ac49fcecd631"
 source_type = "git"
 source = "https://github.com/EveryInc/compound-engineering-plugin.git"
 
@@ -222,6 +222,9 @@ enabled = true
 enabled = true
 
 [plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
 enabled = true
 
 [notice]

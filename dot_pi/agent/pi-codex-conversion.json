@@ -28,7 +28,7 @@
   },
   "openai": {
     "fast": false,
-    "verbosity": "high",
+    "verbosity": "low",
     "forceCachedWebSockets": true,
     "webSearchModel": "gpt-5.4-mini",
     "compactionModel": "gpt-5.5",

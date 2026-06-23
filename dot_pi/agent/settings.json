@@ -19,11 +19,12 @@
     "npm:pi-terminal-theme",
     "npm:pi-web-access"
   ],
-  "defaultProvider": "openai-codex",
+  "autocompleteMaxVisible": 10,
+  "collapseChangelog": true,
   "defaultModel": "gpt-5.5",
+  "defaultProjectTrust": "always",
+  "defaultProvider": "openai-codex",
   "defaultThinkingLevel": "high",
-  "hideThinkingBlock": false,
-  "theme": "terminal",
   "enabledModels": [
     "openai-codex/gpt-5.5",
     "openai-codex/gpt-5.4-mini",
@@ -32,13 +33,12 @@
     "opencode-go/deepseek-v4-pro",
     "opencode-go/deepseek-v4-flash"
   ],
-  "quietStartup": true,
-  "collapseChangelog": true,
   "enableInstallTelemetry": false,
+  "hideThinkingBlock": false,
+  "quietStartup": true,
   "showHardwareCursor": true,
-  "autocompleteMaxVisible": 7,
   "terminal": {
     "showTerminalProgress": true
   },
-  "defaultProjectTrust": "always"
+  "theme": "terminal"
 }

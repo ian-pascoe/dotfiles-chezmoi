@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 WorkingDirectory=/home/ianpascoe
-ExecStart=/usr/bin/env zsh -lc 'howcode --headless --host "$(tailscale ip -4)" --port 4173'
+ExecStart=/usr/bin/env zsh -lc 'npx -y howcode@dev --headless --host "$(tailscale ip -4)" --port 4173'
 Restart=always
 RestartSec=5
 TimeoutStopSec=30
