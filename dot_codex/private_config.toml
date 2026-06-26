@@ -2,7 +2,7 @@
 
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -18,13 +18,15 @@ service_tier = "default"
 [features]
 hooks = true
 multi_agent = true
-remote_connections = true
 undo = true
 goals = true
 memories = true
 terminal_resize_reflow = true
 prevent_idle_sleep = true
 js_repl = false
+
+[agents]
+max_threads = 20
 
 [memories]
 generate_memories = true
@@ -90,10 +92,7 @@ global = "ghostty"
 
 [mcp_servers.caplets]
 command = "caplets"
-args = ["attach"]
-env_vars = [
-  "CAPLETS_REMOTE_URL",
-]
+args = ["attach", "http://127.0.0.1:5387"]
 enabled = true
 
 [mcp_servers.node_repl]
@@ -107,12 +106,12 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_nod
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
 CODEX_HOME = "/Users/ianpascoe/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "5ee3754ef68f803b9cebf40e30f94ea22aaf446de1a0a24b109180fa2ae0bd3e"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "5504c0782b5c86b7dd08314045b9843e973a230e1be8f7e2e0ba3716fc63c55e"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.616.71553"
+BROWSER_USE_CODEX_APP_VERSION = "26.616.81150"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [tui]
@@ -190,19 +189,28 @@ trust_level = "trusted"
 [projects."/home/ianpascoe/src/caplets"]
 trust_level = "trusted"
 
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-23/tr"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-23/it"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-24/increase-the-max-number-of-codex"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-06-23T09:29:22Z"
+last_updated = "2026-06-24T09:49:19Z"
 source_type = "local"
 source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-06-23T02:52:20Z"
+last_updated = "2026-06-24T05:52:44Z"
 source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.compound-engineering-plugin]
-last_updated = "2026-06-23T09:29:16Z"
-last_revision = "16442e866edee5c89faa6c1b2754ac49fcecd631"
+last_updated = "2026-06-26T10:07:38Z"
+last_revision = "240b69efcc9832e02036c802c3f65ba2684424b5"
 source_type = "git"
 source = "https://github.com/EveryInc/compound-engineering-plugin.git"
 

@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.79.10",
+  "lastChangelogVersion": "0.80.2",
   "packages": [
     "git:github.com/EveryInc/compound-engineering-plugin",
     "git:github.com/obra/superpowers",
@@ -34,7 +34,7 @@
     "opencode-go/deepseek-v4-flash"
   ],
   "enableInstallTelemetry": false,
-  "hideThinkingBlock": false,
+  "hideThinkingBlock": true,
   "quietStartup": true,
   "showHardwareCursor": true,
   "terminal": {

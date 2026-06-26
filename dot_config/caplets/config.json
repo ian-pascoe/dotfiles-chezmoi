@@ -13,7 +13,7 @@
         "--executable-path=$env:DEFAULT_BROWSER_EXECECUTABLE_PATH"
       ],
       "env": {
-        "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "$env:PLAYWRIGHT_MCP_EXTENSION_TOKEN",
+        "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "$vault:PLAYWRIGHT_MCP_EXTENSION_TOKEN",
         "PWTEST_EXTENSION_USER_DATA_DIR": "$env:DEFAULT_BROWSER_USER_DATA_DIR"
       },
       "shadowing": "allow"
@@ -23,7 +23,7 @@
       "description": "Computer use capabilities to control your computer, including opening and closing applications, opening and closing windows, and more.",
       "command": "npx",
       "args": ["-y", "open-computer-use@latest", "mcp"],
-      "shadowing": "allow"
+      "shadowing": "namespace"
     },
     "deepwiki": {
       "name": "DeepWiki",
@@ -37,6 +37,22 @@
       "auth": {
         "type": "bearer",
         "token": "$vault:GH_TOKEN"
+      }
+    },
+    "posthog": {
+      "name": "Posthog",
+      "description": "Posthog is a feature analytics tool that helps you understand how your users interact with your web app.",
+      "url": "https://mcp.posthog.com/mcp",
+      "auth": {
+        "type": "oauth2"
+      }
+    },
+    "sentry": {
+      "name": "Sentry",
+      "description": "Sentry is a cloud-based platform for monitoring and analyzing exceptions, errors, and performance issues in real-time.",
+      "url": "https://mcp.sentry.dev/mcp",
+      "auth": {
+        "type": "oauth2"
       }
     },
     "stealth-browser-use": {

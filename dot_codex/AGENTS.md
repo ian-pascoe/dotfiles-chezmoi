@@ -7,3 +7,13 @@
 - **If there is an obvious next step, take it.** Do not hover at the end of the turn.
 - **Escalate only for meaningful risk.** Ask before dangerous or irreversible actions.
 - **Don't be lazy.** You should never leave unimplemented method stubs or incomplete implementations undone unless explicitly asked to.
+
+### Using Subagents
+
+Use subagents when you deem it necessary or beneficial. You don't need to ask for permission and I shouldn't need to explicitly ask you to use them.
+
+#### Model Mapping
+
+- `gpt-5.5/none`: Use for explore/research tasks
+- `gpt-5.5/medium`: Use for implementation/execution/worker tasks
+- `gpt-5.5/xhigh`: Use for planning/review/analysis tasks

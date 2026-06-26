@@ -25,7 +25,6 @@ fi
 # Start
 START_TIME=$(date +%s)
 echo "Starting upgrade process at $(date)..."
-
 #########################################################################
 # Homebrew/Linuxbrew
 if has_cmd brew; then
@@ -33,32 +32,72 @@ if has_cmd brew; then
   brew update
   brew upgrade --greedy --yes
   echo "Homebrew and its packages updated successfully!"
+  echo "Cleaning up Homebrew cache..."
+  brew cleanup --prune=all -s
+  brew autoremove
+  echo "Homebrew cache cleaned successfully!"
 fi
-
+#########################################################################
+# Mise
+if has_cmd mise; then
+  echo "Updating Mise packages..."
+  mise upgrade --bump
+  echo "Mise packages updated successfully!"
+  echo "Cleaning up Mise cache..."
+  mise cache clear --yes
+  echo "Mise cache cleaned successfully!"
+fi
 #########################################################################
 # Node
 if has_cmd npm; then
   echo "Updating global npm modules..."
   npm outdated -g --parseable --depth=0 | cut -d: -f4 | xargs -r npm install -g
   echo "Global npm modules updated successfully!"
+  echo "Cleaning up npm cache..."
+  npm cache clean --force
+  echo "npm cache cleaned successfully!"
 fi
-
 #########################################################################
 # PNPM
 if has_cmd pnpm; then
   echo "Updating global pnpm modules..."
   pnpm -g update --latest --yes
   echo "Global pnpm modules updated successfully!"
+  echo "Cleaning up pnpm cache..."
+  pnpm store prune --force
+  pnpm cache delete
+  echo "pnpm cache cleaned successfully!"
 fi
-
 #########################################################################
 # Bun
 if has_cmd bun; then
   echo "Updating global bun modules..."
   bun -g update --latest
   echo "Global bun modules updated successfully!"
+  echo "Cleaning up bun cache..."
+  bun -g pm cache rm
+  echo "bun cache cleaned successfully!"
 fi
-
+#########################################################################
+# UV
+if has_cmd uv; then
+  echo "Updating UV packages..."
+  uv tool upgrade --all
+  echo "UV packages updated successfully!"
+  echo "Cleaning up uv cache..."
+  uv cache clean --force
+  echo "UV cache cleaned successfully!"
+fi
+#########################################################################
+# Pipx
+if has_cmd pipx; then
+  echo "Updating Pipx packages..."
+  pipx upgrade-all
+  echo "Pipx packages updated successfully!"
+  echo "Cleaning up Pipx cache..."
+  rm -rf ~/.cache/pipx
+  echo "Pipx cache cleaned successfully!"
+fi
 #########################################################################
 # Pip
 if has_cmd pip; then
@@ -66,24 +105,10 @@ if has_cmd pip; then
   pip install --upgrade pip
   pip list --outdated --format=json | jq -r '.[].name' | xargs -r -n1 pip install -U
   echo "Pip packages updated successfully!"
+  echo "Cleaning up Pip cache..."
+  pip cache purge
+  echo "Pip cache cleaned successfully!"
 fi
-
-#########################################################################
-# Pipx
-if has_cmd pipx; then
-  echo "Updating Pipx packages..."
-  pipx upgrade-all
-  echo "Pipx packages updated successfully!"
-fi
-
-#########################################################################
-# UV
-if has_cmd uv; then
-  echo "Updating UV packages..."
-  uv tool upgrade --all
-  echo "UV packages updated successfully!"
-fi
-
 #########################################################################
 # RustUp
 if has_cmd rustup; then
@@ -91,31 +116,29 @@ if has_cmd rustup; then
   rustup update
   echo "RustUp and its components updated successfully!"
 fi
-
 #########################################################################
 # Cargo
 if has_cmd cargo; then
   echo "Updating Cargo packages..."
   cargo install-update -a
   echo "Cargo packages updated successfully!"
+  echo "Cleaning up cargo cache..."
+  cargo cache -e
+  echo "Cargo cache cleaned successfully!"
 fi
-
-#########################################################################
-# Mise
-if has_cmd mise; then
-  echo "Updating Mise packages..."
-  mise upgrade --bump
-  echo "Mise packages updated successfully!"
-fi
-
 #########################################################################
 # Pi
 if has_cmd pi; then
   echo "Updating Pi packages..."
   pi update --all
   echo "Pi packages updated successfully!"
+  (
+    echo "Cleaning up Pi cache..."
+    cd ~/.pi/agent/npm || exit
+    npm cache clean --force
+    echo "Pi cache cleaned successfully!"
+  )
 fi
-
 #########################################################################
 # Skills
 SKILLS_CMD=()
@@ -133,7 +156,6 @@ if [ ${#SKILLS_CMD[@]} -ne 0 ]; then
   "${SKILLS_CMD[@]}" update -g
   echo "Global skills updated successfully!"
 fi
-
 #########################################################################
 # Yazi
 if has_cmd ya; then
@@ -141,7 +163,6 @@ if has_cmd ya; then
   ya pkg upgrade
   echo "Yazi packages updated successfully!"
 fi
-
 ####################################################################
 # Camoufox browser
 if has_cmd camoufox; then
@@ -149,7 +170,6 @@ if has_cmd camoufox; then
   camoufox fetch
   echo "Camoufox browser updated successfully!"
 fi
-
 ####################################################################
 # Package manifests
 if has_cmd sync-package-manifests; then
@@ -157,23 +177,6 @@ if has_cmd sync-package-manifests; then
   sync-package-manifests
   echo "Package manifests refreshed successfully!"
 fi
-
-####################################################################
-# OpenCode Server
-if has_cmd systemctl && has_service opencode.service; then
-  echo "Restarting OpenCode server..."
-  systemctl --user restart opencode.service
-  echo "OpenCode server restarted successfully!"
-fi
-
-####################################################################
-# Kimaki Server
-if has_cmd systemctl && has_service kimaki.service; then
-  echo "Restarting Kimaki server..."
-  systemctl --user restart kimaki.service
-  echo "Kimaki server restarted successfully!"
-fi
-
 ####################################################################
 # Dotfiles
 if has_cmd chezmoi; then
@@ -183,7 +186,6 @@ if has_cmd chezmoi; then
   )
   echo "Dotfiles updated successfully!"
 fi
-
 ####################################################################
 # Local update script
 if [ -x "$HOME/.local/bin/local-upgrade-all" ]; then
@@ -191,56 +193,8 @@ if [ -x "$HOME/.local/bin/local-upgrade-all" ]; then
   "$HOME/.local/bin/local-upgrade-all"
   echo "Local update script completed successfully!"
 fi
-
 ####################################################################
-# Cleanup
-if has_cmd brew; then
-  echo "Cleaning up Homebrew cache..."
-  brew cleanup --prune=all -s
-  brew autoremove
-  echo "Homebrew cache cleaned successfully!"
-fi
-if has_cmd npm; then
-  echo "Cleaning up npm cache..."
-  npm cache clean --force
-  echo "npm cache cleaned successfully!"
-fi
-if has_cmd pnpm; then
-  echo "Cleaning up pnpm cache..."
-  pnpm store prune --force
-  pnpm cache delete
-  echo "pnpm cache cleaned successfully!"
-fi
-if has_cmd bun; then
-  echo "Cleaning up bun cache..."
-  bun -g pm cache rm
-  echo "bun cache cleaned successfully!"
-fi
-if has_cmd pip; then
-  echo "Cleaning up Pip cache..."
-  pip cache purge
-  echo "Pip cache cleaned successfully!"
-fi
-if has_cmd pipx; then
-  echo "Cleaning up Pipx cache..."
-  rm -rf ~/.cache/pipx
-  echo "Pipx cache cleaned successfully!"
-fi
-if has_cmd uv; then
-  echo "Cleaning up uv cache..."
-  uv cache clean --force
-  echo "UV cache cleaned successfully!"
-fi
-if has_cmd cargo; then
-  echo "Cleaning up cargo cache..."
-  cargo cache -e
-  echo "Cargo cache cleaned successfully!"
-fi
-if has_cmd mise; then
-  echo "Cleaning up Mise cache..."
-  mise cache clear --yes
-  echo "Mise cache cleaned successfully!"
-fi
+# Misc Cleanup
 if has_cmd docker; then
   echo "Cleaning up Docker system..."
   docker system prune -af --volumes
