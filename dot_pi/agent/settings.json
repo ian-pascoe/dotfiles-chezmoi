@@ -24,7 +24,7 @@
   "defaultModel": "gpt-5.5",
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "xhigh",
   "enabledModels": [
     "openai-codex/gpt-5.5",
     "openai-codex/gpt-5.4-mini",

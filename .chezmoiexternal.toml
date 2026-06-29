@@ -19,3 +19,9 @@ type = "archive"
 url = "https://github.com/tmux-plugins/tpm/archive/refs/heads/master.zip"
 stripComponents = 1
 refreshPeriod = "168h"
+
+[".config/herdr/plugins/vim-herdr-navigation"]
+type = "archive"
+url = "https://github.com/paulbkim-dev/vim-herdr-navigation/archive/53e318c772c4d3b7fbd904ac43bcf3e5b5d8b244.zip"
+stripComponents = 1
+refreshPeriod = "168h"

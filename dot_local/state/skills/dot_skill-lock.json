@@ -33,9 +33,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "ac166ee0055d8e09737f91b2e4a38c64f1976650",
+      "skillFolderHash": "bee18b80296f4e688ee3f669ab143f365611caca",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-06-26T01:18:58.975Z"
+      "updatedAt": "2026-06-29T10:26:54.710Z"
     },
     "git-commit": {
       "source": "github/awesome-copilot",

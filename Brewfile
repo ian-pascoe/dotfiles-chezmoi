@@ -1,6 +1,6 @@
 tap "anomalyco/tap", trusted: true
 tap "antoniorodr/memo", trusted: true
-tap "felixkratz/formulae", trusted: true
+tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
 tap "manaflow-ai/cmux", trusted: true
 tap "nikitabobko/tap", trusted: true
 tap "openclaw/tap", trusted: true
@@ -97,6 +97,8 @@ brew "markdownlint-cli2"
 brew "media-control"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# Remote terminal application
+brew "mosh"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Port scanning utility for large networks
@@ -167,7 +169,7 @@ brew "steipete/tap/peekaboo"
 brew "steipete/tap/remindctl"
 # Ookla Speedtest
 brew "teamookla/speedtest/speedtest"
-brew "yakitrak/yakitrak/obsidian-cli"
+brew "yakitrak/yakitrak/notesmd-cli", link: false
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "nikitabobko/tap/aerospace"
 # Menu bar tool to limit maximum charging percentage
@@ -259,6 +261,7 @@ uv "pipx"
 uv "pyflakes"
 uv "pytest"
 uv "rembg"
+uv "spotdl"
 uv "vdirsyncer"
 uv "yt-dlp"
 npm "@nubjs/nub"

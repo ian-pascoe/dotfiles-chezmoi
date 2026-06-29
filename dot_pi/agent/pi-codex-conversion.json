@@ -32,6 +32,6 @@
     "forceCachedWebSockets": true,
     "webSearchModel": "gpt-5.4-mini",
     "compactionModel": "gpt-5.5",
-    "compactionReasoning": "medium"
+    "compactionReasoning": "current"
   }
 }

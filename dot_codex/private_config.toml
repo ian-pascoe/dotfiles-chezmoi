@@ -2,7 +2,7 @@
 
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -34,6 +34,11 @@ use_memories = true
 
 [shell_environment_policy]
 inherit = "all"
+
+[model_providers.opencode_go]
+name = "OpenCode Go"
+base_url = "https://opencode.ai/zen/go/v1"
+env_key = "OPENCODE_API_KEY"
 
 [desktop]
 appearanceLightCodeThemeId = "catppuccin"
@@ -106,12 +111,12 @@ NODE_REPL_NODE_MODULE_DIRS = "/Applications/Codex.app/Contents/Resources/cua_nod
 NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/cua_node/bin/node"
 NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
 CODEX_HOME = "/Users/ianpascoe/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "5504c0782b5c86b7dd08314045b9843e973a230e1be8f7e2e0ba3716fc63c55e"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "d5cbb8ec1ee520cba7943b1e1accb6b25acd9941ea4e2e9e4dbcf25ff9983a2d"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.616.81150"
+BROWSER_USE_CODEX_APP_VERSION = "26.623.70822"
 CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
 
 [tui]
@@ -198,8 +203,11 @@ trust_level = "trusted"
 [projects."/Users/ianpascoe/Documents/Codex/2026-06-24/increase-the-max-number-of-codex"]
 trust_level = "trusted"
 
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-29/hi-ian-i-am-looking-to"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-06-24T09:49:19Z"
+last_updated = "2026-06-29T19:10:20Z"
 source_type = "local"
 source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
@@ -209,8 +217,8 @@ source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.compound-engineering-plugin]
-last_updated = "2026-06-26T10:07:38Z"
-last_revision = "240b69efcc9832e02036c802c3f65ba2684424b5"
+last_updated = "2026-06-29T19:10:19Z"
+last_revision = "167fa9827415cfdc89052bd431dfe7531f99785d"
 source_type = "git"
 source = "https://github.com/EveryInc/compound-engineering-plugin.git"
 
@@ -233,6 +241,9 @@ enabled = true
 enabled = true
 
 [plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."superpowers@openai-curated"]
 enabled = true
 
 [notice]

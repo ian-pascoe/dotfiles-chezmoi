@@ -4,23 +4,32 @@
       {
         "hooks": [
           {
-            "type": "command",
             "command": "python3 \"$HOME/.codex/skills/codex-autoresearch/scripts/autoresearch_hook_session_start.py\"",
+            "statusMessage": "codex-autoresearch SessionStart hook",
             "timeout": 5,
-            "statusMessage": "codex-autoresearch SessionStart hook"
+            "type": "command"
           }
         ],
         "matcher": "startup|resume|compact"
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash '/Users/ianpascoe/.codex/herdr-agent-state.sh' session",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
       }
     ],
     "Stop": [
       {
         "hooks": [
           {
-            "type": "command",
             "command": "python3 \"$HOME/.codex/skills/codex-autoresearch/scripts/autoresearch_hook_stop.py\"",
+            "statusMessage": "codex-autoresearch Stop hook",
             "timeout": 10,
-            "statusMessage": "codex-autoresearch Stop hook"
+            "type": "command"
           }
         ]
       }
