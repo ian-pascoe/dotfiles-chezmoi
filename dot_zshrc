@@ -65,6 +65,23 @@ if command -v terraform &>/dev/null; then
   alias tf="terraform"
 fi
 
+if command -v hunk &>/dev/null; then
+  hunk() {
+    if [[ "$1" == "diff" ]]; then
+      shift
+      command hunk diff \
+        --watch \
+        --transparent-bg \
+        --mode stack \
+        --wrap \
+        --theme "$(basename "$(readlink ~/.config/theme)")" \
+        "$@"
+    else
+      command hunk "$@"
+    fi
+  }
+fi
+
 ## Zoxide
 if command -v zoxide &>/dev/null; then
   eval "$(zoxide init zsh)"

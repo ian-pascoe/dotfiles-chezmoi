@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.80.2",
+  "lastChangelogVersion": "0.80.3",
   "packages": [
     "git:github.com/EveryInc/compound-engineering-plugin",
     "git:github.com/obra/superpowers",
@@ -9,6 +9,7 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-btw",
     "npm:@juicesharp/rpiv-todo",
+    "npm:@narumitw/pi-goal",
     "npm:@ramarivera/pi-skill-selector",
     "npm:pi-adaptive-thinking",
     "npm:pi-autoresearch",
@@ -17,14 +18,15 @@
     "npm:pi-subagents",
     "npm:pi-subdir-context",
     "npm:pi-terminal-theme",
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "npm:pi-prompt-template-model"
   ],
   "autocompleteMaxVisible": 10,
   "collapseChangelog": true,
   "defaultModel": "gpt-5.5",
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
-  "defaultThinkingLevel": "xhigh",
+  "defaultThinkingLevel": "high",
   "enabledModels": [
     "openai-codex/gpt-5.5",
     "openai-codex/gpt-5.4-mini",

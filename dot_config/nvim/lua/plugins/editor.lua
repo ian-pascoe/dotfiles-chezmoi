@@ -46,6 +46,29 @@ local vault_workspaces = get_vaults()
 
 return {
   {
+    'ibhagwan/fzf-lua',
+    opts = function(_, opts)
+      opts.winopts = opts.winopts or {}
+
+      local previous_on_create = opts.winopts.on_create
+      opts.winopts.on_create = function(event, ...)
+        if type(previous_on_create) == 'function' then
+          previous_on_create(event, ...)
+        end
+
+        local bufnr = event and event.bufnr or vim.api.nvim_get_current_buf()
+        vim.schedule(function()
+          if not vim.api.nvim_buf_is_valid(bufnr) then
+            return
+          end
+
+          vim.keymap.set('t', '<C-j>', '<Down>', { buffer = bufnr, nowait = true, silent = true })
+          vim.keymap.set('t', '<C-k>', '<Up>', { buffer = bufnr, nowait = true, silent = true })
+        end)
+      end
+    end,
+  },
+  {
     'folke/snacks.nvim',
     ---@module "snacks"
     ---@type snacks.Config

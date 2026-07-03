@@ -44,6 +44,7 @@ docker-compose-plugin
 dosfstools
 dpkg
 e2fsprogs
+et
 ethtool
 ffmpeg
 findutils
@@ -251,6 +252,7 @@ mawk
 mingw-w64
 mise
 mold
+mosh
 mount
 musl-tools
 nano
@@ -317,6 +319,7 @@ vim
 vim-tiny
 wget
 whiptail
+x11-apps
 xar
 xclip
 xfonts-scalable

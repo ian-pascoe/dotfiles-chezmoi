@@ -1,5 +1,15 @@
 {
   "hooks": {
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/bin/moshi-hook\" codex-hook",
+            "type": "command"
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "hooks": [
@@ -15,8 +25,16 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/ianpascoe/.codex/herdr-agent-state.sh' session",
+            "command": "bash \"$HOME/.codex/herdr-agent-state.sh\" session",
             "timeout": 10,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/bin/moshi-hook\" codex-hook",
             "type": "command"
           }
         ]
@@ -29,6 +47,24 @@
             "command": "python3 \"$HOME/.codex/skills/codex-autoresearch/scripts/autoresearch_hook_stop.py\"",
             "statusMessage": "codex-autoresearch Stop hook",
             "timeout": 10,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/bin/moshi-hook\" codex-hook",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "\"$HOME/.local/bin/moshi-hook\" codex-hook",
             "type": "command"
           }
         ]

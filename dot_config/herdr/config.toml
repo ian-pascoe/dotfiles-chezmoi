@@ -3,7 +3,7 @@
 
 # Show first-run notification setup on startup.
 # Missing also shows onboarding; set false after you've chosen.
-# onboarding = true
+onboarding = false
 
 [theme]
 # Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
@@ -75,8 +75,8 @@ new_workspace = "prefix+ctrl+c"
 # remove_worktree = ""  # optional, unset by default; opens confirmation
 rename_workspace = "prefix+shift+r"
 # close_workspace = "prefix+shift+d"
-# previous_workspace = "" # optional, unset by default
-# next_workspace = ""     # optional, unset by default
+previous_workspace = "prefix+shift+p" # optional, unset by default
+next_workspace = "prefix+shift+n" # optional, unset by default
 # previous_agent = ""     # optional, unset by default
 # next_agent = ""         # optional, unset by default
 # focus_agent = ""        # optional indexed binding, e.g. "prefix+alt+1..9"
@@ -86,7 +86,7 @@ rename_tab = "prefix+comma"
 previous_tab = "prefix+p"
 next_tab = "prefix+n"
 switch_tab = "prefix+1..9"
-# switch_workspace = ""   # optional indexed binding, e.g. "prefix+shift+1..9"
+switch_workspace = "prefix+shift+1..9" # optional indexed binding, e.g. "prefix+shift+1..9"
 close_tab = "prefix+shift+x"
 rename_pane = "prefix+period"
 edit_scrollback = "prefix+["
@@ -100,14 +100,14 @@ focus_pane_right = "prefix+l"
 split_vertical = "prefix+|"
 split_horizontal = "prefix+minus"
 close_pane = "prefix+x"
-zoom = "prefix+z"                 # legacy alias: fullscreen
+zoom = "prefix+z" # legacy alias: fullscreen
 resize_mode = "prefix+r"
 # toggle_sidebar = "prefix+b"
 
 # Navigate-mode movement. These local shortcuts win while navigate mode is open.
 # They are independent from focus_pane_*. Do not include prefix+, esc, enter, tab, or 1..9 here.
-# navigate_workspace_up = "up"
-# navigate_workspace_down = "down"
+navigate_workspace_up = "shift+p"
+navigate_workspace_down = "shift+n"
 # navigate_pane_left = "h"      # left arrow always focuses the pane to the left
 # navigate_pane_down = "j"
 # navigate_pane_up = "k"
@@ -130,25 +130,25 @@ command = "lazygit"
 [[keys.command]]
 key = "ctrl+h"
 type = "shell"
-command = 'HERDR_PANE_ID="${HERDR_ACTIVE_PANE_ID:-${HERDR_PANE_ID:-}}" ~/.config/herdr/plugins/vim-herdr-navigation/navigate.sh left'
+command = '~/.config/herdr/scripts/navigate.sh left'
 description = "navigate left (vim/herdr)"
 
 [[keys.command]]
 key = "ctrl+j"
 type = "shell"
-command = 'HERDR_PANE_ID="${HERDR_ACTIVE_PANE_ID:-${HERDR_PANE_ID:-}}" ~/.config/herdr/plugins/vim-herdr-navigation/navigate.sh down'
+command = '~/.config/herdr/scripts/navigate.sh down'
 description = "navigate down (vim/herdr)"
 
 [[keys.command]]
 key = "ctrl+k"
 type = "shell"
-command = 'HERDR_PANE_ID="${HERDR_ACTIVE_PANE_ID:-${HERDR_PANE_ID:-}}" ~/.config/herdr/plugins/vim-herdr-navigation/navigate.sh up'
+command = '~/.config/herdr/scripts/navigate.sh up'
 description = "navigate up (vim/herdr)"
 
 [[keys.command]]
 key = "ctrl+l"
 type = "shell"
-command = 'HERDR_PANE_ID="${HERDR_ACTIVE_PANE_ID:-${HERDR_PANE_ID:-}}" ~/.config/herdr/plugins/vim-herdr-navigation/navigate.sh right'
+command = '~/.config/herdr/scripts/navigate.sh right'
 description = "navigate right (vim/herdr)"
 
 # Legacy indexed shortcut config is still parsed for compatibility.

@@ -30,7 +30,7 @@
     "fast": false,
     "verbosity": "low",
     "forceCachedWebSockets": true,
-    "webSearchModel": "gpt-5.4-mini",
+    "webSearchModel": "gpt-5.5",
     "compactionModel": "gpt-5.5",
     "compactionReasoning": "current"
   }

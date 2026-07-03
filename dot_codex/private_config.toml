@@ -2,7 +2,7 @@
 
 model = "gpt-5.5"
 personality = "pragmatic"
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -149,6 +149,22 @@ trusted_hash = "sha256:35b080a7fb129f9778972c5ce8134084f61e61ee16d1f7935a9b71e41
 [hooks.state."/home/ianpascoe/.codex/hooks.json:stop:0:0"]
 trusted_hash = "sha256:a9874cba0d3fb14df113fd814ccc0b96a7ff4c3165d0f2cfe060bcef257ab62a"
 
+[hooks.state."/home/ianpascoe/.codex/hooks.json:permission_request:0:0"]
+trusted_hash = "sha256:949daac71388a1ee587bf01e0b8630d9d642d46132c434f297e52813eb0395ee"
+
+[hooks.state."/home/ianpascoe/.codex/hooks.json:session_start:1:0"]
+trusted_hash = "sha256:341f095eb06db5b52fa3c919f6e3ba2ada4c63883b73a18707a760623a7fc589"
+
+[hooks.state."/home/ianpascoe/.codex/hooks.json:session_start:2:0"]
+trusted_hash = "sha256:4aa3deed2b5388bb9f37e3ff303cb0f8f65774557cd35fe578aeb845e61a2783"
+enabled = true
+
+[hooks.state."/home/ianpascoe/.codex/hooks.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:6fd6703a257de00b249741ca848a36b21f269dee7fbc57db118cb72827360e5b"
+
+[hooks.state."/home/ianpascoe/.codex/hooks.json:stop:1:0"]
+trusted_hash = "sha256:235c7cb8a080c8d299eebe6a836092285ae8301f1f487aae8a956f7a804f9a26"
+
 [projects."/Users/ianpascoe/.local/share/chezmoi"]
 trust_level = "trusted"
 
@@ -206,6 +222,9 @@ trust_level = "trusted"
 [projects."/Users/ianpascoe/Documents/Codex/2026-06-29/hi-ian-i-am-looking-to"]
 trust_level = "trusted"
 
+[projects."/home/ianpascoe/src/caplets-mono"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 last_updated = "2026-06-29T19:10:20Z"
 source_type = "local"
@@ -217,8 +236,8 @@ source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.compound-engineering-plugin]
-last_updated = "2026-06-29T19:10:19Z"
-last_revision = "167fa9827415cfdc89052bd431dfe7531f99785d"
+last_updated = "2026-07-03T09:22:11Z"
+last_revision = "be8054c1d17b8a18114d563feb28461e565f72dc"
 source_type = "git"
 source = "https://github.com/EveryInc/compound-engineering-plugin.git"
 
