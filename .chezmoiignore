@@ -1,6 +1,7 @@
 **/README.md
 AGENTS.md
 docs
+tests
 
 node_modules
 package.json
