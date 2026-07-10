@@ -94,6 +94,9 @@ The factory obtains Zod from `pi.zod` and registers the tool through
 
 The tool schema admits only OMP's concrete `ThinkingLevel` values. `auto` is
 intentionally absent because `pi.setThinkingLevel()` does not accept it.
+Register the session-state mutation with `approval: "write"` so it follows OMP's
+normal write-mode permission policy instead of the extension-tool `exec`
+default.
 
 ## Capability Validation
 
