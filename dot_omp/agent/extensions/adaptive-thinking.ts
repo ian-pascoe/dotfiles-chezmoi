@@ -37,8 +37,7 @@ function steeringGuidance(
 
 function isResolvedThinkingLevel(value: unknown): value is ResolvedThinkingLevel {
   return (
-    typeof value === "string" &&
-    (SELECTABLE_THINKING_LEVELS as readonly string[]).includes(value)
+    typeof value === "string" && (SELECTABLE_THINKING_LEVELS as readonly string[]).includes(value)
   );
 }
 

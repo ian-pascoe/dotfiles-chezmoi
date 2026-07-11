@@ -140,6 +140,14 @@ if has_cmd pi; then
   )
 fi
 #########################################################################
+# OMP
+if has_cmd omp; then
+  echo "Updating OMP packages..."
+  omp update
+  omp update -l
+  echo "OMP packages updated successfully!"
+fi
+#########################################################################
 # Skills
 SKILLS_CMD=()
 if has_cmd skills; then

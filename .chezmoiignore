@@ -9,6 +9,7 @@ package-lock.json
 bun.lock
 pnpm-lock.yaml
 pnpm-workspace.yaml
+tsconfig.json
 
 # Syncthing
 **/.stfolder

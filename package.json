@@ -9,13 +9,13 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "test": "vitest run",
-    "typecheck": "tsgo --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@typescript/native-preview": "7.0.0-dev.20260527.2",
-    "oxfmt": "^0.52.0",
-    "oxlint": "^1.67.0",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.7"
+    "@types/node": "^26.1.1",
+    "oxfmt": "^0.58.0",
+    "oxlint": "^1.73.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   }
 }

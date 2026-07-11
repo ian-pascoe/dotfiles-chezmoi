@@ -7,6 +7,9 @@ if [ -f "$HOME/.profile" ]; then
   source "$HOME/.profile"
 fi
 
+## Keep the system locale; LC_ALL may be inherited from a parent process.
+unset LC_ALL
+
 ## Path Helpers
 if [ -f "$HOME/.config/shell/path.zsh" ]; then
   source "$HOME/.config/shell/path.zsh"
