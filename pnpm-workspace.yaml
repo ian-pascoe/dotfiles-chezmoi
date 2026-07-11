@@ -1,7 +1,28 @@
 packages:
+  - "./dot_omp/agent"
   - "./dot_pi/agent"
   - "./dot_config/opencode"
 allowBuilds:
-  '@google/genai': true
+  "@google/genai": true
   msgpackr-extract: true
+  onnxruntime-node: true
   protobufjs: true
+  sharp: true
+minimumReleaseAgeExclude:
+  - '@oh-my-pi/hashline@16.4.3'
+  - '@oh-my-pi/omp-stats@16.4.3'
+  - '@oh-my-pi/pi-agent-core@16.4.3'
+  - '@oh-my-pi/pi-ai@16.4.3'
+  - '@oh-my-pi/pi-catalog@16.4.3'
+  - '@oh-my-pi/pi-coding-agent@16.4.3'
+  - '@oh-my-pi/pi-mnemopi@16.4.3'
+  - '@oh-my-pi/pi-natives-darwin-arm64@16.4.3'
+  - '@oh-my-pi/pi-natives-darwin-x64@16.4.3'
+  - '@oh-my-pi/pi-natives-linux-arm64@16.4.3'
+  - '@oh-my-pi/pi-natives-linux-x64@16.4.3'
+  - '@oh-my-pi/pi-natives-win32-x64@16.4.3'
+  - '@oh-my-pi/pi-natives@16.4.3'
+  - '@oh-my-pi/pi-tui@16.4.3'
+  - '@oh-my-pi/pi-utils@16.4.3'
+  - '@oh-my-pi/pi-wire@16.4.3'
+  - '@oh-my-pi/snapcompact@16.4.3'

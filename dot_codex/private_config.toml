@@ -1,8 +1,8 @@
 #:schema https://raw.githubusercontent.com/openai/codex/refs/heads/main/codex-rs/core/config.schema.json
 
-model = "gpt-5.5"
+model = "gpt-5.6-sol"
 personality = "pragmatic"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -225,6 +225,9 @@ trust_level = "trusted"
 [projects."/home/ianpascoe/src/caplets-mono"]
 trust_level = "trusted"
 
+[projects."/home/ianpascoe"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
 last_updated = "2026-06-29T19:10:20Z"
 source_type = "local"
@@ -236,8 +239,8 @@ source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.compound-engineering-plugin]
-last_updated = "2026-07-03T09:22:11Z"
-last_revision = "be8054c1d17b8a18114d563feb28461e565f72dc"
+last_updated = "2026-07-09T18:59:41Z"
+last_revision = "d9f25691823f987518ed4ebf140f08fb26e645a5"
 source_type = "git"
 source = "https://github.com/EveryInc/compound-engineering-plugin.git"
 
@@ -269,4 +272,4 @@ enabled = true
 hide_rate_limit_model_nudge = true
 
 [apps.connector_76869538009648d5b282a4bb21c3d157]
-enabled = false
+enabled = true

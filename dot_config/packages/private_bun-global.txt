@@ -1,2 +1,6 @@
 # Bun global packages
 # One package spec per line.
+/home/ianpascoe/.cache/.bun/install/global
+@oh-my-pi/pi-coding-agent
+@oh-my-pi/pi-natives
+@oh-my-pi/pi-natives-linux-x64

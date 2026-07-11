@@ -2,6 +2,7 @@ tap "anomalyco/tap", trusted: true
 tap "antoniorodr/memo", trusted: true
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
 tap "manaflow-ai/cmux", trusted: true
+tap "mistertea/et", "https://github.com/MisterTea/homebrew-et", trusted: { formulae: ["et"] }
 tap "nikitabobko/tap", trusted: true
 tap "openclaw/tap", trusted: true
 tap "oven-sh/bun", trusted: true
@@ -41,6 +42,8 @@ brew "chezmoi"
 brew "coreutils"
 # Pack, ship and run any application as a lightweight container
 brew "docker", link: false
+# Remote terminal with IP roaming
+brew "et"
 # Powerful, lightweight programming language
 brew "lua"
 # Like neofetch, but much faster because written mostly in C

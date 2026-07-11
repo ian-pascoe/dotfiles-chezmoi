@@ -101,9 +101,9 @@ Write the composition brief and use Hyperframes to create the video implementati
 
 **Read:** [references/step-4-deliver.md](references/step-4-deliver.md)
 
-Validate, preview, render to `<output-dir>/brag.mp4`, and write `<output-dir>/share-copy.txt`.
+Validate, preview, render to `<output-dir>/brag.mp4`, pick the best poster frame into `<output-dir>/brag.jpg`, and write `<output-dir>/share-copy.txt`.
 
-**Gate:** `<output-dir>/brag.mp4` exists. Share copy is written.
+**Gate:** `<output-dir>/brag.mp4` exists. A best-frame poster `<output-dir>/brag.jpg` is picked (not an arbitrary frame). Share copy is written.
 
 ---
 

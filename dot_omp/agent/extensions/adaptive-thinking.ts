@@ -1,23 +1,49 @@
+import { ThinkingLevel, type ResolvedThinkingLevel } from "@oh-my-pi/pi-agent-core";
+import { THINKING_EFFORTS, type Model } from "@oh-my-pi/pi-ai";
 import type { ExtensionAPI } from "@oh-my-pi/pi-coding-agent";
 
-const THINKING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh"] as const;
-type ThinkingLevel = (typeof THINKING_LEVELS)[number];
+const SELECTABLE_THINKING_LEVELS = [ThinkingLevel.Off, ...THINKING_EFFORTS] as const;
 
 type LevelDetails = {
-  requestedLevel: ThinkingLevel;
-  previousLevel: ThinkingLevel | null;
-  effectiveLevel: ThinkingLevel | null;
+  requestedLevel: ResolvedThinkingLevel;
+  previousLevel: ResolvedThinkingLevel | null;
+  effectiveLevel: ResolvedThinkingLevel | null;
   applied: boolean;
   effectiveChanged: boolean;
-  supportedLevels?: ThinkingLevel[];
+  supportedLevels?: ResolvedThinkingLevel[];
 };
 
-function isThinkingLevel(value: unknown): value is ThinkingLevel {
-  return typeof value === "string" && (THINKING_LEVELS as readonly string[]).includes(value);
+function supportedThinkingLevels(model: Model | undefined): ResolvedThinkingLevel[] {
+  return [ThinkingLevel.Off, ...(model?.thinking?.efforts ?? [])];
 }
 
-function normalizeReportedLevel(value: unknown): ThinkingLevel | null {
-  return isThinkingLevel(value) ? value : null;
+function steeringGuidance(
+  currentLevel: ResolvedThinkingLevel | null,
+  supportedLevels: ResolvedThinkingLevel[],
+): string {
+  return [
+    "You MUST manage thinking level deliberately.",
+    "Choose the lowest level that is adequate for the current work.",
+    `Current effective thinking level: ${currentLevel ?? "provider default"}.`,
+    `Available exact levels for the active model: ${supportedLevels.join(", ")}.`,
+    "Use off/minimal for trivial, clerical, or mechanical work; low/medium for routine coding and straightforward analysis; high/xhigh/max for ambiguity, debugging, risky changes, architecture, or multi-step synthesis.",
+    "Reassess at turn start, after meaningful new evidence, and whenever task complexity shifts.",
+    "Use set_thinking_level only when intentionally selecting an explicit level for the session.",
+    "A successful call exits automatic selection.",
+    "If the current effective level already matches the target, call only when intentionally pinning automatic selection to that exact level.",
+    "Avoid repeated set_thinking_level calls without new evidence or a task change.",
+  ].join(" ");
+}
+
+function isResolvedThinkingLevel(value: unknown): value is ResolvedThinkingLevel {
+  return (
+    typeof value === "string" &&
+    (SELECTABLE_THINKING_LEVELS as readonly string[]).includes(value)
+  );
+}
+
+function normalizeReportedLevel(value: unknown): ResolvedThinkingLevel | null {
+  return isResolvedThinkingLevel(value) ? value : null;
 }
 
 function textResult(text: string, details: LevelDetails, isError = false) {
@@ -31,6 +57,14 @@ function textResult(text: string, details: LevelDetails, isError = false) {
 export default function adaptiveThinking(pi: ExtensionAPI): void {
   const { z } = pi.zod;
 
+  pi.on("before_agent_start", (event, ctx) => {
+    const currentLevel = normalizeReportedLevel(pi.getThinkingLevel());
+    const supportedLevels = supportedThinkingLevels(ctx.model);
+    return {
+      systemPrompt: [...event.systemPrompt, steeringGuidance(currentLevel, supportedLevels)],
+    };
+  });
+
   pi.registerTool({
     name: "set_thinking_level",
     label: "Set Thinking Level",
@@ -41,13 +75,12 @@ export default function adaptiveThinking(pi: ExtensionAPI): void {
       "A successful call replaces automatic selection for this session.",
     ].join(" "),
     parameters: z.object({
-      level: z.enum(THINKING_LEVELS),
+      level: z.enum(SELECTABLE_THINKING_LEVELS),
     }),
     async execute(_toolCallId, { level }, _signal, _onUpdate, ctx) {
       const previousLevel = pi.getThinkingLevel();
       const normalizedPreviousLevel = normalizeReportedLevel(previousLevel);
-      const modelEfforts = ctx.model?.thinking?.efforts ?? [];
-      const supportedLevels: ThinkingLevel[] = ["off", ...modelEfforts.filter(isThinkingLevel)];
+      const supportedLevels = supportedThinkingLevels(ctx.model);
 
       const baseDetails = {
         requestedLevel: level,
@@ -57,11 +90,11 @@ export default function adaptiveThinking(pi: ExtensionAPI): void {
         effectiveChanged: false,
       } satisfies LevelDetails;
 
-      if (!ctx.model && level !== "off") {
+      if (!ctx.model && level !== ThinkingLevel.Off) {
         return textResult(
           `Cannot set thinking level to ${level}: ` +
             "no active model is available to verify support.",
-          { ...baseDetails, supportedLevels: ["off"] },
+          { ...baseDetails, supportedLevels: [ThinkingLevel.Off] },
           true,
         );
       }

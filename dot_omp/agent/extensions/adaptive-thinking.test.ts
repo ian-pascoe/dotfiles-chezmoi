@@ -1,11 +1,36 @@
 import assert from "node:assert/strict";
-import { describe, test } from "vitest";
+import { describe, test, vi } from "vitest";
 
-import adaptiveThinking from "../../dot_omp/agent/extensions/adaptive-thinking";
+vi.mock("@oh-my-pi/pi-agent-core", () => ({
+  ThinkingLevel: {
+    Inherit: "inherit",
+    Off: "off",
+    Minimal: "minimal",
+    Low: "low",
+    Medium: "medium",
+    High: "high",
+    XHigh: "xhigh",
+    Max: "max",
+  },
+}));
+vi.mock("@oh-my-pi/pi-ai", () => ({
+  THINKING_EFFORTS: ["minimal", "low", "medium", "high", "xhigh", "max"],
+}));
 
-const THINKING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh"] as const;
-type ThinkingLevel = (typeof THINKING_LEVELS)[number];
-type ReportedThinkingLevel = ThinkingLevel | "inherit";
+import adaptiveThinking from "./adaptive-thinking";
+
+const SELECTABLE_THINKING_LEVELS = [
+  "off",
+  "minimal",
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+  "max",
+] as const;
+type SelectableThinkingLevel = (typeof SELECTABLE_THINKING_LEVELS)[number];
+type ReportedThinkingLevel = SelectableThinkingLevel | "inherit";
+type ModelEffort = Exclude<SelectableThinkingLevel, "off">;
 
 type ToolResult = {
   content: Array<{ type: string; text?: string }>;
@@ -26,7 +51,7 @@ type ToolDefinition = {
   approval?: string;
   execute(
     toolCallId: string,
-    params: { level: ThinkingLevel },
+    params: { level: SelectableThinkingLevel },
     signal: AbortSignal,
     onUpdate: undefined,
     ctx: unknown,
@@ -34,20 +59,37 @@ type ToolDefinition = {
 };
 
 type ThinkingLevelDetails = {
-  requestedLevel: ThinkingLevel;
-  previousLevel: ThinkingLevel | null;
-  effectiveLevel: ThinkingLevel | null;
+  requestedLevel: SelectableThinkingLevel;
+  previousLevel: SelectableThinkingLevel | null;
+  effectiveLevel: SelectableThinkingLevel | null;
   applied: boolean;
   effectiveChanged: boolean;
-  supportedLevels?: ThinkingLevel[];
+  supportedLevels?: SelectableThinkingLevel[];
 };
+
+type TestModel = {
+  id: string;
+  reasoning: boolean;
+  thinking: {
+    efforts: ModelEffort[];
+  };
+};
+
+type BeforeAgentStartHandler = (
+  event: {
+    type: "before_agent_start";
+    prompt: string;
+    systemPrompt: string[];
+  },
+  ctx: { model: TestModel | undefined },
+) => { systemPrompt?: string[] } | Promise<{ systemPrompt?: string[] } | undefined> | undefined;
 
 type HarnessOptions = {
   initialLevel?: ReportedThinkingLevel | undefined;
   hasModel?: boolean;
-  modelEfforts?: ThinkingLevel[];
+  modelEfforts?: ModelEffort[];
   applyLevel?: (
-    requested: ThinkingLevel,
+    requested: SelectableThinkingLevel,
     current: ReportedThinkingLevel | undefined,
   ) => ReportedThinkingLevel | undefined;
 };
@@ -63,8 +105,9 @@ function details(result: ToolResult): ThinkingLevelDetails {
 
 function createHarness(options: HarnessOptions = {}) {
   let currentLevel = options.initialLevel;
-  const setCalls: ThinkingLevel[] = [];
+  const setCalls: SelectableThinkingLevel[] = [];
   let tool: ToolDefinition | undefined;
+  let beforeAgentStartHandler: BeforeAgentStartHandler | undefined;
 
   const z = {
     enum: (values: readonly string[]) => ({ values }),
@@ -73,13 +116,16 @@ function createHarness(options: HarnessOptions = {}) {
 
   adaptiveThinking({
     zod: { z },
+    on(event: string, handler: BeforeAgentStartHandler) {
+      if (event === "before_agent_start") beforeAgentStartHandler = handler;
+    },
     registerTool(definition: ToolDefinition) {
       tool = definition;
     },
     getThinkingLevel() {
       return currentLevel;
     },
-    setThinkingLevel(level: ThinkingLevel) {
+    setThinkingLevel(level: SelectableThinkingLevel) {
       setCalls.push(level);
       currentLevel = options.applyLevel ? options.applyLevel(level, currentLevel) : level;
     },
@@ -103,7 +149,19 @@ function createHarness(options: HarnessOptions = {}) {
   return {
     setCalls,
     tool: registeredTool,
-    execute(level: ThinkingLevel) {
+    async injectGuidance(systemPrompt: string[]) {
+      assert.ok(beforeAgentStartHandler);
+      const result = await beforeAgentStartHandler(
+        {
+          type: "before_agent_start",
+          prompt: "test prompt",
+          systemPrompt,
+        },
+        { model },
+      );
+      return result?.systemPrompt ?? systemPrompt;
+    },
+    execute(level: SelectableThinkingLevel) {
       return registeredTool.execute(
         "tool-call-1",
         { level },
@@ -120,10 +178,44 @@ describe("OMP adaptive thinking extension", () => {
     const { tool } = createHarness();
 
     assert.equal(tool.name, "set_thinking_level");
-    assert.deepEqual(tool.parameters.shape.level.values, THINKING_LEVELS);
+    assert.deepEqual(tool.parameters.shape.level.values, SELECTABLE_THINKING_LEVELS);
     assert.match(tool.description, /subsequent model calls in this OMP session/i);
     assert.match(tool.description, /remains active until the model or user changes it/i);
     assert.match(tool.description, /replaces automatic selection for this session/i);
+  });
+
+  test("appends dynamic steering without replacing existing prompt blocks", async () => {
+    const harness = createHarness({ initialLevel: "medium" });
+
+    const promptBlocks = await harness.injectGuidance(["Base prompt", "Existing policy"]);
+
+    assert.deepEqual(promptBlocks.slice(0, 2), ["Base prompt", "Existing policy"]);
+    const guidance = promptBlocks.at(-1);
+    assert.ok(guidance);
+    assert.match(guidance, /MUST manage thinking level deliberately/i);
+    assert.match(guidance, /Current effective thinking level: medium/i);
+    assert.match(guidance, /Available exact levels.*off, low, medium, high/i);
+    assert.match(guidance, /off\/minimal.*trivial.*mechanical/i);
+    assert.match(guidance, /low\/medium.*routine coding.*straightforward analysis/i);
+    assert.match(guidance, /high\/xhigh\/max.*ambiguity.*debugging.*risky changes/i);
+    assert.match(guidance, /Reassess at turn start.*meaningful new evidence/i);
+    assert.match(guidance, /successful call exits automatic selection/i);
+    assert.match(guidance, /already matches.*intentionally pinning automatic selection/i);
+    assert.match(guidance, /Avoid repeated set_thinking_level calls/i);
+  });
+
+  test("reports provider default and the active model effort set", async () => {
+    const harness = createHarness({
+      initialLevel: "inherit",
+      modelEfforts: ["high", "xhigh"],
+    });
+
+    const promptBlocks = await harness.injectGuidance([]);
+    const guidance = promptBlocks.at(-1);
+
+    assert.ok(guidance);
+    assert.match(guidance, /Current effective thinking level: provider default/i);
+    assert.match(guidance, /Available exact levels.*off, high, xhigh/i);
   });
 
   test("sets a supported level and reports the effective change", async () => {
@@ -141,6 +233,25 @@ describe("OMP adaptive thinking extension", () => {
       effectiveChanged: true,
     });
     assert.match(resultText(result), /explicitly set to high/i);
+  });
+
+  test("sets max when the active model advertises it", async () => {
+    const harness = createHarness({
+      initialLevel: "xhigh",
+      modelEfforts: ["xhigh", "max"],
+    });
+
+    const result = await harness.execute("max");
+
+    assert.deepEqual(harness.setCalls, ["max"]);
+    assert.equal(result.isError, undefined);
+    assert.deepEqual(details(result), {
+      requestedLevel: "max",
+      previousLevel: "xhigh",
+      effectiveLevel: "max",
+      applied: true,
+      effectiveChanged: true,
+    });
   });
 
   test("pins a same-effective selection", async () => {

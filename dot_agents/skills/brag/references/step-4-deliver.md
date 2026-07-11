@@ -45,6 +45,19 @@ For final delivery:
 npx hyperframes render --quality high --output ../brag.mp4
 ```
 
+## Pick the poster frame
+
+The poster is the still shown before the video plays (a `<video>`'s `poster` image) — the first thing anyone sees. Don't leave it to the first frame or an arbitrary timestamp; those land on fades, mid-transitions, or half-rendered text.
+
+You built this composition, so you already know its strongest moment and exactly when it lands — the hook line, the hero reveal, or the final logo. Pick that beat at a **settled** point: text fully animated in, before it exits (the storyboard timings tell you the safe window). Then extract that one frame full-res with ffmpeg. From `brag-output/composition`:
+
+```bash
+# use the timestamp of your strongest settled beat, e.g. 3.2s
+ffmpeg -ss 3.2 -i ../brag.mp4 -frames:v 1 -q:v 2 ../brag.jpg
+```
+
+Aim for a frame that's postable on its own (the "show the thing" law — any frozen frame should be shareable). If the pulled frame lands on a transition or mid-animation, nudge the timestamp a few tenths of a second and re-extract. Wire the poster into any `<video>` that embeds the brag (the composition, a gallery card, the user's site) with `poster="brag.jpg"`.
+
 ## Write share copy
 
 Write `brag-output/share-copy.txt`.
@@ -123,6 +136,7 @@ After this step, `brag-output/` should contain:
 ```
 brag-output/
   brag.mp4                — the rendered video
+  brag.jpg                — the poster (best frame, for <video poster>)
   brag-plan.md            — the plan and storyboard
   composition-brief.md    — the Hyperframes handoff brief
   share-copy.txt          — the share caption

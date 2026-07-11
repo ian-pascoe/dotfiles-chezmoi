@@ -6,10 +6,9 @@ tests
 node_modules
 package.json
 package-lock.json
-pnpm-lock.yaml
 bun.lock
+pnpm-lock.yaml
 pnpm-workspace.yaml
-vitest.config.ts
 
 # Syncthing
 **/.stfolder
@@ -26,6 +25,11 @@ vitest.config.ts
 **/*.log
 **/*.tmp
 **/*.bak
+
+# Tests
+vitest.config.ts
+**/tests/**
+**/*.test.ts
 
 # Non-Darwin
 {{ if ne .chezmoi.os "darwin" }}

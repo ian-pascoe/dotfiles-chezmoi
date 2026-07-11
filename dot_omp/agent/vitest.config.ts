@@ -2,6 +2,7 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    projects: ["./dot_config/opencode", "./dot_omp/agent", "./dot_pi/agent"],
+    name: "omp-agent",
+    include: ["**/*.test.ts"],
   },
 });

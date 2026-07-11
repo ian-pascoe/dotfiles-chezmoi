@@ -82,6 +82,10 @@ if command -v hunk &>/dev/null; then
   }
 fi
 
+if command -v omp &>/dev/null; then
+  eval "$(omp completions zsh)"
+fi
+
 ## Zoxide
 if command -v zoxide &>/dev/null; then
   eval "$(zoxide init zsh)"
