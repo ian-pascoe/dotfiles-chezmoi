@@ -252,9 +252,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/ogulcancelik/herdr.git",
       "skillPath": "SKILL.md",
-      "skillFolderHash": "46174563489273199a17c982356c6e4674ef00d4",
+      "skillFolderHash": "4ca6cac445a6aa45eb3b8462f66cd595d0c01364",
       "installedAt": "2026-06-30T09:12:47.957Z",
-      "updatedAt": "2026-07-11T10:38:00.505Z"
+      "updatedAt": "2026-07-12T10:14:17.635Z"
     },
     "seo-audit": {
       "source": "coreyhaines31/marketingskills",
@@ -386,6 +386,15 @@
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-07-09T16:48:12.428Z",
       "updatedAt": "2026-07-09T16:48:12.428Z"
+    },
+    "improve": {
+      "source": "shadcn/improve",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/shadcn/improve.git",
+      "skillPath": "skills/improve/SKILL.md",
+      "skillFolderHash": "7d77d76815e6deb704427f17f6e393f55e3cb6da",
+      "installedAt": "2026-07-12T08:03:17.474Z",
+      "updatedAt": "2026-07-12T08:03:17.474Z"
     }
   },
   "dismissed": {

@@ -1,0 +1,85 @@
+providers: 
+  webSearch: auto
+  autoThinkingModel: online
+disabledProviders: 
+  - codex
+  - opencode
+  - claude
+  - pi
+symbolPreset: nerd
+theme: 
+  dark: dark
+  light: light
+setupVersion: 1
+statusLine: 
+  transparent: true
+  compactThinkingLevel: false
+  preset: default
+  separator: powerline-thin
+task: 
+  showResolvedModelBadge: false
+  enableLsp: true
+  eager: default
+  maxConcurrency: 0
+  maxRecursionDepth: -1
+  maxRuntimeMs: 0
+  softRequestBudget: 0
+  isolation: 
+    mode: none
+hideThinkingBlock: false
+colorBlindMode: false
+terminal: 
+  showProgress: false
+tui: 
+  tight: true
+display: 
+  showTokenUsage: false
+defaultThinkingLevel: auto
+advisor: 
+  enabled: false
+  subagents: false
+stt: 
+  enabled: false
+  modelName: parakeet
+startup: 
+  quiet: true
+collapseChangelog: true
+features: 
+  unexpectedStopDetection: true
+contextPromotion: 
+  enabled: true
+compaction: 
+  strategy: snapcompact
+memory: 
+  backend: local
+autolearn: 
+  enabled: true
+edit: 
+  mode: hashline
+lsp: 
+  diagnosticsOnEdit: true
+modelRoles: 
+  default: openai-codex/gpt-5.6-sol:high
+  advisor: openai-codex/gpt-5.6-sol:high
+  task: openai-codex/gpt-5.6-sol:medium
+  plan: openai-codex/gpt-5.6-sol:xhigh
+  tiny: openai-codex/gpt-5.6-luna:high
+  commit: openai-codex/gpt-5.6-luna:low
+  slow: openai-codex/gpt-5.6-sol:xhigh
+  smol: openai-codex/gpt-5.6-terra:high
+  vision: openai-codex/gpt-5.6-terra:high
+  designer: openai-codex/gpt-5.6-sol:high
+dev: 
+  autoqa: 
+    consent: granted
+codexResets: 
+  autoRedeem: unset
+commands: 
+  enableOpencodeUser: false
+  enableOpencodeProject: false
+  enableClaudeProject: false
+  enableClaudeUser: false
+tools: 
+  discoveryMode: auto
+tier: 
+  advisor: inherit

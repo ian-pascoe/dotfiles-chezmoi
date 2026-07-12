@@ -40,6 +40,8 @@ brew "btop"
 brew "chezmoi"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
+# TIFF library and utilities
+brew "libtiff"
 # Pack, ship and run any application as a lightweight container
 brew "docker", link: false
 # Remote terminal with IP roaming
@@ -183,16 +185,12 @@ cask "balenaetcher"
 cask "betterdisplay"
 # Open source IDE for exploring and testing APIs
 cask "bruno"
-# OpenAI's official ChatGPT desktop app
-cask "chatgpt"
 # Terminal-based AI coding assistant
 cask "claude-code"
 # Ghostty-based terminal with vertical tabs and notifications for AI coding agents
 cask "cmux"
 # OpenAI's coding agent that runs in your terminal
 cask "codex"
-# OpenAI's Codex desktop app for managing coding agents
-cask "codex-app"
 # Menu bar usage monitor for Codex and Claude
 cask "steipete/tap/codexbar"
 # UI for creating Windows installer ISO from UUPDump

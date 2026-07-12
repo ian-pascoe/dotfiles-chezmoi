@@ -21,6 +21,7 @@ _zsh_prepend_path_existing() {
 _zsh_apply_base_path_order() {
   _zsh_prepend_path_existing \
     "$HOME/.local/bin" \
+    "${XDG_DATA_HOME:-$HOME/.local/share}/mise/shims" \
     "${XDG_CACHE_HOME:-$HOME/.cache}/.bun/bin" \
     "$HOME/.local/share/pnpm/bin" \
     "$HOME/.npm-global/bin" \

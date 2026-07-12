@@ -4,7 +4,7 @@
       {
         "hooks": [
           {
-            "command": "\"$HOME/.local/bin/moshi-hook\" codex-hook",
+            "command": "zsh -lc 'moshi-hook codex-hook'",
             "type": "command"
           }
         ]
@@ -34,7 +34,16 @@
       {
         "hooks": [
           {
-            "command": "\"$HOME/.local/bin/moshi-hook\" codex-hook",
+            "command": "zsh -lc 'moshi-hook codex-hook'",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash \"$HOME/.codex/herdr-agent-state.sh\" session",
+            "timeout": 10,
             "type": "command"
           }
         ]
@@ -54,7 +63,7 @@
       {
         "hooks": [
           {
-            "command": "\"$HOME/.local/bin/moshi-hook\" codex-hook",
+            "command": "zsh -lc 'moshi-hook codex-hook'",
             "type": "command"
           }
         ]
@@ -64,7 +73,7 @@
       {
         "hooks": [
           {
-            "command": "\"$HOME/.local/bin/moshi-hook\" codex-hook",
+            "command": "zsh -lc 'moshi-hook codex-hook'",
             "type": "command"
           }
         ]

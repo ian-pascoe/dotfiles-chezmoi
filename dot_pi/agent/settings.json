@@ -2,7 +2,6 @@
   "lastChangelogVersion": "0.80.3",
   "packages": [
     "git:github.com/EveryInc/compound-engineering-plugin",
-    "git:github.com/obra/superpowers",
     "npm:@caplets/pi",
     "npm:@howaboua/pi-codex-conversion",
     "npm:@juicesharp/rpiv-args",

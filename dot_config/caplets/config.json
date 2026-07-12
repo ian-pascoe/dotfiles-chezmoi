@@ -39,6 +39,14 @@
         "token": "$vault:GH_TOKEN"
       }
     },
+    "hubspot": {
+      "name": "Hubspot",
+      "description": "Hubspot is a CRM platform that helps you manage your leads, contacts, opportunities, and deals.",
+      "url": "https://mcp.hubspot.com",
+      "auth": {
+        "type": "oauth2"
+      }
+    },
     "posthog": {
       "name": "Posthog",
       "description": "Posthog is a feature analytics tool that helps you understand how your users interact with your web app.",
