@@ -118,6 +118,7 @@ function reviewFailureReason(
 ): GuardianAuditReason {
   if (result.reason === "timeout") return "timeout";
   if (result.reason === "cancelled") return "cancelled";
+  if (result.reason === "invalid-request") return "invalid_action";
   if (result.reason === "invalid-response") return "invalid_response";
   return result.reason === "provider-error" ? "provider_failure" : "provider_unavailable";
 }

@@ -76,7 +76,7 @@ export type GuardianAuditInput = {
 };
 
 export type GuardianAuditRecord = {
-  schemaVersion: "guardian-audit/v1";
+  schemaVersion: "guardian-decision/v1";
   eventId: string;
   timestamp: string;
   sessionTag: string;
@@ -152,7 +152,7 @@ export function persistGuardianAudit(
       })
     : null;
   const record: GuardianAuditRecord = {
-    schemaVersion: "guardian-audit/v1",
+    schemaVersion: "guardian-decision/v1",
     eventId: randomUUID(),
     timestamp: new Date().toISOString(),
     sessionTag: sign(input.sessionId),
@@ -184,7 +184,7 @@ export function createGuardianAuditTargets(
   mkdirSync(dirname(auditPath), { recursive: true, mode: 0o700 });
   return {
     appendSession(record) {
-      pi.appendEntry("guardian-audit", record);
+      pi.appendEntry("guardian-decision", record);
     },
     appendOperational(record) {
       appendFileSync(auditPath, `${JSON.stringify(record)}\n`, { encoding: "utf8", mode: 0o600 });
