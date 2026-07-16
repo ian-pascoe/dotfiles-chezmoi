@@ -1,0 +1,294 @@
+#:schema https://raw.githubusercontent.com/openai/codex/refs/heads/main/codex-rs/core/config.schema.json
+
+model = "gpt-5.6-sol"
+personality = "pragmatic"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "xhigh"
+approval_policy = "never"
+approvals_reviewer = "user"
+sandbox_mode = "danger-full-access"
+suppress_unstable_features_warning = true
+
+notify = [
+  "/Users/ianpascoe/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
+  "turn-ended",
+]
+service_tier = "default"
+
+[features]
+hooks = true
+multi_agent = true
+undo = true
+goals = true
+memories = true
+terminal_resize_reflow = true
+prevent_idle_sleep = true
+js_repl = false
+chronicle = true
+
+[agents]
+max_threads = 20
+
+[memories]
+generate_memories = true
+use_memories = true
+
+[shell_environment_policy]
+inherit = "all"
+
+[model_providers.opencode_go]
+name = "OpenCode Go"
+base_url = "https://opencode.ai/zen/go/v1"
+env_key = "OPENCODE_API_KEY"
+
+[desktop]
+appearanceLightCodeThemeId = "catppuccin"
+appearanceDarkCodeThemeId = "catppuccin"
+usePointerCursors = true
+appearanceTheme = "system"
+followUpQueueMode = "queue"
+reviewDelivery = "detached"
+dictationDictionary = []
+selected-avatar-id = "custom:mini-jesus"
+keepRemoteControlAwakeWhilePluggedIn = true
+git-pull-request-merge-method = "squash"
+git-show-sidebar-pr-icons = true
+git-create-pull-request-as-draft = true
+worktree-keep-count = 10
+git-commit-instructions = "**Always** use conventional commit messages."
+git-pr-instructions = "**Always** use a conventional commit message for PR titles."
+defaultTerminalLocation = "right"
+preventSleepWhileRunning = true
+show-context-window-usage = true
+avatar-overlay-mascot-width-px = 80
+dock-icon-preference = "codex-system"
+conversationDetailMode = "STEPS_COMMANDS"
+enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
+
+[desktop.appearanceLightChromeTheme]
+accent = "#8839ef"
+contrast = 45
+ink = "#4c4f69"
+opaqueWindows = false
+surface = "#eff1f5"
+
+[desktop.appearanceLightChromeTheme.fonts]
+code = '"JetBrainsMono NF"'
+ui = '"JetBrains Mono NF"'
+
+[desktop.appearanceLightChromeTheme.semanticColors]
+diffAdded = "#40a02b"
+diffRemoved = "#d20f39"
+skill = "#8839ef"
+
+[desktop.appearanceDarkChromeTheme]
+accent = "#cba6f7"
+contrast = 60
+ink = "#cdd6f4"
+opaqueWindows = false
+surface = "#1e1e2e"
+
+[desktop.appearanceDarkChromeTheme.fonts]
+code = '"JetBrainsMono NF"'
+ui = '"JetBrains Mono NF"'
+
+[desktop.appearanceDarkChromeTheme.semanticColors]
+diffAdded = "#a6e3a1"
+diffRemoved = "#f38ba8"
+skill = "#cba6f7"
+
+[desktop.open-in-target-preferences]
+global = "ghostty"
+
+[mcp_servers.caplets]
+command = "caplets"
+args = ["attach", "http://127.0.0.1:5387"]
+enabled = true
+
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
+CODEX_HOME = "/Users/ianpascoe/.codex"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f,e2cad16d8d9f60f09c9f0951ec7dfdd9e8f59dedd06045c0b6827dc8fa8322f0"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.707.62119"
+SKY_CUA_SERVICE_PATH = "/Users/ianpascoe/.codex/plugins/cache/openai-bundled/computer-use/1.0.1000387/Codex Computer Use.app"
+CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
+
+[mcp_servers.computer-use]
+command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
+cwd = "."
+enabled = false
+
+[tui]
+status_line = [
+  "model-with-reasoning",
+  "fast-mode",
+  "context-used",
+  "project-name",
+  "git-branch",
+  "branch-changes",
+]
+status_line_use_colors = true
+theme = "catppuccin-mocha"
+session_picker_view = "comfortable"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[hooks.state]
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:35b080a7fb129f9778972c5ce8134084f61e61ee16d1f7935a9b71e41b4dfe8e"
+enabled = true
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:stop:0:0"]
+trusted_hash = "sha256:a9874cba0d3fb14df113fd814ccc0b96a7ff4c3165d0f2cfe060bcef257ab62a"
+
+[hooks.state."/home/ianpascoe/.codex/hooks.json:session_start:0:0"]
+trusted_hash = "sha256:35b080a7fb129f9778972c5ce8134084f61e61ee16d1f7935a9b71e41b4dfe8e"
+
+[hooks.state."/home/ianpascoe/.codex/hooks.json:stop:0:0"]
+trusted_hash = "sha256:a9874cba0d3fb14df113fd814ccc0b96a7ff4c3165d0f2cfe060bcef257ab62a"
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:session_start:1:0"]
+trusted_hash = "sha256:252150ddae4d9a70c585366d7c51cff09603b5af2d9dfb22cb5bb0728fca53f1"
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:permission_request:0:0"]
+trusted_hash = "sha256:fcec2a18f441c5694bc9469cf13d7014e823c57ab420e02d63a8bf7ebdfcc72b"
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:session_start:2:0"]
+trusted_hash = "sha256:32c80cd33fbfcfc4ae4f2feca77149fe3334b1113c6598676f753fd942500de2"
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:user_prompt_submit:0:0"]
+trusted_hash = "sha256:78297874884298bf02ef5d48433f2bb34166de580ee027e9e85d564cdf23fe63"
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:stop:1:0"]
+trusted_hash = "sha256:a0550731637177c048527d803117304a1b3d0f9e4f2580a9fba31d53bfe4cb8f"
+
+[projects."/Users/ianpascoe/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/src/caplets"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/src/caplets-cloud"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-14/if-i-gave-you-a-few"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-15/is-there-any-way-to-have"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-15/without-searching-for-anything-what-tools"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/src/caplets-mono"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-15/doyouunderstandwhatiamsayingrightnow"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-17/without-searching-for-anything-tell-me"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-17/where-does-my-wife-go-to"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/code/caplets"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-20/find-me-the-best-steak-deals"]
+trust_level = "trusted"
+
+[projects."/home/ianpascoe/src/caplets"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-23/tr"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-23/it"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-24/increase-the-max-number-of-codex"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-06-29/hi-ian-i-am-looking-to"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-07-10/sites-plugin-sites-openai-bundled-create"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-07-12/how"]
+trust_level = "trusted"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-07-13T10:23:12Z"
+source_type = "local"
+source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-07-10T10:52:31Z"
+source_type = "local"
+source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[marketplaces.compound-engineering-plugin]
+last_updated = "2026-07-13T17:23:42Z"
+last_revision = "cf6d37f1b5faa231a53273715065f4bbd8b5a17c"
+source_type = "git"
+source = "https://github.com/EveryInc/compound-engineering-plugin.git"
+
+[plugins."compound-engineering@compound-engineering-plugin"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[notice]
+hide_rate_limit_model_nudge = true
+
+[apps.connector_76869538009648d5b282a4bb21c3d157]
+enabled = true

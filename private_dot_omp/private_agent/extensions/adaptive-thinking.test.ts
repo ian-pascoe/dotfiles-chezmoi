@@ -46,12 +46,15 @@ type ToolDefinition = {
       level: {
         values: readonly string[];
       };
+      reason: {
+        description?: string;
+      };
     };
   };
   approval?: string;
   execute(
     toolCallId: string,
-    params: { level: SelectableThinkingLevel },
+    params: { level: SelectableThinkingLevel; reason?: string },
     signal: AbortSignal,
     onUpdate: undefined,
     ctx: unknown,
@@ -65,6 +68,7 @@ type ThinkingLevelDetails = {
   applied: boolean;
   effectiveChanged: boolean;
   supportedLevels?: SelectableThinkingLevel[];
+  reason?: string;
 };
 
 type TestModel = {
@@ -109,8 +113,21 @@ function createHarness(options: HarnessOptions = {}) {
   let tool: ToolDefinition | undefined;
   let beforeAgentStartHandler: BeforeAgentStartHandler | undefined;
 
+  const stringSchema: {
+    description?: string;
+    optional(): typeof stringSchema;
+    describe(description: string): typeof stringSchema;
+  } = {
+    optional: () => stringSchema,
+    describe(description) {
+      stringSchema.description = description;
+      return stringSchema;
+    },
+  };
+
   const z = {
     enum: (values: readonly string[]) => ({ values }),
+    string: () => stringSchema,
     object: (shape: unknown) => ({ shape }),
   };
 
@@ -161,10 +178,10 @@ function createHarness(options: HarnessOptions = {}) {
       );
       return result?.systemPrompt ?? systemPrompt;
     },
-    execute(level: SelectableThinkingLevel) {
+    execute(level: SelectableThinkingLevel, reason?: string) {
       return registeredTool.execute(
         "tool-call-1",
-        { level },
+        { level, ...(reason === undefined ? {} : { reason }) },
         new AbortController().signal,
         undefined,
         { model },
@@ -179,6 +196,10 @@ describe("OMP adaptive thinking extension", () => {
 
     assert.equal(tool.name, "set_thinking_level");
     assert.deepEqual(tool.parameters.shape.level.values, SELECTABLE_THINKING_LEVELS);
+    assert.match(
+      tool.parameters.shape.reason.description ?? "",
+      /breadcrumb.*why.*effort level.*appropriate/i,
+    );
     assert.match(tool.description, /during a coding-agent run/i);
     assert.match(tool.description, /initial checkpoint/i);
     assert.match(tool.description, /phase or evidence changes/i);
@@ -252,6 +273,23 @@ describe("OMP adaptive thinking extension", () => {
       effectiveChanged: true,
     });
     assert.match(resultText(result), /explicitly set to high/i);
+  });
+
+  test("records an optional reason for a successful effort change", async () => {
+    const harness = createHarness({ initialLevel: "low" });
+    const reason = "Unexpected test failures require diagnosis.";
+
+    const result = await harness.execute("high", reason);
+
+    assert.deepEqual(details(result), {
+      requestedLevel: "high",
+      previousLevel: "low",
+      effectiveLevel: "high",
+      applied: true,
+      effectiveChanged: true,
+      reason,
+    });
+    assert.match(resultText(result), /Reason: Unexpected test failures require diagnosis\./);
   });
 
   test("sets max when the active model advertises it", async () => {

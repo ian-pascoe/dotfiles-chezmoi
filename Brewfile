@@ -46,8 +46,6 @@ brew "libtiff"
 brew "docker", link: false
 # Remote terminal with IP roaming
 brew "et"
-# Powerful, lightweight programming language
-brew "lua"
 # Like neofetch, but much faster because written mostly in C
 brew "fastfetch"
 # Simple, fast and user-friendly alternative to find
@@ -94,6 +92,8 @@ brew "lazygit"
 brew "libyaml"
 # Clone of ls with colorful output, file type icons, and more
 brew "lsd"
+# Powerful, lightweight programming language
+brew "lua"
 # Package manager for the Lua programming language
 brew "luarocks"
 # Fast, flexible, config-based cli for linting Markdown/CommonMark files
@@ -185,6 +185,8 @@ cask "balenaetcher"
 cask "betterdisplay"
 # Open source IDE for exploring and testing APIs
 cask "bruno"
+# OpenAI's official ChatGPT desktop app
+cask "chatgpt"
 # Terminal-based AI coding assistant
 cask "claude-code"
 # Ghostty-based terminal with vertical tabs and notifications for AI coding agents

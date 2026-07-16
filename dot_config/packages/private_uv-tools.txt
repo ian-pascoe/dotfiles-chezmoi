@@ -6,7 +6,6 @@ nano-pdf
 pipx
 pyflakes
 pytest
-rembg
 spotdl
 vdirsyncer
 yt-dlp

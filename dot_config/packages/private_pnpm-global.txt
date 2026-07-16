@@ -10,14 +10,12 @@ agent-browser
 caplets
 ctx7
 executor
-howcode
 hunkdiff
 impeccable
 just-bash
 opencode-ai
 oxfmt
 oxlint
-paperclipai
 playwright
 puppeteer
 skills

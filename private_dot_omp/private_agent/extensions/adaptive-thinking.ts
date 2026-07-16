@@ -11,6 +11,7 @@ type LevelDetails = {
   applied: boolean;
   effectiveChanged: boolean;
   supportedLevels?: ResolvedThinkingLevel[];
+  reason?: string;
 };
 
 function supportedThinkingLevels(model: Model | undefined): ResolvedThinkingLevel[] {
@@ -48,7 +49,7 @@ function steeringGuidance(
     "  - At a phase transition: exploration → implementation → verification, or when returning to diagnosis.",
     "  - After unexpected evidence such as a test failure, tool error, conflicting requirements, an ambiguous API, or a failed fix.",
     "  - Before a high-risk or hard-to-reverse decision, and after its uncertainty has been resolved.",
-    "- Adjustment rule: When a checkpoint changes the lowest adequate target, call set_thinking_level before the next substantive reasoning or tool call.",
+    "- Adjustment rule: When a checkpoint changes the lowest adequate target, call set_thinking_level before the next substantive reasoning or tool call and include a concise reason naming the checkpoint or evidence.",
     "- Escalate for repeated failed hypotheses, unfamiliar subsystems, broad ambiguity, architecture, security, concurrency, or migration risk.",
     "- De-escalate once uncertainty is resolved and the remaining work is known-path, mechanical, or routine verification.",
     "- Selection rule: The target MUST be one of the exact values listed in Available; never invent an unavailable intermediate level.",
@@ -102,8 +103,12 @@ export default function adaptiveThinking(pi: ExtensionAPI): void {
     ].join(" "),
     parameters: z.object({
       level: z.enum(SELECTABLE_THINKING_LEVELS),
+      reason: z
+        .string()
+        .optional()
+        .describe("Concise breadcrumb explaining why this effort level is appropriate now."),
     }),
-    async execute(_toolCallId, { level }, _signal, _onUpdate, ctx) {
+    async execute(_toolCallId, { level, reason }, _signal, _onUpdate, ctx) {
       const previousLevel = pi.getThinkingLevel();
       const normalizedPreviousLevel = normalizeReportedLevel(previousLevel);
       const supportedLevels = supportedThinkingLevels(ctx.model);
@@ -114,6 +119,7 @@ export default function adaptiveThinking(pi: ExtensionAPI): void {
         effectiveLevel: normalizedPreviousLevel,
         applied: false,
         effectiveChanged: false,
+        ...(reason === undefined ? {} : { reason }),
       } satisfies LevelDetails;
 
       if (!ctx.model && level !== ThinkingLevel.Off) {
@@ -140,8 +146,7 @@ export default function adaptiveThinking(pi: ExtensionAPI): void {
       const normalizedEffectiveLevel = normalizeReportedLevel(effectiveLevel);
       const effectiveLevelText = normalizedEffectiveLevel ?? "provider default";
       const details = {
-        requestedLevel: level,
-        previousLevel: normalizedPreviousLevel,
+        ...baseDetails,
         effectiveLevel: normalizedEffectiveLevel,
         applied: effectiveLevel === level,
         effectiveChanged: normalizedEffectiveLevel !== normalizedPreviousLevel,
@@ -156,8 +161,9 @@ export default function adaptiveThinking(pi: ExtensionAPI): void {
         );
       }
 
+      const reasonSuffix = reason === undefined ? "" : ` Reason: ${reason}`;
       return textResult(
-        `Thinking level explicitly set to ${effectiveLevelText} for this session.`,
+        `Thinking level explicitly set to ${effectiveLevelText} for this session.${reasonSuffix}`,
         details,
       );
     },
