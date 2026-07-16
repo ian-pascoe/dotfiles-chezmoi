@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "guardian-config/v1",
+  "providerDataAcknowledged": true,
+  "allowedReviewers": [
+    {
+      "provider": "openai-codex",
+      "model": "gpt-5.6-luna"
+    },
+    {
+      "provider": "openai-codex",
+      "model": "gpt-5.6-sol"
+    }
+  ],
+  "maxReviewDurationMs": 3000,
+  "maxExactActionBytes": 65536,
+  "protectedTools": [],
+  "rules": []
+}

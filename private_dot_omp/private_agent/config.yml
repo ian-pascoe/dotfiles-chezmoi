@@ -35,6 +35,7 @@ tui:
 display: 
   showTokenUsage: false
 defaultThinkingLevel: auto
+textVerbosity: low
 advisor: 
   enabled: false
   subagents: false
@@ -42,10 +43,10 @@ stt:
   enabled: false
   modelName: parakeet
 startup: 
-  quiet: true
-collapseChangelog: true
+  quiet: false
+collapseChangelog: false
 features: 
-  unexpectedStopDetection: true
+  unexpectedStopDetection: false
 contextPromotion: 
   enabled: true
 compaction: 
@@ -63,11 +64,12 @@ modelRoles:
   advisor: openai-codex/gpt-5.6-sol:high
   task: openai-codex/gpt-5.6-sol:medium
   plan: openai-codex/gpt-5.6-sol:xhigh
-  tiny: openai-codex/gpt-5.6-luna:high
+  tiny: openai-codex/gpt-5.6-luna:max
   commit: openai-codex/gpt-5.6-luna:low
   slow: openai-codex/gpt-5.6-sol:xhigh
-  smol: openai-codex/gpt-5.6-terra:high
-  vision: openai-codex/gpt-5.6-terra:high
+  smol: openai-codex/gpt-5.6-sol:low
+  guardian: openai-codex/gpt-5.6-luna:low
+  vision: openai-codex/gpt-5.6-sol:medium
   designer: openai-codex/gpt-5.6-sol:high
 dev: 
   autoqa: 
@@ -81,5 +83,7 @@ commands:
   enableClaudeUser: false
 tools: 
   discoveryMode: auto
+  approvalMode: yolo
+  xdev: false
 tier: 
   advisor: inherit
