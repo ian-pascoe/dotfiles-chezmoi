@@ -10,7 +10,7 @@ import {
   reviewWithGuardian,
   type GuardianComplete,
   type GuardianReviewInput,
-} from "./review";
+} from "./reviewer";
 
 function assistant(
   text: string,

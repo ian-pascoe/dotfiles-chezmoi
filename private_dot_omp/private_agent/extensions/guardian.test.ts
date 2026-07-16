@@ -8,7 +8,7 @@ vi.mock("@oh-my-pi/pi-ai", () => ({ completeSimple: vi.fn() }));
 import { registerGuardian } from "./guardian";
 import type { GuardianAuditRecord } from "./guardian/audit";
 import { parseGuardianConfig, type GuardianConfig, type ReviewerIdentity } from "./guardian/policy";
-import type { GuardianReviewResult, GuardianVerdict } from "./guardian/review";
+import type { GuardianReviewResult, GuardianVerdict } from "./guardian/reviewer";
 
 const reviewerModel = {
   id: "gpt-5.6-luna",

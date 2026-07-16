@@ -1,7 +1,7 @@
 import { createHmac, randomBytes } from "node:crypto";
 
 import { canonicalActionFingerprint, type ReviewerIdentity, type ToolAction } from "./policy";
-import type { GuardianVerdict } from "./review";
+import type { GuardianVerdict } from "./reviewer";
 
 const MAX_CACHE_ENTRIES = 128;
 const MAX_USER_INTENT_CHARS = 1_000;

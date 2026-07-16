@@ -34,7 +34,7 @@ import {
   reviewerIdentity,
   type GuardianReviewResult,
   type GuardianVerdict,
-} from "./guardian/review";
+} from "./guardian/reviewer";
 import { GuardianSessionRuntime, type DecisionAttempt } from "./guardian/session-runtime";
 
 const UI_TIMEOUT_MS = 20_000;
