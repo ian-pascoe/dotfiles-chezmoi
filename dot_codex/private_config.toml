@@ -252,8 +252,8 @@ source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.compound-engineering-plugin]
-last_updated = "2026-07-16T01:17:07Z"
-last_revision = "17093833064a074e36901efa750db8688970c6a9"
+last_updated = "2026-07-17T01:33:53Z"
+last_revision = "cbf7347f8bf57bf6be2eec40ac67d6f29f029e46"
 source_type = "git"
 source = "https://github.com/EveryInc/compound-engineering-plugin.git"
 

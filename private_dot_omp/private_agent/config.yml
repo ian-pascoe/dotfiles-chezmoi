@@ -8,8 +8,8 @@ disabledProviders:
   - pi
 symbolPreset: nerd
 theme: 
-  dark: dark
-  light: light
+  dark: dark-catppuccin
+  light: light-catppuccin
 setupVersion: 1
 statusLine: 
   transparent: true
@@ -68,7 +68,6 @@ modelRoles:
   commit: openai-codex/gpt-5.6-luna:low
   slow: openai-codex/gpt-5.6-sol:xhigh
   smol: openai-codex/gpt-5.6-sol:low
-  guardian: openai-codex/gpt-5.6-luna:max
   vision: openai-codex/gpt-5.6-sol:high
   designer: openai-codex/gpt-5.6-sol:high
 dev: 
@@ -83,6 +82,5 @@ commands:
   enableClaudeUser: false
 tools: 
   approvalMode: yolo
-  xdev: false
 tier: 
   advisor: inherit
