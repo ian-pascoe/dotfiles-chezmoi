@@ -4,8 +4,8 @@ import { canonicalActionFingerprint, type ReviewerIdentity, type ToolAction } fr
 import type { GuardianVerdict } from "./reviewer";
 
 const MAX_CACHE_ENTRIES = 128;
-const MAX_USER_INTENT_CHARS = 1_000;
-const MAX_ASSISTANT_INTENT_CHARS = 1_000;
+const MAX_INTENT_ENVELOPE_CHARS = 2_000;
+const MAX_INTENT_FIELD_CHARS = MAX_INTENT_ENVELOPE_CHARS;
 
 export type CachedAssessment = {
   verdict: GuardianVerdict;
@@ -17,6 +17,7 @@ export type DecisionAttempt = {
   generation: number;
   action: ToolAction;
   actionFingerprint: string;
+  reviewSessionId: string;
   startedAt: number;
   controller: AbortController;
   terminal: boolean;
@@ -34,8 +35,32 @@ function boundedText(value: string, limit: number): string {
     .join("");
 }
 
+function tailWithinJsonBudget(value: string, budget: number): { value: string; cost: number } {
+  const points = Array.from(value);
+  let cost = 0;
+  let start = points.length;
+  while (start > 0) {
+    const pointCost = JSON.stringify(points[start - 1]!).length - 2;
+    if (cost + pointCost > budget) break;
+    cost += pointCost;
+    start -= 1;
+  }
+  return { value: points.slice(start).join(""), cost };
+}
+
+function serializeIntentEnvelope(user: string, assistant: string): string {
+  const emptyEnvelope = JSON.stringify({ user: "", assistant: "" });
+  const payloadBudget = MAX_INTENT_ENVELOPE_CHARS - emptyEnvelope.length;
+  let userTail = tailWithinJsonBudget(user, Math.floor(payloadBudget / 2));
+  const assistantTail = tailWithinJsonBudget(assistant, payloadBudget - userTail.cost);
+  if (assistantTail.cost < payloadBudget - userTail.cost)
+    userTail = tailWithinJsonBudget(user, payloadBudget - assistantTail.cost);
+  return JSON.stringify({ user: userTail.value, assistant: assistantTail.value });
+}
+
 export class GuardianSessionRuntime {
   #sessionId = "";
+  #active = false;
   #generation = 0;
   #auditKey = randomBytes(32);
   #cache = new Map<string, CachedAssessment>();
@@ -52,13 +77,18 @@ export class GuardianSessionRuntime {
   }
 
   get ready(): boolean {
-    return this.#sessionId.length > 0;
+    return this.#active;
+  }
+
+  get cacheEligible(): boolean {
+    return this.#active && this.#sessionId.length > 0;
   }
 
   reset(sessionId: string): boolean {
     this.#invalidateActive("Guardian session changed");
     this.#generation += 1;
     this.#sessionId = sessionId.trim();
+    this.#active = true;
     this.#auditKey = randomBytes(32);
     this.#cache.clear();
     this.#userIntent = "";
@@ -66,10 +96,15 @@ export class GuardianSessionRuntime {
     return this.ready;
   }
 
+  abortActive(reason = "Guardian session transition started"): void {
+    this.#invalidateActive(reason);
+  }
+
   dispose(): void {
     this.#invalidateActive("Guardian session disposed");
     this.#generation += 1;
     this.#sessionId = "";
+    this.#active = false;
     this.#auditKey.fill(0);
     this.#cache.clear();
     this.#userIntent = "";
@@ -77,16 +112,16 @@ export class GuardianSessionRuntime {
   }
 
   startTurn(userIntent: string): void {
-    this.#userIntent = boundedText(userIntent, MAX_USER_INTENT_CHARS);
+    this.#userIntent = boundedText(userIntent, MAX_INTENT_FIELD_CHARS);
     this.#assistantIntent = "";
   }
 
   updateAssistantIntent(assistantIntent: string): void {
-    this.#assistantIntent = boundedText(assistantIntent, MAX_ASSISTANT_INTENT_CHARS);
+    this.#assistantIntent = boundedText(assistantIntent, MAX_INTENT_FIELD_CHARS);
   }
 
   intentEvidence(): string {
-    return JSON.stringify({ user: this.#userIntent, assistant: this.#assistantIntent });
+    return serializeIntentEnvelope(this.#userIntent, this.#assistantIntent);
   }
 
   beginAttempt(id: string, action: ToolAction, parentSignal?: AbortSignal): DecisionAttempt | null {
@@ -104,6 +139,10 @@ export class GuardianSessionRuntime {
     }
     const actionFingerprint = canonicalActionFingerprint(snapshot);
     if (actionFingerprint === null) return null;
+    const reviewSessionId =
+      this.#sessionId.length > 0
+        ? this.#sessionId
+        : `guardian-ephemeral-${randomBytes(16).toString("hex")}`;
 
     const controller = new AbortController();
     let detachParentAbort: (() => void) | undefined;
@@ -120,6 +159,7 @@ export class GuardianSessionRuntime {
       generation: this.#generation,
       action: snapshot,
       actionFingerprint,
+      reviewSessionId,
       startedAt,
       controller,
       terminal: false,
@@ -157,6 +197,7 @@ export class GuardianSessionRuntime {
   }
 
   cached(key: string): CachedAssessment | undefined {
+    if (!this.cacheEligible) return undefined;
     const assessment = this.#cache.get(key);
     if (!assessment) return undefined;
     this.#cache.delete(key);
@@ -165,6 +206,7 @@ export class GuardianSessionRuntime {
   }
 
   cache(key: string, assessment: CachedAssessment): void {
+    if (!this.cacheEligible) return;
     this.#cache.delete(key);
     this.#cache.set(key, assessment);
     while (this.#cache.size > MAX_CACHE_ENTRIES) {

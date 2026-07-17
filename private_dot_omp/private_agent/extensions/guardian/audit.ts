@@ -168,13 +168,18 @@ export function persistGuardianAudit(
     reviewerTag: reviewerMaterial === null ? null : sign(reviewerMaterial),
     latencyMs: Number.isFinite(input.latencyMs) ? Math.max(0, Math.round(input.latencyMs)) : 0,
   };
+  let sessionPersisted = true;
   try {
     targets.appendSession(record);
-    targets.appendOperational(record);
-    return { ok: true, record };
   } catch {
-    return { ok: false, reason: "audit_failure" };
+    sessionPersisted = false;
   }
+  try {
+    targets.appendOperational(record);
+  } catch {
+    // Operational JSONL is best-effort; the host session is the required audit sink.
+  }
+  return sessionPersisted ? { ok: true, record } : { ok: false, reason: "audit_failure" };
 }
 
 export function createGuardianAuditTargets(

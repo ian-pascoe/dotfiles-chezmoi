@@ -5,7 +5,6 @@ import type {
   ExtensionAPI,
   ExtensionContext,
   MessageEndEvent,
-  MessageUpdateEvent,
   ToolCallEvent,
   ToolCallEventResult,
 } from "@oh-my-pi/pi-coding-agent";
@@ -51,7 +50,10 @@ export type GuardianRegistrationOptions = {
   auditTargets?: GuardianAuditTargets;
   review?: typeof reviewWithGuardian;
   runtime?: GuardianSessionRuntime;
-  trustedLocalUI?: (ctx: ExtensionContext) => boolean;
+  // OMP 17.0.1 does not expose this signal to auto-discovered extensions.
+  // Host adapters and deterministic tests may supply it when available.
+  executionSignal?: (toolCallId: string) => AbortSignal | undefined;
+  promptTimeoutMs?: number;
 };
 
 type SelectedReviewer = {
@@ -59,7 +61,7 @@ type SelectedReviewer = {
   identity: ReviewerIdentity;
 };
 
-type GuardianMessage = MessageUpdateEvent["message"] | MessageEndEvent["message"];
+type GuardianMessage = MessageEndEvent["message"];
 
 type PromptResolution = {
   approved: boolean;
@@ -166,8 +168,11 @@ function freezeToolCall(event: ToolCallEvent): void {
   Object.freeze(event);
 }
 
-function isTrustedLocalUI(ctx: ExtensionContext): boolean {
-  return ctx.hasUI && process.stdin.isTTY === true && process.stdout.isTTY === true;
+// In OMP 17.0.1 only the interactive TUI advertises presentation-scoped timeouts.
+// This is an availability precheck; approval also requires an unforgeable value
+// returned by the local custom-component closure.
+export function isTrustedLocalTUI(ctx: ExtensionContext): boolean {
+  return ctx.hasUI && ctx.ui.timeoutStartsOnPresentation === true;
 }
 
 async function promptOperator(
@@ -176,29 +181,76 @@ async function promptOperator(
   action: ToolAction,
   rationale: string,
   maxExactActionBytes: number,
+  timeoutMs: number,
 ): Promise<PromptResolution> {
-  let timedOut = false;
+  const deadlineAt = Date.now() + timeoutMs;
+  const approve = Symbol("guardian-approve");
+  const deny = Symbol("guardian-deny");
+  const cancelled = Symbol("guardian-cancelled");
+  const timeout = Symbol("guardian-timeout");
   try {
-    const choice = await ctx.ui.select(
-      `Guardian approval required\nExact protected action:\n${encodeForTrustedTerminal(action, maxExactActionBytes * 6 + 1_024)}\n\nAssessment:\n${encodeForTrustedTerminal(rationale, 2_048)}`,
-      ["Deny", "Allow once"],
-      {
-        initialIndex: 0,
-        signal: attempt.controller.signal,
-        timeout: UI_TIMEOUT_MS,
-        onTimeout: () => {
-          timedOut = true;
-        },
+    const choice = await ctx.ui.custom<symbol>(
+      (_tui, theme, _keybindings, done) => {
+        let settled = false;
+        let deadlineTimer: NodeJS.Timeout | undefined;
+        const finish = (result: symbol) => {
+          if (settled) return;
+          settled = true;
+          done(result);
+        };
+        const cancel = () => finish(cancelled);
+        attempt.controller.signal.addEventListener("abort", cancel, { once: true });
+        const remaining = deadlineAt - Date.now();
+        if (remaining <= 0) queueMicrotask(() => finish(timeout));
+        else deadlineTimer = setTimeout(() => finish(timeout), remaining);
+
+        const lines = [
+          theme.fg("warning", theme.bold("Guardian approval required")),
+          "Exact protected action:",
+          encodeForTrustedTerminal(action, maxExactActionBytes * 6 + 1_024),
+          "",
+          "Assessment:",
+          encodeForTrustedTerminal(rationale, 2_048),
+          "",
+          theme.fg("error", "Press A to allow once. Press Enter, D, Escape, or Ctrl-C to deny."),
+        ];
+        return {
+          render: () => lines,
+          invalidate() {},
+          handleInput(data: string) {
+            if (data === "a" || data === "A") finish(approve);
+            else if (
+              data === "\r" ||
+              data === "\n" ||
+              data === "d" ||
+              data === "D" ||
+              data === "\u001b" ||
+              data === "\u0003"
+            )
+              finish(deny);
+          },
+          dispose() {
+            clearTimeout(deadlineTimer);
+            attempt.controller.signal.removeEventListener("abort", cancel);
+          },
+        };
       },
+      { overlay: true },
     );
-    if (choice === "Allow once")
-      return { approved: true, disposition: "prompt_approve", reason: "operator_approved" };
-    if (timedOut)
+    if (attempt.controller.signal.aborted)
+      return { approved: false, disposition: "prompt_dismiss", reason: "cancelled" };
+    if (choice === timeout || Date.now() >= deadlineAt)
       return { approved: false, disposition: "prompt_timeout", reason: "operator_timeout" };
-    return choice === "Deny"
+    if (choice === approve)
+      return { approved: true, disposition: "prompt_approve", reason: "operator_approved" };
+    return choice === deny
       ? { approved: false, disposition: "prompt_deny", reason: "operator_denied" }
       : { approved: false, disposition: "prompt_dismiss", reason: "operator_dismissed" };
   } catch {
+    if (attempt.controller.signal.aborted)
+      return { approved: false, disposition: "prompt_dismiss", reason: "cancelled" };
+    if (Date.now() >= deadlineAt)
+      return { approved: false, disposition: "prompt_timeout", reason: "operator_timeout" };
     return { approved: false, disposition: "prompt_dismiss", reason: "operator_dismissed" };
   }
 }
@@ -226,25 +278,25 @@ export function registerGuardian(
     }
   }
   const review = options.review ?? reviewWithGuardian;
-  const trustedLocalUI = options.trustedLocalUI ?? isTrustedLocalUI;
+  const promptTimeoutMs = Math.max(1, options.promptTimeoutMs ?? UI_TIMEOUT_MS);
 
   pi.on("session_start", (_event, ctx) => {
     runtime.reset(ctx.sessionManager.getSessionId());
   });
   pi.on("session_before_switch", () => {
-    runtime.dispose();
+    runtime.abortActive("Guardian session switch pending");
   });
   pi.on("session_switch", (_event, ctx) => {
     runtime.reset(ctx.sessionManager.getSessionId());
   });
   pi.on("session_before_branch", () => {
-    runtime.dispose();
+    runtime.abortActive("Guardian session branch pending");
   });
   pi.on("session_branch", (_event, ctx) => {
     runtime.reset(ctx.sessionManager.getSessionId());
   });
   pi.on("session_before_tree", () => {
-    runtime.dispose();
+    runtime.abortActive("Guardian session tree navigation pending");
   });
   pi.on("session_tree", (_event, ctx) => {
     runtime.reset(ctx.sessionManager.getSessionId());
@@ -255,10 +307,7 @@ export function registerGuardian(
   pi.on("before_agent_start", (event) => {
     runtime.startTurn(event.prompt);
   });
-  pi.on("message_update", (event: MessageUpdateEvent) => {
-    if (event.message.role === "assistant")
-      runtime.updateAssistantIntent(messageText(event.message));
-  });
+  // message_update carries the complete accumulating snapshot; consume the authoritative end once.
   pi.on("message_end", (event: MessageEndEvent) => {
     if (event.message.role === "assistant")
       runtime.updateAssistantIntent(messageText(event.message));
@@ -270,10 +319,20 @@ export function registerGuardian(
       event: ToolCallEvent,
       ctx: ExtensionContext,
     ): Promise<ToolCallEventResult | undefined> => {
-      const canPrompt = trustedLocalUI(ctx);
+      const canPrompt = isTrustedLocalTUI(ctx);
       const liveAction: ToolAction = { toolName: event.toolName, input: event.input, cwd: ctx.cwd };
-      if (!runtime.ready || targets === null) return blocked("invalid_config");
-      const attempt = runtime.beginAttempt(event.toolCallId, liveAction);
+      const parentSignal = options.executionSignal?.(event.toolCallId);
+      if (!runtime.ready || targets === null) {
+        const missing = [
+          runtime.ready ? null : "session-runtime",
+          targets === null ? "audit-targets" : null,
+        ].filter((value): value is string => value !== null);
+        pi.logger.warn(
+          `Guardian blocked a tool call; unavailable prerequisites: ${missing.join(", ")}`,
+        );
+        return blocked("invalid_config");
+      }
+      const attempt = runtime.beginAttempt(event.toolCallId, liveAction, parentSignal);
       if (!attempt) return blocked("invalid_action");
       try {
         freezeToolCall(event);
@@ -298,6 +357,10 @@ export function registerGuardian(
           "invalid_config",
           false,
         );
+      }
+      if (!runtime.isCurrent(attempt, liveAction)) {
+        runtime.abandon(attempt, "Guardian parent operation cancelled");
+        return blocked("session_invalidated");
       }
 
       let staticDecision;
@@ -372,6 +435,7 @@ export function registerGuardian(
           attempt.action,
           "Reviewer provider unavailable; approve only if the exact action is intended.",
           config.maxExactActionBytes,
+          promptTimeoutMs,
         );
         return finalizeAttempt(
           runtime,
@@ -385,15 +449,17 @@ export function registerGuardian(
       }
 
       const intent = runtime.intentEvidence();
-      const cacheKey = canonicalCacheIdentity({
-        action: attempt.action,
-        intentFingerprint: runtime.auditTag(intent),
-        policyFingerprint: config.policyFingerprint,
-        schemaVersion: "guardian-verdict/v1",
-        reviewer: selected.identity,
-        session: { id: runtime.sessionId, generation: runtime.generation },
-      });
-      if (cacheKey === null) {
+      const cacheKey = runtime.cacheEligible
+        ? canonicalCacheIdentity({
+            action: attempt.action,
+            intentFingerprint: runtime.auditTag(intent),
+            policyFingerprint: config.policyFingerprint,
+            schemaVersion: "guardian-verdict/v1",
+            reviewer: selected.identity,
+            session: { id: runtime.sessionId, generation: runtime.generation },
+          })
+        : null;
+      if (runtime.cacheEligible && cacheKey === null) {
         clearTimeout(deadlineTimer);
         return finalizeAttempt(
           runtime,
@@ -407,8 +473,13 @@ export function registerGuardian(
           selected.identity,
         );
       }
+      if (!runtime.isCurrent(attempt, liveAction)) {
+        clearTimeout(deadlineTimer);
+        runtime.abandon(attempt, "Guardian parent operation cancelled");
+        return blocked("session_invalidated");
+      }
 
-      let assessment = runtime.cached(cacheKey);
+      let assessment = cacheKey === null ? undefined : runtime.cached(cacheKey);
       let source: "cached" | "model" = "cached";
       if (!assessment) {
         const remaining = deadlineAt - Date.now();
@@ -416,30 +487,46 @@ export function registerGuardian(
         if (remaining < 1 || reviewSignal.aborted)
           result = {
             ok: false,
-            reason: deadlineController.signal.aborted ? "timeout" : "cancelled",
+            reason: attempt.controller.signal.aborted ? "cancelled" : "timeout",
           };
         else {
-          result = await review({
-            model: selected.model,
-            apiKey: ctx.modelRegistry.resolver(selected.model, runtime.sessionId),
-            sessionId: runtime.sessionId,
-            deadlineMs: remaining,
-            action: attempt.action,
-            intent,
-            policy: {
-              schemaVersion: config.schemaVersion,
-              basePolicyVersion: config.basePolicyVersion,
-              policyFingerprint: config.policyFingerprint,
-              signals: staticDecision.signals,
-            },
-            signal: reviewSignal,
-          });
+          try {
+            const apiKey = ctx.modelRegistry.resolver(selected.model, attempt.reviewSessionId);
+            result = await review({
+              model: selected.model,
+              apiKey,
+              sessionId: attempt.reviewSessionId,
+              deadlineMs: remaining,
+              action: attempt.action,
+              intent,
+              policy: {
+                schemaVersion: config.schemaVersion,
+                basePolicyVersion: config.basePolicyVersion,
+                policyFingerprint: config.policyFingerprint,
+                signals: staticDecision.signals,
+              },
+              signal: reviewSignal,
+            });
+          } catch {
+            result = {
+              ok: false,
+              reason: attempt.controller.signal.aborted
+                ? "cancelled"
+                : deadlineController.signal.aborted || Date.now() >= deadlineAt
+                  ? "timeout"
+                  : "provider-error",
+            };
+          }
         }
-        if (deadlineController.signal.aborted || Date.now() >= deadlineAt) {
+        if (attempt.controller.signal.aborted) result = { ok: false, reason: "cancelled" };
+        else if (deadlineController.signal.aborted || Date.now() >= deadlineAt)
           result = { ok: false, reason: "timeout" };
-        }
         clearTimeout(deadlineTimer);
         if (!result.ok) {
+          if (attempt.controller.signal.aborted) {
+            runtime.abandon(attempt, "Guardian parent operation cancelled");
+            return blocked("session_invalidated");
+          }
           const reason = reviewFailureReason(result);
           if (!canPrompt)
             return finalizeAttempt(
@@ -459,6 +546,7 @@ export function registerGuardian(
             attempt.action,
             `Guardian review failed (${reason}); approve only if the exact action is intended.`,
             config.maxExactActionBytes,
+            promptTimeoutMs,
           );
           return finalizeAttempt(
             runtime,
@@ -484,7 +572,7 @@ export function registerGuardian(
           return blocked("session_invalidated");
         }
         assessment = { verdict: result.verdict, reviewer: result.reviewer };
-        runtime.cache(cacheKey, assessment);
+        if (cacheKey !== null) runtime.cache(cacheKey, assessment);
         source = "model";
       } else {
         clearTimeout(deadlineTimer);
@@ -550,6 +638,7 @@ export function registerGuardian(
         attempt.action,
         constrained.verdict.reason,
         config.maxExactActionBytes,
+        promptTimeoutMs,
       );
       return finalizeAttempt(
         runtime,

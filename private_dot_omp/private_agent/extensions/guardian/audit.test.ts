@@ -95,22 +95,46 @@ describe("Guardian audit leaf", () => {
     assert.doesNotMatch(serialized, /provider-|model-|example\.invalid|malicious-/);
   });
 
-  test("reports synchronous failure from either required sink", () => {
-    const sessionFailure = persistGuardianAudit(auditInput(), () => "digest", {
-      appendSession: () => {
+  test("fails closed on session append failure while preserving the best-effort operational record", () => {
+    const order: string[] = [];
+    let sessionRecord: GuardianAuditRecord | undefined;
+    const operational: GuardianAuditRecord[] = [];
+    const result = persistGuardianAudit(auditInput(), () => "digest", {
+      appendSession: (record) => {
+        order.push("session");
+        sessionRecord = record;
         throw new Error(SECRET);
       },
-      appendOperational: () => assert.fail("operational sink must not run after session failure"),
+      appendOperational: (record) => {
+        order.push("operational");
+        operational.push(record);
+      },
     });
-    const operationalFailure = persistGuardianAudit(auditInput(), () => "digest", {
-      appendSession: () => undefined,
-      appendOperational: () => {
+
+    assert.deepEqual(result, { ok: false, reason: "audit_failure" });
+    assert.deepEqual(order, ["session", "operational"]);
+    assert.equal(operational.length, 1);
+    assert.strictEqual(operational[0], sessionRecord);
+    assert.doesNotMatch(JSON.stringify({ result, operational }), new RegExp(SECRET));
+  });
+
+  test("keeps a session-persisted allow terminal when the operational append fails", () => {
+    const session: GuardianAuditRecord[] = [];
+    const operationalAttempts: GuardianAuditRecord[] = [];
+    const result = persistGuardianAudit(auditInput(), () => "digest", {
+      appendSession: (record) => session.push(record),
+      appendOperational: (record) => {
+        operationalAttempts.push(record);
         throw new Error(SECRET);
       },
     });
 
-    assert.deepEqual(sessionFailure, { ok: false, reason: "audit_failure" });
-    assert.deepEqual(operationalFailure, { ok: false, reason: "audit_failure" });
+    assert.equal(result.ok, true);
+    if (!result.ok) assert.fail("session-persisted audit must remain terminal");
+    assert.equal(session.length, 1);
+    assert.strictEqual(session[0], result.record);
+    assert.strictEqual(operationalAttempts[0], result.record);
+    assert.doesNotMatch(JSON.stringify({ result, session }), new RegExp(SECRET));
   });
 });
 

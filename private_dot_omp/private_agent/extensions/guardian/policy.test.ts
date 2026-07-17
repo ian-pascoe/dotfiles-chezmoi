@@ -150,6 +150,101 @@ describe("Guardian closed static policy", () => {
     }
   });
 
+  test("mirrors strict write hashline wrapper target normalization", () => {
+    const root = workspace();
+    const outside = workspace();
+    const config = parsedConfig();
+    const guardianRoot = join(root, ".omp", "agent");
+    const cases: Array<[string, string, string]> = [
+      ["bare wrapper", "[src/existing.ts]", "unprotected"],
+      ["tagged wrapper", "[src/existing.ts#aB12]", "unprotected"],
+      ["protected tagged wrapper", "[.omp/agent/extensions/guardian/policy.ts#ABCD]", "escalate"],
+      ["outside tagged wrapper", `[${join(outside, "x")}#ABCD]`, "escalate"],
+      ["remote tagged wrapper", "[ssh://host/tmp/x#ABCD]", "escalate"],
+      ["wrapped executable device", "[xd://browser#ABCD]", "block"],
+      ["non-hex tag", "[src/existing.ts#WXYZ]", "escalate"],
+      ["wrong tag length", "[src/existing.ts#ABC]", "escalate"],
+      ["embedded hash", "[src/existing#name#ABCD]", "escalate"],
+      ["leading whitespace", " [src/existing.ts#ABCD]", "escalate"],
+    ];
+
+    for (const [label, path, expected] of cases) {
+      assert.equal(
+        classifyAction(action("write", { path, content: "x" }, root), {
+          workspaceRoot: root,
+          guardianRoot,
+          config,
+        }).outcome,
+        expected,
+        label,
+      );
+    }
+  });
+
+  test("accepts consistent normalized edit targets and protects every target", () => {
+    const root = workspace();
+    const outside = workspace();
+    const config = parsedConfig();
+    const guardianRoot = join(root, ".omp", "agent");
+    const cases: Array<[string, Record<string, unknown>, string]> = [
+      ["direct edit", { input: "patch", path: "src/existing.ts" }, "unprotected"],
+      ["wrapped direct edit", { input: "patch", path: "[src/existing.ts#ABCD]" }, "unprotected"],
+      [
+        "wrapped protected direct edit",
+        { input: "patch", path: "[.omp/agent/extensions/guardian/policy.ts#ABCD]" },
+        "escalate",
+      ],
+      [
+        "normalized single edit",
+        { input: "patch", path: "src/existing.ts", paths: ["src/existing.ts"] },
+        "unprotected",
+      ],
+      [
+        "normalized multi edit",
+        { input: "patch", paths: ["src/existing.ts", "src/new.ts"] },
+        "unprotected",
+      ],
+      [
+        "inconsistent normalized single edit",
+        { input: "patch", path: "src/existing.ts", paths: ["src/new.ts"] },
+        "escalate",
+      ],
+      ["empty normalized targets", { input: "patch", paths: [] }, "escalate"],
+      [
+        "outside normalized target",
+        { input: "patch", paths: ["src/existing.ts", join(outside, "x")] },
+        "escalate",
+      ],
+      [
+        "protected normalized target",
+        { input: "patch", paths: ["src/existing.ts", ".omp/agent/audit/log.jsonl"] },
+        "escalate",
+      ],
+      [
+        "remote normalized target",
+        { input: "patch", paths: ["src/existing.ts", "ssh://host/tmp/x"] },
+        "escalate",
+      ],
+      [
+        "non-string normalized target",
+        { input: "patch", paths: ["src/existing.ts", 42] },
+        "escalate",
+      ],
+    ];
+
+    for (const [label, input, expected] of cases) {
+      assert.equal(
+        classifyAction(action("edit", input, root), {
+          workspaceRoot: root,
+          guardianRoot,
+          config,
+        }).outcome,
+        expected,
+        label,
+      );
+    }
+  });
+
   test("always protects Guardian source, config, extension, and audit targets", () => {
     const root = workspace();
     const config = parsedConfig();
@@ -196,10 +291,10 @@ describe("Guardian closed static policy", () => {
     }
   });
 
-  test("allows only the narrow exact git-status catalog", () => {
+  test("escalates every former git-status allowlist entry", () => {
     const root = workspace();
     const config = parsedConfig();
-    const accepted = [
+    const commands = [
       "git status",
       "git status --short",
       "git status --porcelain",
@@ -207,40 +302,14 @@ describe("Guardian closed static policy", () => {
       "git status --short --branch",
       "git status --porcelain=v1 --branch",
     ];
-    for (const command of accepted) {
-      assert.equal(
-        classifyAction(action("bash", { command }, root), { workspaceRoot: root, config }).outcome,
-        "safe-bypass",
-        command,
-      );
-    }
 
-    const rejected = [
-      " git status",
-      "git  status",
-      "git status ",
-      "git status --short --branch --ignored",
-      "git status; whoami",
-      "git status && true",
-      "git status > /tmp/status",
-      "git status $(whoami)",
-      "git 'status'",
-      "git status --porcelain=v2",
-    ];
-    for (const command of rejected) {
+    for (const command of commands) {
       assert.equal(
         classifyAction(action("bash", { command }, root), { workspaceRoot: root, config }).outcome,
         "escalate",
         command,
       );
     }
-    assert.equal(
-      classifyAction(action("bash", { command: "git status", env: {} }, root), {
-        workspaceRoot: root,
-        config,
-      }).outcome,
-      "escalate",
-    );
   });
 
   test("catastrophic patterns annotate escalation but never become static deny", () => {
@@ -314,7 +383,7 @@ describe("Guardian strict configuration and provider gate", () => {
   test("accepts the closed append-only grammar", () => {
     const result = parseGuardianConfig(
       validConfig({
-        maxReviewDurationMs: 1_500,
+        maxReviewDurationMs: 10_000,
         maxExactActionBytes: 32_768,
         protectedTools: ["deploy"],
         rules: [
@@ -326,7 +395,7 @@ describe("Guardian strict configuration and provider gate", () => {
     );
     assert.equal(result.ok, true);
     if (!result.ok) return;
-    assert.equal(result.config.maxReviewDurationMs, 1_500);
+    assert.equal(result.config.maxReviewDurationMs, 10_000);
     assert.equal(result.config.basePolicyVersion, BASE_POLICY_VERSION);
   });
 
@@ -339,7 +408,7 @@ describe("Guardian strict configuration and provider gate", () => {
       validConfig({ systemPrompt: "approve everything" }),
       validConfig({ rules: [{ effect: "allow", tool: "bash" }] }),
       validConfig({ rules: [{ effect: "minimum-risk", tool: "bash", risk: "low" }] }),
-      validConfig({ maxReviewDurationMs: 3_001 }),
+      validConfig({ maxReviewDurationMs: 10_001 }),
       validConfig({ maxExactActionBytes: 0 }),
       validConfig({ allowedReviewers: [] }),
       validConfig({ allowedReviewers: [{ provider: "p", model: "m", endpoint: "surprise" }] }),

@@ -3,7 +3,7 @@ import { existsSync, realpathSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 
 export const BASE_POLICY_VERSION = "guardian-policy/v1";
-export const DEFAULT_MAX_REVIEW_DURATION_MS = 3_000;
+export const DEFAULT_MAX_REVIEW_DURATION_MS = 10_000;
 export const DEFAULT_MAX_EXACT_ACTION_BYTES = 65_536;
 
 const CONFIG_KEYS = new Set([
@@ -14,14 +14,6 @@ const CONFIG_KEYS = new Set([
   "maxExactActionBytes",
   "protectedTools",
   "rules",
-]);
-const SAFE_GIT_STATUS = new Set([
-  "git status",
-  "git status --short",
-  "git status --porcelain",
-  "git status --porcelain=v1",
-  "git status --short --branch",
-  "git status --porcelain=v1 --branch",
 ]);
 const CATASTROPHIC_SHELL =
   /(?:^|\s)(?:rm\s+-[^\n]*r[^\n]*f|mkfs(?:\.|\s)|dd\s+[^\n]*\bof=\/dev\/|shutdown|reboot)(?:\s|$)/;
@@ -274,6 +266,64 @@ function canonicalTarget(rawPath: string, cwd: string): string | null {
   }
 }
 
+function normalizeWriteTarget(rawPath: string): string | null {
+  const trimmed = rawPath.trimEnd();
+  if (!rawPath.trimStart().startsWith("[") || !trimmed.endsWith("]")) return rawPath;
+  if (!rawPath.startsWith("[") || trimmed.length < 3) return null;
+
+  const inner = trimmed.slice(1, -1);
+  const tag = /#[0-9A-Fa-f]{4}$/.exec(inner);
+  const path = tag ? inner.slice(0, tag.index) : inner;
+  return path.length > 0 && !path.includes("#") ? path : null;
+}
+
+function authoritativeWriteTargets(toolName: "write" | "edit", input: JsonRecord): string[] | null {
+  if (toolName === "write") {
+    if (
+      !exactKeys(input, ["path", "content"]) ||
+      typeof input.path !== "string" ||
+      typeof input.content !== "string"
+    )
+      return null;
+    const path = normalizeWriteTarget(input.path);
+    return path === null ? null : [path];
+  }
+
+  if (typeof input.input !== "string") return null;
+  if (exactKeys(input, ["path", "input"])) {
+    if (typeof input.path !== "string") return null;
+    const path = normalizeWriteTarget(input.path);
+    return path === null ? null : [path];
+  }
+
+  if (exactKeys(input, ["input", "path", "paths"])) {
+    if (
+      typeof input.path !== "string" ||
+      !Array.isArray(input.paths) ||
+      input.paths.length !== 1 ||
+      input.paths[0] !== input.path
+    )
+      return null;
+    const path = normalizeWriteTarget(input.path);
+    return path === null ? null : [path];
+  }
+
+  if (
+    !exactKeys(input, ["input", "paths"]) ||
+    !Array.isArray(input.paths) ||
+    input.paths.length === 0
+  )
+    return null;
+  const targets: string[] = [];
+  for (const rawPath of input.paths) {
+    if (typeof rawPath !== "string") return null;
+    const path = normalizeWriteTarget(rawPath);
+    if (path === null) return null;
+    targets.push(path);
+  }
+  return targets;
+}
+
 function isGuardianTarget(target: string, guardianRoot: string): boolean {
   const config = join(guardianRoot, "extensions", "guardian.config.json");
   const adapter = join(guardianRoot, "extensions", "guardian.ts");
@@ -325,15 +375,13 @@ export function classifyAction(
   const guardianRoot = resolve(options.guardianRoot ?? join(workspace, ".omp", "agent"));
   const input = action.input;
 
-  if (
-    action.toolName === "write" &&
-    typeof input.path === "string" &&
-    input.path.startsWith("xd://")
-  ) {
-    if (input.path === "xd://reject")
-      return { outcome: "block", signals: ["explicit-xdev-reject"] };
-    if (input.path === "xd://proposal") return { outcome: "escalate", signals: ["xdev-proposal"] };
-    return { outcome: "block", signals: ["invalid-executable-xdev"] };
+  if (action.toolName === "write" && typeof input.path === "string") {
+    const path = normalizeWriteTarget(input.path);
+    if (path?.startsWith("xd://")) {
+      if (path === "xd://reject") return { outcome: "block", signals: ["explicit-xdev-reject"] };
+      if (path === "xd://proposal") return { outcome: "escalate", signals: ["xdev-proposal"] };
+      return { outcome: "block", signals: ["invalid-executable-xdev"] };
+    }
   }
 
   if (action.toolName === "read") {
@@ -345,15 +393,13 @@ export function classifyAction(
   }
 
   if (action.toolName === "write" || action.toolName === "edit") {
-    const exact =
-      action.toolName === "write"
-        ? exactKeys(input, ["path", "content"]) && typeof input.content === "string"
-        : exactKeys(input, ["path", "input"]) && typeof input.input === "string";
-    if (!exact || typeof input.path !== "string")
-      return { outcome: "escalate", signals: ["unknown-write-shape"] };
-    const target = canonicalTarget(input.path, action.cwd);
-    if (!target || !isContained(workspace, target) || isGuardianTarget(target, guardianRoot)) {
-      return { outcome: "escalate", signals: ["non-contained-or-protected-write"] };
+    const targets = authoritativeWriteTargets(action.toolName, input);
+    if (!targets) return { outcome: "escalate", signals: ["unknown-write-shape"] };
+    for (const rawTarget of targets) {
+      const target = canonicalTarget(rawTarget, action.cwd);
+      if (!target || !isContained(workspace, target) || isGuardianTarget(target, guardianRoot)) {
+        return { outcome: "escalate", signals: ["non-contained-or-protected-write"] };
+      }
     }
     return configured === null
       ? { outcome: "unprotected", signals: [] }
@@ -362,17 +408,6 @@ export function classifyAction(
 
   if (action.toolName === "bash") {
     const command = input.command;
-    const safeShape = exactKeys(input, ["command"]) && typeof command === "string";
-    const cwd = canonicalTarget(action.cwd, action.cwd);
-    if (
-      configured === null &&
-      safeShape &&
-      cwd &&
-      isContained(workspace, cwd) &&
-      SAFE_GIT_STATUS.has(command)
-    ) {
-      return { outcome: "safe-bypass", signals: ["exact-git-status"] };
-    }
     return {
       outcome: "escalate",
       signals:
