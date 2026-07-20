@@ -21,7 +21,8 @@ function supportedThinkingLevels(model: Model | undefined): ResolvedThinkingLeve
 const LEVEL_GUIDANCE: Record<ResolvedThinkingLevel, string> = {
   [ThinkingLevel.Off]: "rote continuation after the next action is fully determined",
   [ThinkingLevel.Minimal]: "a tiny explicit edit or lookup with negligible uncertainty",
-  [ThinkingLevel.Low]: "known-path mechanical edits, targeted lookup, or rerunning a known test",
+  [ThinkingLevel.Low]:
+    "predictable result interpretation or known-path mechanical work with negligible diagnostic uncertainty",
   [ThinkingLevel.Medium]:
     "routine implementation, test writing, integration, or bounded multi-file changes",
   [ThinkingLevel.High]:
@@ -40,8 +41,9 @@ function steeringGuidance(
     "Thinking effort policy:",
     `- Current: ${currentLevel ?? "provider default (unknown)"}.`,
     `- Available: ${supportedLevels.join(", ")}.`,
-    "- Objective: Match effort to the current phase, not the entire task. A long coding task can legitimately move through several levels.",
+    "- Objective: Choose effort for the reasoning required by the next model call, including how it will interpret the expected tool result or make the next decision; do not choose from tool-command mechanics alone. A long task can legitimately use several levels.",
     "- Initial checkpoint: Before the first substantive action on a new user task, select the lowest adequate target. If the target differs from Current, call set_thinking_level before continuing.",
+    "- Initial risk signals: Treat lease renewal, cancellation, abort races, guarded finalization, process termination, and similar state-machine coordination as concurrency before implementation.",
     "- Unknown current: If Current is provider default (unknown), call set_thinking_level at the initial checkpoint to guarantee the target.",
     "- No-op rule: Do not call set_thinking_level when the selected target equals Current.",
     "- Long-running tasks: Reassess throughout the run; the initial choice is not a task-wide commitment.",
@@ -49,9 +51,10 @@ function steeringGuidance(
     "  - At a phase transition: exploration → implementation → verification, or when returning to diagnosis.",
     "  - After unexpected evidence such as a test failure, tool error, conflicting requirements, an ambiguous API, or a failed fix.",
     "  - Before a high-risk or hard-to-reverse decision, and after its uncertainty has been resolved.",
-    "- Adjustment rule: When a checkpoint changes the lowest adequate target, call set_thinking_level before the next substantive reasoning or tool call and include a concise reason naming the checkpoint or evidence.",
+    "- Adjustment rule: When a checkpoint changes the lowest adequate target, call set_thinking_level before the next substantive model inference and include a concise reason naming the checkpoint or evidence.",
     "- Escalate for repeated failed hypotheses, unfamiliar subsystems, broad ambiguity, architecture, security, concurrency, or migration risk.",
-    "- De-escalate once uncertainty is resolved and the remaining work is known-path, mechanical, or routine verification.",
+    "- De-escalate only after uncertainty is resolved and remaining reasoning is known-path. Low-effort verification requires a known, available check and no unresolved contract, type, or security uncertainty.",
+    "- Verification rule: Do not de-escalate solely to invoke a verifier when a plausible failure would reopen diagnosis at the current level. If verification fails after a de-escalation, prior confidence is invalidated; reassess before the first diagnostic action.",
     "- Selection rule: The target MUST be one of the exact values listed in Available; never invent an unavailable intermediate level.",
     "- Scale:",
     ...supportedLevels.map((level) => `  - ${level}: ${LEVEL_GUIDANCE[level]}.`),

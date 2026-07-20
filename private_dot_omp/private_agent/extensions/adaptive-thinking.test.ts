@@ -221,8 +221,15 @@ describe("OMP adaptive thinking extension", () => {
     assert.ok(guidance);
     assert.match(guidance, /Thinking effort policy:/i);
     assert.match(guidance, /Current: medium/i);
-    assert.match(guidance, /match.*current phase.*not the entire task/i);
+    assert.match(
+      guidance,
+      /next model call.*interpret.*expected tool result.*not.*tool-command mechanics/i,
+    );
     assert.match(guidance, /initial checkpoint/i);
+    assert.match(
+      guidance,
+      /lease renewal.*cancellation.*abort races.*guarded finalization.*process termination.*concurrency.*before implementation/i,
+    );
     assert.match(guidance, /target differs from Current.*call set_thinking_level/i);
     assert.match(guidance, /Current.*provider default.*unknown.*call set_thinking_level/i);
     assert.match(guidance, /Do not call.*target equals Current/i);
@@ -231,9 +238,23 @@ describe("OMP adaptive thinking extension", () => {
     assert.match(guidance, /unexpected evidence.*test failure.*tool error.*conflicting/i);
     assert.match(guidance, /before.*high-risk.*after.*uncertainty.*resolved/i);
     assert.match(guidance, /Escalate.*repeated failed hypotheses.*unfamiliar/i);
-    assert.match(guidance, /De-escalate.*known-path.*mechanical/i);
+    assert.match(
+      guidance,
+      /De-escalate.*known-path.*low-effort verification.*known.*available.*contract.*type.*security/i,
+    );
+    assert.match(
+      guidance,
+      /Do not de-escalate solely.*verifier.*plausible failure.*reopen diagnosis/i,
+    );
+    assert.match(
+      guidance,
+      /verification fails after a de-escalation.*confidence.*invalidated.*reassess.*before.*diagnostic action/i,
+    );
     assert.match(guidance, /target MUST be one of the exact values listed in Available/i);
-    assert.match(guidance, /low:.*known-path.*targeted lookup.*known test/i);
+    assert.match(
+      guidance,
+      /low:.*predictable result interpretation.*known-path mechanical.*diagnostic uncertainty/i,
+    );
     assert.match(guidance, /medium:.*routine implementation.*test writing.*integration/i);
     assert.match(guidance, /high:.*debugging.*ambiguous.*risky/i);
     assert.match(guidance, /xhigh:.*architecture.*migration.*concurrency.*security/i);
