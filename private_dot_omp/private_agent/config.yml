@@ -17,7 +17,7 @@ statusLine:
   preset: default
   separator: powerline-thin
 task: 
-  showResolvedModelBadge: false
+  showResolvedModelBadge: true
   enableLsp: true
   eager: default
   maxConcurrency: 0
@@ -71,8 +71,7 @@ modelRoles:
   vision: openai-codex/gpt-5.6-sol:high
   designer: openai-codex/gpt-5.6-sol:high
 dev: 
-  autoqa: 
-    consent: granted
+  autoqaConsent: granted
 codexResets: 
   autoRedeem: unset
 commands: 

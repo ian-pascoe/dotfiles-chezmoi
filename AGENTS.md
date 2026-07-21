@@ -31,3 +31,17 @@
 - `dot_config/nvim/lua/plugins/*.lua` is mostly import wiring. The real language/formatting/linting customizations usually live under `lua/plugins/lang`, `lua/plugins/formatting`, and `lua/plugins/linting`.
 - The Linux user service for OpenCode is `dot_config/systemd/user/opencode.service`, which runs `opencode web --port 4096 --print-logs` from `/home/ianpascoe`.
 - `dot_agents/skills/*` contains checked-in skill content. Update `dot_agents/dot_skill-lock.json` consistently when changing installed skill sources or versions.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs are tracked in this repository’s GitHub Issues. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Triage uses the five canonical label strings. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Domain documentation uses a single-context layout. See `docs/agents/domain.md`.

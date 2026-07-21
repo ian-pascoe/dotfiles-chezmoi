@@ -70,7 +70,7 @@ Scene summary:
 - Audio files: copy the chosen music and any Hyperframes-selected SFX into `brag-output/composition/assets/`
 
 ## Hyperframes Instructions
-Use the current `hyperframes` skill and CLI workflow. Prefer native Hyperframes conventions over anything in `/brag`.
+Load the composition-building Hyperframes domain skills — `hyperframes-core` (composition contract + `data-*` timing), `hyperframes-animation` (motion), `hyperframes-creative` (design spec, beats, audio-reactive), `hyperframes-keyframes` (seek-safe keyframes), and `hyperframes-cli` (lint/check/render). /brag is its own workflow: do not enter the `hyperframes` entry-point intent interview and do not route into its generic promo / launch-video workflow. Prefer native Hyperframes conventions over anything in `/brag`.
 
 Requirements:
 - Show at least one real UI, copy, or visual element from the source project.
@@ -84,7 +84,7 @@ Requirements:
 - Honor planned music treatment such as fade-outs, ducking, beat-aligned reveals, or letting a final SFX ring over the music, using the best Hyperframes-supported implementation.
 - When music is present and the treatment is not `none`, consider Hyperframes audio-reactive workflow: extract audio data and use RMS/frequency bands for subtle, brand-specific motion. Good targets are glow, depth, background warmth, card presence, title emphasis, or other existing visual elements. Avoid waveform/equalizer visuals, musical-note graphics, generic particle systems, strobing, or heavy pulsing.
 - Use local assets for audio and any required runtime/media dependencies when possible.
-- Run Hyperframes lint and validate before render.
+- Run `hyperframes check` before render — it is brag's single gate.
 ```
 
 The brief is the boundary: if a detail belongs to product positioning, copy, tone, source material, or selection of moments, `/brag` should specify it. If a detail belongs to composition implementation, Hyperframes should decide it.
@@ -121,7 +121,7 @@ Run `npx hyperframes tts --list` to see other voices.
 Wire it into the composition on its own track. Music ducks to 0.12–0.15 for the duration of the voiceover, then returns to its normal level:
 
 ```html
-<audio id="vo" data-start="0" data-duration="auto" data-track-index="3" data-volume="1" src="assets/voiceover.wav"></audio>
+<audio id="vo" data-start="0" data-track-index="3" data-volume="1" src="assets/voiceover.wav"></audio>
 ```
 
 Scene durations must flex to match the generated audio — check the WAV duration after generation and adjust `data-duration` values accordingly. Do not hardcode scene lengths when voiceover is present; let the voice set the pace.
@@ -132,7 +132,7 @@ Scene durations must flex to match the generated audio — check the WAV duratio
 
 When music is present and the treatment is not `none`, the composition can react to per-frame audio data. **Delegate the extraction to the Hyperframes audio-reactive workflow** — `/brag` does not ship an extraction script and must not hardcode a path to one.
 
-In the composition step, follow `references/audio-reactive.md` in the current hyperframes skill. It owns the data format, the extraction helper (which ships with the Hyperframes/GSAP skills, not with `/brag`), and the per-frame sampling pattern. Ask Hyperframes to extract the audio data and wire at least one visual element to it.
+In the composition step, follow the audio-reactive guidance owned by the `hyperframes-creative` skill (let that skill locate its own files). It owns the data format, the extraction helper (which ships with that skill, not with `/brag`, so don't hardcode a path to it), and the per-frame sampling pattern. Ask Hyperframes to extract the audio data and wire at least one visual element to it.
 
 If extraction is unavailable (no helper, or ffmpeg missing), note it in the brief and skip audio-reactive — do not block the render.
 
@@ -148,9 +148,9 @@ Get a cue source first (see `audio.md` → "Beat and cue sources"): a bundled pr
 ### How to implement
 
 **Major moments (strong cues):**
-1. Load the cue source: the preset/analysis JSON (`strongCues` + `beats`), or `beats/<audio>.json` from `hyperframes beats` (`beats` only).
+1. Load the cue source: the preset/analysis JSON (`strongCues` + `beats`), or the beat-grid JSON that `hyperframes beats` writes (a plain beat list; see the current hyperframes-cli skill for its location).
 2. Pick 1–3 strong timestamps near a planned major visual moment — `strongCues`, or the highest-`strength` beats.
-3. Adjust the GSAP tween start time to land within ±0.15s of the cue.
+3. Shift the reveal's start time to land within ±0.15s of the cue.
 4. Mark it: `// beat-locked: 5.80s`
 
 **Sequential events (beats):**
@@ -173,10 +173,10 @@ If SFX are enabled, also pass `skills/brag/assets/sfx/sfx-analysis.md` as select
 
 After `brag-output/brag-plan.md`, `brag-output/composition-brief.md`, and selected audio assets exist:
 
-1. Use the `hyperframes` skill to create or update `brag-output/composition/`.
+1. Load the Hyperframes domain skills (`hyperframes-core`, `hyperframes-animation`, `hyperframes-creative`, `hyperframes-keyframes`, `hyperframes-cli`) to create or update `brag-output/composition/`. /brag is its own workflow — do not enter the `hyperframes` entry-point intent interview or route into its generic promo / launch-video workflow.
 2. Pass Hyperframes the composition brief, the brag plan, and the source files it should reference.
 3. Let Hyperframes choose the implementation details.
-4. Run Hyperframes lint and validate.
+4. Run Hyperframes check (the single gate before render).
 5. Render to `brag-output/brag.mp4`.
 
 Do not manually copy stale composition snippets from this skill into the output. The point of delegating is to benefit from the latest Hyperframes guidance.
@@ -196,4 +196,4 @@ Before moving to delivery, verify:
 - [ ] Sequential events (cards, stats, list items) snap to consecutive `beats[]` timestamps (±0.10s), marked `// beat-grid` (or natural timing was chosen for readability).
 - [ ] The composition shows at least one real UI, copy, or visual element from the project.
 - [ ] Total duration is 15-25 seconds.
-- [ ] Hyperframes lint and validate pass, or any blocker is documented for the user.
+- [ ] Hyperframes check passes, or any blocker is documented for the user.

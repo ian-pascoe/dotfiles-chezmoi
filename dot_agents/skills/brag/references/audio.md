@@ -27,7 +27,7 @@ Suggested plan notation:
 Audio-reactive treatment: subtle; use music RMS/bass to make the hero glow and product card presence breathe. No waveform/equalizer visuals.
 ```
 
-Hyperframes implementation note: follow the current hyperframes audio-reactive workflow (its `references/audio-reactive.md`) to extract per-frame audio data and sample it synchronously inside the composition timeline. The extraction helper ships with the Hyperframes/GSAP skills — `/brag` does not provide it, so don't hardcode a path to it.
+Hyperframes implementation note: follow the audio-reactive guidance owned by the `hyperframes-creative` skill (let that skill locate its own files), to extract per-frame audio data and sample it synchronously inside the composition timeline. The extraction helper ships with that skill — `/brag` does not provide it, so don't hardcode a path to it.
 
 ---
 
@@ -273,7 +273,7 @@ This is the fallback when `hyperframes beats` (option 3) is unavailable — e.g.
 npx hyperframes beats <output-dir>/composition
 ```
 
-It writes `beats/<audio>.json` = `{ version, audio, beats: [{ time, strength }] }` — a beat grid with a per-beat `strength` (0-1). There is no `strongCues` array; derive "strong" beats by taking the highest-`strength` ones. `beats` was added in Hyperframes 0.6.99; on an older pinned install it won't exist — fall back to option 2 (the script), or to the `unavailable` note below.
+It writes a per-track beat file: a beat grid with per-beat timing and a normalized `strength` (0-1), but no separate `strongCues` array — so derive "strong" beats by taking the highest-`strength` ones. (See the current hyperframes-cli `beats` guidance for the exact output path.) `beats` was added in Hyperframes 0.6.99; on an older pinned install it won't exist — fall back to option 2 (the script), or to the `unavailable` note below.
 
 The preset and `analyze_music_cues.py` share the rich schema:
 
@@ -282,7 +282,7 @@ The preset and `analyze_music_cues.py` share the rich schema:
 - `strongCues`: highest-value landing moments with `time`, `intensity`, and `kind` (`strong_beat` / `onset_peak`)
 - `scoring`: feature and normalization metadata
 
-`hyperframes beats` is the simpler floor: `beats[]` with `{ time, strength }` only.
+`hyperframes beats` is the simpler floor: a plain beat grid with a per-beat strength, no strong-cue array.
 
 Planning rules (apply to whichever source you have):
 
