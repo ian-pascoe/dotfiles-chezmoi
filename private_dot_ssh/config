@@ -1,0 +1,13 @@
+Host *
+  AddKeysToAgent yes
+  ForwardAgent yes
+  ForwardX11 yes
+  ForwardX11Trusted yes
+  HashKnownHosts yes
+  IdentitiesOnly yes
+  IdentityFile ~/.ssh/id_ed25519
+  Port 22
+  ServerAliveCountMax 3
+  ServerAliveInterval 60
+  User ianpascoe
+  VisualHostKey yes

@@ -43,7 +43,7 @@ brew "coreutils"
 # TIFF library and utilities
 brew "libtiff"
 # Pack, ship and run any application as a lightweight container
-brew "docker", link: false
+brew "docker"
 # Remote terminal with IP roaming
 brew "et"
 # Like neofetch, but much faster because written mostly in C
@@ -56,12 +56,6 @@ brew "ffmpeg"
 brew "fzf"
 # GNU compiler collection
 brew "gcc"
-# Portable Foreign Function Interface library
-brew "libffi"
-# Open-source, cross-platform JavaScript runtime environment
-brew "node"
-# Interact with Google Gemini AI models from the command-line
-brew "gemini-cli"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
@@ -88,6 +82,8 @@ brew "jj"
 brew "jq"
 # Simple terminal UI for git commands
 brew "lazygit"
+# Portable Foreign Function Interface library
+brew "libffi"
 # YAML Parser
 brew "libyaml"
 # Clone of ls with colorful output, file type icons, and more
@@ -96,6 +92,8 @@ brew "lsd"
 brew "lua"
 # Package manager for the Lua programming language
 brew "luarocks"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
 # Fast, flexible, config-based cli for linting Markdown/CommonMark files
 brew "markdownlint-cli2"
 # Control and observe media playback from the command-line
@@ -157,7 +155,7 @@ brew "zplug"
 # UNIX shell (command interpreter)
 brew "zsh"
 # The AI coding agent built for the terminal.
-brew "anomalyco/tap/opencode"
+brew "anomalyco/tap/opencode", trusted: true
 # CLI app to manage your Apple Notes and Apple reminders
 brew "antoniorodr/memo/memo"
 # A window border system for macOS
@@ -189,8 +187,6 @@ cask "bruno"
 cask "chatgpt"
 # Terminal-based AI coding assistant
 cask "claude-code"
-# Ghostty-based terminal with vertical tabs and notifications for AI coding agents
-cask "cmux"
 # OpenAI's coding agent that runs in your terminal
 cask "codex"
 # Menu bar usage monitor for Codex and Claude
@@ -201,7 +197,8 @@ cask "crystalfetch"
 cask "discord"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
-cask "font-jetbrains-mono-nerd-font"
+cask "font-geist-mono-nerd-font"
+cask "font-sf-pro"
 cask "font-symbols-only-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
@@ -229,6 +226,8 @@ cask "pearcleaner"
 cask "raycast"
 # Minimal GUI for AI code agents
 cask "t3-code"
+# Minimal GUI for AI code agents
+cask "t3-code@nightly"
 # Mesh VPN based on WireGuard
 cask "tailscale-app"
 # Messaging app with a focus on speed and security

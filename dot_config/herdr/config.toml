@@ -10,6 +10,7 @@ onboarding = false
 #                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
 #                  vesper
 name = "catppuccin"
+auto_switch = false
 
 # Follow host terminal light/dark appearance and switch Herdr UI themes.
 # Existing manual behavior is unchanged unless this is true.
@@ -24,8 +25,6 @@ name = "catppuccin"
 # accent = "#f5c2e7"
 # red = "#ff6188"
 # green = "#a6e3a1"
-
-auto_switch = false
 
 [terminal]
 # Executable used for new interactive panes.
@@ -78,7 +77,7 @@ new_workspace = "prefix+ctrl+c"
 rename_workspace = "prefix+shift+r"
 # close_workspace = "prefix+shift+d"
 previous_workspace = "prefix+shift+p" # optional, unset by default
-next_workspace = "prefix+shift+n" # optional, unset by default
+next_workspace = "prefix+shift+n"     # optional, unset by default
 # previous_agent = ""     # optional, unset by default
 # next_agent = ""         # optional, unset by default
 # focus_agent = ""        # optional indexed binding, e.g. "prefix+alt+1..9"
@@ -102,7 +101,7 @@ focus_pane_right = "prefix+l"
 split_vertical = "prefix+|"
 split_horizontal = "prefix+minus"
 close_pane = "prefix+x"
-zoom = "prefix+z" # legacy alias: fullscreen
+zoom = "prefix+z"                 # legacy alias: fullscreen
 resize_mode = "prefix+r"
 # toggle_sidebar = "prefix+b"
 
@@ -125,7 +124,7 @@ navigate_workspace_down = "shift+n"
 
 [[keys.command]]
 key = "prefix+g"
-type = "pane"
+type = "popup"
 command = "lazygit"
 
 
@@ -152,6 +151,16 @@ key = "ctrl+l"
 type = "shell"
 command = '~/.config/herdr/scripts/navigate.sh right'
 description = "navigate right (vim/herdr)"
+
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer"
+
+[[keys.command]]
+key = "prefix+shift+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer-tab"
 
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
@@ -268,9 +277,9 @@ agent_panel_sort = "spaces"
 # allow_nested = false
 # Experimental local Kitty graphics rendering for attached clients.
 # Requires a Kitty graphics-compatible outer terminal.
-# kitty_graphics = false
+kitty_graphics = true
 # Save recent pane screen history across full server restarts.
-pane_history = false
+pane_history = true
 # While prefix mode is active, temporarily switch the macOS host input
 # source to an ASCII-capable keyboard layout so prefix commands register
 # even when a CJK IME is active, then restore the previous input source

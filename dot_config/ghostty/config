@@ -14,7 +14,7 @@ quit-after-last-window-closed = true
 background-opacity = 0.9
 
 # font
-font-family = "JetBrainsMono NF"
+font-family = "GeistMono Nerd Font"
 font-style = Regular
 font-size = 12
 

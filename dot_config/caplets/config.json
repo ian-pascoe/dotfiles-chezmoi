@@ -1,6 +1,13 @@
 {
   "$schema": "https://caplets.dev/config.schema.json",
   "mcpServers": {
+    "ast-grep": {
+      "name": "AST-Grep",
+      "description": "AST-Grep is a code analysis tool that helps you understand the structure and behavior of your codebase.",
+      "command": "npx",
+      "args": ["-y", "ast-grep-mcp@latest"],
+      "shadowing": "allow"
+    },
     "browser-use": {
       "name": "Browser Use",
       "description": "Web browsing capabilities to fetch real-time information from the internet, including web pages, APIs, and other online resources.",
@@ -17,6 +24,14 @@
         "PWTEST_EXTENSION_USER_DATA_DIR": "$env:DEFAULT_BROWSER_USER_DATA_DIR"
       },
       "shadowing": "allow"
+    },
+    "context7": {
+      "name": "Context7",
+      "description": "Fetch the latest documentation for libraries.",
+      "url": "https://mcp.context7.com/mcp/oauth",
+      "auth": {
+        "type": "oauth2"
+      }
     },
     "computer-use": {
       "name": "Computer Use",
@@ -46,6 +61,13 @@
       "auth": {
         "type": "oauth2"
       }
+    },
+    "lsp": {
+      "name": "LSP",
+      "description": "Language Server Protocol (LSP) capabilities to control your editor, including code completion, syntax highlighting, and more.",
+      "command": "npx",
+      "args": ["-y", "language-server-mcp@latest"],
+      "shadowing": "allow"
     },
     "posthog": {
       "name": "Posthog",

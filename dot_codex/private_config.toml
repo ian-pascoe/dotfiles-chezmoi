@@ -2,7 +2,7 @@
 
 model = "gpt-5.6-sol"
 personality = "pragmatic"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -78,8 +78,8 @@ opaqueWindows = false
 surface = "#eff1f5"
 
 [desktop.appearanceLightChromeTheme.fonts]
-code = '"JetBrainsMono NF"'
-ui = '"JetBrains Mono NF"'
+code = '"GeistMono Nerd Font", monospace'
+ui = '"SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
 
 [desktop.appearanceLightChromeTheme.semanticColors]
 diffAdded = "#40a02b"
@@ -94,8 +94,8 @@ opaqueWindows = false
 surface = "#1e1e2e"
 
 [desktop.appearanceDarkChromeTheme.fonts]
-code = '"JetBrainsMono NF"'
-ui = '"JetBrains Mono NF"'
+code = '"GeistMono Nerd Font", monospace'
+ui = '"SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
 
 [desktop.appearanceDarkChromeTheme.semanticColors]
 diffAdded = "#a6e3a1"

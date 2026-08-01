@@ -100,7 +100,7 @@
   color: rgb(var(--foreground));
   font-size: var(--font-base);
   font-weight: 600;
-  font-family: "JetBrainsMono NFP", sans-serif;
+  font-family: "SF Pro", "Segoe UI", sans-serif;
   margin: var(--spacing-0);
   padding: var(--spacing-0);
 }
@@ -150,7 +150,7 @@
   background-color: rgba(var(--card-background), var(--opacity-semi));
   border: none;
   padding: var(--spacing-xs) var(--spacing-0);
-  font-family: "Segoe UI", sans-serif;
+  font-family: "SF Pro", "Segoe UI", sans-serif;
   font-size: var(--font-base);
   color: rgb(var(--foreground));
 }
@@ -187,7 +187,7 @@
   font-size: var(--font-base);
   margin: var(--spacing-0);
   color: rgb(var(--foreground));
-  font-family: "Segoe UI", sans-serif;
+  font-family: "SF Pro", "Segoe UI", sans-serif;
 }
 .context-menu .submenu::item:disabled {
   margin: var(--spacing-0);
@@ -230,7 +230,7 @@
   color: rgb(var(--foreground));
   padding: var(--spacing-2xs) var(--spacing-sm);
   font-size: var(--font-sm);
-  font-family: "Segoe UI", sans-serif;
+  font-family: "SF Pro", "Segoe UI", sans-serif;
   font-weight: 500;
   margin-top: var(--spacing-2xs);
 }
@@ -259,7 +259,7 @@
 }
 .home-menu .menu-item {
   padding: var(--spacing-sm) var(--spacing-5xl) 7px var(--spacing-2xl);
-  font-family: "Segoe UI", sans-serif;
+  font-family: "SF Pro", "Segoe UI", sans-serif;
   border: var(--size-xs) solid transparent;
 }
 .home-menu .menu-item:hover {
@@ -751,7 +751,7 @@
   min-height: var(--height-menu-item-active);
 }
 .wifi-menu .wifi-item .icon {
-  font-family: "Segoe Fluent Icons", "JetBrainsMono NFP", sans-serif;
+  font-family: "Segoe Fluent Icons", "GeistMono Nerd Font", sans-serif;
   font-size: var(--font-4xl);
   margin-right: var(--spacing-lg);
 }
@@ -796,7 +796,7 @@
   min-height: var(--size-huge);
 }
 .wifi-menu .footer .refresh-icon {
-  font-family: "Segoe Fluent Icons", "JetBrainsMono NFP", sans-serif;
+  font-family: "Segoe Fluent Icons", "GeistMono Nerd Font", sans-serif;
   background-color: transparent;
   border: none;
   min-width: var(--size-huge);

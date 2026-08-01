@@ -62,7 +62,9 @@ gcc-14-base
 gcc-multilib
 gdb
 git
+git-delta
 git-lfs
+glow
 gnupg
 google-chrome-stable
 gpg

@@ -28,6 +28,14 @@ if command -v yazi &>/dev/null; then
   alias y='yazi'
 fi
 
+## Eternal Terminal
+# ET reads ~/.ssh/config; mirror its ForwardAgent setting for the ET session.
+if command -v et &>/dev/null; then
+  et() {
+    command et --forward-ssh-agent "$@"
+  }
+fi
+
 ## Zellij
 if command -v zellij &>/dev/null; then
   alias zj='zellij'

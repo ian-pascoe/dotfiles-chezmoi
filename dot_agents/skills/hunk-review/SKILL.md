@@ -44,16 +44,22 @@ Use `--source` only for advanced reloads where the live session you want to cont
 
 ```bash
 hunk session list [--json]
-hunk session get (--repo . | <id>) [--json]
-hunk session context (--repo . | <id>) [--json]
-hunk session review (--repo . | <id>) [--json] [--include-patch]
+hunk session get (<session-id> | --repo <path>) [--json]
+hunk session context (<session-id> | --repo <path>) [--json]
+hunk session review (<session-id> | --repo <path>) [--include-patch] [--include-notes] [--json]
 ```
 
 - `get` shows the session `Path`, `Repo`, and `Source`, which helps when choosing between `--repo` and `--session-path`
 - `Repo` is what `--repo` matches; `Path` is what `--session-path` matches
 - `review --json` returns file and hunk structure by default; add `--include-patch` only when a caller truly needs raw unified diff text
+- `review --include-notes` also returns the live review notes alongside the file and hunk structure
 
 ### Navigate
+
+```bash
+hunk session navigate (<session-id> | --repo <path>) --file <path> (--hunk <n> | --old-line <n> | --new-line <n>) [--json]
+hunk session navigate (<session-id> | --repo <path>) (--next-comment | --prev-comment) [--json]
+```
 
 Absolute navigation requires `--file` and exactly one of `--hunk`, `--new-line`, or `--old-line`:
 
@@ -79,6 +85,13 @@ hunk session navigate --repo . --prev-comment
 Swaps the live session's contents. Pass a Hunk review command after `--`:
 
 ```bash
+hunk session reload (<session-id> | --repo <path> | --session-path <path>) [--source <path>] [--json] -- diff [ref] [-- <pathspec...>]
+hunk session reload (<session-id> | --repo <path> | --session-path <path>) [--source <path>] [--json] -- show [ref] [-- <pathspec...>]
+```
+
+Examples:
+
+```bash
 hunk session reload --repo . -- diff
 hunk session reload --repo . -- diff main...feature -- src/ui
 hunk session reload --repo . -- show HEAD~1
@@ -96,11 +109,18 @@ hunk session reload --session-path /path/to/live-window --source /path/to/other-
 ### Comments
 
 ```bash
-hunk session comment add --repo . --file README.md --new-line 103 --summary "Tighten this wording" [--rationale "..."] [--markup "<stml>"] [--author "agent"] [--focus]
-printf '%s\n' '{"comments":[{"filePath":"README.md","newLine":103,"summary":"Tighten this wording"}]}' | hunk session comment apply --repo . --stdin [--focus]
-hunk session comment list --repo . [--file README.md] [--type live|all|ai|agent|user]
-hunk session comment rm --repo . <comment-id>
-hunk session comment clear --repo . --yes [--file README.md]
+hunk session comment add (<session-id> | --repo <path>) --file <path> (--old-line <n> | --new-line <n>) --summary <text> [--rationale <text>] [--author <name>] [--markup <stml>] [--focus] [--json]
+hunk session comment apply (<session-id> | --repo <path>) --stdin [--focus] [--json]
+hunk session comment list (<session-id> | --repo <path>) [--file <path>] [--type <live|all|ai|agent|user>] [--json]
+hunk session comment rm (<session-id> | --repo <path>) <comment-id> [--json]
+hunk session comment clear (<session-id> | --repo <path>) [--file <path>] [--include-user|--all] --yes [--json]
+```
+
+Examples:
+
+```bash
+hunk session comment add --repo . --file README.md --new-line 103 --summary "Tighten this wording"
+printf '%s\n' '{"comments":[{"filePath":"README.md","newLine":103,"summary":"Tighten this wording"}]}' | hunk session comment apply --repo . --stdin
 ```
 
 - `comment list --type user` shows human-authored inline notes; without `--type`, `comment list` preserves the legacy live-agent-comment view
@@ -112,11 +132,13 @@ hunk session comment clear --repo . --yes [--file README.md]
 - `comment list` and `comment clear` accept optional `--file`
 - Quote `--summary` and `--rationale` defensively in the shell
 
-### Rich markup notes (STML)
+### Experimental rich markup notes (STML)
 
-`--markup` (or a `markup` field on apply items) renders the note body as STML — a small HTML-like markup for terminal UI (boxes, rows, gauges, badges, lists, code). Keep `--summary` a real sentence: it is the fallback and the `comment list` text.
+Only use STML when `hunk session context --json` lists `stml` in `experimentalFeatures`. The user opts into that experience by launching the review with `--experimental`; do not ask a normal session to render markup.
 
-Before writing markup, run `hunk markup guide` once — it has copy-paste patterns and the width rules. `hunk session context --json` reports `noteMarkupWidth` (the live render width); preview with `hunk markup render - --width <that>`. Comment responses echo `markupWidth` and return `markupNotes` when markup degraded — fix what they flag.
+For an opted-in session, `--markup` (or a `markup` field on apply items) renders the note body as STML — a small HTML-like markup for terminal UI (boxes, rows, gauges, badges, lists, code). Keep `--summary` a real sentence: it is the fallback and the `comment list` text.
+
+Before writing markup, run `hunk markup guide` once — it has copy-paste patterns and the width rules. The session context also reports `noteMarkupWidth` (the live render width); preview with `hunk markup render - --width <that>`. Comment responses echo `markupWidth` and return `markupNotes` when markup degraded — fix what they flag.
 
 ## New files in working-tree reviews
 
@@ -151,11 +173,12 @@ Guidelines:
 
 ## Common errors
 
-- **"No visible diff file matches ..."** -- the file is not in the loaded review. Check `context`, then `reload` if needed.
+- **"No diff file matches ..."** -- the file is not in the loaded review. Check `context`, then `reload` if needed.
 - **"No active Hunk sessions"** -- if Hunk is visibly running, localhost may be blocked by the agent sandbox; retry with network/sandbox escalation. Otherwise ask the user to open Hunk.
 - **"Multiple active sessions match"** -- pass `<session-id>` explicitly.
-- **"No active Hunk session matches session path ..."** -- for advanced split-path reloads, verify the live window `Path` via `hunk session get` or `list`, then use `--session-path`.
+- **"No active session matches session path ..."** -- for advanced split-path reloads, verify the live window `Path` via `hunk session get` or `list`, then use `--session-path`.
 - **"Pass the replacement Hunk command after `--`"** -- include `--` before the nested `diff` / `show` command.
 - **"Pass --stdin to read batch comments from stdin JSON."** -- `comment apply` only reads its batch payload from stdin.
 - **"Specify exactly one navigation target"** -- pick one of `--hunk`, `--old-line`, or `--new-line`.
+- **"Specify exactly one comment target"** -- pass `comment add` one of `--old-line` or `--new-line`.
 - **"Specify either --next-comment or --prev-comment, not both."** -- choose one comment-navigation direction.

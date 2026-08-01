@@ -7,7 +7,7 @@ scrollback_lines_to_serialize 10000
 show_startup_tips false
 theme "ansi"
 web_client {
-    font "monospace"
+    font "GeistMono Nerd Font"
 }
 keybinds clear-defaults=true {
     shared_except "locked" "normal" {

@@ -7,5 +7,6 @@ pipx
 pyflakes
 pytest
 spotdl
+trafilatura
 vdirsyncer
 yt-dlp
