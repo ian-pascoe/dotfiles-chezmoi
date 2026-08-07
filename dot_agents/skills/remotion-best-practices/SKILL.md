@@ -1,10 +1,12 @@
 ---
 name: remotion-best-practices
 description: Router for all Remotion skills
-version: 4.0.503
-metadata:
-  tags: remotion, video, react, animation, composition
+version: 4.0.506
 ---
+
+## Creating a video
+
+If the user asks to make, create, or build a new video or composition, load [Create a new Remotion video](./remotion-create/REFERENCE.md), whether or not a Remotion project already exists.
 
 ## New project setup
 
@@ -29,6 +31,10 @@ By structuring the Remotion markup well, we can allow users to interactively cha
 ## Rendering
 
 For advanced rendering beyond simple `npx remotion render`, see: [Rendering Best Practices](./remotion-render/REFERENCE.md)
+
+## Opening Remotion Studio
+
+To launch a project in Remotion Studio, open its exact local URL, or configure Studio CLI flags, load [Remotion Studio](./remotion-studio/REFERENCE.md).
 
 ## Captions
 

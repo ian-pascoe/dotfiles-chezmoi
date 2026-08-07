@@ -13,6 +13,7 @@ executor
 hunkdiff
 impeccable
 just-bash
+node-gyp
 opencode-ai
 oxfmt
 oxlint

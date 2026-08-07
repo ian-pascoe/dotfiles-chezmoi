@@ -13,3 +13,4 @@ cargo-watch
 cargo-zigbuild
 cross
 sccache
+terminal-control

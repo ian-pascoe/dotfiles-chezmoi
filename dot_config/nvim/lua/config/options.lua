@@ -7,6 +7,28 @@ vim.g.lazyvim_prettier_needs_config = true
 
 if vim.env.SSH_CONNECTION then
   vim.o.clipboard = 'unnamedplus'
+
+  if vim.env.HERDR_ENV == '1' then
+    local function paste_from_unnamed_register()
+      return { vim.fn.getreg('"', 1, true), vim.fn.getregtype('"') }
+    end
+
+    local osc52 = require('vim.ui.clipboard.osc52')
+    vim.g.clipboard = {
+      name = 'OSC 52 (copy only in Herdr)',
+      copy = {
+        ['+'] = osc52.copy('+'),
+        ['*'] = osc52.copy('*'),
+      },
+      -- OSC 52 read requests time out inside Herdr, which causes a 10-second wait.
+      paste = {
+        ['+'] = paste_from_unnamed_register,
+        ['*'] = paste_from_unnamed_register,
+      },
+    }
+  else
+    vim.g.clipboard = 'osc52'
+  end
 end
 
 -- use pwsh as terminal on windows
