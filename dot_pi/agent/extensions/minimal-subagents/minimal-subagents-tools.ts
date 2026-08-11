@@ -152,9 +152,6 @@ export function createCoordinatorToolDefinitions(
           },
           callerSourceTurnId(options.coordinator, options.callerId, toolCallId),
         );
-        if (!result.delivered) {
-          failedStructuredOperation("Minimal subagents message delivery failed", result);
-        }
         return structuredToolResult(result);
       });
     },

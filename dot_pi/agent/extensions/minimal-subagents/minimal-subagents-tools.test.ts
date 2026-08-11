@@ -135,6 +135,40 @@ describe("createCoordinatorToolDefinitions", () => {
     });
   });
 
+  it("preserves a failed direct-message result as model-visible structured details", async () => {
+    const message = vi.fn(async () => ({
+      agent_id: "child",
+      behavior: "steer",
+      delivered: false,
+      error: "child unavailable",
+    }));
+    const tools = createCoordinatorToolDefinitions({
+      coordinator: { message } as never,
+      callerId: "root",
+      schemas: createCoordinatorToolSchemas([]),
+      captureCaller: () => {
+        throw new Error("not used");
+      },
+    });
+
+    const result = await tools
+      .find((tool) => tool.name === "agent_message")!
+      .execute(
+        "message-call",
+        { agent_id: "child", message: "update" },
+        undefined,
+        undefined,
+        {} as never,
+      );
+
+    expect(result.details).toEqual({
+      agent_id: "child",
+      behavior: "steer",
+      delivered: false,
+      error: "child unavailable",
+    });
+  });
+
   it("passes caller identity into child-scoped status", async () => {
     const status = vi.fn(() => ({ parent_id: "lead", agents: [] }));
     const tools = createCoordinatorToolDefinitions({

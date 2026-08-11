@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
 import type { AgentMessage } from "@earendil-works/pi-agent-core";
-import type { Usage } from "@earendil-works/pi-ai";
 import { assembleImportedContext, contextContainsImages } from "./minimal-subagents-context.js";
 import {
   canAgentContractSpawn,
@@ -10,7 +9,6 @@ import {
   resolveOrdinaryToolSelection,
 } from "./minimal-subagents-capabilities.js";
 import { createRegistryEvent } from "./minimal-subagents-registry.js";
-import { addMinimalSubagentsUsage } from "./minimal-subagents-usage.js";
 import type {
   AgentDetail,
   AgentMessageResult,
@@ -983,15 +981,6 @@ export class MinimalSubagentsCoordinator {
   private buildAgentDetail(agent: PersistedAgent, includeDescendants = true): AgentDetail {
     const summary = this.buildAgentSummary(agent, includeDescendants);
     const runtimeUsage = this.runtimes.get(agent.agent_id)?.getUsage();
-    let descendantUsage: Usage | undefined;
-    if (includeDescendants) {
-      for (const descendant of this.descendantsOf(agent.agent_id)) {
-        descendantUsage = addMinimalSubagentsUsage(
-          descendantUsage,
-          this.runtimes.get(descendant.agent_id)?.getUsage(),
-        );
-      }
-    }
     return {
       ...summary,
       session_file: agent.session_file,
@@ -1003,7 +992,6 @@ export class MinimalSubagentsCoordinator {
       missing_dependencies: [...agent.missing_dependencies],
       unavailable_reason: agent.unavailable_reason,
       usage: runtimeUsage ?? agent.latest_result?.usage,
-      descendant_usage: descendantUsage,
     };
   }
 

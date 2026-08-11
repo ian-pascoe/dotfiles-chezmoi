@@ -31,8 +31,14 @@ describe("createCoordinatorToolSchemas", () => {
     const messageTargetPattern = (schemas.agent_message.properties.agent_id as { pattern?: string })
       .pattern;
     expect(messageTargetPattern).toBeDefined();
-    expect(new RegExp(messageTargetPattern!).test("*")).toBe(false);
-    expect(new RegExp(messageTargetPattern!).test("parent")).toBe(true);
+    const acceptsMessageTarget = (target: string) => new RegExp(messageTargetPattern!).test(target);
+    expect(acceptsMessageTarget("*")).toBe(false);
+    expect(acceptsMessageTarget("peer*")).toBe(false);
+    expect(acceptsMessageTarget("a/b")).toBe(false);
+    expect(acceptsMessageTarget(" ")).toBe(false);
+    expect(acceptsMessageTarget("parent")).toBe(true);
+    expect(acceptsMessageTarget("lead.reviewer")).toBe(true);
+    expect(acceptsMessageTarget("root.legacy")).toBe(true);
   });
 
   it("makes explicit model selection impossible for an empty model set", () => {

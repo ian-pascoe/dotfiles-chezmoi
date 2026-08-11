@@ -334,22 +334,19 @@ function renderWaitResult(
   return container;
 }
 
-function countStatusAgents(agents: unknown[]): { retained: number; running: number } {
-  let retained = 0;
+function countDirectStatusAgents(agents: unknown[]): { children: number; running: number } {
+  let children = 0;
   let running = 0;
   for (const item of agents) {
     const agent = asRecord(item);
     if (!agent) continue;
-    retained++;
+    children++;
     if (agent.state === "running") running++;
-    const childCounts = countStatusAgents(Array.isArray(agent.children) ? agent.children : []);
-    retained += childCounts.retained;
-    running += childCounts.running;
   }
-  return { retained, running };
+  return { children, running };
 }
 
-function renderStatusTreeRows(agents: unknown[], theme: Theme, depth = 0): string[] {
+function renderDirectStatusRows(agents: unknown[], theme: Theme): string[] {
   const rows: string[] = [];
   for (const item of agents) {
     const agent = asRecord(item);
@@ -365,14 +362,7 @@ function renderStatusTreeRows(agents: unknown[], theme: Theme, depth = 0): strin
     const duration = formatSubagentDuration(asNumber(agent.elapsed_ms));
     const childCount = asNumber(agent.child_count) ?? 0;
     rows.push(
-      `${"  ".repeat(depth)}${renderSubagentStatusSymbol(theme, status)} ${asString(agent.agent_id) ?? "unknown"} · ${status}${duration ? ` · ${duration}` : ""}${childCount > 0 ? ` · ${childCount} children` : ""}`,
-    );
-    rows.push(
-      ...renderStatusTreeRows(
-        Array.isArray(agent.children) ? agent.children : [],
-        theme,
-        depth + 1,
-      ),
+      `${renderSubagentStatusSymbol(theme, status)} ${asString(agent.agent_id) ?? "unknown"} · ${status}${duration ? ` · ${duration}` : ""}${childCount > 0 ? ` · ${childCount} children` : ""}`,
     );
   }
   return rows;
@@ -385,11 +375,11 @@ function renderStatusResult(
 ): Component {
   const agents = Array.isArray(details.agents) ? details.agents : undefined;
   if (agents) {
-    const counts = countStatusAgents(agents);
-    const summary = `${theme.fg("dim", "○")} ${counts.retained} children · ${counts.running} running`;
+    const counts = countDirectStatusAgents(agents);
+    const summary = `${theme.fg("dim", "○")} ${counts.children} children · ${counts.running} running`;
     if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
     return new Text(
-      `${summary}\n${renderStatusTreeRows(agents, theme).join("\n") || theme.fg("dim", "(no agents)")}`,
+      `${summary}\n${renderDirectStatusRows(agents, theme).join("\n") || theme.fg("dim", "(no agents)")}`,
       0,
       0,
     );
@@ -478,13 +468,8 @@ function renderStatusResult(
         : output || JSON.stringify(latestResult, null, 2),
     );
   }
-  for (const [label, usageValue] of [
-    ["Usage", agent.usage],
-    ["Descendant usage", agent.descendant_usage],
-  ] as const) {
-    const usageText = formatSubagentUsage(asRecord(usageValue) as Usage | undefined);
-    if (usageText) appendSection(container, theme, label, usageText);
-  }
+  const usageText = formatSubagentUsage(asRecord(agent.usage) as Usage | undefined);
+  if (usageText) appendSection(container, theme, "Usage", usageText);
   return container;
 }
 

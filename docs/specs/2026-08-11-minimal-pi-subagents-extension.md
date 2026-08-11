@@ -204,7 +204,7 @@ interface DeleteResult {
 }
 ```
 
-`agent_message` always returns one `AgentMessageResult`. A failed send is a tool error carrying that result. `subagent_status` returns `StatusResult`, bounded to direct children and with nested `children` arrays omitted. Cancel returns `CancelResult`, including empty arrays for an idle no-op. Delete returns `DeleteResult`; if a post-order filesystem deletion partially fails, the tool result is an error carrying the partial result, completed deletions stay tombstoned, and unprocessed agents remain live. There is no rollback across filesystem operations.
+`agent_message` always returns one model-visible `AgentMessageResult`. A failed send returns `delivered: false` with an actionable `error` instead of discarding the structured result through Pi's text-only tool-error path. `subagent_status` returns `StatusResult`, bounded to direct children and with nested `children` arrays omitted. Cancel returns `CancelResult`, including empty arrays for an idle no-op. Delete returns `DeleteResult`; if a post-order filesystem deletion partially fails, the tool result is an error carrying the partial result, completed deletions stay tombstoned, and unprocessed agents remain live. There is no rollback across filesystem operations.
 
 Tool errors use Pi's ordinary error result mechanism and include a concise actionable explanation. They never silently clamp tool access, substitute a model, overwrite an agent, or share a source session after a clone failure.
 
@@ -455,7 +455,7 @@ Registries created by an older extension version may contain `root.`-prefixed ca
 - For a running recipient, `steer` routes through steering and `follow-up` routes through the follow-up queue.
 - For an idle recipient, either behavior starts a new prompt immediately.
 - Serialize deliveries per recipient in coordinator-receipt order.
-- Return one `AgentMessageResult`; delivery failure becomes a tool error carrying that result.
+- Return one model-visible `AgentMessageResult`; delivery failure sets `delivered: false` and includes an actionable `error`.
 - Render explicit messages with custom type `minimal-subagents.message`, visible content, and details containing source agent ID and source turn ID. Deliver them through `sendCustomMessage()` for children or `pi.sendMessage()` for the root, with `triggerTurn: true` when idle and the requested `deliverAs` mode when running. They participate in recipient context without masquerading as human-authored input.
 
 An agent requesting help sends its parent a message and finishes its own turn. Messaging has no blocking request/response protocol.

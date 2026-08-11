@@ -99,7 +99,6 @@ export interface AgentDetail extends AgentSummary {
   missing_dependencies: string[];
   unavailable_reason?: string;
   usage?: Usage;
-  descendant_usage?: Usage;
 }
 
 /** Returns either caller-owned direct children or one authorized direct-child detail. */

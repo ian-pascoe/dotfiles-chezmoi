@@ -178,6 +178,7 @@ describe("renderCoordinatorToolResult", () => {
               elapsed_ms: 2_500,
               child_count: 0,
               children: [],
+              descendant_usage: { input: 99, output: 1 },
             },
           },
         },
@@ -188,6 +189,7 @@ describe("renderCoordinatorToolResult", () => {
     );
     expect(status).toContain("Availability: available");
     expect(status).toContain("Duration: 2s");
+    expect(status).not.toContain("Descendant usage");
 
     for (const [toolName, details] of [
       [
@@ -241,7 +243,15 @@ describe("renderCoordinatorToolResult", () => {
                 state: "running",
                 availability: "available",
                 child_count: 1,
-                children: [],
+                children: [
+                  {
+                    agent_id: "lead.hidden-grandchild",
+                    state: "running",
+                    availability: "available",
+                    child_count: 0,
+                    children: [],
+                  },
+                ],
               },
               {
                 agent_id: "peer",
@@ -261,6 +271,7 @@ describe("renderCoordinatorToolResult", () => {
     );
     expect(childStatus).toContain("2 children · 1 running");
     expect(childStatus).toContain("× peer · failed");
+    expect(childStatus).not.toContain("hidden-grandchild");
   });
 
   it("falls back to actionable tool text when details are unavailable or incompatible", () => {
