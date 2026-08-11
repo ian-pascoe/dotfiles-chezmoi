@@ -46,7 +46,7 @@ If the specifications otherwise conflict, preserve the baseline behavior. UI sta
 - Extension-specific keybindings, commands, cancellation controls, or widget visibility controls.
 - A replacement header, footer, working indicator, or full-screen application shell.
 - Raw model thinking, child transcript streaming, or a live tool-call feed from child sessions.
-- Changing tool names, parameters, defaults, result success semantics, delivery semantics, or coordinator limits.
+- Changing coordinator behavior beyond the authoritative extension specification.
 - Persisting presentation state such as expansion, widget visibility, row selection, or cooldown deadlines.
 - Making color the sole carrier of state.
 - Adding UI dependencies beyond Pi's coding-agent and TUI packages.

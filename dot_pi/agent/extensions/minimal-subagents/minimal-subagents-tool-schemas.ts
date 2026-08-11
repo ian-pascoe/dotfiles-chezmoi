@@ -28,7 +28,8 @@ export function createCoordinatorToolSchemas(modelIds: readonly string[]) {
       agent_id: Type.Optional(
         Type.String({
           pattern: FRIENDLY_AGENT_ID_PATTERN,
-          description: "Friendly peer-unique ID segment",
+          description:
+            "Friendly peer-unique ID segment; a root child uses this segment as its canonical ID",
         }),
       ),
       session_context: Type.Optional(SessionContextSchema),

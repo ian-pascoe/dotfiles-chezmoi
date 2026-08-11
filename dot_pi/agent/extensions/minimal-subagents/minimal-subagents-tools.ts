@@ -111,8 +111,8 @@ export function createCoordinatorToolDefinitions(
     name: "subagent",
     label: "Subagent",
     description:
-      "Create a persistent nested agent asynchronously. Returns its canonical agent ID and active turn ID immediately.",
-    promptSnippet: "Spawn a persistent parallel or nested child conversation",
+      "Create a persistent nested agent asynchronously. Returns its canonical agent ID and active turn ID immediately. Root-child IDs omit the root prefix; nested IDs retain the parent path.",
+    promptSnippet: "Spawn a persistent child with a prefix-free root-child ID",
     parameters: options.schemas.subagent,
     async execute(_toolCallId, parameters, _signal, _onUpdate, context) {
       return runCoordinatorToolActivity(options, async () => {

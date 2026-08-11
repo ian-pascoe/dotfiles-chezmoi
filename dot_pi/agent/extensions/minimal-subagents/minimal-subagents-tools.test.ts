@@ -23,6 +23,9 @@ describe("createCoordinatorToolDefinitions", () => {
       "subagent_delete",
     ]);
     expect(tools.every((tool) => tool.renderCall && tool.renderResult)).toBe(true);
+    expect(tools.find((tool) => tool.name === "subagent")?.description).toContain(
+      "Root-child IDs omit the root prefix",
+    );
   });
 
   it("attaches the resolved launch contract to spawn rendering details", async () => {

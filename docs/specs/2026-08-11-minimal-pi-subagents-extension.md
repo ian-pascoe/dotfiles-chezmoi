@@ -523,7 +523,7 @@ Detailed fields additionally include:
 - Recent explicit messages.
 - Latest final response or error.
 - Missing dependencies.
-- Per-session usage. Descendant usage belongs to the trusted internal hierarchy projection and is not exposed through the caller-scoped tool.
+- Per-session usage.
 
 Status does not expose raw model thinking or a full event transcript. Normal child sessions remain directly inspectable through `/resume`.
 
