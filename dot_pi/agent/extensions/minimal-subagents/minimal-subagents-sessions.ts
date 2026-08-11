@@ -81,8 +81,24 @@ export interface PiAgentSessionFactoryOptions {
   modelScopeRestricted: boolean;
   availableToolNames: readonly string[];
   projectTrusted: boolean;
+  maxSubagentDepth?: number;
   getCoordinatorTools: (callerId: string) => ToolDefinition[];
   onChildSessionActivity?: () => void;
+}
+
+/** Build one child prompt using the active delegation depth rather than persisted launch state. */
+export function buildDepthBoundSubagentPrompt(
+  agent: PersistedAgent,
+  maxSubagentDepth = DEFAULT_MAX_SUBAGENT_DEPTH,
+): string {
+  return buildSubagentSystemPrompt(agent.agent_id, agent.parent_id, {
+    canSpawn: canAgentContractSpawn(
+      agent.agent_id,
+      agent.launch_contract.delegation,
+      maxSubagentDepth,
+    ),
+    remainingDepth: Math.max(0, maxSubagentDepth - getSubagentDepth(agent.agent_id)),
+  });
 }
 
 function canonicalPath(path: string): string {
@@ -556,10 +572,10 @@ export class PiAgentSessionFactory implements AgentSessionFactory {
   }
 
   private buildChildSystemPrompt(agent: PersistedAgent): string {
-    return buildSubagentSystemPrompt(agent.agent_id, agent.parent_id, {
-      canSpawn: canAgentContractSpawn(agent.agent_id, agent.launch_contract.delegation),
-      remainingDepth: Math.max(0, DEFAULT_MAX_SUBAGENT_DEPTH - getSubagentDepth(agent.agent_id)),
-    });
+    return buildDepthBoundSubagentPrompt(
+      agent,
+      this.options.maxSubagentDepth ?? DEFAULT_MAX_SUBAGENT_DEPTH,
+    );
   }
 
   private async findMissingDependencies(

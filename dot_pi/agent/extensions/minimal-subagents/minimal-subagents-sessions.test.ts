@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  buildDepthBoundSubagentPrompt,
   createChildResourceLoaderOptions,
   createPersistentChildIdentity,
   findDeliveryEvidence,
@@ -144,6 +145,20 @@ describe("createChildResourceLoaderOptions", () => {
     });
     expect(options.noExtensions).toBe(true);
     expect(options.extensionsOverride).toBeUndefined();
+  });
+});
+
+describe("buildDepthBoundSubagentPrompt", () => {
+  it("reports remaining delegation depth from the configured maximum", () => {
+    const agent = persistedAgent();
+    agent.agent_id = "lead.review";
+    agent.parent_id = "lead";
+    agent.launch_contract.delegation = "fanout";
+
+    const prompt = buildDepthBoundSubagentPrompt(agent, 4);
+
+    expect(prompt).toContain("explicit fanout responsibility");
+    expect(prompt).toContain("Remaining delegation depth: 2");
   });
 });
 

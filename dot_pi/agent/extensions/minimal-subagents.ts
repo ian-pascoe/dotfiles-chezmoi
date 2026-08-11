@@ -10,6 +10,7 @@ import {
   type SessionEntry,
 } from "@earendil-works/pi-coding-agent";
 import { MinimalSubagentsCoordinator } from "./minimal-subagents/minimal-subagents-coordinator.js";
+import { resolveMinimalSubagentsSettings } from "./minimal-subagents/minimal-subagents-config.js";
 import { snapshotCommittedContext } from "./minimal-subagents/minimal-subagents-context.js";
 import {
   rememberForkSnapshot,
@@ -30,6 +31,7 @@ import {
   findDeliveryEvidence,
   PiAgentSessionFactory,
 } from "./minimal-subagents/minimal-subagents-sessions.js";
+import { shutdownMinimalSubagentsSession } from "./minimal-subagents/minimal-subagents-shutdown.js";
 import { createCoordinatorToolDefinitions } from "./minimal-subagents/minimal-subagents-tools.js";
 import {
   renderMinimalSubagentsMessage,
@@ -122,6 +124,12 @@ function replayPreviousRoot(previousSessionFile: string): RegistrySnapshot {
   return replayRegistryEntries(previousSession.getEntries(), previousRootSessionId);
 }
 
+async function waitForRootSessionIdle(context: ExtensionContext): Promise<void> {
+  while (!context.isIdle()) {
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
 /** Register the six root coordinator tools and bind root-owned persistent subagent lifecycle hooks. */
 export default function minimalSubagentsExtension(pi: ExtensionAPI) {
   let coordinator: MinimalSubagentsCoordinator | undefined;
@@ -134,15 +142,26 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
   pi.on("session_start", async (event, context) => {
     const rootSessionId = context.sessionManager.getSessionId();
     const agentDir = getAgentDir();
-    const enabledModelPatterns = SettingsManager.create(context.cwd, agentDir, {
+    const settingsManager = SettingsManager.create(context.cwd, agentDir, {
       projectTrusted: context.isProjectTrusted(),
-    }).getEnabledModels();
+    });
+    const enabledModelPatterns = settingsManager.getEnabledModels();
     const availableModels = context.modelRegistry.getAvailable();
     const eligibleModelIds = buildEligibleModelIds({
       availableModels,
       scopedModels: context.scopedModels,
       scopeConfigured: enabledModelPatterns !== undefined,
     });
+    const minimalSubagentsConfig = resolveMinimalSubagentsSettings(
+      settingsManager,
+      eligibleModelIds,
+    );
+    if (minimalSubagentsConfig.warnings.length > 0) {
+      context.ui.notify(
+        `Minimal subagents configuration warnings:\n- ${minimalSubagentsConfig.warnings.join("\n- ")}`,
+        "warning",
+      );
+    }
     const models = [...availableModels];
     if (
       context.model &&
@@ -166,12 +185,14 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
       modelScopeRestricted: enabledModelPatterns !== undefined,
       availableToolNames,
       projectTrusted: context.isProjectTrusted(),
+      maxSubagentDepth: minimalSubagentsConfig.maxSubagentDepth,
       onChildSessionActivity: () => activeCoordinator.scheduleDeliveryReconciliation(),
       getCoordinatorTools: (callerId) =>
         createCoordinatorToolDefinitions({
           coordinator: activeCoordinator,
           callerId,
           allowFanoutTools: activeCoordinator.canAgentSpawn(callerId),
+          modelRoles: minimalSubagentsConfig.modelRoles,
           schemas,
           captureCaller: (childContext) =>
             activeCoordinator.snapshotChildCaller(
@@ -184,6 +205,7 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
     activeCoordinator = new MinimalSubagentsCoordinator({
       sessions: sessionFactory,
       root: createRootConversationEndpoint(pi, context),
+      maxSubagentDepth: minimalSubagentsConfig.maxSubagentDepth,
       registry: {
         rootSessionId,
         append: (registryEvent) => pi.appendEntry(REGISTRY_ENTRY_TYPE, registryEvent),
@@ -217,6 +239,7 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
       coordinator: activeCoordinator,
       callerId: "root",
       allowFanoutTools: true,
+      modelRoles: minimalSubagentsConfig.modelRoles,
       schemas,
       captureCaller: (toolContext) => rootCallerSnapshot(pi, toolContext),
       onActivity: () => uiController?.refresh(),
@@ -248,10 +271,15 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
     }
   });
 
-  pi.on("session_shutdown", async () => {
+  pi.on("session_shutdown", async (event, context) => {
+    if (coordinator) {
+      await shutdownMinimalSubagentsSession(event.reason, coordinator, {
+        isRootIdle: () => context.isIdle(),
+        waitForRootIdle: () => waitForRootSessionIdle(context),
+      });
+    }
     uiController?.dispose();
     uiController = undefined;
-    await coordinator?.shutdown();
     coordinator = undefined;
     preparedFork = undefined;
   });

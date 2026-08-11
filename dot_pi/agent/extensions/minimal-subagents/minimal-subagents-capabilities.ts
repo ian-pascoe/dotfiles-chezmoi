@@ -2,7 +2,7 @@ import type { DelegationMode, ToolSelection } from "./minimal-subagents-types.js
 
 /** Lists Pi thinking levels in increasing effort order for schema validation and clamping. */
 export const THINKING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"] as const;
-/** Bounds explicit fanout to root → child → grandchild. */
+/** Defaults explicit fanout to root → child → grandchild when settings omit a depth. */
 export const DEFAULT_MAX_SUBAGENT_DEPTH = 2;
 /** Lists the six coordinator tools excluded from ordinary child capabilities. */
 export const COORDINATOR_TOOL_NAMES = [
@@ -102,9 +102,13 @@ export function getSubagentDepth(agentId: string): number {
   return agentId.startsWith("root.") ? segments - 1 : segments;
 }
 
-/** Report whether an explicit fanout contract remains below the delegation depth cap. */
-export function canAgentContractSpawn(agentId: string, delegation?: DelegationMode): boolean {
-  return delegation === "fanout" && getSubagentDepth(agentId) < DEFAULT_MAX_SUBAGENT_DEPTH;
+/** Report whether an explicit fanout contract remains below the configured delegation depth cap. */
+export function canAgentContractSpawn(
+  agentId: string,
+  delegation?: DelegationMode,
+  maxSubagentDepth = DEFAULT_MAX_SUBAGENT_DEPTH,
+): boolean {
+  return delegation === "fanout" && getSubagentDepth(agentId) < maxSubagentDepth;
 }
 
 /** Return ordinary tools only, excluding all six coordinator tools. */

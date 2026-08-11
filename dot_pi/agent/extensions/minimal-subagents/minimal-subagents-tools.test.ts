@@ -26,6 +26,34 @@ describe("createCoordinatorToolDefinitions", () => {
     expect(tools.find((tool) => tool.name === "subagent")?.description).toContain(
       "Root-child IDs omit the root prefix",
     );
+    expect(tools.every((tool) => tool.promptGuidelines === undefined)).toBe(true);
+  });
+
+  it("adds configured model roles only to spawn guidance", () => {
+    const tools = createCoordinatorToolDefinitions({
+      coordinator: {} as never,
+      callerId: "root",
+      schemas: createCoordinatorToolSchemas([]),
+      modelRoles: [
+        { name: "cheap", model: "opencode-go/glm-5.2" },
+        {
+          name: "design",
+          model: "opencode-go/kimi-k3",
+          hint: "UI design and frontend polish",
+        },
+      ],
+      captureCaller: () => {
+        throw new Error("not used");
+      },
+    });
+
+    expect(tools.find((tool) => tool.name === "subagent")?.promptGuidelines).toEqual([
+      "Configured model roles are guidance, not constraints:\n  - cheap → opencode-go/glm-5.2\n  - design → opencode-go/kimi-k3 — UI design and frontend polish",
+      "Choose a model based on the task. Choose thinking_level independently.",
+    ]);
+    expect(
+      tools.filter((tool) => tool.name !== "subagent").every((tool) => !tool.promptGuidelines),
+    ).toBe(true);
   });
 
   it("attaches the resolved launch contract to spawn rendering details", async () => {

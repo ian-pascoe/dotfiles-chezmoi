@@ -29,7 +29,7 @@ This specification is the product and implementation authority for the replaceme
 
 ## Non-goals
 
-- Workflow scripts, DAGs, chains, fan-out languages, retries, gates, acceptance policies, budgets, profiles, roles, missions, schedules, watchdogs, worktrees, or approval checkpoints.
+- Workflow scripts, DAGs, chains, fan-out languages, retries, gates, acceptance policies, budgets, enforced agent roles or profiles, missions, schedules, watchdogs, worktrees, or approval checkpoints.
 - A fleet dashboard, inspector, transcript browser, or persistent status widget.
 - Cross-process or cross-machine messaging, IRC, RPC, or a background daemon.
 - Continuing provider work while Pi is not running.
@@ -50,6 +50,7 @@ This specification is the product and implementation authority for the replaceme
 - **Coordinator tools:** The six tools in this specification. Every child receives `agent_message`, wait, and status independently of ordinary tool selection. Spawn, cancel, and delete are available only to the root and explicitly authorized fanout children below the depth cap. All `subagent_*` observation and lifecycle targets are direct children.
 - **Ordinary tools:** Built-in or extension-provided tools selected by the launch contract.
 - **Launch contract:** The immutable context, model, thinking, project-context, and ordinary-tool configuration captured when an agent is created.
+- **Model role:** A user-defined advisory name and optional hint for one eligible model. Roles guide the parent but never classify tasks, alter tool inputs, or route launches.
 - **Conversation-plane message:** Content added to the recipient's model context.
 - **Control-plane notification:** UI/status information that does not become model input.
 
@@ -275,8 +276,8 @@ There is no working-directory parameter. Every descendant uses the root session'
 - There is no foreground/background option. Foreground composition is `subagent` followed by `subagent_wait`.
 - Pi may execute several `subagent` tool calls concurrently.
 - The coordinator imposes no concurrency limit and creates no queue.
-- The root may always spawn. A child may spawn only when its immutable launch contract has `delegation: "fanout"` and its depth is below 2.
-- Depth uses root = 0, child = 1, and grandchild = 2. A grandchild never receives `subagent`; direct coordinator invocation at the cap fails explicitly.
+- The root may always spawn. A child may spawn only when its immutable launch contract has `delegation: "fanout"` and its depth is below the active `minimalSubagents.maxSubagentDepth` setting.
+- Depth uses root = 0, child = 1, and grandchild = 2. The default maximum is 2. An agent at the active cap never receives `subagent`; direct coordinator invocation at the cap fails explicitly.
 - Ordinary children receive an explicit boundary to complete their task directly. Fanout children receive a boundary limiting delegation to the fanout assigned by their parent and requiring them to own synthesis.
 - Tool registration and `coordinator.spawn()` both enforce authorization so stale runtime definitions cannot bypass the contract.
 - A setup failure settles the first turn as failed and leaves the agent idle and reusable when its persisted session remains valid.
@@ -345,6 +346,18 @@ Wildcards are never accepted as tool arguments. The dynamic enum refreshes only 
 - A persisted agent whose model is removed from `enabledModels`, loses authentication, or disappears from the registry restores as unavailable.
 - The coordinator never selects a fallback model.
 - Child settings disable Pi's agent-level retry and set provider retry attempts to zero. A failed request settles the turn; only a later explicit message starts new work.
+
+### Advisory Model Roles
+
+The optional `minimalSubagents.modelRoles` object is read from global and trusted project Pi settings. It maps arbitrary user-defined role names either to a canonical model string or to `{ "model": "provider/model", "hint": "agent-facing guidance" }`.
+
+- The extension defines no built-in role names or hints.
+- Project entries merge over global entries by role name; expanded objects merge by field.
+- A project role set to `null` removes that inherited role, and project `modelRoles: null` clears all inherited roles.
+- Only eligible canonical models are advertised. Thinking suffixes are rejected because thinking remains a per-spawn decision.
+- Valid roles appear only in the `subagent` tool's prompt guidance. They add no tool parameter, launch-contract field, persisted state, or TUI metadata.
+- Invalid roles are omitted and reported in one consolidated startup warning without disabling the tools.
+- Settings reload only on normal session start, resume, or `/reload`.
 
 ## Ordinary Tool Selection
 
@@ -556,7 +569,15 @@ The human-facing UI is limited to small native notifications for spawn, completi
 
 ### Graceful Shutdown
 
-On quit, reload, new session, resume, switch, or fork:
+On reload:
+
+1. Keep the old extension runtime valid while active child operations, delivery queues, and root work settle.
+2. Recheck dynamically added work until both the coordinator and root are idle.
+3. Atomically stop accepting new operations, dispose idle child runtimes, and let Pi invalidate the old extension runtime.
+4. Preserve child session files, registry entries, and immutable launch contracts.
+5. Allow a deliberately non-settling agent to delay reload indefinitely rather than cancelling its turn.
+
+On quit, new session, resume, switch, or fork:
 
 1. Stop accepting new operations for the closing coordinator.
 2. Abort active child turns.
@@ -626,11 +647,13 @@ The coordinator deliberately implements:
 - No maximum live-agent count or concurrency semaphore.
 - No queue for provider capacity.
 - `delegation: "none"` by default; explicit `fanout` authorization is immutable per agent.
-- A fixed maximum depth of 2: root → child → grandchild.
+- A positive safe-integer `minimalSubagents.maxSubagentDepth`, defaulting to 2: root → child → grandchild.
 - No cross-agent file mutation lock.
 - No cycle or deadlock prevention for messaging and indefinite waits.
 
-Provider limits and operating-system failures surface as ordinary turn or tool failures. Width remains unlimited after deliberate fanout authorization; the depth cap prevents recursive delegation cascades.
+Global depth is overridden by a valid trusted project value. Project `null` restores the default of 2; an invalid project value warns and leaves a valid global value in effect. Reload waits for active work rather than cancelling it, retains agent records and immutable launch contracts, then applies the lower cap to restored tool availability and future spawn attempts. The cap is not persisted in launch contracts.
+
+Provider limits and operating-system failures surface as ordinary turn or tool failures. Width remains unlimited after deliberate fanout authorization; the configured depth cap prevents recursive delegation cascades.
 
 ## Source Layout
 
@@ -640,12 +663,15 @@ Implement the extension in the chezmoi source tree:
 dot_pi/agent/extensions/
 ├── minimal-subagents.ts
 └── minimal-subagents/
+    ├── README.md
     ├── minimal-subagents-capabilities.ts
+    ├── minimal-subagents-config.ts
     ├── minimal-subagents-context.ts
     ├── minimal-subagents-coordinator.ts
     ├── minimal-subagents-fork-lifecycle.ts
     ├── minimal-subagents-registry.ts
     ├── minimal-subagents-sessions.ts
+    ├── minimal-subagents-shutdown.ts
     ├── minimal-subagents-tool-schemas.ts
     ├── minimal-subagents-tools.ts
     ├── minimal-subagents-types.ts
@@ -679,6 +705,7 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 ### U1. Contracts, schemas, and model/tool resolution
 
 - Define public TypeBox schemas and structured results.
+- Resolve trusted global/project `minimalSubagents` settings, advisory model roles, validation warnings, and the active depth cap.
 - Build the dynamic model enum from effective `enabledModels` and authenticated registry models.
 - Resolve fixed tool bundles, explicit names, inheritance, and transitive ceilings.
 - Test empty model sets, pattern resolution, thinking suffix stripping, custom tools, missing dependencies, and ceiling violations.
@@ -727,7 +754,7 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 
 **Given** two root children explicitly authorized with `delegation: "fanout"`,
 **when** each creates descendants concurrently,
-**then** all turns run without a coordinator queue, root-child canonical IDs have no `root.` prefix, nested IDs retain their parent path, IDs remain unique within their peer sets, and the depth-2 descendants cannot delegate again.
+**then** all turns run without a coordinator queue, root-child canonical IDs have no `root.` prefix, nested IDs retain their parent path, IDs remain unique within their peer sets, and descendants at the configured depth cap cannot delegate again.
 
 ### AS3. Context modes
 
@@ -833,9 +860,9 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 
 ### AS20. Bounded explicit fanout
 
-**Given** an ordinary child, an authorized depth-1 fanout child, and a depth-2 grandchild,
+**Given** the default maximum depth of 2, an ordinary child, an authorized depth-1 fanout child, and a depth-2 grandchild,
 **when** each attempts to spawn,
-**then** the ordinary child is denied, the authorized depth-1 child may spawn without a concurrency queue, and the depth-2 child is blocked by the fixed cap.
+**then** the ordinary child is denied, the authorized depth-1 child may spawn without a concurrency queue, and the depth-2 child is blocked by the active cap.
 
 ### AS21. No automatic retry or fallback
 
@@ -855,6 +882,12 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 **when** it waits, requests explicit status, or lists status,
 **then** only its direct child is targetable or listed, no grandchildren are recursively exposed, and sibling IDs become known only when the parent explicitly supplies them for `agent_message`.
 
+### AS24. Layered minimal-subagents settings
+
+**Given** global model roles and depth plus trusted project overrides, tombstones, and malformed entries,
+**when** the extension starts or reloads,
+**then** active work settles before the old runtime shuts down, valid project values merge over global values in stable order, tombstones remove inherited guidance, invalid entries produce one warning, the configured depth controls future fanout, and only the spawn tool advertises valid advisory roles without assigning thinking levels.
+
 ## Verification Contract
 
 | Gate | Command or proof | Done signal |
@@ -872,12 +905,12 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 ## Definition of Done
 
 - The public surface contains exactly the six specified tools and their confirmed defaults.
-- AS1-AS23 have focused automated coverage where Pi APIs permit deterministic construction; persistence, direct resume, and fork also have deployed smoke evidence.
+- AS1-AS24 have focused automated coverage where Pi APIs permit deterministic construction; persistence, direct resume, and fork also have deployed smoke evidence.
 - Every child uses a normal persisted Pi session and is visible through `/resume`.
 - The original root restores its complete hierarchy after restart without restarting interrupted work.
 - Successful final responses reach direct parents exactly once, steering active parents instead of waiting in their follow-up queues.
-- Unlimited parallel width works without a plugin semaphore or queue; nested spawning requires explicit fanout authorization and stops at depth 2.
+- Unlimited parallel width works without a plugin semaphore or queue; nested spawning requires explicit fanout authorization and stops at the configured depth, defaulting to 2.
 - Context, model, thinking, project-resource, ordinary-tool, and capability-ceiling behavior matches this specification.
 - Root tree navigation, root fork cloning, direct child promotion, cancellation, deletion, tombstones, and unavailable dependency restoration match this specification.
 - The old `pi-subagents` package and its settings block are removed from the deployed Pi configuration.
-- No workflow DSL, role/profile system, mission system, fleet UI, external transport, ownership lease, automatic cleanup, fallback, or orchestration retry is introduced.
+- No workflow DSL, enforced role/profile system, automatic model routing, mission system, fleet UI, external transport, ownership lease, automatic cleanup, fallback, or orchestration retry is introduced.

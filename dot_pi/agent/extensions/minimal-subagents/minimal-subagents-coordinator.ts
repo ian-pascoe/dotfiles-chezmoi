@@ -89,6 +89,10 @@ export class MinimalSubagentsCoordinator {
 
   constructor(private readonly dependencies: CoordinatorDependencies) {}
 
+  private get maxSubagentDepth(): number {
+    return this.dependencies.maxSubagentDepth ?? DEFAULT_MAX_SUBAGENT_DEPTH;
+  }
+
   /** Return a serializable complete hierarchy checkpoint without process-local runtimes. */
   snapshot(): RegistrySnapshot {
     return {
@@ -337,7 +341,11 @@ export class MinimalSubagentsCoordinator {
     if (callerId === "root") return true;
     const caller = this.agents.get(callerId);
     return caller
-      ? canAgentContractSpawn(caller.agent_id, caller.launch_contract.delegation)
+      ? canAgentContractSpawn(
+          caller.agent_id,
+          caller.launch_contract.delegation,
+          this.maxSubagentDepth,
+        )
       : false;
   }
 
@@ -602,18 +610,68 @@ export class MinimalSubagentsCoordinator {
   shutdown(): Promise<void> {
     if (this.shutdownPromise) return this.shutdownPromise;
     this.acceptingOperations = false;
+    this.shutdownPromise = this.finishShutdown();
+    return this.shutdownPromise;
+  }
+
+  /** Let dynamic coordinator work settle before stopping acceptance and disposing child runtimes. */
+  shutdownAfterSettling(): Promise<void> {
+    if (this.shutdownPromise) return this.shutdownPromise;
+    if (!this.hasPendingOperations()) {
+      this.acceptingOperations = false;
+      this.shutdownPromise = this.finishShutdown();
+      return this.shutdownPromise;
+    }
     this.shutdownPromise = (async () => {
-      const roots = this.childrenOf("root");
-      for (const child of roots) {
-        if (this.agents.has(child.agent_id)) await this.cancelDuringShutdown(child.agent_id);
-      }
-      await Promise.allSettled(this.runtimeInitializations.values());
-      await Promise.allSettled(this.backgroundOperations);
-      await Promise.allSettled(this.recipientQueues.values());
-      for (const runtime of this.runtimes.values()) runtime.dispose();
-      this.runtimes.clear();
+      await this.waitForSettledOperations();
+      this.acceptingOperations = false;
+      await this.finishShutdown();
     })();
     return this.shutdownPromise;
+  }
+
+  /** Wait until active turns, initialization, delivery, and recipient queues are all settled. */
+  async waitForSettledOperations(): Promise<void> {
+    while (this.hasPendingOperations()) {
+      const pending = [
+        ...this.runtimeInitializations.values(),
+        ...this.backgroundOperations,
+        ...this.recipientQueues.values(),
+      ];
+      if (pending.length === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        continue;
+      }
+      await Promise.race(
+        pending.map((operation) =>
+          operation.then(
+            () => undefined,
+            () => undefined,
+          ),
+        ),
+      );
+    }
+  }
+
+  private hasPendingOperations(): boolean {
+    return (
+      [...this.agents.values()].some((agent) => agent.active_turn_id !== undefined) ||
+      this.runtimeInitializations.size > 0 ||
+      this.backgroundOperations.size > 0 ||
+      this.recipientQueues.size > 0
+    );
+  }
+
+  private async finishShutdown(): Promise<void> {
+    const roots = this.childrenOf("root");
+    for (const child of roots) {
+      if (this.agents.has(child.agent_id)) await this.cancelDuringShutdown(child.agent_id);
+    }
+    await Promise.allSettled(this.runtimeInitializations.values());
+    await Promise.allSettled(this.backgroundOperations);
+    await Promise.allSettled(this.recipientQueues.values());
+    for (const runtime of this.runtimes.values()) runtime.dispose();
+    this.runtimes.clear();
   }
 
   private async initializeAndRunPrompt(
@@ -1040,9 +1098,9 @@ export class MinimalSubagentsCoordinator {
   private assertCallerMaySpawn(callerId: string): void {
     if (callerId === "root") return;
     const depth = getSubagentDepth(callerId);
-    if (depth >= DEFAULT_MAX_SUBAGENT_DEPTH) {
+    if (depth >= this.maxSubagentDepth) {
       throw new Error(
-        `Minimal subagents maximum delegation depth reached: ${callerId} (depth ${depth}, max ${DEFAULT_MAX_SUBAGENT_DEPTH})`,
+        `Minimal subagents maximum delegation depth reached: ${callerId} (depth ${depth}, max ${this.maxSubagentDepth})`,
       );
     }
     const caller = this.requireUsableAgent(callerId, "delegation");
@@ -1164,7 +1222,16 @@ export class MinimalSubagentsCoordinator {
     this.assertCallerTargetsDirectChild(callerId, targetAgentId, operation);
     if (callerId === "root") return;
     const caller = this.agents.get(callerId);
-    if (caller && canAgentContractSpawn(caller.agent_id, caller.launch_contract.delegation)) return;
+    if (
+      caller &&
+      canAgentContractSpawn(
+        caller.agent_id,
+        caller.launch_contract.delegation,
+        this.maxSubagentDepth,
+      )
+    ) {
+      return;
+    }
     throw new Error(
       `Minimal subagents ${operation} authorization denied: ${callerId} cannot target ${targetAgentId}`,
     );

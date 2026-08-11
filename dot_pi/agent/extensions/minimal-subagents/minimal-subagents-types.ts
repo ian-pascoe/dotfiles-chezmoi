@@ -295,11 +295,12 @@ export interface CoordinatorNotification {
   message: string;
 }
 
-/** Injects persistent sessions, root delivery, registry, delivery grace, clock, and notifications. */
+/** Injects sessions, root delivery, registry, delegation depth, delivery grace, and notifications. */
 export interface CoordinatorDependencies {
   registry: RegistryWriter;
   sessions: AgentSessionFactory;
   root: RootConversationEndpoint;
+  maxSubagentDepth?: number;
   now?: () => Date;
   automaticDeliveryGraceMs?: number;
   notify?: (notification: CoordinatorNotification) => void;

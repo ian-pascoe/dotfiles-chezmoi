@@ -216,7 +216,7 @@ function rootCaller(overrides: Partial<CallerSnapshot> = {}): CallerSnapshot {
   };
 }
 
-function makeCoordinator(automaticDeliveryGraceMs = 0, now?: () => Date) {
+function makeCoordinator(automaticDeliveryGraceMs = 0, now?: () => Date, maxSubagentDepth = 2) {
   const sessions = new FakeSessionFactory();
   const root = new FakeRoot();
   const registry = new FakeRegistry();
@@ -228,6 +228,7 @@ function makeCoordinator(automaticDeliveryGraceMs = 0, now?: () => Date) {
     notify,
     now,
     automaticDeliveryGraceMs,
+    maxSubagentDepth,
   });
   return { coordinator, sessions, root, registry, notify };
 }
@@ -339,6 +340,46 @@ describe("MinimalSubagentsCoordinator spawning", () => {
     ).rejects.toThrow(
       "Minimal subagents maximum delegation depth reached: lead.review (depth 2, max 2)",
     );
+  });
+
+  it("uses the configured maximum delegation depth for nested spawning", async () => {
+    const { coordinator } = makeCoordinator(0, undefined, 1);
+    await coordinator.spawn(
+      "root",
+      { task: "lead", agent_id: "lead", delegation: "fanout" },
+      rootCaller(),
+    );
+
+    expect(coordinator.canAgentSpawn("lead")).toBe(false);
+    await expect(coordinator.spawn("lead", { task: "too deep" }, rootCaller())).rejects.toThrow(
+      "Minimal subagents maximum delegation depth reached: lead (depth 1, max 1)",
+    );
+  });
+
+  it("retains a restored hierarchy while applying a lower active depth", async () => {
+    const original = makeCoordinator();
+    await original.coordinator.spawn(
+      "root",
+      { task: "lead", agent_id: "lead", delegation: "fanout" },
+      rootCaller(),
+    );
+    await original.coordinator.spawn(
+      "lead",
+      { task: "review", agent_id: "review", delegation: "fanout" },
+      rootCaller(),
+    );
+
+    const restored = makeCoordinator(0, undefined, 1);
+    await restored.coordinator.restore(original.coordinator.snapshot());
+
+    expect(restored.coordinator.inspectStatus()).toEqual({
+      root_id: "root",
+      agents: [expect.objectContaining({ agent_id: "lead", child_count: 1 })],
+    });
+    expect(restored.coordinator.inspectStatus("lead.review")).toEqual({
+      agent: expect.objectContaining({ agent_id: "lead.review" }),
+    });
+    expect(restored.coordinator.canAgentSpawn("lead")).toBe(false);
   });
 
   it("keeps generated peer identities unique and rejects duplicates without overwriting", async () => {
@@ -1003,6 +1044,43 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
     sessions.releaseRuntimeCreation?.();
     await shutdown;
     expect(sessions.runtimes.get("worker")?.disposed).toBe(true);
+  });
+
+  it("waits for active turns to settle without aborting them before reload", async () => {
+    const { coordinator, sessions, root } = makeCoordinator(5);
+    const spawned = await coordinator.spawn(
+      "root",
+      { task: "finish before reload", agent_id: "worker" },
+      rootCaller(),
+    );
+    await flushTasks();
+    const runtime = sessions.runtimes.get("worker")!;
+    let shutdownSettled = false;
+
+    const shutdown = coordinator.shutdownAfterSettling().then(() => {
+      shutdownSettled = true;
+    });
+    await flushTasks();
+
+    expect(shutdownSettled).toBe(false);
+    expect(runtime.aborted).toBe(false);
+    runtime.promptOutcomes[0]!.resolve({ status: "completed", output: "done" });
+    await shutdown;
+
+    expect(runtime.aborted).toBe(false);
+    expect(runtime.disposed).toBe(true);
+    expect(root.messages).toEqual([
+      expect.objectContaining({ message: expect.objectContaining({ content: "done" }) }),
+    ]);
+    expect(coordinator.inspectStatus("worker")).toEqual({
+      agent: expect.objectContaining({
+        latest_result: expect.objectContaining({
+          turn_id: spawned.turn_id,
+          status: "completed",
+          output: "done",
+        }),
+      }),
+    });
   });
 
   it("clones peers independently and makes a failed subtree registry-only", async () => {

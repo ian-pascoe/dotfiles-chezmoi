@@ -10,6 +10,7 @@ import {
   type ToolRenderResultOptions,
 } from "@earendil-works/pi-coding-agent";
 import type { MinimalSubagentsCoordinator } from "./minimal-subagents-coordinator.js";
+import type { MinimalSubagentsModelRole } from "./minimal-subagents-config.js";
 import {
   renderCoordinatorToolCall,
   renderCoordinatorToolResult,
@@ -32,10 +33,24 @@ interface CoordinatorToolDefinitionOptions {
   coordinator: MinimalSubagentsCoordinator;
   callerId: string;
   allowFanoutTools?: boolean;
+  modelRoles?: readonly MinimalSubagentsModelRole[];
   schemas: ReturnType<typeof createCoordinatorToolSchemas>;
   captureCaller: (context: ExtensionContext) => CallerSnapshot;
   onActivity?: () => void;
   onAttention?: (message: string) => void;
+}
+
+function buildModelRolePromptGuidelines(
+  modelRoles: readonly MinimalSubagentsModelRole[],
+): string[] | undefined {
+  if (modelRoles.length === 0) return undefined;
+  const roleLines = modelRoles.map(
+    (role) => `  - ${role.name} → ${role.model}${role.hint ? ` — ${role.hint}` : ""}`,
+  );
+  return [
+    ["Configured model roles are guidance, not constraints:", ...roleLines].join("\n"),
+    "Choose a model based on the task. Choose thinking_level independently.",
+  ];
 }
 
 async function runCoordinatorToolActivity<T>(
@@ -107,12 +122,14 @@ function callerSourceTurnId(
 export function createCoordinatorToolDefinitions(
   options: CoordinatorToolDefinitionOptions,
 ): ToolDefinition[] {
+  const modelRolePromptGuidelines = buildModelRolePromptGuidelines(options.modelRoles ?? []);
   const spawnTool = defineTool({
     name: "subagent",
     label: "Subagent",
     description:
       "Create a persistent nested agent asynchronously. Returns its canonical agent ID and active turn ID immediately. Root-child IDs omit the root prefix; nested IDs retain the parent path.",
     promptSnippet: "Spawn a persistent child with a prefix-free root-child ID",
+    promptGuidelines: modelRolePromptGuidelines,
     parameters: options.schemas.subagent,
     async execute(_toolCallId, parameters, _signal, _onUpdate, context) {
       return runCoordinatorToolActivity(options, async () => {
