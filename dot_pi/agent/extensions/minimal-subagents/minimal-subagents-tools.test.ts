@@ -25,6 +25,43 @@ describe("createCoordinatorToolDefinitions", () => {
     expect(tools.every((tool) => tool.renderCall && tool.renderResult)).toBe(true);
   });
 
+  it("attaches the resolved launch contract to spawn rendering details", async () => {
+    const coordinator = {
+      spawn: vi.fn(async () => ({
+        agent_id: "root.worker",
+        turn_id: "turn-1",
+        status: "running",
+      })),
+      status: vi.fn(() => ({
+        agent: {
+          agent_id: "root.worker",
+          launch_contract: { ordinary_tools: ["read", "bash"] },
+        },
+      })),
+    };
+    const tools = createCoordinatorToolDefinitions({
+      coordinator: coordinator as never,
+      callerId: "root",
+      schemas: createCoordinatorToolSchemas([]),
+      captureCaller: () => ({}) as never,
+    });
+    const spawnTool = tools.find((tool) => tool.name === "subagent")!;
+    const result = await spawnTool.execute(
+      "call-1",
+      { task: "Review" },
+      undefined,
+      undefined,
+      {} as never,
+    );
+    expect(result.details).toEqual(
+      expect.objectContaining({
+        agent: expect.objectContaining({
+          launch_contract: expect.objectContaining({ ordinary_tools: ["read", "bash"] }),
+        }),
+      }),
+    );
+  });
+
   it("clears the wait progress timer after the exact turn settles", async () => {
     vi.useFakeTimers();
     let settleWait!: (result: unknown) => void;

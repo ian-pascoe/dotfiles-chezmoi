@@ -687,6 +687,26 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
     });
   });
 
+  it("preserves activity time when restoration leaves availability unchanged", async () => {
+    const original = makeCoordinator();
+    await original.coordinator.spawn("root", { task: "work", agent_id: "worker" }, rootCaller());
+    await flushTasks();
+    await original.coordinator.cancel("root.worker");
+    const snapshot = original.coordinator.snapshot();
+    snapshot.agents[0]!.availability = "unavailable";
+    snapshot.agents[0]!.latest_activity_at = "2026-08-11T12:00:00.000Z";
+    snapshot.agents[0]!.launch_contract.model = "openai/missing";
+
+    const restored = makeCoordinator(0, () => new Date("2026-08-11T13:00:00.000Z"));
+    await restored.coordinator.restore(snapshot);
+    expect(restored.coordinator.status("root.worker")).toEqual({
+      agent: expect.objectContaining({
+        availability: "unavailable",
+        latest_activity_at: "2026-08-11T12:00:00.000Z",
+      }),
+    });
+  });
+
   it("restores unfinished turns as interrupted and marks dependency drift unavailable", async () => {
     const { coordinator } = makeCoordinator();
     const first = await coordinator.spawn(

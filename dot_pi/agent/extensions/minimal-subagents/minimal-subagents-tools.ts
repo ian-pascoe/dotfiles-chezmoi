@@ -115,7 +115,14 @@ export function createCoordinatorToolDefinitions(
           parameters as SpawnParameters,
           options.captureCaller(context),
         );
-        return structuredToolResult(result);
+        const status = options.coordinator.status(result.agent_id);
+        return {
+          ...structuredToolResult(result),
+          details: {
+            ...result,
+            ...(status && "agent" in status ? { agent: status.agent } : {}),
+          },
+        };
       });
     },
     ...createCoordinatorToolRendering("subagent"),

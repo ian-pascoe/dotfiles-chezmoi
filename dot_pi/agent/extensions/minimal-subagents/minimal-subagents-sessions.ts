@@ -547,6 +547,13 @@ export class PiAgentSessionFactory implements AgentSessionFactory {
     });
   }
 
+  private buildChildSystemPrompt(agent: PersistedAgent): string {
+    return buildSubagentSystemPrompt(agent.agent_id, agent.parent_id, {
+      canSpawn: canAgentContractSpawn(agent.agent_id, agent.launch_contract.delegation),
+      remainingDepth: Math.max(0, DEFAULT_MAX_SUBAGENT_DEPTH - getSubagentDepth(agent.agent_id)),
+    });
+  }
+
   private async findMissingDependencies(
     agent: PersistedAgent,
     requireEligibleModel: boolean,
@@ -588,13 +595,7 @@ export class PiAgentSessionFactory implements AgentSessionFactory {
           agentDir: this.options.agentDir,
           projectContext: agent.launch_contract.project_context,
           extensionEntrypoint: this.options.extensionEntrypoint,
-          systemPromptBlock: buildSubagentSystemPrompt(agent.agent_id, agent.parent_id, {
-            canSpawn: canAgentContractSpawn(agent.agent_id, agent.launch_contract.delegation),
-            remainingDepth: Math.max(
-              0,
-              DEFAULT_MAX_SUBAGENT_DEPTH - getSubagentDepth(agent.agent_id),
-            ),
-          }),
+          systemPromptBlock: this.buildChildSystemPrompt(agent),
           ordinaryToolNames: agent.launch_contract.ordinary_tools,
           settingsManager,
         }),
@@ -629,13 +630,7 @@ export class PiAgentSessionFactory implements AgentSessionFactory {
         agentDir: this.options.agentDir,
         projectContext: agent.launch_contract.project_context,
         extensionEntrypoint: this.options.extensionEntrypoint,
-        systemPromptBlock: buildSubagentSystemPrompt(agent.agent_id, agent.parent_id, {
-          canSpawn: canAgentContractSpawn(agent.agent_id, agent.launch_contract.delegation),
-          remainingDepth: Math.max(
-            0,
-            DEFAULT_MAX_SUBAGENT_DEPTH - getSubagentDepth(agent.agent_id),
-          ),
-        }),
+        systemPromptBlock: this.buildChildSystemPrompt(agent),
         ordinaryToolNames: agent.launch_contract.ordinary_tools,
         settingsManager,
       }),

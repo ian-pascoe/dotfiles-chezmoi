@@ -91,6 +91,30 @@ describe("buildMinimalSubagentsWidgetView", () => {
     );
   });
 
+  it("prioritizes failed outcomes over newer successful outcomes", () => {
+    const hierarchy: StatusResult = {
+      root_id: "root",
+      agents: [
+        agent({
+          agent_id: "root.old-failure",
+          latest_turn: { turn_id: "failed", status: "failed" },
+          latest_activity_at: "2026-08-11T12:00:00.000Z",
+        }),
+        ...Array.from({ length: 3 }, (_, index) =>
+          agent({
+            agent_id: `root.recent-${index + 1}`,
+            latest_turn: { turn_id: `completed-${index + 1}`, status: "completed" },
+            latest_activity_at: `2026-08-11T12:00:0${index + 1}.000Z`,
+          }),
+        ),
+      ],
+    };
+
+    const ids = buildMinimalSubagentsWidgetView(hierarchy).rows.map((row) => row.agentId);
+    expect(ids).toContain("root.old-failure");
+    expect(ids).not.toContain("root.recent-1");
+  });
+
   it("caps agent rows at eight and renders every line within terminal width", () => {
     const hierarchy: StatusResult = {
       root_id: "root",

@@ -475,12 +475,14 @@ export class MinimalSubagentsCoordinator {
           message: `Restored ${agent.agent_id} with an interrupted turn`,
         });
       }
+      const previousAvailability = agent.availability;
       const missing = agent.clone_error
         ? [agent.clone_error]
         : await this.dependencies.sessions.resolveRestorationMissingDependencies(agent);
       if (missing.length > 0 || !agent.session_file) {
         agent.availability = "unavailable";
-        agent.latest_activity_at = this.now().toISOString();
+        if (previousAvailability !== "unavailable")
+          agent.latest_activity_at = this.now().toISOString();
         agent.missing_dependencies = missing.length > 0 ? missing : agent.missing_dependencies;
         agent.unavailable_reason =
           agent.clone_error ??
@@ -495,7 +497,6 @@ export class MinimalSubagentsCoordinator {
         continue;
       }
       try {
-        const previousAvailability = agent.availability;
         this.runtimes.set(agent.agent_id, await this.dependencies.sessions.restoreRuntime(agent));
         agent.availability = "available";
         if (previousAvailability !== "available")
@@ -509,7 +510,8 @@ export class MinimalSubagentsCoordinator {
         });
       } catch (error) {
         agent.availability = "unavailable";
-        agent.latest_activity_at = this.now().toISOString();
+        if (previousAvailability !== "unavailable")
+          agent.latest_activity_at = this.now().toISOString();
         agent.unavailable_reason = error instanceof Error ? error.message : String(error);
         this.dependencies.notify?.({
           type: "unavailable",

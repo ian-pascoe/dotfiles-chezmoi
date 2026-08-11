@@ -2,7 +2,10 @@ import type { Theme } from "@earendil-works/pi-coding-agent";
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, type Component, type TUI } from "@earendil-works/pi-tui";
 import type { MinimalSubagentsCoordinator } from "./minimal-subagents-coordinator.js";
-import { formatSubagentDuration } from "./minimal-subagents-rendering.js";
+import {
+  formatSubagentDuration,
+  renderSubagentStatusSymbol,
+} from "./minimal-subagents-rendering.js";
 import type { AgentSummary, StatusResult, TurnStatus } from "./minimal-subagents-types.js";
 
 const MINIMAL_SUBAGENTS_UI_KEY = "minimal-subagents";
@@ -56,7 +59,7 @@ function terminalTimestamp(agent: AgentSummary): number {
   return Number.isFinite(value) ? value : 0;
 }
 
-function failureTiePriority(agent: AgentSummary): number {
+function terminalFailurePriority(agent: AgentSummary): number {
   const status = agentTerminalStatus(agent);
   return status === "failed" || status === "unavailable" ? 0 : 1;
 }
@@ -90,8 +93,8 @@ export function buildMinimalSubagentsWidgetView(status: StatusResult): MinimalSu
     )
     .sort(
       (left, right) =>
+        terminalFailurePriority(left.agent) - terminalFailurePriority(right.agent) ||
         terminalTimestamp(right.agent) - terminalTimestamp(left.agent) ||
-        failureTiePriority(left.agent) - failureTiePriority(right.agent) ||
         left.order - right.order,
     )
     .slice(0, MINIMAL_SUBAGENTS_RECENT_LIMIT);
@@ -129,16 +132,6 @@ export function buildMinimalSubagentsWidgetView(status: StatusResult): MinimalSu
   };
 }
 
-function widgetStatusSymbol(theme: Theme, status: MinimalSubagentsWidgetRow["status"]): string {
-  if (status === "running") return theme.fg("accent", "◉");
-  if (status === "completed") return theme.fg("success", "✓");
-  if (status === "failed") return theme.fg("error", "×");
-  if (status === "cancelled") return theme.fg("warning", "■");
-  if (status === "interrupted") return theme.fg("warning", "!");
-  if (status === "unavailable") return theme.fg("warning", "!");
-  return theme.fg("dim", "○");
-}
-
 /** Render a responsive widget snapshot with ANSI-safe terminal-width truncation. */
 export function renderMinimalSubagentsWidgetLines(
   view: MinimalSubagentsWidgetView,
@@ -157,7 +150,7 @@ export function renderMinimalSubagentsWidgetLines(
     const duration = formatSubagentDuration(row.elapsedMs);
     const task = row.task?.replace(/\s+/g, " ").trim();
     const parts = [
-      `${"  ".repeat(row.depth)}${widgetStatusSymbol(theme, row.status)} ${row.agentId} · ${row.status}`,
+      `${"  ".repeat(row.depth)}${renderSubagentStatusSymbol(theme, row.status)} ${row.agentId} · ${row.status}`,
       duration,
       task,
     ].filter((part): part is string => Boolean(part));

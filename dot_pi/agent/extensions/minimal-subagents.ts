@@ -178,6 +178,7 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
               callerId,
               childContext.sessionManager.getLeafId() ?? callerId,
             ),
+          onAttention: (message) => context.ui.notify(message, "error"),
         }),
     });
     activeCoordinator = new MinimalSubagentsCoordinator({

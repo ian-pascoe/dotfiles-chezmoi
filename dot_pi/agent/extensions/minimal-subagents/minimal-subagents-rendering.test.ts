@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { initTheme, type Theme } from "@earendil-works/pi-coding-agent";
+import { visibleWidth } from "@earendil-works/pi-tui";
 import {
   formatSubagentDuration,
   formatSubagentPreview,
@@ -29,6 +30,7 @@ describe("minimal subagents rendering formatters", () => {
     expect(formatSubagentTokenCount(12_400)).toBe("12.4k");
     expect(formatSubagentPreview("first\n  second", 12)).toBe("first second");
     expect(formatSubagentPreview("a long multiline preview", 12)).toBe("a long mult…");
+    expect(visibleWidth(formatSubagentPreview("界界界界", 5))).toBeLessThanOrEqual(5);
   });
 });
 
@@ -101,6 +103,100 @@ describe("renderCoordinatorToolResult", () => {
     expect(expanded).toContain("cache read 200");
   });
 
+  it("renders complete expanded launch, status, and management details", () => {
+    const spawn = render(
+      renderCoordinatorToolResult(
+        "subagent",
+        {
+          content: [{ type: "text", text: "{}" }],
+          details: {
+            agent_id: "root.worker",
+            turn_id: "turn-1",
+            status: "running",
+            agent: {
+              launch_contract: {
+                session_context: "omit",
+                project_context: "inherit",
+                model: "openai/gpt",
+                thinking_level: "high",
+                delegation: "none",
+                ordinary_tools: ["read", "bash"],
+              },
+            },
+          },
+        },
+        { expanded: true, isPartial: false },
+        theme,
+        { task: "Review" },
+      ),
+    );
+    expect(spawn).toContain("Resolved tools");
+    expect(spawn).toContain("read, bash");
+
+    const status = render(
+      renderCoordinatorToolResult(
+        "subagent_status",
+        {
+          content: [{ type: "text", text: "{}" }],
+          details: {
+            agent: {
+              agent_id: "root.worker",
+              parent_id: "root",
+              state: "idle",
+              availability: "available",
+              latest_turn: { turn_id: "turn-1", status: "completed" },
+              elapsed_ms: 2_500,
+              child_count: 0,
+              children: [],
+            },
+          },
+        },
+        { expanded: true, isPartial: false },
+        theme,
+        {},
+      ),
+    );
+    expect(status).toContain("Availability: available");
+    expect(status).toContain("Duration: 2s");
+
+    for (const [toolName, details] of [
+      [
+        "subagent_cancel",
+        {
+          agent_id: "root.worker",
+          recursive: false,
+          affected_agent_ids: ["root.worker"],
+          cancelled_turn_ids: [],
+        },
+      ],
+      [
+        "subagent_delete",
+        {
+          agent_id: "root.worker",
+          recursive: true,
+          deleted_agent_ids: ["root.worker"],
+          tombstoned_agent_ids: ["root.worker"],
+          trashed_session_files: [],
+          failures: [],
+        },
+      ],
+    ] as const) {
+      const output = render(
+        renderCoordinatorToolResult(
+          toolName,
+          { content: [{ type: "text", text: "{}" }], details },
+          { expanded: true, isPartial: false },
+          theme,
+          {},
+        ),
+      );
+      expect(output).toContain("Requested target: root.worker");
+      expect(output).toContain(
+        toolName === "subagent_cancel" ? "Mode: target only" : "Mode: recursive",
+      );
+    }
+  });
+
   it("renders hierarchy and destructive results as curated summaries", () => {
     const hierarchy = render(
       renderCoordinatorToolResult(
@@ -138,18 +234,20 @@ describe("renderCoordinatorToolResult", () => {
     expect(hierarchy).toContain("× root.lead.review · failed");
   });
 
-  it("falls back to actionable tool text when details are unavailable", () => {
-    const output = render(
-      renderCoordinatorToolResult(
-        "subagent_delete",
-        { content: [{ type: "text", text: "Deletion failed safely" }], details: undefined },
-        { expanded: false, isPartial: false },
-        theme,
-        {},
-        true,
-      ),
-    );
-    expect(output).toContain("Deletion failed safely");
+  it("falls back to actionable tool text when details are unavailable or incompatible", () => {
+    for (const details of [undefined, {}]) {
+      const output = render(
+        renderCoordinatorToolResult(
+          "subagent_delete",
+          { content: [{ type: "text", text: "Deletion failed safely" }], details },
+          { expanded: false, isPartial: false },
+          theme,
+          {},
+          true,
+        ),
+      );
+      expect(output).toContain("Deletion failed safely");
+    }
   });
 });
 
