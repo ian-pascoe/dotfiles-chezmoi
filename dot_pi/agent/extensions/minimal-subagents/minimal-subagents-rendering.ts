@@ -4,6 +4,7 @@ import {
   keyHint,
   type AgentToolResult,
   type Theme,
+  type ThemeColor,
   type ToolRenderResultOptions,
 } from "@earendil-works/pi-coding-agent";
 import {
@@ -34,10 +35,7 @@ interface CoordinatorMessageRenderOptions {
   outputPad: number;
 }
 
-const SUBAGENT_STATUS_PRESENTATION: Record<
-  string,
-  { symbol: string; color: "accent" | "success" | "error" | "warning" | "dim" }
-> = {
+const SUBAGENT_STATUS_PRESENTATION: Record<string, { symbol: string; color: ThemeColor }> = {
   running: { symbol: "◉", color: "accent" },
   waiting: { symbol: "◌", color: "accent" },
   completed: { symbol: "✓", color: "success" },
@@ -92,6 +90,30 @@ export function renderSubagentStatusSymbol(theme: Theme, status: string): string
   return theme.fg(presentation.color, presentation.symbol);
 }
 
+/** Render a subagent status label with the same semantic color as its symbol. */
+export function renderSubagentStatusLabel(theme: Theme, status: string): string {
+  const presentation = SUBAGENT_STATUS_PRESENTATION[status] ?? SUBAGENT_STATUS_PRESENTATION.idle!;
+  return theme.fg(presentation.color, status);
+}
+
+function renderSubagentSeparator(theme: Theme): string {
+  return theme.fg("dim", "  ·  ");
+}
+
+function renderSubagentSummary(
+  theme: Theme,
+  status: string,
+  agentId: string,
+  metrics: readonly string[] = [],
+): string {
+  const identity = `${renderSubagentStatusSymbol(theme, status)} ${theme.fg("accent", theme.bold(agentId))}`;
+  return [
+    identity,
+    renderSubagentStatusLabel(theme, status),
+    ...metrics.map((metric) => theme.fg("muted", metric)),
+  ].join(renderSubagentSeparator(theme));
+}
+
 function renderLabelValue(theme: Theme, label: string, value: unknown): Text {
   const text = typeof value === "string" ? value : JSON.stringify(value, null, 2);
   return new Text(`${theme.fg("muted", `${label}:`)} ${text ?? ""}`, 0, 0);
@@ -104,7 +126,7 @@ function appendSection(
   content: string | Component,
 ): void {
   container.addChild(new Spacer(1));
-  container.addChild(new Text(theme.fg("muted", `── ${label} ──`), 0, 0));
+  container.addChild(new Text(theme.fg("muted", theme.bold(label)), 0, 0));
   container.addChild(typeof content === "string" ? new Text(content, 0, 0) : content);
 }
 
@@ -118,7 +140,7 @@ function renderFallbackToolResult(
 }
 
 function collapsedExpansionHint(theme: Theme): string {
-  return theme.fg("dim", ` · ${keyHint("app.tools.expand", "to expand")}`);
+  return theme.fg("dim", `  ·  ${keyHint("app.tools.expand", "to expand")}`);
 }
 
 /** Format milliseconds for compact subagent rows without losing sub-second durations. */
@@ -236,19 +258,13 @@ function renderSpawnResult(
   const launchContract = asRecord(agent?.launch_contract);
   if (!options.expanded) {
     return new Text(
-      `${renderSubagentStatusSymbol(theme, status)} ${theme.fg("accent", agentId)} · ${status}${collapsedExpansionHint(theme)}`,
+      `${renderSubagentSummary(theme, status, agentId)}${collapsedExpansionHint(theme)}`,
       0,
       0,
     );
   }
   const container = new Container();
-  container.addChild(
-    new Text(
-      `${renderSubagentStatusSymbol(theme, status)} ${theme.fg("toolTitle", theme.bold(agentId))} · ${status}`,
-      0,
-      0,
-    ),
-  );
+  container.addChild(new Text(renderSubagentSummary(theme, status, agentId), 0, 0));
   container.addChild(renderLabelValue(theme, "Turn", asString(details.turn_id) ?? "unknown"));
   appendSection(container, theme, "Task", asString(args.task) ?? "(task unavailable)");
   const resolvedModel = asString(launchContract?.model) ?? asString(args.model);
@@ -281,8 +297,8 @@ function renderMessageResult(
   const behavior = asString(details.behavior) ?? asString(args.behavior) ?? "steer";
   const delivered = details.delivered === true;
   const summary = delivered
-    ? `${theme.fg("accent", "→")} ${agentId} · delivered · ${behavior}`
-    : `${renderSubagentStatusSymbol(theme, "failed")} ${agentId} · failed · ${behavior}`;
+    ? renderSubagentSummary(theme, "delivered", agentId, [behavior])
+    : renderSubagentSummary(theme, "failed", agentId, [behavior]);
   if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
   const container = new Container();
   container.addChild(new Text(summary, 0, 0));
@@ -304,8 +320,10 @@ function renderWaitResult(
   const duration = formatSubagentDuration(asNumber(details.elapsed_ms));
   const usage = asRecord(details.usage) as Usage | undefined;
   const tokens = formatSubagentTokenCount(usage?.totalTokens);
-  const metrics = [duration, tokens ? `${tokens} tokens` : undefined].filter(Boolean).join(" · ");
-  const summary = `${renderSubagentStatusSymbol(theme, status)} ${theme.fg("accent", agentId)} · ${status}${metrics ? ` · ${metrics}` : ""}`;
+  const metrics = [duration, tokens ? `${tokens} tokens` : undefined].filter(
+    (metric): metric is string => Boolean(metric),
+  );
+  const summary = renderSubagentSummary(theme, status, agentId, metrics);
   if (options.isPartial || !options.expanded) {
     return new Text(`${summary}${options.isPartial ? "" : collapsedExpansionHint(theme)}`, 0, 0);
   }
@@ -361,9 +379,10 @@ function renderDirectStatusRows(agents: unknown[], theme: Theme): string[] {
           : (asString(latestTurn?.status) ?? "idle");
     const duration = formatSubagentDuration(asNumber(agent.elapsed_ms));
     const childCount = asNumber(agent.child_count) ?? 0;
-    rows.push(
-      `${renderSubagentStatusSymbol(theme, status)} ${asString(agent.agent_id) ?? "unknown"} · ${status}${duration ? ` · ${duration}` : ""}${childCount > 0 ? ` · ${childCount} children` : ""}`,
+    const metrics = [duration, childCount > 0 ? `${childCount} children` : undefined].filter(
+      (metric): metric is string => Boolean(metric),
     );
+    rows.push(renderSubagentSummary(theme, status, asString(agent.agent_id) ?? "unknown", metrics));
   }
   return rows;
 }
@@ -376,7 +395,10 @@ function renderStatusResult(
   const agents = Array.isArray(details.agents) ? details.agents : undefined;
   if (agents) {
     const counts = countDirectStatusAgents(agents);
-    const summary = `${theme.fg("dim", "○")} ${counts.children} children · ${counts.running} running`;
+    const summary = [
+      theme.fg("muted", `${counts.children} children`),
+      theme.fg(counts.running > 0 ? "accent" : "dim", `${counts.running} running`),
+    ].join(renderSubagentSeparator(theme));
     if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
     return new Text(
       `${summary}\n${renderDirectStatusRows(agents, theme).join("\n") || theme.fg("dim", "(no agents)")}`,
@@ -385,7 +407,15 @@ function renderStatusResult(
     );
   }
   const agent = asRecord(details.agent);
-  if (!agent) return new Text(theme.fg("dim", "○ 0 children · 0 running"), 0, 0);
+  if (!agent) {
+    return new Text(
+      [theme.fg("muted", "0 children"), theme.fg("dim", "0 running")].join(
+        renderSubagentSeparator(theme),
+      ),
+      0,
+      0,
+    );
+  }
   const availability = asString(agent.availability) ?? "available";
   const latestTurn = asRecord(agent.latest_turn);
   const status =
@@ -397,7 +427,12 @@ function renderStatusResult(
   const id = asString(agent.agent_id) ?? "agent";
   const childCount = asNumber(agent.child_count) ?? 0;
   const duration = formatSubagentDuration(asNumber(agent.elapsed_ms));
-  const summary = `${renderSubagentStatusSymbol(theme, status)} ${id} · ${status}${duration ? ` · ${duration}` : ""} · ${childCount} children`;
+  const summary = renderSubagentSummary(
+    theme,
+    status,
+    id,
+    [duration, `${childCount} children`].filter((metric): metric is string => Boolean(metric)),
+  );
   if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
   const container = new Container();
   container.addChild(new Text(summary, 0, 0));
@@ -482,8 +517,8 @@ function renderCancelResult(
   const turns = asStringArray(details.cancelled_turn_ids);
   const summary =
     turns.length > 0
-      ? `${renderSubagentStatusSymbol(theme, "cancelled")} ${id} · cancelled · ${turns.length} turns cancelled`
-      : `${renderSubagentStatusSymbol(theme, "completed")} ${id} · no active turns`;
+      ? renderSubagentSummary(theme, "cancelled", id, [`${turns.length} turns cancelled`])
+      : renderSubagentSummary(theme, "completed", id, ["no active turns"]);
   if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
   const container = new Container();
   container.addChild(new Text(summary, 0, 0));
@@ -511,7 +546,16 @@ function renderDeleteResult(
   const tombstoned = asStringArray(details.tombstoned_agent_ids);
   const failures = Array.isArray(details.failures) ? details.failures : [];
   const status = failures.length > 0 ? "failed" : "completed";
-  const summary = `${renderSubagentStatusSymbol(theme, status)} ${id} · ${status} · ${deleted.length} agents deleted · ${tombstoned.length} tombstoned${failures.length > 0 ? ` · ${failures.length} failed` : ""}`;
+  const summary = renderSubagentSummary(
+    theme,
+    status,
+    id,
+    [
+      `${deleted.length} agents deleted`,
+      `${tombstoned.length} tombstoned`,
+      failures.length > 0 ? `${failures.length} failed` : undefined,
+    ].filter((metric): metric is string => Boolean(metric)),
+  );
   if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
   const container = new Container();
   container.addChild(new Text(summary, 0, 0));
@@ -639,7 +683,14 @@ function renderCoordinatorMessage(
   const source = asString(details?.source_agent_id) ?? "unknown";
   const destination = asString(details?.destination_agent_id) ?? "recipient";
   const status = asString(details?.status);
-  const heading = `${theme.fg(symbol === "✓" ? "success" : "accent", symbol)} ${theme.bold(label)} · ${source} → ${destination}${status ? ` · ${status}` : ""}`;
+  const route = `${theme.fg("accent", theme.bold(source))} ${theme.fg("dim", "→")} ${theme.fg("accent", theme.bold(destination))}`;
+  const heading = [
+    `${theme.fg(symbol === "✓" ? "success" : "accent", symbol)} ${theme.bold(label)}`,
+    route,
+    status ? renderSubagentStatusLabel(theme, status) : undefined,
+  ]
+    .filter((part): part is string => Boolean(part))
+    .join(renderSubagentSeparator(theme));
   const box = new Box(options.outputPad, 1, (text) => theme.bg("customMessageBg", text));
   if (!options.expanded) {
     box.addChild(

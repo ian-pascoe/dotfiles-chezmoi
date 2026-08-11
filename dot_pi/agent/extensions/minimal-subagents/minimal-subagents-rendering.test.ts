@@ -72,7 +72,7 @@ describe("renderCoordinatorToolResult", () => {
         { agent_id: "child", message: "Please compare results" },
       ),
     );
-    expect(collapsed).toContain("→ child · delivered · steer");
+    expect(collapsed).toContain("→ child  ·  delivered  ·  steer");
 
     const expanded = render(
       renderCoordinatorToolResult(
@@ -116,7 +116,7 @@ describe("renderCoordinatorToolResult", () => {
         { agent_id: "reviewer" },
       ),
     );
-    expect(collapsed).toContain("✓ reviewer · completed · 2s · 2.0k tokens");
+    expect(collapsed).toContain("✓ reviewer  ·  completed  ·  2s  ·  2.0k tokens");
     expect(collapsed).not.toContain("turn-1");
 
     const expanded = render(
@@ -269,8 +269,8 @@ describe("renderCoordinatorToolResult", () => {
         {},
       ),
     );
-    expect(childStatus).toContain("2 children · 1 running");
-    expect(childStatus).toContain("× peer · failed");
+    expect(childStatus).toContain("2 children  ·  1 running");
+    expect(childStatus).toContain("× peer  ·  failed");
     expect(childStatus).not.toContain("hidden-grandchild");
   });
 
@@ -307,7 +307,7 @@ describe("minimal subagents custom message renderers", () => {
           theme,
         ),
       ),
-    ).toContain("Agent message · reviewer → root");
+    ).toContain("→ Agent message  ·  reviewer → root");
     expect(
       render(
         renderMinimalSubagentsResult(
@@ -316,6 +316,6 @@ describe("minimal subagents custom message renderers", () => {
           theme,
         ),
       ),
-    ).toContain("Agent result · reviewer → root · completed");
+    ).toContain("✓ Agent result  ·  reviewer → root  ·  completed");
   });
 });

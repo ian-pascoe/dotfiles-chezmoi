@@ -89,6 +89,11 @@ describe("buildMinimalSubagentsWidgetView", () => {
     expect(view.rows[1]).toEqual(
       expect.objectContaining({ status: "running", task: "Review the API" }),
     );
+    expect(renderMinimalSubagentsWidgetLines(view, 120, theme).slice(0, 3)).toEqual([
+      "Subagents  ·  1 running  ·  3 recent",
+      "  ○ lead",
+      "  ╰─ ◉ lead.api  ·  running  ·  Review the API  ·  2s",
+    ]);
   });
 
   it("prioritizes failed outcomes over newer successful outcomes", () => {
@@ -130,7 +135,7 @@ describe("buildMinimalSubagentsWidgetView", () => {
     expect(view.rows).toHaveLength(8);
     expect(view.overflowCount).toBe(4);
     const lines = renderMinimalSubagentsWidgetLines(view, 42, theme);
-    expect(lines.at(-1)).toContain("… +4 more");
+    expect(lines.at(-1)).toContain("…  +4 more");
     expect(lines.every((line) => visibleWidth(line) <= 42)).toBe(true);
   });
 });
@@ -161,7 +166,7 @@ describe("MinimalSubagentsUiController", () => {
     const controller = new MinimalSubagentsUiController(coordinator, context);
 
     controller.refresh();
-    expect(statuses.at(-1)).toBe("◉ 1 running · 1 retained");
+    expect(statuses.at(-1)).toBe("◉ 1 running  ·  1 retained");
     expect(widgets.at(-1)).toEqual(expect.any(Function));
 
     hierarchy = {

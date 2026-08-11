@@ -4,6 +4,7 @@ import { truncateToWidth, type Component, type TUI } from "@earendil-works/pi-tu
 import type { MinimalSubagentsCoordinator } from "./minimal-subagents-coordinator.js";
 import {
   formatSubagentDuration,
+  renderSubagentStatusLabel,
   renderSubagentStatusSymbol,
 } from "./minimal-subagents-rendering.js";
 import type { AgentSummary, HierarchyStatusResult, TurnStatus } from "./minimal-subagents-types.js";
@@ -141,9 +142,22 @@ export function renderMinimalSubagentsWidgetLines(
   theme: Theme,
 ): string[] {
   if (width <= 0) return [];
+  const separator = theme.fg("dim", "  ·  ");
+  const activity =
+    view.runningCount > 0
+      ? theme.fg("accent", `${view.runningCount} running`)
+      : theme.fg("dim", "idle");
   const lines = [
     truncateToWidth(
-      theme.bold(`Subagents · ${view.runningCount} running · ${view.recentCount} recent`),
+      [
+        theme.fg("toolTitle", theme.bold("Subagents")),
+        activity,
+        width >= 44 && view.recentCount > 0
+          ? theme.fg("muted", `${view.recentCount} recent`)
+          : undefined,
+      ]
+        .filter((part): part is string => Boolean(part))
+        .join(separator),
       width,
       "…",
     ),
@@ -151,15 +165,21 @@ export function renderMinimalSubagentsWidgetLines(
   for (const row of view.rows) {
     const duration = formatSubagentDuration(row.elapsedMs);
     const task = row.task?.replace(/\s+/g, " ").trim();
+    const branch =
+      row.depth > 0
+        ? theme.fg("borderMuted", `${"  ".repeat(row.depth)}╰─ `)
+        : theme.fg("borderMuted", "  ");
+    const agentId = row.structural ? theme.fg("muted", row.agentId) : theme.bold(row.agentId);
     const parts = [
-      `${"  ".repeat(row.depth)}${renderSubagentStatusSymbol(theme, row.status)} ${row.agentId} · ${row.status}`,
-      duration,
-      task,
+      `${branch}${renderSubagentStatusSymbol(theme, row.status)} ${agentId}`,
+      row.structural ? undefined : renderSubagentStatusLabel(theme, row.status),
+      task ? theme.fg("muted", task) : undefined,
+      duration ? theme.fg("muted", duration) : undefined,
     ].filter((part): part is string => Boolean(part));
-    lines.push(truncateToWidth(parts.join(" · "), width, "…"));
+    lines.push(truncateToWidth(parts.join(separator), width, "…"));
   }
   if (view.overflowCount > 0) {
-    lines.push(truncateToWidth(theme.fg("dim", `… +${view.overflowCount} more`), width, "…"));
+    lines.push(truncateToWidth(theme.fg("dim", `  …  +${view.overflowCount} more`), width, "…"));
   }
   return lines;
 }
@@ -216,10 +236,10 @@ export class MinimalSubagentsUiController {
       this.showWidget(nextView);
       this.context.ui.setStatus(
         MINIMAL_SUBAGENTS_UI_KEY,
-        this.context.ui.theme.fg(
-          "accent",
-          `◉ ${nextView.runningCount} running · ${nextView.retainedCount} retained`,
-        ),
+        [
+          this.context.ui.theme.fg("accent", `◉ ${nextView.runningCount} running`),
+          this.context.ui.theme.fg("muted", `${nextView.retainedCount} retained`),
+        ].join(this.context.ui.theme.fg("dim", "  ·  ")),
       );
     } else {
       this.clearRefreshInterval();
