@@ -216,8 +216,9 @@ Tool errors use Pi's ordinary error result mechanism and include a concise actio
 - `agent_id` on `subagent` is one friendly path segment matching `[A-Za-z0-9][A-Za-z0-9_-]{0,63}`.
 - Friendly IDs are case-sensitive and unique among peers.
 - The exact segments `root` and `parent` are reserved. Empty, whitespace, dotted, slash-containing, wildcard, and path-like values fail validation.
-- A child canonical ID is `<parent canonical ID>.<friendly ID>`.
-- Examples: `root.research`, `root.research.sources`, `root.review`.
+- A root child canonical ID is its friendly ID with no `root.` prefix, for example `research`.
+- A nested child canonical ID is `<parent canonical ID>.<friendly ID>`, for example `research.sources`.
+- Canonical IDs remain stable and globally unique within the owning root hierarchy. `root` remains the reserved coordinator identity.
 - Generated friendly IDs must be unique among peers and remain stable for the session's lifetime.
 - Deleted IDs become durable tombstones and cannot be reused until the owning root session is deleted.
 - Duplicate IDs fail; they never overwrite or resume an existing agent.
@@ -440,6 +441,8 @@ Required information across these events:
 - A complete checkpoint after initial root ownership and after root forks.
 
 Registry replay scans custom entries for the current root session ID in file append order, beginning with its latest checkpoint. This makes the hierarchy root-session-wide rather than dependent on the currently selected conversation branch.
+
+Registries created by an older extension version may contain `root.`-prefixed canonical IDs. Preserve that naming convention within those registries so restored sessions never acquire a mixed or silently rewritten identity namespace. Fresh registries omit the prefix.
 
 ## Messaging
 
@@ -718,13 +721,13 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 
 **Given** the root has committed conversation history, project resources, an active model/thinking selection, and ordinary tools,
 **when** it spawns an agent with only `task`,
-**then** spawn immediately returns `root.<generated>` and a running turn, while the child receives the committed history, project context, inherited model/thinking, and inherited ordinary tools.
+**then** spawn immediately returns `<generated>` and a running turn, while the child receives the committed history, project context, inherited model/thinking, and inherited ordinary tools.
 
 ### AS2. Parallel nested agents
 
 **Given** two root children explicitly authorized with `delegation: "fanout"`,
 **when** each creates descendants concurrently,
-**then** all turns run without a coordinator queue, IDs remain unique within their peer sets, and the depth-2 descendants cannot delegate again.
+**then** all turns run without a coordinator queue, root-child canonical IDs have no `root.` prefix, nested IDs retain their parent path, IDs remain unique within their peer sets, and the depth-2 descendants cannot delegate again.
 
 ### AS3. Context modes
 

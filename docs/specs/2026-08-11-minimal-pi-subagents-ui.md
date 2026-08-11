@@ -186,12 +186,12 @@ Collapsed final results fit the shared grammar on one logical row. Append a dim 
 Examples:
 
 ```text
-◉ root.researcher · running
-→ root.researcher · delivered · steer
-✓ root.researcher · completed · 1.8k tokens
+◉ researcher · running
+→ researcher · delivered · steer
+✓ researcher · completed · 1.8k tokens
 ○ 4 children · 0 running
-■ root.researcher · 2 turns cancelled
-✓ root.researcher · 3 agents deleted
+■ researcher · 2 turns cancelled
+✓ researcher · 3 agents deleted
 ```
 
 ### `subagent`

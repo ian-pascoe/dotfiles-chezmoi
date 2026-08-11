@@ -13,7 +13,7 @@ import type { PersistedAgent } from "./minimal-subagents-types.js";
 
 function persistedAgent(): PersistedAgent {
   return {
-    agent_id: "root.worker",
+    agent_id: "worker",
     friendly_id: "worker",
     parent_id: "root",
     created_at: "2026-08-11T00:00:00.000Z",
@@ -56,11 +56,11 @@ describe("createPersistentChildIdentity", () => {
           type: "custom",
           customType: "minimal-subagents.identity",
           data: expect.objectContaining({
-            canonical_agent_id: "root.worker",
+            canonical_agent_id: "worker",
             original_root_session_id: "root-session",
           }),
         }),
-        expect.objectContaining({ type: "session_info", name: "[subagent] root.worker" }),
+        expect.objectContaining({ type: "session_info", name: "[subagent] worker" }),
       ]),
     );
   });
@@ -184,13 +184,13 @@ describe("findDeliveryEvidence", () => {
               toolCallId: "wait",
               toolName: "subagent_wait",
               content: [],
-              details: { source_agent_id: "root.worker", source_turn_id: "turn-1" },
+              details: { source_agent_id: "worker", source_turn_id: "turn-1" },
               isError: false,
               timestamp: 1,
             },
           },
         ],
-        "root.worker",
+        "worker",
         "turn-1",
       ),
     ).toBe(true);
@@ -200,10 +200,10 @@ describe("findDeliveryEvidence", () => {
           {
             type: "custom_message",
             customType: "minimal-subagents.result",
-            details: { source_agent_id: "root.worker", source_turn_id: "turn-2" },
+            details: { source_agent_id: "worker", source_turn_id: "turn-2" },
           },
         ],
-        "root.worker",
+        "worker",
         "turn-2",
       ),
     ).toBe(true);

@@ -97,7 +97,9 @@ export function resolveOrdinaryToolSelection(
 
 /** Return an agent's hierarchy depth where the interactive root is depth zero. */
 export function getSubagentDepth(agentId: string): number {
-  return Math.max(0, agentId.split(".").length - 1);
+  if (agentId === "root") return 0;
+  const segments = agentId.split(".").length;
+  return agentId.startsWith("root.") ? segments - 1 : segments;
 }
 
 /** Report whether an explicit fanout contract remains below the delegation depth cap. */

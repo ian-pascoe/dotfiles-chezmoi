@@ -124,7 +124,7 @@ export class MinimalSubagentsCoordinator {
 
     const friendlyId = parameters.agent_id ?? this.generateFriendlyId(callerId);
     this.validateFriendlyId(friendlyId);
-    const agentId = `${callerId}.${friendlyId}`;
+    const agentId = this.buildChildAgentId(callerId, friendlyId);
     if (this.tombstones.has(agentId)) {
       throw new Error(`Minimal subagents agent ID is tombstoned: ${agentId}`);
     }
@@ -893,6 +893,15 @@ export class MinimalSubagentsCoordinator {
     return next;
   }
 
+  private buildChildAgentId(parentId: string, friendlyId: string): string {
+    if (parentId !== "root") return `${parentId}.${friendlyId}`;
+    const usesLegacyRootPrefix =
+      [...this.agents.values()].some(
+        (agent) => agent.parent_id === "root" && agent.agent_id.startsWith("root."),
+      ) || [...this.tombstones].some((agentId) => agentId.startsWith("root."));
+    return usesLegacyRootPrefix ? `root.${friendlyId}` : friendlyId;
+  }
+
   private resolveMessageTarget(callerId: string, target?: string): string {
     const resolved = target ?? (callerId === "root" ? undefined : "parent");
     if (!resolved) throw new Error("Minimal subagents message: root caller must specify agent_id");
@@ -1066,14 +1075,18 @@ export class MinimalSubagentsCoordinator {
 
   private generateFriendlyId(parentId: string): string {
     let index = 1;
-    while (
-      this.agents.has(`${parentId}.agent-${index}`) ||
-      this.pendingAgentIds.has(`${parentId}.agent-${index}`) ||
-      this.tombstones.has(`${parentId}.agent-${index}`)
-    ) {
+    while (true) {
+      const friendlyId = `agent-${index}`;
+      const agentId = this.buildChildAgentId(parentId, friendlyId);
+      if (
+        !this.agents.has(agentId) &&
+        !this.pendingAgentIds.has(agentId) &&
+        !this.tombstones.has(agentId)
+      ) {
+        return friendlyId;
+      }
       index++;
     }
-    return `agent-${index}`;
   }
 
   private createForkPlaceholder(agent: PersistedAgent, cloneError: string): PersistedAgent {

@@ -35,8 +35,8 @@ function entry(event: unknown) {
 
 describe("replayRegistryEntries", () => {
   it("starts at the latest matching checkpoint across the whole root file", () => {
-    const staleAgent = agent("root.stale");
-    const liveAgent = agent("root.live");
+    const staleAgent = agent("stale");
+    const liveAgent = agent("live");
     const entries = [
       entry(createRegistryEvent(rootSessionId, "checkpoint", { snapshot: emptySnapshot })),
       entry(createRegistryEvent(rootSessionId, "agent-created", { agent: staleAgent })),
@@ -50,11 +50,11 @@ describe("replayRegistryEntries", () => {
 
     expect(
       replayRegistryEntries(entries, rootSessionId).agents.map((item) => item.agent_id),
-    ).toEqual(["root.live"]);
+    ).toEqual(["live"]);
   });
 
   it("reconstructs turns, deliveries, and durable deletion tombstones", () => {
-    const created = agent("root.worker");
+    const created = agent("worker");
     const result: TurnResult = {
       agent_id: created.agent_id,
       turn_id: "turn-1",
@@ -109,7 +109,7 @@ describe("replayRegistryEntries", () => {
       replayRegistryEntries(
         [
           entry({ nope: true }),
-          entry(createRegistryEvent("other", "agent-created", { agent: agent("root.foreign") })),
+          entry(createRegistryEvent("other", "agent-created", { agent: agent("foreign") })),
         ],
         rootSessionId,
       ),

@@ -47,13 +47,9 @@ describe("renderCoordinatorToolCall", () => {
     ).toContain("Subagent reviewer · “Review the complete API”");
     expect(
       render(
-        renderCoordinatorToolCall(
-          "subagent_delete",
-          { agent_id: "root.old", recursive: false },
-          theme,
-        ),
+        renderCoordinatorToolCall("subagent_delete", { agent_id: "old", recursive: false }, theme),
       ),
-    ).toContain("Delete root.old · target only");
+    ).toContain("Delete old · target only");
   });
 });
 
@@ -62,7 +58,7 @@ describe("renderCoordinatorToolResult", () => {
     const result = {
       content: [{ type: "text" as const, text: "machine-readable output" }],
       details: {
-        agent_id: "root.child",
+        agent_id: "child",
         behavior: "steer",
         delivered: true,
       },
@@ -73,10 +69,10 @@ describe("renderCoordinatorToolResult", () => {
         result,
         { expanded: false, isPartial: false },
         theme,
-        { agent_id: "root.child", message: "Please compare results" },
+        { agent_id: "child", message: "Please compare results" },
       ),
     );
-    expect(collapsed).toContain("→ root.child · delivered · steer");
+    expect(collapsed).toContain("→ child · delivered · steer");
 
     const expanded = render(
       renderCoordinatorToolResult(
@@ -84,11 +80,11 @@ describe("renderCoordinatorToolResult", () => {
         result,
         { expanded: true, isPartial: false },
         theme,
-        { agent_id: "root.child", message: "Please compare results" },
+        { agent_id: "child", message: "Please compare results" },
       ),
     );
     expect(expanded).toContain("Recipient");
-    expect(expanded).toContain("root.child");
+    expect(expanded).toContain("child");
     expect(expanded).toContain("Please compare results");
   });
 
@@ -96,7 +92,7 @@ describe("renderCoordinatorToolResult", () => {
     const result = {
       content: [{ type: "text" as const, text: "machine-readable output" }],
       details: {
-        agent_id: "root.reviewer",
+        agent_id: "reviewer",
         turn_id: "turn-1",
         status: "completed",
         output: "# Reviewed\n\nEverything passes.",
@@ -117,10 +113,10 @@ describe("renderCoordinatorToolResult", () => {
         result,
         { expanded: false, isPartial: false },
         theme,
-        { agent_id: "root.reviewer" },
+        { agent_id: "reviewer" },
       ),
     );
-    expect(collapsed).toContain("✓ root.reviewer · completed · 2s · 2.0k tokens");
+    expect(collapsed).toContain("✓ reviewer · completed · 2s · 2.0k tokens");
     expect(collapsed).not.toContain("turn-1");
 
     const expanded = render(
@@ -129,7 +125,7 @@ describe("renderCoordinatorToolResult", () => {
         result,
         { expanded: true, isPartial: false },
         theme,
-        { agent_id: "root.reviewer" },
+        { agent_id: "reviewer" },
       ),
     );
     expect(expanded).toContain("Turn: turn-1");
@@ -144,7 +140,7 @@ describe("renderCoordinatorToolResult", () => {
         {
           content: [{ type: "text", text: "{}" }],
           details: {
-            agent_id: "root.worker",
+            agent_id: "worker",
             turn_id: "turn-1",
             status: "running",
             agent: {
@@ -174,7 +170,7 @@ describe("renderCoordinatorToolResult", () => {
           content: [{ type: "text", text: "{}" }],
           details: {
             agent: {
-              agent_id: "root.worker",
+              agent_id: "worker",
               parent_id: "root",
               state: "idle",
               availability: "available",
@@ -197,19 +193,19 @@ describe("renderCoordinatorToolResult", () => {
       [
         "subagent_cancel",
         {
-          agent_id: "root.worker",
+          agent_id: "worker",
           recursive: false,
-          affected_agent_ids: ["root.worker"],
+          affected_agent_ids: ["worker"],
           cancelled_turn_ids: [],
         },
       ],
       [
         "subagent_delete",
         {
-          agent_id: "root.worker",
+          agent_id: "worker",
           recursive: true,
-          deleted_agent_ids: ["root.worker"],
-          tombstoned_agent_ids: ["root.worker"],
+          deleted_agent_ids: ["worker"],
+          tombstoned_agent_ids: ["worker"],
           trashed_session_files: [],
           failures: [],
         },
@@ -224,7 +220,7 @@ describe("renderCoordinatorToolResult", () => {
           {},
         ),
       );
-      expect(output).toContain("Requested target: root.worker");
+      expect(output).toContain("Requested target: worker");
       expect(output).toContain(
         toolName === "subagent_cancel" ? "Mode: target only" : "Mode: recursive",
       );
@@ -241,14 +237,14 @@ describe("renderCoordinatorToolResult", () => {
             parent_id: "root",
             agents: [
               {
-                agent_id: "root.lead",
+                agent_id: "lead",
                 state: "running",
                 availability: "available",
                 child_count: 1,
                 children: [],
               },
               {
-                agent_id: "root.peer",
+                agent_id: "peer",
                 state: "idle",
                 availability: "available",
                 latest_turn: { status: "failed" },
@@ -264,7 +260,7 @@ describe("renderCoordinatorToolResult", () => {
       ),
     );
     expect(childStatus).toContain("2 children · 1 running");
-    expect(childStatus).toContain("× root.peer · failed");
+    expect(childStatus).toContain("× peer · failed");
   });
 
   it("falls back to actionable tool text when details are unavailable or incompatible", () => {
@@ -287,7 +283,7 @@ describe("renderCoordinatorToolResult", () => {
 describe("minimal subagents custom message renderers", () => {
   it("distinguishes explicit messages and automatic results", () => {
     const details = {
-      source_agent_id: "root.reviewer",
+      source_agent_id: "reviewer",
       destination_agent_id: "root",
       source_turn_id: "turn-1",
       status: "completed" as const,
@@ -300,7 +296,7 @@ describe("minimal subagents custom message renderers", () => {
           theme,
         ),
       ),
-    ).toContain("Agent message · root.reviewer → root");
+    ).toContain("Agent message · reviewer → root");
     expect(
       render(
         renderMinimalSubagentsResult(
@@ -309,6 +305,6 @@ describe("minimal subagents custom message renderers", () => {
           theme,
         ),
       ),
-    ).toContain("Agent result · root.reviewer → root · completed");
+    ).toContain("Agent result · reviewer → root · completed");
   });
 });

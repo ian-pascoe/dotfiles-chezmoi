@@ -85,11 +85,11 @@ describe("contextContainsImages", () => {
 
 describe("buildSubagentSystemPrompt", () => {
   it("gives an ordinary child an explicit parent-owned delegation boundary", () => {
-    const prompt = buildSubagentSystemPrompt("root.research", "root", {
+    const prompt = buildSubagentSystemPrompt("research", "root", {
       canSpawn: false,
       remainingDepth: 0,
     });
-    expect(prompt).toContain("root.research");
+    expect(prompt).toContain("research");
     expect(prompt).toContain("parent");
     expect(prompt).toContain("persistent subagent");
     expect(prompt).toContain("agent_message");
@@ -105,7 +105,7 @@ describe("buildSubagentSystemPrompt", () => {
   });
 
   it("bounds an explicitly authorized fanout child to its assigned fanout", () => {
-    const prompt = buildSubagentSystemPrompt("root.lead", "root", {
+    const prompt = buildSubagentSystemPrompt("lead", "root", {
       canSpawn: true,
       remainingDepth: 1,
     });

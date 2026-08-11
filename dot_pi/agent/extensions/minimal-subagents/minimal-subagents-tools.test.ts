@@ -28,13 +28,13 @@ describe("createCoordinatorToolDefinitions", () => {
   it("attaches the resolved launch contract to spawn rendering details", async () => {
     const coordinator = {
       spawn: vi.fn(async () => ({
-        agent_id: "root.worker",
+        agent_id: "worker",
         turn_id: "turn-1",
         status: "running",
       })),
       inspectStatus: vi.fn(() => ({
         agent: {
-          agent_id: "root.worker",
+          agent_id: "worker",
           launch_contract: { ordinary_tools: ["read", "bash"] },
         },
       })),
@@ -82,14 +82,14 @@ describe("createCoordinatorToolDefinitions", () => {
     const waitTool = tools.find((tool) => tool.name === "subagent_wait")!;
     const execution = waitTool.execute(
       "call-1",
-      { agent_id: "root.worker" },
+      { agent_id: "worker" },
       undefined,
       vi.fn(),
       {} as never,
     );
     expect(vi.getTimerCount()).toBe(1);
     settleWait({
-      agent_id: "root.worker",
+      agent_id: "worker",
       turn_id: "turn-1",
       status: "completed",
       output: "done",
@@ -100,7 +100,7 @@ describe("createCoordinatorToolDefinitions", () => {
 
   it("executes one direct agent message with the bound caller identity", async () => {
     const message = vi.fn(async () => ({
-      agent_id: "root.child",
+      agent_id: "child",
       behavior: "steer",
       delivered: true,
     }));
@@ -117,7 +117,7 @@ describe("createCoordinatorToolDefinitions", () => {
       .find((tool) => tool.name === "agent_message")!
       .execute(
         "message-call",
-        { agent_id: "root.child", message: "update" },
+        { agent_id: "child", message: "update" },
         undefined,
         undefined,
         {} as never,
@@ -125,21 +125,21 @@ describe("createCoordinatorToolDefinitions", () => {
 
     expect(message).toHaveBeenCalledWith(
       "root",
-      { agent_id: "root.child", message: "update", behavior: undefined },
+      { agent_id: "child", message: "update", behavior: undefined },
       "root:message-call",
     );
     expect(result.details).toEqual({
-      agent_id: "root.child",
+      agent_id: "child",
       behavior: "steer",
       delivered: true,
     });
   });
 
   it("passes caller identity into child-scoped status", async () => {
-    const status = vi.fn(() => ({ parent_id: "root.lead", agents: [] }));
+    const status = vi.fn(() => ({ parent_id: "lead", agents: [] }));
     const tools = createCoordinatorToolDefinitions({
       coordinator: { status } as never,
-      callerId: "root.lead",
+      callerId: "lead",
       allowFanoutTools: true,
       schemas: createCoordinatorToolSchemas([]),
       captureCaller: () => {
@@ -149,29 +149,29 @@ describe("createCoordinatorToolDefinitions", () => {
 
     await tools
       .find((tool) => tool.name === "subagent_status")!
-      .execute("status-call", { agent_id: "root.lead.child" }, undefined, undefined, {} as never);
+      .execute("status-call", { agent_id: "lead.child" }, undefined, undefined, {} as never);
 
-    expect(status).toHaveBeenCalledWith("root.lead", "root.lead.child");
+    expect(status).toHaveBeenCalledWith("lead", "lead.child");
   });
 
   it("passes the fanout caller identity into lifecycle management", async () => {
     const cancel = vi.fn(async () => ({
-      agent_id: "root.lead.child",
+      agent_id: "lead.child",
       recursive: false,
-      affected_agent_ids: ["root.lead.child"],
+      affected_agent_ids: ["lead.child"],
       cancelled_turn_ids: [],
     }));
     const deleteAgent = vi.fn(async () => ({
-      agent_id: "root.lead.child",
+      agent_id: "lead.child",
       recursive: false,
-      deleted_agent_ids: ["root.lead.child"],
-      tombstoned_agent_ids: ["root.lead.child"],
+      deleted_agent_ids: ["lead.child"],
+      tombstoned_agent_ids: ["lead.child"],
       trashed_session_files: [],
       failures: [],
     }));
     const tools = createCoordinatorToolDefinitions({
       coordinator: { cancel, delete: deleteAgent } as never,
-      callerId: "root.lead",
+      callerId: "lead",
       allowFanoutTools: true,
       schemas: createCoordinatorToolSchemas([]),
       captureCaller: () => {
@@ -183,7 +183,7 @@ describe("createCoordinatorToolDefinitions", () => {
       .find((tool) => tool.name === "subagent_cancel")!
       .execute(
         "cancel-call",
-        { agent_id: "root.lead.child", recursive: false },
+        { agent_id: "lead.child", recursive: false },
         undefined,
         undefined,
         {} as never,
@@ -192,20 +192,20 @@ describe("createCoordinatorToolDefinitions", () => {
       .find((tool) => tool.name === "subagent_delete")!
       .execute(
         "delete-call",
-        { agent_id: "root.lead.child", recursive: false },
+        { agent_id: "lead.child", recursive: false },
         undefined,
         undefined,
         {} as never,
       );
 
-    expect(cancel).toHaveBeenCalledWith("root.lead", "root.lead.child", false);
-    expect(deleteAgent).toHaveBeenCalledWith("root.lead", "root.lead.child", false);
+    expect(cancel).toHaveBeenCalledWith("lead", "lead.child", false);
+    expect(deleteAgent).toHaveBeenCalledWith("lead", "lead.child", false);
   });
 
   it("keeps spawn and descendant management tools for an authorized fanout child", () => {
     const tools = createCoordinatorToolDefinitions({
       coordinator: {} as never,
-      callerId: "root.lead",
+      callerId: "lead",
       allowFanoutTools: true,
       schemas: createCoordinatorToolSchemas([]),
       captureCaller: () => {
@@ -225,7 +225,7 @@ describe("createCoordinatorToolDefinitions", () => {
   it("withholds spawn and destructive management tools from an ordinary child", () => {
     const tools = createCoordinatorToolDefinitions({
       coordinator: {} as never,
-      callerId: "root.reviewer",
+      callerId: "reviewer",
       allowFanoutTools: false,
       schemas: createCoordinatorToolSchemas([]),
       captureCaller: () => {
