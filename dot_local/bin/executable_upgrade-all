@@ -148,6 +148,13 @@ if has_cmd omp; then
   echo "OMP packages updated successfully!"
 fi
 #########################################################################
+# Hermes
+if has_cmd hermes; then
+  echo "Updating Hermes agent..."
+  hermes update --yes
+  echo "Hermes agent updated successfully!"
+fi
+#########################################################################
 # Skills
 SKILLS_CMD=()
 if has_cmd skills; then

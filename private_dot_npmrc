@@ -1,2 +1,3 @@
 prefix=${HOME}/.npm-global
+allow-remote=all
 allow-scripts=@nubjs/nub

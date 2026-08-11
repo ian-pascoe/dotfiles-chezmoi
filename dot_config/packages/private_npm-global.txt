@@ -2,3 +2,4 @@
 # One package spec per line.
 @nubjs/nub
 npm
+prime-agent

@@ -1,33 +1,35 @@
-providers:
+providers: 
   autoThinkingModel: online
-disabledProviders:
+  autoThinkingMaxEffort: max
+  memoryModel: online
+disabledProviders: 
   - codex
   - opencode
   - claude
   - pi
 symbolPreset: nerd
-theme:
+theme: 
   dark: dark-catppuccin
   light: light-catppuccin
 setupVersion: 1
-statusLine:
+statusLine: 
   transparent: true
   compactThinkingLevel: true
   preset: custom
   separator: powerline-thin
   showHookStatus: false
-  leftSegments:
+  leftSegments: 
     - model
     - context_pct
-  rightSegments:
+  rightSegments: 
     - git
     - path
-  segmentOptions:
-    git:
+  segmentOptions: 
+    git: 
       showStaged: false
       showUnstaged: false
       showUntracked: false
-task:
+task: 
   showResolvedModelBadge: true
   enableLsp: true
   eager: default
@@ -35,42 +37,42 @@ task:
   maxRecursionDepth: -1
   maxRuntimeMs: 0
   softRequestBudget: 0
-  isolation:
+  isolation: 
     mode: none
 hideThinkingBlock: false
 colorBlindMode: false
-terminal:
+terminal: 
   showProgress: false
-tui:
+tui: 
   tight: true
-display:
+display: 
   showTokenUsage: false
 defaultThinkingLevel: auto
 textVerbosity: low
-advisor:
+advisor: 
   enabled: false
   subagents: false
-stt:
+stt: 
   enabled: false
   modelName: parakeet
-startup:
+startup: 
   quiet: false
   changelogMode: expanded
-features:
+features: 
   unexpectedStopDetection: false
-contextPromotion:
+contextPromotion: 
   enabled: false
-compaction:
-  strategy: context-full
-memory:
-  backend: "off"
-autolearn:
+compaction: 
+  strategy: snapcompact
+memory: 
+  backend: hindsight
+autolearn: 
   enabled: false
-edit:
+edit: 
   mode: hashline
-lsp:
+lsp: 
   diagnosticsOnEdit: true
-modelRoles:
+modelRoles: 
   default: openai-codex/gpt-5.6-sol:high
   advisor: openai-codex/gpt-5.6-sol:max
   task: openai-codex/gpt-5.6-sol:high
@@ -81,24 +83,26 @@ modelRoles:
   smol: openai-codex/gpt-5.6-sol:low
   vision: openai-codex/gpt-5.6-sol:high
   designer: openai-codex/gpt-5.6-sol:high
-dev:
+dev: 
   autoqaConsent: granted
-codexResets:
+codexResets: 
   autoRedeem: unset
-commands:
+commands: 
   enableOpencodeUser: false
   enableOpencodeProject: false
   enableClaudeProject: false
   enableClaudeUser: false
-tools:
+tools: 
   approvalMode: yolo
-tier:
+tier: 
   advisor: inherit
-astGrep:
+astGrep: 
   enabled: true
-generate_image:
+generate_image: 
   enabled: true
-ask:
+ask: 
   enabled: false
-browser:
-  enabled: false
+browser: 
+  enabled: true
+hindsight: 
+  scoping: per-project-tagged

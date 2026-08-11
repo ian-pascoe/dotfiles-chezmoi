@@ -1,23 +1,11 @@
 {
-  "lastChangelogVersion": "0.82.1",
+  "lastChangelogVersion": "0.84.1",
   "packages": [
-    "npm:@caplets/pi",
-    "npm:@howaboua/pi-codex-conversion",
-    "npm:@juicesharp/rpiv-args",
-    "npm:@juicesharp/rpiv-ask-user-question",
-    "npm:@juicesharp/rpiv-btw",
-    "npm:@juicesharp/rpiv-todo",
-    "npm:@narumitw/pi-goal",
-    "npm:@ramarivera/pi-skill-selector",
-    "npm:pi-adaptive-thinking",
+    "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
-    "npm:pi-intercom",
     "npm:pi-mcp-adapter",
-    "npm:pi-subagents",
-    "npm:pi-subdir-context",
     "npm:pi-terminal-theme",
-    "npm:pi-web-access",
-    "npm:pi-prompt-template-model"
+    "npm:pi-web-access"
   ],
   "defaultModel": "gpt-5.6-sol",
   "defaultProjectTrust": "always",
@@ -27,9 +15,10 @@
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-terra",
     "openai-codex/gpt-5.6-luna",
-    "opencode-go/glm-5.2",
-    "opencode-go/kimi-k3"
+    "opencode-go/kimi-k3",
+    "opencode-go/glm-5.2"
   ],
   "enableInstallTelemetry": false,
-  "theme": "terminal"
+  "theme": "terminal",
+  "tuiMode": "regular"
 }
