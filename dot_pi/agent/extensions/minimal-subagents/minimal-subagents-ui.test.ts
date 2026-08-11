@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Theme } from "@earendil-works/pi-coding-agent";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import type { AgentSummary, StatusResult } from "./minimal-subagents-types.js";
+import type { AgentSummary, HierarchyStatusResult } from "./minimal-subagents-types.js";
 import {
   buildMinimalSubagentsWidgetView,
   MinimalSubagentsUiController,
@@ -31,7 +31,7 @@ function agent(overrides: Partial<AgentSummary> & Pick<AgentSummary, "agent_id">
 
 describe("buildMinimalSubagentsWidgetView", () => {
   it("selects active nested agents, structural ancestors, and the three latest outcomes", () => {
-    const hierarchy: StatusResult = {
+    const hierarchy: HierarchyStatusResult = {
       root_id: "root",
       agents: [
         agent({
@@ -92,7 +92,7 @@ describe("buildMinimalSubagentsWidgetView", () => {
   });
 
   it("prioritizes failed outcomes over newer successful outcomes", () => {
-    const hierarchy: StatusResult = {
+    const hierarchy: HierarchyStatusResult = {
       root_id: "root",
       agents: [
         agent({
@@ -116,7 +116,7 @@ describe("buildMinimalSubagentsWidgetView", () => {
   });
 
   it("caps agent rows at eight and renders every line within terminal width", () => {
-    const hierarchy: StatusResult = {
+    const hierarchy: HierarchyStatusResult = {
       root_id: "root",
       agents: Array.from({ length: 12 }, (_, index) =>
         agent({
@@ -143,7 +143,7 @@ describe("MinimalSubagentsUiController", () => {
   it("shows active status, retains terminal rows for ten seconds, then clears all UI", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-08-11T12:00:00.000Z"));
-    let hierarchy: StatusResult = {
+    let hierarchy: HierarchyStatusResult = {
       root_id: "root",
       agents: [agent({ agent_id: "root.worker", state: "running", task: "Work" })],
     };
@@ -157,7 +157,7 @@ describe("MinimalSubagentsUiController", () => {
         setStatus: (_key: string, value: string | undefined) => statuses.push(value),
       },
     } as never;
-    const coordinator = { status: () => hierarchy } as never;
+    const coordinator = { inspectStatus: () => hierarchy } as never;
     const controller = new MinimalSubagentsUiController(coordinator, context);
 
     controller.refresh();

@@ -92,7 +92,11 @@ describe("buildSubagentSystemPrompt", () => {
     expect(prompt).toContain("root.research");
     expect(prompt).toContain("parent");
     expect(prompt).toContain("persistent subagent");
-    expect(prompt).toContain("subagent_wait");
+    expect(prompt).toContain("agent_message");
+    expect(prompt).toContain("direct parent, direct siblings, or direct children");
+    expect(prompt).toContain("wait and status target direct children only");
+    expect(prompt).toContain("Sibling canonical IDs must come from your parent");
+    expect(prompt).not.toContain("*");
     expect(prompt).not.toContain("subagent_cancel");
     expect(prompt).not.toContain("subagent_delete");
     expect(prompt).toContain("Delegation is owned by your parent");
@@ -107,7 +111,7 @@ describe("buildSubagentSystemPrompt", () => {
     });
     expect(prompt).toContain("explicit fanout responsibility");
     expect(prompt).toContain("subagent_cancel");
-    expect(prompt).toContain("strict descendants only");
+    expect(prompt).toContain("target direct children only");
     expect(prompt).toContain("Remaining delegation depth: 1");
     expect(prompt).toContain("final response is delivered");
   });

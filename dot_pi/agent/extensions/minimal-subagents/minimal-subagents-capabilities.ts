@@ -7,7 +7,7 @@ export const DEFAULT_MAX_SUBAGENT_DEPTH = 2;
 /** Lists the six coordinator tools excluded from ordinary child capabilities. */
 export const COORDINATOR_TOOL_NAMES = [
   "subagent",
-  "subagent_message",
+  "agent_message",
   "subagent_wait",
   "subagent_status",
   "subagent_cancel",

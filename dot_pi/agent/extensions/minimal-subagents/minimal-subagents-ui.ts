@@ -6,7 +6,7 @@ import {
   formatSubagentDuration,
   renderSubagentStatusSymbol,
 } from "./minimal-subagents-rendering.js";
-import type { AgentSummary, StatusResult, TurnStatus } from "./minimal-subagents-types.js";
+import type { AgentSummary, HierarchyStatusResult, TurnStatus } from "./minimal-subagents-types.js";
 
 const MINIMAL_SUBAGENTS_UI_KEY = "minimal-subagents";
 const MINIMAL_SUBAGENTS_RECENT_LIMIT = 3;
@@ -80,7 +80,9 @@ function candidatePath(
 }
 
 /** Project coordinator status into the bounded active/ancestor/recent widget hierarchy. */
-export function buildMinimalSubagentsWidgetView(status: StatusResult): MinimalSubagentsWidgetView {
+export function buildMinimalSubagentsWidgetView(
+  status: HierarchyStatusResult,
+): MinimalSubagentsWidgetView {
   const agents = "agents" in status ? status.agents : [status.agent];
   const flattened = flattenAgentHierarchy(agents);
   const byId = new Map(flattened.map((item) => [item.agent.agent_id, item]));
@@ -205,7 +207,7 @@ export class MinimalSubagentsUiController {
 
   refresh(): void {
     if (this.disposed || this.context.mode !== "tui") return;
-    const status = this.coordinator.status();
+    const status = this.coordinator.inspectStatus();
     const nextView = buildMinimalSubagentsWidgetView(status);
     this.currentView = nextView;
     if (nextView.runningCount > 0) {

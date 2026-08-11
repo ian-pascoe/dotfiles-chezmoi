@@ -16,7 +16,7 @@ describe("createCoordinatorToolDefinitions", () => {
     });
     expect(tools.map((tool) => tool.name)).toEqual([
       "subagent",
-      "subagent_message",
+      "agent_message",
       "subagent_wait",
       "subagent_status",
       "subagent_cancel",
@@ -32,7 +32,7 @@ describe("createCoordinatorToolDefinitions", () => {
         turn_id: "turn-1",
         status: "running",
       })),
-      status: vi.fn(() => ({
+      inspectStatus: vi.fn(() => ({
         agent: {
           agent_id: "root.worker",
           launch_contract: { ordinary_tools: ["read", "bash"] },
@@ -98,6 +98,62 @@ describe("createCoordinatorToolDefinitions", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 
+  it("executes one direct agent message with the bound caller identity", async () => {
+    const message = vi.fn(async () => ({
+      agent_id: "root.child",
+      behavior: "steer",
+      delivered: true,
+    }));
+    const tools = createCoordinatorToolDefinitions({
+      coordinator: { message } as never,
+      callerId: "root",
+      schemas: createCoordinatorToolSchemas([]),
+      captureCaller: () => {
+        throw new Error("not used");
+      },
+    });
+
+    const result = await tools
+      .find((tool) => tool.name === "agent_message")!
+      .execute(
+        "message-call",
+        { agent_id: "root.child", message: "update" },
+        undefined,
+        undefined,
+        {} as never,
+      );
+
+    expect(message).toHaveBeenCalledWith(
+      "root",
+      { agent_id: "root.child", message: "update", behavior: undefined },
+      "root:message-call",
+    );
+    expect(result.details).toEqual({
+      agent_id: "root.child",
+      behavior: "steer",
+      delivered: true,
+    });
+  });
+
+  it("passes caller identity into child-scoped status", async () => {
+    const status = vi.fn(() => ({ parent_id: "root.lead", agents: [] }));
+    const tools = createCoordinatorToolDefinitions({
+      coordinator: { status } as never,
+      callerId: "root.lead",
+      allowFanoutTools: true,
+      schemas: createCoordinatorToolSchemas([]),
+      captureCaller: () => {
+        throw new Error("not used");
+      },
+    });
+
+    await tools
+      .find((tool) => tool.name === "subagent_status")!
+      .execute("status-call", { agent_id: "root.lead.child" }, undefined, undefined, {} as never);
+
+    expect(status).toHaveBeenCalledWith("root.lead", "root.lead.child");
+  });
+
   it("passes the fanout caller identity into lifecycle management", async () => {
     const cancel = vi.fn(async () => ({
       agent_id: "root.lead.child",
@@ -158,7 +214,7 @@ describe("createCoordinatorToolDefinitions", () => {
     });
     expect(tools.map((tool) => tool.name)).toEqual([
       "subagent",
-      "subagent_message",
+      "agent_message",
       "subagent_wait",
       "subagent_status",
       "subagent_cancel",
@@ -177,7 +233,7 @@ describe("createCoordinatorToolDefinitions", () => {
       },
     });
     expect(tools.map((tool) => tool.name)).toEqual([
-      "subagent_message",
+      "agent_message",
       "subagent_wait",
       "subagent_status",
     ]);

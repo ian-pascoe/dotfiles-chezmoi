@@ -13,6 +13,7 @@ import { createRegistryEvent } from "./minimal-subagents-registry.js";
 import { addMinimalSubagentsUsage } from "./minimal-subagents-usage.js";
 import type {
   AgentDetail,
+  AgentMessageResult,
   AgentSessionFactory,
   AgentSummary,
   CallerSnapshot,
@@ -22,8 +23,8 @@ import type {
   CoordinatorMessage,
   DeleteResult,
   ForkSnapshot,
+  HierarchyStatusResult,
   MessageBehavior,
-  MessageResult,
   PersistedAgent,
   PersistedDelivery,
   RegistrySnapshot,
@@ -232,39 +233,35 @@ export class MinimalSubagentsCoordinator {
     };
   }
 
-  /** Send a direct, parent-alias, or snapshotted broadcast conversation-plane message. */
+  /** Send one conversation-plane message to an authorized parent, sibling, or direct child. */
   async message(
     callerId: string,
     parameters: MessageParameters,
     sourceTurnId: string,
-  ): Promise<MessageResult> {
+  ): Promise<AgentMessageResult> {
     this.assertAccepting();
     this.assertCallerExists(callerId);
     const behavior = parameters.behavior ?? "steer";
-    const targets = this.resolveMessageTargets(callerId, parameters.agent_id);
-    const deliveries = await Promise.all(
-      targets.map(async (targetId) => {
-        try {
-          await this.enqueueRecipientDelivery(targetId, async () => {
-            await this.deliverExplicitMessage(
-              callerId,
-              targetId,
-              sourceTurnId,
-              parameters.message,
-              behavior,
-            );
-          });
-          return { agent_id: targetId, delivered: true as const };
-        } catch (error) {
-          return {
-            agent_id: targetId,
-            delivered: false as const,
-            error: error instanceof Error ? error.message : String(error),
-          };
-        }
-      }),
-    );
-    return { behavior, deliveries };
+    const targetId = this.resolveMessageTarget(callerId, parameters.agent_id);
+    try {
+      await this.enqueueRecipientDelivery(targetId, async () => {
+        await this.deliverExplicitMessage(
+          callerId,
+          targetId,
+          sourceTurnId,
+          parameters.message,
+          behavior,
+        );
+      });
+      return { agent_id: targetId, behavior, delivered: true };
+    } catch (error) {
+      return {
+        agent_id: targetId,
+        behavior,
+        delivered: false,
+        error: error instanceof Error ? error.message : String(error),
+      };
+    }
   }
 
   /** Wait for the exact active turn captured at invocation, or return the latest idle result. */
@@ -276,6 +273,7 @@ export class MinimalSubagentsCoordinator {
   ): Promise<TurnResult> {
     this.assertAccepting();
     this.assertCallerExists(callerId);
+    this.assertCallerTargetsDirectChild(callerId, agentId, "wait");
     const agent = this.requireUsableAgent(agentId, "wait");
     if (!agent.active_turn_id) {
       if (agent.latest_result) return Promise.resolve(structuredClone(agent.latest_result));
@@ -314,8 +312,21 @@ export class MinimalSubagentsCoordinator {
     });
   }
 
-  /** Return either the concise hierarchy or detailed status for one agent. */
-  status(agentId?: string): StatusResult {
+  /** Return direct-child status authorized for one root or child caller. */
+  status(callerId: string, agentId?: string): StatusResult {
+    this.assertCallerExists(callerId);
+    if (agentId !== undefined) {
+      this.assertCallerTargetsDirectChild(callerId, agentId, "status");
+      return { agent: this.buildAgentDetail(this.requireAgent(agentId), false) };
+    }
+    return {
+      parent_id: callerId,
+      agents: this.childrenOf(callerId).map((agent) => this.buildAgentSummary(agent, false)),
+    };
+  }
+
+  /** Return the complete root hierarchy for trusted UI and coordinator activity projections. */
+  inspectStatus(agentId?: string): HierarchyStatusResult {
     if (agentId !== undefined) return { agent: this.buildAgentDetail(this.requireAgent(agentId)) };
     return {
       root_id: "root",
@@ -332,7 +343,7 @@ export class MinimalSubagentsCoordinator {
       : false;
   }
 
-  /** Abort caller-authorized target turns; fanout children can manage strict descendants only. */
+  /** Abort one caller-owned direct child turn, optionally including its subtree. */
   async cancel(callerId: string, agentId: string, recursive = true): Promise<CancelResult> {
     this.assertAccepting();
     this.assertCallerCanManageAgent(callerId, agentId, "cancel");
@@ -340,22 +351,8 @@ export class MinimalSubagentsCoordinator {
     const affected = recursive ? [target, ...this.descendantsOf(agentId)] : [target];
     const cancelledTurnIds: string[] = [];
     for (const agent of affected) {
-      if (!agent.active_turn_id) continue;
-      const turnId = agent.active_turn_id;
-      cancelledTurnIds.push(turnId);
-      const runtime = this.runtimes.get(agent.agent_id);
-      if (runtime) await runtime.abort();
-      this.settleTurn(agent, turnId, {
-        agent_id: agent.agent_id,
-        turn_id: turnId,
-        status: "cancelled",
-        output: "",
-      });
-      this.dependencies.notify?.({
-        type: "cancellation",
-        agentId: agent.agent_id,
-        message: `Cancelled ${agent.agent_id}`,
-      });
+      const cancelledTurnId = await this.cancelActiveTurn(agent);
+      if (cancelledTurnId) cancelledTurnIds.push(cancelledTurnId);
     }
     return {
       agent_id: agentId,
@@ -365,7 +362,7 @@ export class MinimalSubagentsCoordinator {
     };
   }
 
-  /** Delete caller-authorized sessions post-order; fanout children can manage strict descendants only. */
+  /** Delete one caller-owned direct child session, optionally including its subtree post-order. */
   async delete(callerId: string, agentId: string, recursive = true): Promise<DeleteResult> {
     this.assertAccepting();
     this.assertCallerCanManageAgent(callerId, agentId, "delete");
@@ -397,7 +394,7 @@ export class MinimalSubagentsCoordinator {
       }
       const runtime = this.runtimes.get(agent.agent_id);
       try {
-        if (agent.active_turn_id) await this.cancel(callerId, agent.agent_id, false);
+        if (agent.active_turn_id) await this.cancelActiveTurn(agent);
         runtime?.dispose();
         this.runtimes.delete(agent.agent_id);
         if (agent.session_file) {
@@ -791,7 +788,7 @@ export class MinimalSubagentsCoordinator {
             usage: result.usage,
           },
         };
-        await this.deliverToRecipient(delivery.destination_agent_id, message, "follow-up");
+        await this.deliverToRecipient(delivery.destination_agent_id, message, "steer");
       });
     } catch (error) {
       delivery.error = error instanceof Error ? error.message : String(error);
@@ -896,19 +893,24 @@ export class MinimalSubagentsCoordinator {
     return next;
   }
 
-  private resolveMessageTargets(callerId: string, target?: string): string[] {
+  private resolveMessageTarget(callerId: string, target?: string): string {
     const resolved = target ?? (callerId === "root" ? undefined : "parent");
     if (!resolved) throw new Error("Minimal subagents message: root caller must specify agent_id");
-    if (resolved === "parent") {
-      if (callerId === "root") throw new Error("Minimal subagents message: root has no parent");
-      return [this.requireAgent(callerId).parent_id];
+    if (resolved === "*") throw new Error('Minimal subagents message target "*" is unsupported');
+    const caller = callerId === "root" ? undefined : this.requireAgent(callerId);
+    const targetId = resolved === "parent" ? caller?.parent_id : resolved;
+    if (!targetId) throw new Error("Minimal subagents message: root has no parent");
+    const targetAgent = targetId === "root" ? undefined : this.requireAgent(targetId);
+    const isDirectParent = caller?.parent_id === targetId;
+    const isDirectSibling =
+      caller !== undefined && targetAgent?.parent_id === caller.parent_id && targetId !== callerId;
+    const isDirectChild = targetAgent?.parent_id === callerId;
+    if (!isDirectParent && !isDirectSibling && !isDirectChild) {
+      throw new Error(
+        `Minimal subagents message authorization denied: ${callerId} cannot message ${targetId}`,
+      );
     }
-    if (resolved === "*") {
-      return ["root", ...this.agents.keys()].filter((agentId) => agentId !== callerId);
-    }
-    if (resolved === "root") return ["root"];
-    this.requireAgent(resolved);
-    return [resolved];
+    return targetId;
   }
 
   private hasDeliveryEvidence(delivery: PersistedDelivery): boolean {
@@ -936,8 +938,11 @@ export class MinimalSubagentsCoordinator {
     );
   }
 
-  private buildAgentSummary(agent: PersistedAgent): AgentSummary {
-    const children = this.childrenOf(agent.agent_id).map((child) => this.buildAgentSummary(child));
+  private buildAgentSummary(agent: PersistedAgent, includeDescendants = true): AgentSummary {
+    const directChildren = this.childrenOf(agent.agent_id);
+    const children = includeDescendants
+      ? directChildren.map((child) => this.buildAgentSummary(child))
+      : [];
     const elapsed = agent.active_turn_started_at
       ? Math.max(0, this.now().getTime() - new Date(agent.active_turn_started_at).getTime())
       : undefined;
@@ -961,20 +966,22 @@ export class MinimalSubagentsCoordinator {
         : agent.latest_result
           ? `turn ${agent.latest_result.status}`
           : "created",
-      child_count: children.length,
+      child_count: directChildren.length,
       children,
     };
   }
 
-  private buildAgentDetail(agent: PersistedAgent): AgentDetail {
-    const summary = this.buildAgentSummary(agent);
+  private buildAgentDetail(agent: PersistedAgent, includeDescendants = true): AgentDetail {
+    const summary = this.buildAgentSummary(agent, includeDescendants);
     const runtimeUsage = this.runtimes.get(agent.agent_id)?.getUsage();
     let descendantUsage: Usage | undefined;
-    for (const descendant of this.descendantsOf(agent.agent_id)) {
-      descendantUsage = addMinimalSubagentsUsage(
-        descendantUsage,
-        this.runtimes.get(descendant.agent_id)?.getUsage(),
-      );
+    if (includeDescendants) {
+      for (const descendant of this.descendantsOf(agent.agent_id)) {
+        descendantUsage = addMinimalSubagentsUsage(
+          descendantUsage,
+          this.runtimes.get(descendant.agent_id)?.getUsage(),
+        );
+      }
     }
     return {
       ...summary,
@@ -1112,22 +1119,53 @@ export class MinimalSubagentsCoordinator {
     }
   }
 
+  private async cancelActiveTurn(agent: PersistedAgent): Promise<string | undefined> {
+    if (!agent.active_turn_id) return undefined;
+    const turnId = agent.active_turn_id;
+    const runtime = this.runtimes.get(agent.agent_id);
+    if (runtime) await runtime.abort();
+    this.settleTurn(agent, turnId, {
+      agent_id: agent.agent_id,
+      turn_id: turnId,
+      status: "cancelled",
+      output: "",
+    });
+    this.dependencies.notify?.({
+      type: "cancellation",
+      agentId: agent.agent_id,
+      message: `Cancelled ${agent.agent_id}`,
+    });
+    return turnId;
+  }
+
+  private assertCallerTargetsDirectChild(
+    callerId: string,
+    targetAgentId: string,
+    operation: "wait" | "status" | "cancel" | "delete",
+  ): void {
+    if (targetAgentId === "root") {
+      throw new Error(
+        `Minimal subagents ${operation} authorization denied: ${callerId} cannot target ${targetAgentId}`,
+      );
+    }
+    const target = this.requireAgent(targetAgentId);
+    if (target.parent_id === callerId) return;
+    throw new Error(
+      `Minimal subagents ${operation} authorization denied: ${callerId} cannot target ${targetAgentId}`,
+    );
+  }
+
   private assertCallerCanManageAgent(
     callerId: string,
     targetAgentId: string,
     operation: "cancel" | "delete",
   ): void {
+    this.assertCallerTargetsDirectChild(callerId, targetAgentId, operation);
     if (callerId === "root") return;
     const caller = this.agents.get(callerId);
-    const managesDescendant = targetAgentId.startsWith(`${callerId}.`);
-    if (
-      caller &&
-      canAgentContractSpawn(caller.agent_id, caller.launch_contract.delegation) &&
-      managesDescendant
-    )
-      return;
+    if (caller && canAgentContractSpawn(caller.agent_id, caller.launch_contract.delegation)) return;
     throw new Error(
-      `Minimal subagents ${operation} authorization denied: ${callerId} cannot manage ${targetAgentId}`,
+      `Minimal subagents ${operation} authorization denied: ${callerId} cannot target ${targetAgentId}`,
     );
   }
 

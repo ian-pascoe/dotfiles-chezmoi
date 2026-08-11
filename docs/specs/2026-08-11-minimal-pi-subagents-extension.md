@@ -21,10 +21,10 @@ This specification is the product and implementation authority for the replaceme
 
 - Launch persistent subagents with explicit control over inherited conversation context, project context, model, thinking level, and ordinary tools.
 - Allow unlimited parallelism with explicit, depth-bounded nested fanout.
-- Support direct parent-to-child, child-to-parent, and same-root agent messaging.
-- Let agents inspect and wait for peers while root and authorized fanout parents manage child lifecycles.
+- Support explicit messaging between direct parents, direct siblings, and direct children.
+- Let each agent inspect, wait for, and manage only its direct children.
 - Persist every child as a normal Pi session and restore the hierarchy when the owning root session resumes.
-- Automatically deliver each successful child turn to its direct parent without steering the parent's active turn.
+- Automatically deliver each successful child turn by steering its running direct parent or starting an idle parent turn.
 - Keep the extension small: one coordinator, six tools, normal Pi sessions, and native Pi session/model/tool primitives.
 
 ## Non-goals
@@ -47,7 +47,7 @@ This specification is the product and implementation authority for the replaceme
 - **Turn:** One prompt and the resulting assistant/tool loop until completion, failure, cancellation, or interruption.
 - **Caller:** The root or child whose tool call invoked an operation.
 - **Direct parent:** The agent that spawned a child.
-- **Coordinator tools:** The six tools in this specification. Every child receives message, wait, and status independently of ordinary tool selection. Spawn, cancel, and delete are available only to the root and explicitly authorized fanout children below the depth cap; child cancel/delete authority is limited to strict descendants.
+- **Coordinator tools:** The six tools in this specification. Every child receives `agent_message`, wait, and status independently of ordinary tool selection. Spawn, cancel, and delete are available only to the root and explicitly authorized fanout children below the depth cap. All `subagent_*` observation and lifecycle targets are direct children.
 - **Ordinary tools:** Built-in or extension-provided tools selected by the launch contract.
 - **Launch contract:** The immutable context, model, thinking, project-context, and ordinary-tool configuration captured when an agent is created.
 - **Conversation-plane message:** Content added to the recipient's model context.
@@ -82,7 +82,7 @@ subagent({
   delegation?: "none" | "fanout",
 });
 
-subagent_message({
+agent_message({
   agent_id?: string,
   message: string,
   behavior?: "steer" | "follow-up",
@@ -108,7 +108,7 @@ subagent_delete({
 });
 ```
 
-There is no separate `subagent_list` tool. Calling `subagent_status` without an ID lists the hierarchy.
+There is no separate `subagent_list` tool. Calling `subagent_status` without an ID lists the caller's direct children.
 
 ## Common Result Contracts
 
@@ -142,15 +142,11 @@ interface TurnResult {
   };
 }
 
-interface DeliveryResult {
+interface AgentMessageResult {
   agent_id: string;
+  behavior: "steer" | "follow-up";
   delivered: boolean;
   error?: string;
-}
-
-interface MessageResult {
-  behavior: "steer" | "follow-up";
-  deliveries: DeliveryResult[];
 }
 
 interface AgentSummary {
@@ -185,11 +181,10 @@ interface AgentDetail extends AgentSummary {
   missing_dependencies: string[];
   unavailable_reason?: string;
   usage?: TurnResult["usage"];
-  descendant_usage?: TurnResult["usage"];
 }
 
 type StatusResult =
-  | { root_id: "root"; agents: AgentSummary[] }
+  | { parent_id: string; agents: AgentSummary[] }
   | { agent: AgentDetail };
 
 interface CancelResult {
@@ -209,7 +204,7 @@ interface DeleteResult {
 }
 ```
 
-`subagent_message` always returns `MessageResult`; a direct send has one delivery and a broadcast has one delivery per snapshotted recipient. A failed direct send is a tool error carrying that result. A broadcast is successful when at least one delivery succeeds and becomes a tool error only when every delivery fails. `subagent_status` returns `StatusResult`. Cancel returns `CancelResult`, including empty arrays for an idle no-op. Delete returns `DeleteResult`; if a post-order filesystem deletion partially fails, the tool result is an error carrying the partial result, completed deletions stay tombstoned, and unprocessed agents remain live. There is no rollback across filesystem operations.
+`agent_message` always returns one `AgentMessageResult`. A failed send is a tool error carrying that result. `subagent_status` returns `StatusResult`, bounded to direct children and with nested `children` arrays omitted. Cancel returns `CancelResult`, including empty arrays for an idle no-op. Delete returns `DeleteResult`; if a post-order filesystem deletion partially fails, the tool result is an error carrying the partial result, completed deletions stay tombstoned, and unprocessed agents remain live. There is no rollback across filesystem operations.
 
 Tool errors use Pi's ordinary error result mechanism and include a concise actionable explanation. They never silently clamp tool access, substitute a model, overwrite an agent, or share a source session after a clone failure.
 
@@ -220,7 +215,7 @@ Tool errors use Pi's ordinary error result mechanism and include a concise actio
 - The interactive root is `root`.
 - `agent_id` on `subagent` is one friendly path segment matching `[A-Za-z0-9][A-Za-z0-9_-]{0,63}`.
 - Friendly IDs are case-sensitive and unique among peers.
-- The exact segments `root` and `parent` are reserved. Empty, whitespace, dotted, slash-containing, and path-like values fail validation; `*` is an address alias only.
+- The exact segments `root` and `parent` are reserved. Empty, whitespace, dotted, slash-containing, wildcard, and path-like values fail validation.
 - A child canonical ID is `<parent canonical ID>.<friendly ID>`.
 - Examples: `root.research`, `root.research.sources`, `root.review`.
 - Generated friendly IDs must be unique among peers and remain stable for the session's lifetime.
@@ -229,17 +224,14 @@ Tool errors use Pi's ordinary error result mechanism and include a concise actio
 
 ### Address Resolution
 
-- Management and direct-message operations accept canonical IDs returned by `subagent`.
-- `subagent_message` additionally accepts `parent` and `*`.
-- Omitted `subagent_message.agent_id` means `parent` for a child caller.
-- Omitting the target at `root` is an error.
-- `*` broadcasts to a snapshot of every existing agent except the sender.
-- Any agent may message any other agent under the same root.
-- Cross-root addresses are unsupported.
-- Root cancel and delete may target any non-root agent in the same hierarchy.
-- An authorized fanout child may cancel or delete only strict descendants of its own canonical ID. It may not manage itself, siblings, ancestors, or unrelated branches.
+- `agent_message` accepts canonical IDs returned by `subagent` and the `parent` alias.
+- Omitted `agent_message.agent_id` means `parent` for a child caller. Omitting the target at `root` is an error.
+- Explicit messages may target only the caller's direct parent, direct siblings, or direct children. Self, indirect relatives, unrelated branches, cross-root addresses, and wildcard broadcasts are unsupported.
+- Sibling canonical IDs are not ambiently listed or injected. The parent explicitly includes or messages those IDs when sibling collaboration is needed.
+- Wait and status may target only direct children. Omitted status lists only direct children and does not recursively expose grandchildren.
+- Root and authorized fanout children may cancel or delete only direct children. Recursive mode may affect the selected child's complete subtree.
 - Ordinary children and depth-capped children do not receive cancel or delete tools.
-- The coordinator repeats these caller checks even when a stale or manually constructed tool definition reaches it. The root cannot be cancelled or deleted through these tools.
+- The coordinator repeats every caller check even when a stale or manually constructed tool definition reaches it. No tool may target the caller itself.
 
 ## Agent and Turn State
 
@@ -319,7 +311,8 @@ For `omit`, import no caller conversation. The task remains the first child user
 - `omit` excludes those instruction, skill, and prompt resources.
 - Extension loading is separate from project context because extensions may provide requested tools.
 - Every child receives Pi's normal system prompt for its effective ordinary tools and project resources.
-- Append one small fixed system-prompt block containing the canonical agent ID, direct-parent ID, available coordinator tools, addressing aliases, completion behavior, and the instruction that it is a persistent subagent.
+- Append one small fixed system-prompt block containing the canonical agent ID, direct-parent ID, available coordinator tools, direct-relative messaging and direct-child targeting rules, completion behavior, and the instruction that it is a persistent subagent.
+- Do not inject a sibling directory. Tell children that sibling canonical IDs must be provided explicitly by their parent when collaboration is needed.
 
 After initialization, each child uses Pi's ordinary automatic compaction behavior and effective compaction settings.
 
@@ -354,7 +347,7 @@ Wildcards are never accepted as tool arguments. The dynamic enum refreshes only 
 
 ## Ordinary Tool Selection
 
-Coordinator tools are injected separately from ordinary tools, including when `tools` is `none`. Every child receives `subagent_message`, `subagent_wait`, and `subagent_status`. Root and authorized fanout children below the depth cap additionally receive `subagent`, `subagent_cancel`, and `subagent_delete`. Cancel and delete remain caller-authorized inside the coordinator.
+Coordinator tools are injected separately from ordinary tools, including when `tools` is `none`. Every child receives `agent_message`, `subagent_wait`, and `subagent_status`. Root and authorized fanout children below the depth cap additionally receive `subagent`, `subagent_cancel`, and `subagent_delete`. Every observation and lifecycle operation remains direct-child-authorized inside the coordinator.
 
 | Selection | Ordinary tools |
 | --- | --- |
@@ -384,7 +377,7 @@ Rules:
 - SDK-created child sessions do not recursively load this extension as an independent coordinator.
 - Instead, inject caller-bound coordinator tool definitions through `customTools` when each child `AgentSession` is created.
 - Exclude the extension entrypoint from the child's resource loader while allowing other discoverable extensions needed for ordinary tools.
-- Each injected tool closure identifies its caller by canonical ID. It includes spawn, cancel, and delete only when the persisted caller contract authorizes fanout below the depth cap; cancel and delete pass the caller ID to the coordinator for strict-descendant authorization.
+- Each injected tool closure identifies its caller by canonical ID. It includes spawn, cancel, and delete only when the persisted caller contract authorizes fanout below the depth cap. Message, wait, status, cancel, and delete all pass the caller ID to the coordinator for relationship authorization.
 - The root tool definitions use the same coordinator through a root-session adapter.
 
 ### Native Pi Primitives
@@ -452,15 +445,14 @@ Registry replay scans custom entries for the current root session ID in file app
 
 ### Explicit Messages
 
-`subagent_message` sends one conversation-plane message and returns immediately after coordinator acceptance.
+`agent_message` sends one conversation-plane message and returns immediately after coordinator acceptance.
 
 - `behavior` defaults to `steer`.
+- The target must be the caller's direct parent, direct sibling, or direct child. There is no wildcard or multi-recipient form; Pi may issue several independent calls in parallel.
 - For a running recipient, `steer` routes through steering and `follow-up` routes through the follow-up queue.
 - For an idle recipient, either behavior starts a new prompt immediately.
-- Serialize all deliveries per recipient in coordinator-receipt order.
-- Make no ordering guarantee across recipients.
-- Broadcast snapshots recipients at invocation time and returns one `DeliveryResult` per target.
-- A failure for one broadcast recipient does not roll back successful deliveries.
+- Serialize deliveries per recipient in coordinator-receipt order.
+- Return one `AgentMessageResult`; delivery failure becomes a tool error carrying that result.
 - Render explicit messages with custom type `minimal-subagents.message`, visible content, and details containing source agent ID and source turn ID. Deliver them through `sendCustomMessage()` for children or `pi.sendMessage()` for the root, with `triggerTurn: true` when idle and the requested `deliverAs` mode when running. They participate in recipient context without masquerading as human-authored input.
 
 An agent requesting help sends its parent a message and finishes its own turn. Messaging has no blocking request/response protocol.
@@ -475,10 +467,10 @@ After every successful terminal assistant response:
 4. If that direct parent has an active waiter for the exact source turn, resolve the wait with `TurnResult` and do not enqueue a second copy. The returned tool result `details` must include the source agent ID and source turn ID as its idempotency key.
 5. Keep the delivery pending after resolving the Promise. A subscription or later session scan settles delivery only after Pi appends that keyed wait tool result to the parent session.
 6. Otherwise, deliver a visible custom message of type `minimal-subagents.result` with source agent ID, source turn ID, and status in `details`, and the final response as content.
-7. If the parent is running, deliver as follow-up; if idle, start a new parent turn immediately.
+7. If the parent is running, deliver as steer so it can incorporate the result immediately; if idle, start a new parent turn.
 8. Record delivery settlement only after the destination session contains durable keyed evidence of delivery.
 
-Completion never steers an active parent turn.
+Successful completion always steers an active parent turn; it never waits in the follow-up queue.
 
 Failures, cancellation, interruption, progress, and lifecycle changes remain control-plane notifications. They are visible to the user and status tools but are not automatically inserted as conversational prompts.
 
@@ -494,9 +486,10 @@ A process may die after writing the source result but before writing a delivery 
 
 ## Waiting
 
-`subagent_wait` observes one exact turn:
+`subagent_wait` observes one exact turn of a direct child:
 
-- If the target is running, capture its active turn ID when the wait begins.
+- Reject parents, siblings, self, indirect descendants, and unrelated targets.
+- If the direct child is running, capture its active turn ID when the wait begins.
 - If the target is idle, return its latest turn immediately.
 - If no turn exists, return a tool error.
 - The wait returns when the captured turn settles, even if a later turn starts.
@@ -507,7 +500,7 @@ A process may die after writing the source result but before writing a delivery 
 
 ## Status and Monitoring
 
-Calling `subagent_status` without an ID returns a concise rooted hierarchy. Calling it with an ID returns detail for that agent.
+Calling `subagent_status` without an ID returns concise summaries of the caller's direct children. Calling it with an ID returns detail for one direct child. Parent, sibling, self, indirect-descendant, and unrelated targets fail authorization. Public status results never recursively include grandchildren; the trusted root UI uses a separate internal full-hierarchy projection.
 
 Summary fields:
 
@@ -527,7 +520,7 @@ Detailed fields additionally include:
 - Recent explicit messages.
 - Latest final response or error.
 - Missing dependencies.
-- Per-session usage and aggregated descendant usage on demand.
+- Per-session usage. Descendant usage belongs to the trusted internal hierarchy projection and is not exposed through the caller-scoped tool.
 
 Status does not expose raw model thinking or a full event transcript. Normal child sessions remain directly inspectable through `/resume`.
 
@@ -537,8 +530,9 @@ The human-facing UI is limited to small native notifications for spawn, completi
 
 ### Cancellation
 
+- The target must be one direct child.
 - `recursive` defaults to `true`.
-- Cancel aborts active target turns and, when recursive, active descendant turns.
+- Cancel aborts the selected child's active turn and, when recursive, active descendant turns.
 - Cancel preserves all sessions and launch contracts.
 - Settled cancelled turns leave their agents idle.
 - Non-recursive cancellation leaves descendants running.
@@ -546,6 +540,7 @@ The human-facing UI is limited to small native notifications for spawn, completi
 
 ### Deletion
 
+- The target must be one direct child.
 - `recursive` defaults to `true`.
 - Delete aborts active work, disposes sessions, removes the agents from the live coordinator, and trashes their persisted session files.
 - Recursive delete processes descendants before their parent.
@@ -700,10 +695,10 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 
 ### U4. Messaging, completion, wait, and status
 
-- Implement per-recipient queues, steering/follow-up behavior, aliases, broadcast snapshots, and partial delivery results.
+- Implement per-recipient queues, steering/follow-up behavior, the parent alias, adjacent-agent authorization, and one direct message result.
 - Subscribe to child lifecycle events and implement automatic direct-parent final delivery.
-- Implement exact-turn waits and duplicate suppression.
-- Implement tree and detailed status plus native notifications.
+- Implement direct-child exact-turn waits and duplicate suppression.
+- Implement direct-child public status, a separate trusted hierarchy projection, and native notifications.
 
 ### U5. Lifecycle, recovery, and fork cloning
 
@@ -759,13 +754,13 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 
 **Given** a child is running and its parent is idle,
 **when** the child sends an omitted-target message,
-**then** the message targets its direct parent, starts a parent turn, and is rendered as a subagent message rather than human input.
+**then** the message targets its direct parent, starts a parent turn, and is rendered as an agent message rather than human input.
 
 ### AS8. Successful background completion
 
 **Given** a parent is not waiting for a child,
 **when** the child completes successfully,
-**then** its final response is delivered exactly once to the parent as follow-up when running or as a new prompt when idle.
+**then** its final response is delivered exactly once by steering the running parent or starting a new parent turn when idle.
 
 ### AS9. Wait deduplication
 
@@ -779,11 +774,11 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 **when** the deadline expires,
 **then** only the wait ends; the child keeps running.
 
-### AS11. Broadcast partial failure
+### AS11. Adjacent direct messaging
 
-**Given** several agents, including an unavailable recipient,
-**when** an agent broadcasts,
-**then** recipients are snapshotted, available recipients receive the message in coordinator order, and the result reports the unavailable recipient without rolling back successful deliveries.
+**Given** an agent has a direct parent, direct sibling, direct child, and indirect relative,
+**when** it sends explicit messages,
+**then** direct-parent, direct-sibling, and direct-child targets return one delivery result, while self, indirect, unrelated, and wildcard targets fail authorization.
 
 ### AS12. Cancellation and reuse
 
@@ -847,9 +842,15 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 
 ### AS22. Caller-scoped lifecycle management
 
-**Given** an ordinary child, an authorized fanout child with a descendant, and a sibling branch,
+**Given** an ordinary child, an authorized fanout child with a direct child, and a deeper descendant,
 **when** they inspect their coordinator tools and attempt cancellation or deletion,
-**then** the ordinary child has no cancel/delete tools, the fanout child may manage its strict descendant, neither child can manage itself, a sibling, or an ancestor, and root retains hierarchy-wide authority.
+**then** the ordinary child has no cancel/delete tools, the fanout child and root may target only their own direct children, and recursive mode may process the selected child's subtree.
+
+### AS23. Direct-child observation and explicit sibling awareness
+
+**Given** a caller with a parent, sibling, direct child, and grandchild,
+**when** it waits, requests explicit status, or lists status,
+**then** only its direct child is targetable or listed, no grandchildren are recursively exposed, and sibling IDs become known only when the parent explicitly supplies them for `agent_message`.
 
 ## Verification Contract
 
@@ -868,10 +869,10 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 ## Definition of Done
 
 - The public surface contains exactly the six specified tools and their confirmed defaults.
-- AS1-AS22 have focused automated coverage where Pi APIs permit deterministic construction; persistence, direct resume, and fork also have deployed smoke evidence.
+- AS1-AS23 have focused automated coverage where Pi APIs permit deterministic construction; persistence, direct resume, and fork also have deployed smoke evidence.
 - Every child uses a normal persisted Pi session and is visible through `/resume`.
 - The original root restores its complete hierarchy after restart without restarting interrupted work.
-- Successful final responses reach direct parents exactly once and never steer active parent turns.
+- Successful final responses reach direct parents exactly once, steering active parents instead of waiting in their follow-up queues.
 - Unlimited parallel width works without a plugin semaphore or queue; nested spawning requires explicit fanout authorization and stops at depth 2.
 - Context, model, thinking, project-resource, ordinary-tool, and capability-ceiling behavior matches this specification.
 - Root tree navigation, root fork cloning, direct child promotion, cancellation, deletion, tombstones, and unavailable dependency restoration match this specification.

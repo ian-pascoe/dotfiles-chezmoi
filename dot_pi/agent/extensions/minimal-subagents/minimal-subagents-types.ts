@@ -54,17 +54,12 @@ export interface TurnResult {
   elapsed_ms?: number;
 }
 
-/** Reports per-recipient acceptance without rolling back successful peers. */
-export interface DeliveryResult {
+/** Reports delivery of one direct message to an authorized adjacent agent. */
+export interface AgentMessageResult {
   agent_id: string;
+  behavior: MessageBehavior;
   delivered: boolean;
   error?: string;
-}
-
-/** Reports the snapshotted recipient outcomes of one message operation. */
-export interface MessageResult {
-  behavior: MessageBehavior;
-  deliveries: DeliveryResult[];
 }
 
 /** Provides bounded hierarchy and usage data for one persistent agent. */
@@ -107,8 +102,13 @@ export interface AgentDetail extends AgentSummary {
   descendant_usage?: Usage;
 }
 
-/** Returns either the rooted hierarchy or one detailed agent status. */
-export type StatusResult = { root_id: "root"; agents: AgentSummary[] } | { agent: AgentDetail };
+/** Returns either caller-owned direct children or one authorized direct-child detail. */
+export type StatusResult = { parent_id: string; agents: AgentSummary[] } | { agent: AgentDetail };
+
+/** Supplies the complete root hierarchy to trusted internal UI and activity projections. */
+export type HierarchyStatusResult =
+  | { root_id: "root"; agents: AgentSummary[] }
+  | { agent: AgentDetail };
 
 /** Reports active turns cancelled without deleting persistent sessions. */
 export interface CancelResult {

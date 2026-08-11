@@ -6,7 +6,7 @@ describe("createCoordinatorToolSchemas", () => {
     const schemas = createCoordinatorToolSchemas(["openai/gpt", "anthropic/claude"]);
     expect(Object.keys(schemas)).toEqual([
       "subagent",
-      "subagent_message",
+      "agent_message",
       "subagent_wait",
       "subagent_status",
       "subagent_cancel",
@@ -28,6 +28,11 @@ describe("createCoordinatorToolSchemas", () => {
     expect(schemas.subagent.properties.delegation).toEqual(
       expect.objectContaining({ enum: ["none", "fanout"] }),
     );
+    const messageTargetPattern = (schemas.agent_message.properties.agent_id as { pattern?: string })
+      .pattern;
+    expect(messageTargetPattern).toBeDefined();
+    expect(new RegExp(messageTargetPattern!).test("*")).toBe(false);
+    expect(new RegExp(messageTargetPattern!).test("parent")).toBe(true);
   });
 
   it("makes explicit model selection impossible for an empty model set", () => {

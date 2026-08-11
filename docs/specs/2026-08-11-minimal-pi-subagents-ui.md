@@ -13,7 +13,7 @@ execution: code
 
 ## Purpose
 
-Give the local minimal-subagents extension a compact native Pi interface: collapsible tool rows, distinct coordinator messages, an active hierarchy widget, and a footer status. Keep model-visible behavior and the six-tool public surface stable.
+Give the local minimal-subagents extension a compact native Pi interface: collapsible tool rows, distinct coordinator messages, an active hierarchy widget, and a footer status. Keep model-visible behavior aligned with the authoritative six-tool public surface.
 
 The decisions in this specification were confirmed in the UI design session on 2026-08-11.
 
@@ -187,9 +187,9 @@ Examples:
 
 ```text
 ◉ root.researcher · running
-→ 3/3 delivered · steer
+→ root.researcher · delivered · steer
 ✓ root.researcher · completed · 1.8k tokens
-○ 4 retained · 0 running
+○ 4 children · 0 running
 ■ root.researcher · 2 turns cancelled
 ✓ root.researcher · 3 agents deleted
 ```
@@ -218,27 +218,27 @@ Subagent <requested-friendly-id | generated> · “<one-line task preview>”
 
 The spawn result does not wait for child completion and must not imply completion.
 
-### `subagent_message`
+### `agent_message`
 
 **Call**
 
 ```text
-Message <canonical-id | parent | *> · “<one-line message preview>”
+Message <direct-relative-canonical-id | parent> · “<one-line message preview>”
 ```
 
 **Collapsed result**
 
 ```text
-→ <successful>/<total> delivered · <steer | follow-up>
+→ <canonical-agent-id> · delivered · <steer | follow-up>
 ```
 
-Use `×` and `failed` when no recipient accepted the message.
+Use `×` and `failed` when the recipient does not accept the message.
 
 **Expanded result sections**
 
 1. Behavior.
 2. Full message.
-3. One row per snapshotted recipient with `delivered` or the actionable error.
+3. The single recipient and any actionable delivery error.
 
 ### `subagent_wait`
 
@@ -277,18 +277,18 @@ Omit unavailable metrics rather than displaying placeholders.
 
 **Call**
 
-- Omitted ID: `Status hierarchy`
+- Omitted ID: `Status children`
 - Explicit ID: `Status <canonical-agent-id>`
 
-**Collapsed hierarchy result**
+**Collapsed child-list result**
 
 ```text
-○ <retained> retained · <running> running
+○ <children> children · <running> running
 ```
 
-**Expanded hierarchy result**
+**Expanded child-list result**
 
-Render the complete rooted hierarchy as an indented tree. Every row includes identity, explicit state, availability when unavailable, live/terminal duration when known, and child count when nonzero. This tool view is complete and is not subject to the widget's eight-row cap.
+Render only the caller's direct children as a flat list. Every row includes identity, explicit state, availability when unavailable, live/terminal duration when known, and child count when nonzero. Nested child records are not rendered through the public tool.
 
 **Collapsed detail result**
 
@@ -304,7 +304,7 @@ Render the complete rooted hierarchy as an indented tree. Every row includes ide
 4. Capability ceiling and missing dependencies.
 5. Latest result as Markdown or error diagnostics.
 6. Recent messages.
-7. Agent usage and descendant usage.
+7. Agent usage.
 8. Session path and spawn entry ID.
 
 ### `subagent_cancel`
@@ -395,7 +395,7 @@ Malformed or older messages without new metadata still render their content and 
 - Placement: `aboveEditor`
 - Footer status key: `minimal-subagents`
 
-The widget is presentation-only. Derive every refresh from `coordinator.status()` with no agent ID.
+The widget is presentation-only. Derive every refresh from trusted internal `coordinator.inspectStatus()` with no agent ID; do not use the caller-scoped `subagent_status` projection.
 
 ### Visibility
 
@@ -624,7 +624,7 @@ Keep reusable formatting functions independent of the coordinator. Keep Pi TUI i
 
 **Given** message, status, cancel, and delete results,
 **when** collapsed and expanded,
-**then** each uses its confirmed summary grammar and its expanded view includes every relevant recipient, affected ID, tombstone, trash path, or failure.
+**then** each uses its confirmed summary grammar and its expanded view includes the direct message recipient, affected IDs, tombstones, trash paths, or failures.
 
 ### UI-AS5. Error fallback
 

@@ -26,8 +26,14 @@ export function createCoordinatorToolSchemas(modelIds: readonly string[]) {
       tools: Type.Optional(ToolSelectionSchema),
       delegation: Type.Optional(DelegationSchema),
     }),
-    subagent_message: Type.Object({
-      agent_id: Type.Optional(Type.String({ description: "Canonical agent ID, parent, or *" })),
+    agent_message: Type.Object({
+      agent_id: Type.Optional(
+        Type.String({
+          minLength: 1,
+          pattern: "^(?!\\*$).+$",
+          description: "Direct parent, sibling, or child canonical agent ID, or parent alias",
+        }),
+      ),
       message: Type.String({ minLength: 1 }),
       behavior: Type.Optional(StringEnum(["steer", "follow-up"] as const)),
     }),

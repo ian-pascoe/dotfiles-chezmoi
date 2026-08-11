@@ -58,6 +58,40 @@ describe("renderCoordinatorToolCall", () => {
 });
 
 describe("renderCoordinatorToolResult", () => {
+  it("renders one direct agent-message delivery", () => {
+    const result = {
+      content: [{ type: "text" as const, text: "machine-readable output" }],
+      details: {
+        agent_id: "root.child",
+        behavior: "steer",
+        delivered: true,
+      },
+    };
+    const collapsed = render(
+      renderCoordinatorToolResult(
+        "agent_message",
+        result,
+        { expanded: false, isPartial: false },
+        theme,
+        { agent_id: "root.child", message: "Please compare results" },
+      ),
+    );
+    expect(collapsed).toContain("→ root.child · delivered · steer");
+
+    const expanded = render(
+      renderCoordinatorToolResult(
+        "agent_message",
+        result,
+        { expanded: true, isPartial: false },
+        theme,
+        { agent_id: "root.child", message: "Please compare results" },
+      ),
+    );
+    expect(expanded).toContain("Recipient");
+    expect(expanded).toContain("root.child");
+    expect(expanded).toContain("Please compare results");
+  });
+
   it("renders compact and expanded wait results without raw JSON in the compact row", () => {
     const result = {
       content: [{ type: "text" as const, text: "machine-readable output" }],
@@ -197,30 +231,29 @@ describe("renderCoordinatorToolResult", () => {
     }
   });
 
-  it("renders hierarchy and destructive results as curated summaries", () => {
-    const hierarchy = render(
+  it("renders direct-child status and destructive results as curated summaries", () => {
+    const childStatus = render(
       renderCoordinatorToolResult(
         "subagent_status",
         {
           content: [{ type: "text", text: "{}" }],
           details: {
-            root_id: "root",
+            parent_id: "root",
             agents: [
               {
                 agent_id: "root.lead",
                 state: "running",
                 availability: "available",
                 child_count: 1,
-                children: [
-                  {
-                    agent_id: "root.lead.review",
-                    state: "idle",
-                    availability: "available",
-                    latest_turn: { status: "failed" },
-                    child_count: 0,
-                    children: [],
-                  },
-                ],
+                children: [],
+              },
+              {
+                agent_id: "root.peer",
+                state: "idle",
+                availability: "available",
+                latest_turn: { status: "failed" },
+                child_count: 0,
+                children: [],
               },
             ],
           },
@@ -230,8 +263,8 @@ describe("renderCoordinatorToolResult", () => {
         {},
       ),
     );
-    expect(hierarchy).toContain("2 retained · 1 running");
-    expect(hierarchy).toContain("× root.lead.review · failed");
+    expect(childStatus).toContain("2 children · 1 running");
+    expect(childStatus).toContain("× root.peer · failed");
   });
 
   it("falls back to actionable tool text when details are unavailable or incompatible", () => {

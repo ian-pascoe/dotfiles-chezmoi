@@ -8,7 +8,6 @@ import type {
   ChildAgentRuntime,
   CoordinatorMessage,
   PersistedAgent,
-  RegistrySnapshot,
   RegistryWriter,
   RootConversationEndpoint,
   RuntimeCreationRequest,
@@ -253,7 +252,7 @@ describe("MinimalSubagentsCoordinator spawning", () => {
       turn_id: expect.any(String),
       status: "running",
     });
-    expect(coordinator.status("root.agent-1")).toEqual({
+    expect(coordinator.inspectStatus("root.agent-1")).toEqual({
       agent: expect.objectContaining({
         state: "running",
         session_file: "/sessions/root.agent-1.jsonl",
@@ -329,7 +328,7 @@ describe("MinimalSubagentsCoordinator spawning", () => {
       ),
     ).rejects.toThrow("does not support image input");
     expect(sessions.runtimes.size).toBe(0);
-    expect(coordinator.status()).toEqual({ root_id: "root", agents: [] });
+    expect(coordinator.inspectStatus()).toEqual({ root_id: "root", agents: [] });
   });
 });
 
@@ -342,7 +341,7 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
       { task: "Inspect the complete API surface", agent_id: "worker" },
       rootCaller(),
     );
-    expect(coordinator.status("root.worker")).toEqual({
+    expect(coordinator.inspectStatus("root.worker")).toEqual({
       agent: expect.objectContaining({
         task: "Inspect the complete API surface",
         latest_activity_at: "2026-08-11T12:00:00.000Z",
@@ -359,7 +358,7 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
     await expect(wait).resolves.toEqual(
       expect.objectContaining({ turn_id: spawn.turn_id, elapsed_ms: 2_500 }),
     );
-    expect(coordinator.status("root.worker")).toEqual({
+    expect(coordinator.inspectStatus("root.worker")).toEqual({
       agent: expect.objectContaining({
         elapsed_ms: 2_500,
         latest_activity_at: "2026-08-11T12:00:02.500Z",
@@ -395,7 +394,7 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
     expect(root.messages).toEqual([]);
   });
 
-  it("delivers successful background completion as follow-up while the parent is running", async () => {
+  it("steers a running parent with successful background completion", async () => {
     const { coordinator, sessions, root } = makeCoordinator();
     root.running = true;
     const spawn = await coordinator.spawn(
@@ -412,7 +411,7 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
 
     expect(root.messages).toEqual([
       {
-        behavior: "follow-up",
+        behavior: "steer",
         message: expect.objectContaining({
           customType: "minimal-subagents.result",
           content: "finished",
@@ -426,13 +425,40 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
     ]);
   });
 
+  it("steers a running child parent with a nested child's successful completion", async () => {
+    const { coordinator, sessions } = makeCoordinator();
+    await coordinator.spawn(
+      "root",
+      { task: "group", agent_id: "group", delegation: "fanout" },
+      rootCaller(),
+    );
+    await coordinator.spawn("root.group", { task: "work", agent_id: "child" }, rootCaller());
+    await flushTasks();
+
+    sessions.runtimes.get("root.group.child")!.promptOutcomes[0]!.resolve({
+      status: "completed",
+      output: "nested result",
+    });
+    await flushTasks();
+
+    expect(sessions.runtimes.get("root.group")!.queued).toContainEqual(
+      expect.objectContaining({
+        behavior: "steer",
+        message: expect.objectContaining({
+          customType: "minimal-subagents.result",
+          content: "nested result",
+        }),
+      }),
+    );
+  });
+
   it("times out only the wait and leaves the target turn running", async () => {
     const { coordinator } = makeCoordinator();
     await coordinator.spawn("root", { task: "work", agent_id: "worker" }, rootCaller());
     await expect(coordinator.wait("root", "root.worker", 5)).rejects.toThrow(
       "Minimal subagents wait timed out",
     );
-    expect(coordinator.status("root.worker")).toEqual({
+    expect(coordinator.inspectStatus("root.worker")).toEqual({
       agent: expect.objectContaining({ state: "running" }),
     });
   });
@@ -488,6 +514,176 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
 });
 
 describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
+  it("allows direct-relative messages and rejects indirect or broadcast targets", async () => {
+    const { coordinator } = makeCoordinator();
+    await coordinator.spawn(
+      "root",
+      { task: "group", agent_id: "group", delegation: "fanout" },
+      rootCaller(),
+    );
+    await coordinator.spawn("root", { task: "peer", agent_id: "peer" }, rootCaller());
+    await coordinator.spawn("root.group", { task: "one", agent_id: "one" }, rootCaller());
+    await coordinator.spawn("root.group", { task: "two", agent_id: "two" }, rootCaller());
+    await flushTasks();
+
+    await expect(
+      coordinator.message(
+        "root.group.one",
+        { agent_id: "root.group.two", message: "sibling update" },
+        "one-turn",
+      ),
+    ).resolves.toEqual({
+      agent_id: "root.group.two",
+      behavior: "steer",
+      delivered: true,
+    });
+    await expect(
+      coordinator.message(
+        "root.group",
+        { agent_id: "root.group.one", message: "child update" },
+        "group-turn",
+      ),
+    ).resolves.toEqual({
+      agent_id: "root.group.one",
+      behavior: "steer",
+      delivered: true,
+    });
+    await expect(
+      coordinator.message(
+        "root.group",
+        { agent_id: "parent", message: "parent update" },
+        "group-turn",
+      ),
+    ).resolves.toEqual({ agent_id: "root", behavior: "steer", delivered: true });
+
+    await expect(
+      coordinator.message(
+        "root.group.one",
+        { agent_id: "root.peer", message: "uncle update" },
+        "one-turn",
+      ),
+    ).rejects.toThrow(
+      "Minimal subagents message authorization denied: root.group.one cannot message root.peer",
+    );
+    await expect(
+      coordinator.message(
+        "root.group.one",
+        { agent_id: "root.group.one", message: "self update" },
+        "one-turn",
+      ),
+    ).rejects.toThrow(
+      "Minimal subagents message authorization denied: root.group.one cannot message root.group.one",
+    );
+    await expect(
+      coordinator.message(
+        "root",
+        { agent_id: "root.group.one", message: "indirect update" },
+        "root-turn",
+      ),
+    ).rejects.toThrow(
+      "Minimal subagents message authorization denied: root cannot message root.group.one",
+    );
+    await expect(
+      coordinator.message("root.group", { agent_id: "*", message: "broadcast" }, "group-turn"),
+    ).rejects.toThrow('Minimal subagents message target "*" is unsupported');
+  });
+
+  it("returns one failed delivery result for an unavailable direct relative", async () => {
+    const { coordinator } = makeCoordinator();
+    await coordinator.spawn("root", { task: "work", agent_id: "worker" }, rootCaller());
+    await flushTasks();
+    const snapshot = coordinator.snapshot();
+    snapshot.agents[0] = {
+      ...snapshot.agents[0]!,
+      availability: "unavailable",
+      unavailable_reason: "missing model",
+      missing_dependencies: ["model"],
+      session_file: undefined,
+      session_id: undefined,
+    };
+    await coordinator.restore(snapshot);
+
+    await expect(
+      coordinator.message(
+        "root",
+        { agent_id: "root.worker", message: "direct update" },
+        "root-turn",
+      ),
+    ).resolves.toEqual({
+      agent_id: "root.worker",
+      behavior: "steer",
+      delivered: false,
+      error: "missing model",
+    });
+  });
+
+  it("allows waits for direct children only", async () => {
+    const { coordinator, sessions } = makeCoordinator();
+    await coordinator.spawn(
+      "root",
+      { task: "group", agent_id: "group", delegation: "fanout" },
+      rootCaller(),
+    );
+    await coordinator.spawn("root", { task: "peer", agent_id: "peer" }, rootCaller());
+    await coordinator.spawn("root.group", { task: "child", agent_id: "child" }, rootCaller());
+    await flushTasks();
+    sessions.runtimes.get("root.group")!.promptOutcomes[0]!.resolve({
+      status: "completed",
+      output: "group done",
+    });
+    sessions.runtimes.get("root.peer")!.promptOutcomes[0]!.resolve({
+      status: "completed",
+      output: "peer done",
+    });
+    await flushTasks();
+
+    await expect(coordinator.wait("root.group", "root.group.child", 1)).rejects.toThrow(
+      "Minimal subagents wait timed out",
+    );
+    expect(() => coordinator.wait("root.group", "root.peer")).toThrow(
+      "Minimal subagents wait authorization denied: root.group cannot target root.peer",
+    );
+    expect(() => coordinator.wait("root.group.child", "root.group")).toThrow(
+      "Minimal subagents wait authorization denied: root.group.child cannot target root.group",
+    );
+  });
+
+  it("scopes status to direct children without recursively exposing their descendants", async () => {
+    const { coordinator } = makeCoordinator();
+    await coordinator.spawn(
+      "root",
+      { task: "group", agent_id: "group", delegation: "fanout" },
+      rootCaller(),
+    );
+    await coordinator.spawn("root", { task: "peer", agent_id: "peer" }, rootCaller());
+    await coordinator.spawn("root.group", { task: "child", agent_id: "child" }, rootCaller());
+    await flushTasks();
+
+    expect(coordinator.status("root")).toEqual({
+      parent_id: "root",
+      agents: [
+        expect.objectContaining({ agent_id: "root.group", child_count: 1, children: [] }),
+        expect.objectContaining({ agent_id: "root.peer", child_count: 0, children: [] }),
+      ],
+    });
+    expect(coordinator.status("root.group", "root.group.child")).toEqual({
+      agent: expect.objectContaining({
+        agent_id: "root.group.child",
+        child_count: 0,
+        children: [],
+      }),
+    });
+    expect(() => coordinator.status("root.group", "root.peer")).toThrow(
+      "Minimal subagents status authorization denied: root.group cannot target root.peer",
+    );
+    expect(() => coordinator.status("root.group", "root.group")).toThrow(
+      "Minimal subagents status authorization denied: root.group cannot target root.group",
+    );
+    expect(() => coordinator.status("root", "root.group.child")).toThrow(
+      "Minimal subagents status authorization denied: root cannot target root.group.child",
+    );
+  });
+
   it("uses an omitted child target as its direct-parent alias", async () => {
     const { coordinator, sessions } = makeCoordinator();
     await coordinator.spawn(
@@ -503,7 +699,7 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       { message: "need help" },
       "child-turn",
     );
-    expect(result.deliveries).toEqual([{ agent_id: "root.group", delivered: true }]);
+    expect(result).toEqual({ agent_id: "root.group", behavior: "steer", delivered: true });
     expect(sessions.runtimes.get("root.group")!.queued).toEqual([
       expect.objectContaining({
         message: expect.objectContaining({
@@ -514,39 +710,22 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     ]);
   });
 
-  it("broadcasts to a recipient snapshot and reports unavailable recipients without rollback", async () => {
-    const { coordinator, sessions } = makeCoordinator();
-    await coordinator.spawn("root", { task: "a", agent_id: "a" }, rootCaller());
-    await coordinator
-      .spawn("root", { task: "b", agent_id: "b", model: "openai/missing" }, rootCaller())
-      .catch(() => undefined);
+  it("allows lifecycle management to target direct children only", async () => {
+    const { coordinator } = makeCoordinator();
+    await coordinator.spawn(
+      "root",
+      { task: "group", agent_id: "group", delegation: "fanout" },
+      rootCaller(),
+    );
+    await coordinator.spawn("root.group", { task: "child", agent_id: "child" }, rootCaller());
     await flushTasks();
 
-    const snapshot: RegistrySnapshot = coordinator.snapshot();
-    snapshot.agents.push({
-      ...snapshot.agents[0]!,
-      agent_id: "root.unavailable",
-      friendly_id: "unavailable",
-      availability: "unavailable",
-      unavailable_reason: "missing model",
-      missing_dependencies: ["model"],
-      session_file: undefined,
-      session_id: undefined,
-    });
-    await coordinator.restore(snapshot);
-    const result = await coordinator.message(
-      "root.a",
-      { agent_id: "*", message: "update" },
-      "turn-source",
+    await expect(coordinator.cancel("root", "root.group.child")).rejects.toThrow(
+      "Minimal subagents cancel authorization denied: root cannot target root.group.child",
     );
-
-    expect(result.deliveries).toEqual(
-      expect.arrayContaining([
-        { agent_id: "root", delivered: true },
-        { agent_id: "root.unavailable", delivered: false, error: "missing model" },
-      ]),
+    await expect(coordinator.delete("root", "root.group.child")).rejects.toThrow(
+      "Minimal subagents delete authorization denied: root cannot target root.group.child",
     );
-    expect(sessions.runtimes.get("root.a")).toBeDefined();
   });
 
   it("prevents an ordinary child from cancelling a running sibling", async () => {
@@ -556,9 +735,9 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     await flushTasks();
 
     await expect(coordinator.cancel("root.manager", "root.sibling")).rejects.toThrow(
-      "Minimal subagents cancel authorization denied: root.manager cannot manage root.sibling",
+      "Minimal subagents cancel authorization denied: root.manager cannot target root.sibling",
     );
-    expect(coordinator.status("root.sibling")).toEqual({
+    expect(coordinator.inspectStatus("root.sibling")).toEqual({
       agent: expect.objectContaining({ state: "running" }),
     });
   });
@@ -575,10 +754,10 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
 
     for (const target of ["root.manager", "root.sibling", "root"]) {
       await expect(coordinator.cancel("root.manager", target)).rejects.toThrow(
-        `Minimal subagents cancel authorization denied: root.manager cannot manage ${target}`,
+        `Minimal subagents cancel authorization denied: root.manager cannot target ${target}`,
       );
       await expect(coordinator.delete("root.manager", target)).rejects.toThrow(
-        `Minimal subagents delete authorization denied: root.manager cannot manage ${target}`,
+        `Minimal subagents delete authorization denied: root.manager cannot target ${target}`,
       );
     }
   });
@@ -615,12 +794,12 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     expect(result.affected_agent_ids).toEqual(["root.group", "root.group.child"]);
     expect(result.cancelled_turn_ids).toHaveLength(2);
     expect(sessions.runtimes.get("root.group")!.aborted).toBe(true);
-    expect(coordinator.status("root.group")).toEqual({
+    expect(coordinator.inspectStatus("root.group")).toEqual({
       agent: expect.objectContaining({ state: "idle" }),
     });
 
     await coordinator.message("root", { agent_id: "root.group", message: "continue" }, "root-turn");
-    expect(coordinator.status("root.group")).toEqual({
+    expect(coordinator.inspectStatus("root.group")).toEqual({
       agent: expect.objectContaining({ state: "running" }),
     });
   });
@@ -632,9 +811,9 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     await flushTasks();
 
     await expect(coordinator.delete("root.manager", "root.sibling")).rejects.toThrow(
-      "Minimal subagents delete authorization denied: root.manager cannot manage root.sibling",
+      "Minimal subagents delete authorization denied: root.manager cannot target root.sibling",
     );
-    expect(coordinator.status("root.sibling")).toEqual({
+    expect(coordinator.inspectStatus("root.sibling")).toEqual({
       agent: expect.objectContaining({ state: "running" }),
     });
   });
@@ -728,7 +907,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
       { agent_id: "root.worker", message: "again" },
       "root-message-turn",
     );
-    expect(restored.coordinator.status("root.worker")).toEqual({
+    expect(restored.coordinator.inspectStatus("root.worker")).toEqual({
       agent: expect.objectContaining({
         active_turn_id: expect.not.stringMatching(first.turn_id),
       }),
@@ -748,7 +927,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
     const restored = makeCoordinator();
     await restored.coordinator.restore(snapshot);
     expect(restored.coordinator.canAgentSpawn("root.worker")).toBe(false);
-    expect(restored.coordinator.status("root.worker")).toEqual({
+    expect(restored.coordinator.inspectStatus("root.worker")).toEqual({
       agent: expect.objectContaining({ task: undefined, latest_activity_at: expect.any(String) }),
     });
   });
@@ -765,7 +944,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
 
     const restored = makeCoordinator(0, () => new Date("2026-08-11T13:00:00.000Z"));
     await restored.coordinator.restore(snapshot);
-    expect(restored.coordinator.status("root.worker")).toEqual({
+    expect(restored.coordinator.inspectStatus("root.worker")).toEqual({
       agent: expect.objectContaining({
         availability: "unavailable",
         latest_activity_at: "2026-08-11T12:00:00.000Z",
@@ -785,7 +964,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
 
     const restoredHarness = makeCoordinator();
     await restoredHarness.coordinator.restore(snapshot);
-    expect(restoredHarness.coordinator.status("root.worker")).toEqual({
+    expect(restoredHarness.coordinator.inspectStatus("root.worker")).toEqual({
       agent: expect.objectContaining({
         state: "idle",
         availability: "unavailable",

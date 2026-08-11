@@ -18,7 +18,7 @@ import {
 } from "@earendil-works/pi-tui";
 export type CoordinatorToolName =
   | "subagent"
-  | "subagent_message"
+  | "agent_message"
   | "subagent_wait"
   | "subagent_status"
   | "subagent_cancel"
@@ -202,7 +202,7 @@ const COORDINATOR_TOOL_CALL_RENDERERS: Record<CoordinatorToolName, CoordinatorTo
       0,
       0,
     ),
-  subagent_message: (args, theme) =>
+  agent_message: (args, theme) =>
     new Text(
       `${coordinatorToolCallTitle(theme, "Message")} ${theme.fg("accent", asString(args.agent_id) ?? "parent")}${coordinatorToolCallPreview(theme, args.message)}`,
       0,
@@ -216,7 +216,7 @@ const COORDINATOR_TOOL_CALL_RENDERERS: Record<CoordinatorToolName, CoordinatorTo
     ),
   subagent_status: (args, theme) =>
     new Text(
-      `${coordinatorToolCallTitle(theme, "Status")} ${theme.fg("accent", asString(args.agent_id) ?? "hierarchy")}`,
+      `${coordinatorToolCallTitle(theme, "Status")} ${theme.fg("accent", asString(args.agent_id) ?? "children")}`,
       0,
       0,
     ),
@@ -277,34 +277,19 @@ function renderMessageResult(
   theme: Theme,
   args: Record<string, unknown>,
 ): Component {
-  const deliveries = Array.isArray(details.deliveries)
-    ? details.deliveries
-        .map(asRecord)
-        .filter((item): item is Record<string, unknown> => Boolean(item))
-    : [];
-  const delivered = deliveries.filter((item) => item.delivered === true).length;
+  const agentId = asString(details.agent_id) ?? asString(args.agent_id) ?? "parent";
   const behavior = asString(details.behavior) ?? asString(args.behavior) ?? "steer";
-  const failed = deliveries.length > 0 && delivered === 0;
-  const summary = failed
-    ? `${renderSubagentStatusSymbol(theme, "failed")} 0/${deliveries.length} delivered · failed · ${behavior}`
-    : `${theme.fg("accent", "→")} ${delivered}/${deliveries.length} delivered · ${behavior}`;
+  const delivered = details.delivered === true;
+  const summary = delivered
+    ? `${theme.fg("accent", "→")} ${agentId} · delivered · ${behavior}`
+    : `${renderSubagentStatusSymbol(theme, "failed")} ${agentId} · failed · ${behavior}`;
   if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
   const container = new Container();
   container.addChild(new Text(summary, 0, 0));
   appendSection(container, theme, "Message", asString(args.message) ?? "(message unavailable)");
-  appendSection(
-    container,
-    theme,
-    "Recipients",
-    deliveries
-      .map((item) => {
-        const id = asString(item.agent_id) ?? "unknown";
-        return item.delivered === true
-          ? `${theme.fg("success", "✓ delivered")} ${id}`
-          : `${theme.fg("error", "× failed")} ${id} · ${asString(item.error) ?? "unknown error"}`;
-      })
-      .join("\n") || "(no recipients)",
-  );
+  appendSection(container, theme, "Recipient", agentId);
+  const error = asString(details.error);
+  if (error) appendSection(container, theme, "Error", error);
   return container;
 }
 
@@ -401,7 +386,7 @@ function renderStatusResult(
   const agents = Array.isArray(details.agents) ? details.agents : undefined;
   if (agents) {
     const counts = countStatusAgents(agents);
-    const summary = `${theme.fg("dim", "○")} ${counts.retained} retained · ${counts.running} running`;
+    const summary = `${theme.fg("dim", "○")} ${counts.retained} children · ${counts.running} running`;
     if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
     return new Text(
       `${summary}\n${renderStatusTreeRows(agents, theme).join("\n") || theme.fg("dim", "(no agents)")}`,
@@ -410,7 +395,7 @@ function renderStatusResult(
     );
   }
   const agent = asRecord(details.agent);
-  if (!agent) return new Text(theme.fg("dim", "○ 0 retained · 0 running"), 0, 0);
+  if (!agent) return new Text(theme.fg("dim", "○ 0 children · 0 running"), 0, 0);
   const availability = asString(agent.availability) ?? "available";
   const latestTurn = asRecord(agent.latest_turn);
   const status =
@@ -580,7 +565,7 @@ const COORDINATOR_TOOL_RESULT_RENDERERS: Record<
   CoordinatorToolResultRenderer
 > = {
   subagent: renderSpawnResult,
-  subagent_message: renderMessageResult,
+  agent_message: renderMessageResult,
   subagent_wait: renderWaitResult,
   subagent_status: (details, options, theme) => renderStatusResult(details, options, theme),
   subagent_cancel: (details, options, theme) => renderCancelResult(details, options, theme),
@@ -595,8 +580,10 @@ const COORDINATOR_DETAIL_VALIDATORS: Record<
     asString(details.agent_id) !== undefined &&
     asString(details.turn_id) !== undefined &&
     asString(details.status) !== undefined,
-  subagent_message: (details) =>
-    asString(details.behavior) !== undefined && Array.isArray(details.deliveries),
+  agent_message: (details) =>
+    asString(details.agent_id) !== undefined &&
+    asString(details.behavior) !== undefined &&
+    typeof details.delivered === "boolean",
   subagent_wait: (details) =>
     asString(details.agent_id) !== undefined && asString(details.status) !== undefined,
   subagent_status: (details) =>

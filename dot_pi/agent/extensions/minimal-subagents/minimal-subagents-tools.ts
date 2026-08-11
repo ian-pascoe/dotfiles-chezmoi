@@ -23,7 +23,7 @@ import type {
 } from "./minimal-subagents-types.js";
 
 const ORDINARY_CHILD_COORDINATOR_TOOL_NAMES = new Set([
-  "subagent_message",
+  "agent_message",
   "subagent_wait",
   "subagent_status",
 ]);
@@ -97,7 +97,7 @@ function callerSourceTurnId(
   toolCallId: string,
 ): string {
   if (callerId === "root") return `root:${toolCallId}`;
-  const status = coordinator.status(callerId);
+  const status = coordinator.inspectStatus(callerId);
   return "agent" in status && status.agent.active_turn_id
     ? status.agent.active_turn_id
     : `${callerId}:${toolCallId}`;
@@ -121,7 +121,7 @@ export function createCoordinatorToolDefinitions(
           parameters as SpawnParameters,
           options.captureCaller(context),
         );
-        const status = options.coordinator.status(result.agent_id);
+        const status = options.coordinator.inspectStatus(result.agent_id);
         return {
           ...structuredToolResult(result),
           details: {
@@ -135,12 +135,12 @@ export function createCoordinatorToolDefinitions(
   });
 
   const messageTool = defineTool({
-    name: "subagent_message",
-    label: "Subagent Message",
+    name: "agent_message",
+    label: "Agent Message",
     description:
-      "Send a visible conversation-plane message to a canonical agent ID, parent alias, or * broadcast snapshot.",
-    promptSnippet: "Message a parent, child, peer, or all same-root agents",
-    parameters: options.schemas.subagent_message,
+      "Send one visible conversation-plane message to a direct parent, direct sibling, or direct child.",
+    promptSnippet: "Message one adjacent agent",
+    parameters: options.schemas.agent_message,
     async execute(toolCallId, parameters) {
       return runCoordinatorToolActivity(options, async () => {
         const result = await options.coordinator.message(
@@ -152,22 +152,21 @@ export function createCoordinatorToolDefinitions(
           },
           callerSourceTurnId(options.coordinator, options.callerId, toolCallId),
         );
-        const successful = result.deliveries.filter((delivery) => delivery.delivered).length;
-        if (successful === 0) {
+        if (!result.delivered) {
           failedStructuredOperation("Minimal subagents message delivery failed", result);
         }
         return structuredToolResult(result);
       });
     },
-    ...createCoordinatorToolRendering("subagent_message"),
+    ...createCoordinatorToolRendering("agent_message"),
   });
 
   const waitTool = defineTool({
     name: "subagent_wait",
     label: "Subagent Wait",
     description:
-      "Wait for the target's exact active turn, or return its latest settled turn immediately. Timeout never cancels the target.",
-    promptSnippet: "Wait for one exact subagent turn",
+      "Wait for one direct child's exact active turn, or return its latest settled turn immediately. Timeout never cancels the child.",
+    promptSnippet: "Wait for one direct child's exact turn",
     parameters: options.schemas.subagent_wait,
     async execute(_toolCallId, parameters, signal, onUpdate) {
       const startedAt = Date.now();
@@ -211,12 +210,12 @@ export function createCoordinatorToolDefinitions(
     name: "subagent_status",
     label: "Subagent Status",
     description:
-      "List the concise rooted hierarchy when agent_id is omitted, or inspect one agent's launch contract, result, usage, and dependencies.",
-    promptSnippet: "Inspect persistent subagent hierarchy and state",
+      "List direct children when agent_id is omitted, or inspect one direct child's launch contract, result, usage, and dependencies.",
+    promptSnippet: "Inspect direct child state",
     parameters: options.schemas.subagent_status,
     async execute(_toolCallId, parameters) {
       return runCoordinatorToolActivity(options, () =>
-        structuredToolResult(options.coordinator.status(parameters.agent_id)),
+        structuredToolResult(options.coordinator.status(options.callerId, parameters.agent_id)),
       );
     },
     ...createCoordinatorToolRendering("subagent_status"),
@@ -226,7 +225,7 @@ export function createCoordinatorToolDefinitions(
     name: "subagent_cancel",
     label: "Subagent Cancel",
     description:
-      "Abort active target work while preserving sessions for later continuation. Root may target any child; fanout children may target strict descendants only. Recursive cancellation defaults to true.",
+      "Abort active work for one direct child while preserving sessions for later continuation. Recursive cancellation includes its subtree and defaults to true.",
     promptSnippet: "Cancel active subagent turns without deleting sessions",
     parameters: options.schemas.subagent_cancel,
     async execute(_toolCallId, parameters) {
@@ -247,7 +246,7 @@ export function createCoordinatorToolDefinitions(
     name: "subagent_delete",
     label: "Subagent Delete",
     description:
-      "Delete persistent child sessions post-order and retain durable ID tombstones. Root may target any child; fanout children may target strict descendants only. Recursive deletion defaults to true.",
+      "Delete one direct child's persistent session and retain durable ID tombstones. Recursive deletion includes its subtree and defaults to true.",
     promptSnippet: "Delete subagent sessions and tombstone their IDs",
     parameters: options.schemas.subagent_delete,
     async execute(_toolCallId, parameters) {
