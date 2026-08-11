@@ -24,9 +24,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "1bc6cb2ddb5d8f6ab314946f413907fff4c63979",
+      "skillFolderHash": "4d310f86e09770a91df86b2edb31ce1fdf0651d8",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-08-09T08:58:56.372Z"
+      "updatedAt": "2026-08-11T14:08:33.431Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -338,9 +338,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/remotion-dev/skills.git",
       "skillPath": "skills/remotion-best-practices/SKILL.md",
-      "skillFolderHash": "7538922dc09561eedbd29265fc6b7dc2bddcfd90",
+      "skillFolderHash": "0a9d68209c079096230cea40d26cd90bcd766fda",
       "installedAt": "2026-07-21T10:41:08.762Z",
-      "updatedAt": "2026-08-08T08:47:26.357Z"
+      "updatedAt": "2026-08-11T14:08:35.317Z"
     },
     "agent-browser": {
       "source": "vercel-labs/agent-browser",
@@ -356,9 +356,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/dmmulroy/.dotfiles.git",
       "skillPath": "home/.agents/skills/coding-standards/SKILL.md",
-      "skillFolderHash": "8c1eec658b131bf52472207e82bfcdeee0222f6f",
+      "skillFolderHash": "4b02c5bacc6a8080db24f5e2da4e2bef5a3cdaaf",
       "installedAt": "2026-07-28T10:33:41.588Z",
-      "updatedAt": "2026-08-09T08:58:57.784Z"
+      "updatedAt": "2026-08-11T14:08:36.415Z"
     },
     "write-discoverable-code": {
       "source": "modem-dev/skills",

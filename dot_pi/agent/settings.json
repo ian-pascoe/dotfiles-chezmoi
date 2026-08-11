@@ -10,7 +10,7 @@
   "defaultModel": "gpt-5.6-sol",
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "xhigh",
   "enabledModels": [
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-terra",
@@ -20,5 +20,6 @@
   ],
   "enableInstallTelemetry": false,
   "theme": "terminal",
-  "tuiMode": "regular"
+  "tuiMode": "fullscreen",
+  "collapseChangelog": true
 }
