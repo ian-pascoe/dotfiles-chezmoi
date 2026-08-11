@@ -1,0 +1,33 @@
+import { describe, expect, it } from "vitest";
+import { createCoordinatorToolSchemas } from "./minimal-subagents-tool-schemas.js";
+
+describe("createCoordinatorToolSchemas", () => {
+  it("publishes only eligible canonical models and exactly the six public parameter shapes", () => {
+    const schemas = createCoordinatorToolSchemas(["openai/gpt", "anthropic/claude"]);
+    expect(Object.keys(schemas)).toEqual([
+      "subagent",
+      "subagent_message",
+      "subagent_wait",
+      "subagent_status",
+      "subagent_cancel",
+      "subagent_delete",
+    ]);
+    expect(schemas.subagent.properties.model).toEqual(
+      expect.objectContaining({ enum: ["openai/gpt", "anthropic/claude"] }),
+    );
+    expect(Object.keys(schemas.subagent.properties)).toEqual([
+      "task",
+      "agent_id",
+      "session_context",
+      "project_context",
+      "model",
+      "thinking_level",
+      "tools",
+    ]);
+  });
+
+  it("makes explicit model selection impossible for an empty model set", () => {
+    const schema = createCoordinatorToolSchemas([]).subagent;
+    expect(schema.properties.model).toEqual(expect.objectContaining({ not: {} }));
+  });
+});
