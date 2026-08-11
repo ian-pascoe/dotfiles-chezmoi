@@ -93,6 +93,8 @@ describe("buildSubagentSystemPrompt", () => {
     expect(prompt).toContain("parent");
     expect(prompt).toContain("persistent subagent");
     expect(prompt).toContain("subagent_wait");
+    expect(prompt).not.toContain("subagent_cancel");
+    expect(prompt).not.toContain("subagent_delete");
     expect(prompt).toContain("Delegation is owned by your parent");
     expect(prompt).toContain("Complete the assigned task yourself");
     expect(prompt).not.toContain("Coordinator tools are always available");
@@ -104,6 +106,8 @@ describe("buildSubagentSystemPrompt", () => {
       remainingDepth: 1,
     });
     expect(prompt).toContain("explicit fanout responsibility");
+    expect(prompt).toContain("subagent_cancel");
+    expect(prompt).toContain("strict descendants only");
     expect(prompt).toContain("Remaining delegation depth: 1");
     expect(prompt).toContain("final response is delivered");
   });

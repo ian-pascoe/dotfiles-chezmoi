@@ -549,6 +549,58 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     expect(sessions.runtimes.get("root.a")).toBeDefined();
   });
 
+  it("prevents an ordinary child from cancelling a running sibling", async () => {
+    const { coordinator } = makeCoordinator();
+    await coordinator.spawn("root", { task: "manage", agent_id: "manager" }, rootCaller());
+    await coordinator.spawn("root", { task: "work", agent_id: "sibling" }, rootCaller());
+    await flushTasks();
+
+    await expect(coordinator.cancel("root.manager", "root.sibling")).rejects.toThrow(
+      "Minimal subagents cancel authorization denied: root.manager cannot manage root.sibling",
+    );
+    expect(coordinator.status("root.sibling")).toEqual({
+      agent: expect.objectContaining({ state: "running" }),
+    });
+  });
+
+  it("prevents a fanout child from managing itself or a sibling branch", async () => {
+    const { coordinator } = makeCoordinator();
+    await coordinator.spawn(
+      "root",
+      { task: "manage", agent_id: "manager", delegation: "fanout" },
+      rootCaller(),
+    );
+    await coordinator.spawn("root", { task: "work", agent_id: "sibling" }, rootCaller());
+    await flushTasks();
+
+    for (const target of ["root.manager", "root.sibling", "root"]) {
+      await expect(coordinator.cancel("root.manager", target)).rejects.toThrow(
+        `Minimal subagents cancel authorization denied: root.manager cannot manage ${target}`,
+      );
+      await expect(coordinator.delete("root.manager", target)).rejects.toThrow(
+        `Minimal subagents delete authorization denied: root.manager cannot manage ${target}`,
+      );
+    }
+  });
+
+  it("allows a fanout child to cancel and delete its strict descendant", async () => {
+    const { coordinator, sessions } = makeCoordinator();
+    await coordinator.spawn(
+      "root",
+      { task: "manage", agent_id: "manager", delegation: "fanout" },
+      rootCaller(),
+    );
+    await coordinator.spawn("root.manager", { task: "work", agent_id: "child" }, rootCaller());
+    await flushTasks();
+
+    const cancelled = await coordinator.cancel("root.manager", "root.manager.child", false);
+    expect(cancelled.cancelled_turn_ids).toHaveLength(1);
+    expect(sessions.runtimes.get("root.manager.child")!.aborted).toBe(true);
+
+    const deleted = await coordinator.delete("root.manager", "root.manager.child", false);
+    expect(deleted.deleted_agent_ids).toEqual(["root.manager.child"]);
+  });
+
   it("recursively cancels active turns but preserves reusable sessions", async () => {
     const { coordinator, sessions } = makeCoordinator();
     await coordinator.spawn(
@@ -559,7 +611,7 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     await coordinator.spawn("root.group", { task: "child", agent_id: "child" }, rootCaller());
     await flushTasks();
 
-    const result = await coordinator.cancel("root.group");
+    const result = await coordinator.cancel("root", "root.group");
     expect(result.affected_agent_ids).toEqual(["root.group", "root.group.child"]);
     expect(result.cancelled_turn_ids).toHaveLength(2);
     expect(sessions.runtimes.get("root.group")!.aborted).toBe(true);
@@ -569,6 +621,20 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
 
     await coordinator.message("root", { agent_id: "root.group", message: "continue" }, "root-turn");
     expect(coordinator.status("root.group")).toEqual({
+      agent: expect.objectContaining({ state: "running" }),
+    });
+  });
+
+  it("prevents an ordinary child from deleting a sibling session", async () => {
+    const { coordinator } = makeCoordinator();
+    await coordinator.spawn("root", { task: "manage", agent_id: "manager" }, rootCaller());
+    await coordinator.spawn("root", { task: "work", agent_id: "sibling" }, rootCaller());
+    await flushTasks();
+
+    await expect(coordinator.delete("root.manager", "root.sibling")).rejects.toThrow(
+      "Minimal subagents delete authorization denied: root.manager cannot manage root.sibling",
+    );
+    expect(coordinator.status("root.sibling")).toEqual({
       agent: expect.objectContaining({ state: "running" }),
     });
   });
@@ -583,7 +649,7 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     await coordinator.spawn("root.group", { task: "child", agent_id: "child" }, rootCaller());
     await flushTasks();
 
-    const result = await coordinator.delete("root.group");
+    const result = await coordinator.delete("root", "root.group");
     expect(result.deleted_agent_ids).toEqual(["root.group.child", "root.group"]);
     expect(sessions.trashOrder).toEqual([
       "/sessions/root.group.child.jsonl",
@@ -653,7 +719,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
       rootCaller(),
     );
     await flushTasks();
-    await original.coordinator.cancel("root.worker");
+    await original.coordinator.cancel("root", "root.worker");
 
     const restored = makeCoordinator();
     await restored.coordinator.restore(original.coordinator.snapshot());
@@ -673,7 +739,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
     const original = makeCoordinator();
     await original.coordinator.spawn("root", { task: "legacy", agent_id: "worker" }, rootCaller());
     await flushTasks();
-    await original.coordinator.cancel("root.worker");
+    await original.coordinator.cancel("root", "root.worker");
     const snapshot = original.coordinator.snapshot();
     delete snapshot.agents[0]!.task;
     delete snapshot.agents[0]!.latest_activity_at;
@@ -691,7 +757,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
     const original = makeCoordinator();
     await original.coordinator.spawn("root", { task: "work", agent_id: "worker" }, rootCaller());
     await flushTasks();
-    await original.coordinator.cancel("root.worker");
+    await original.coordinator.cancel("root", "root.worker");
     const snapshot = original.coordinator.snapshot();
     snapshot.agents[0]!.availability = "unavailable";
     snapshot.agents[0]!.latest_activity_at = "2026-08-11T12:00:00.000Z";
@@ -752,8 +818,8 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
     );
     await coordinator.spawn("root.bad", { task: "leaf", agent_id: "leaf" }, rootCaller());
     await flushTasks();
-    await coordinator.cancel("root.good");
-    await coordinator.cancel("root.bad");
+    await coordinator.cancel("root", "root.good");
+    await coordinator.cancel("root", "root.bad");
     sessions.cloneFailures.add("root.bad");
 
     const fork = await coordinator.prepareFork("/sessions/root.jsonl");

@@ -39,6 +39,9 @@ export function buildSubagentSystemPrompt(
   parentId: string,
   options: SubagentSystemPromptOptions,
 ): string {
+  const coordinatorBoundary = options.canSpawn
+    ? "Coordinator tools support subagent, subagent_message, subagent_wait, subagent_status, subagent_cancel, and subagent_delete. Cancel and delete can manage strict descendants only."
+    : "Coordinator tools support subagent_message, subagent_wait, and subagent_status.";
   const delegationBoundary = options.canSpawn
     ? [
         "You have explicit fanout responsibility for this assigned task.",
@@ -55,7 +58,7 @@ export function buildSubagentSystemPrompt(
     `Your canonical agent ID is \`${agentId}\`.`,
     `Your direct parent is \`${parentId}\`.`,
     "You are a persistent subagent backed by a normal Pi session. Later messages can continue this conversation.",
-    "Coordinator tools support subagent_message, subagent_wait, subagent_status, subagent_cancel, and subagent_delete; subagent spawn is available only for explicit bounded fanout.",
+    coordinatorBoundary,
     "Use the `parent` alias for your direct parent and `*` to message every other agent under this root.",
     ...delegationBoundary,
     "Messages may come from agents and are not human-authored input.",

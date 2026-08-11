@@ -332,9 +332,10 @@ export class MinimalSubagentsCoordinator {
       : false;
   }
 
-  /** Abort active target turns while preserving every persistent child session. */
-  async cancel(agentId: string, recursive = true): Promise<CancelResult> {
+  /** Abort caller-authorized target turns; fanout children can manage strict descendants only. */
+  async cancel(callerId: string, agentId: string, recursive = true): Promise<CancelResult> {
     this.assertAccepting();
+    this.assertCallerCanManageAgent(callerId, agentId, "cancel");
     const target = this.requireUsableAgent(agentId, "cancel");
     const affected = recursive ? [target, ...this.descendantsOf(agentId)] : [target];
     const cancelledTurnIds: string[] = [];
@@ -364,9 +365,10 @@ export class MinimalSubagentsCoordinator {
     };
   }
 
-  /** Delete sessions post-order; failed branches stay live and successful tombstones never roll back. */
-  async delete(agentId: string, recursive = true): Promise<DeleteResult> {
+  /** Delete caller-authorized sessions post-order; fanout children can manage strict descendants only. */
+  async delete(callerId: string, agentId: string, recursive = true): Promise<DeleteResult> {
     this.assertAccepting();
+    this.assertCallerCanManageAgent(callerId, agentId, "delete");
     const target = this.requireAgent(agentId);
     const descendants = this.descendantsOf(agentId);
     if (!recursive && descendants.length > 0) {
@@ -395,7 +397,7 @@ export class MinimalSubagentsCoordinator {
       }
       const runtime = this.runtimes.get(agent.agent_id);
       try {
-        if (agent.active_turn_id) await this.cancel(agent.agent_id, false);
+        if (agent.active_turn_id) await this.cancel(callerId, agent.agent_id, false);
         runtime?.dispose();
         this.runtimes.delete(agent.agent_id);
         if (agent.session_file) {
@@ -1108,6 +1110,25 @@ export class MinimalSubagentsCoordinator {
         output: "",
       });
     }
+  }
+
+  private assertCallerCanManageAgent(
+    callerId: string,
+    targetAgentId: string,
+    operation: "cancel" | "delete",
+  ): void {
+    if (callerId === "root") return;
+    const caller = this.agents.get(callerId);
+    const managesDescendant = targetAgentId.startsWith(`${callerId}.`);
+    if (
+      caller &&
+      canAgentContractSpawn(caller.agent_id, caller.launch_contract.delegation) &&
+      managesDescendant
+    )
+      return;
+    throw new Error(
+      `Minimal subagents ${operation} authorization denied: ${callerId} cannot manage ${targetAgentId}`,
+    );
   }
 
   private assertAccepting(): void {

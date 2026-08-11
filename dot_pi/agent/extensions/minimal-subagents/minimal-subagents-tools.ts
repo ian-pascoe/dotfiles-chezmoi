@@ -22,10 +22,16 @@ import type {
   SpawnParameters,
 } from "./minimal-subagents-types.js";
 
+const ORDINARY_CHILD_COORDINATOR_TOOL_NAMES = new Set([
+  "subagent_message",
+  "subagent_wait",
+  "subagent_status",
+]);
+
 interface CoordinatorToolDefinitionOptions {
   coordinator: MinimalSubagentsCoordinator;
   callerId: string;
-  allowSpawn?: boolean;
+  allowFanoutTools?: boolean;
   schemas: ReturnType<typeof createCoordinatorToolSchemas>;
   captureCaller: (context: ExtensionContext) => CallerSnapshot;
   onActivity?: () => void;
@@ -220,13 +226,17 @@ export function createCoordinatorToolDefinitions(
     name: "subagent_cancel",
     label: "Subagent Cancel",
     description:
-      "Abort active target work while preserving sessions for later continuation. Recursive cancellation defaults to true.",
+      "Abort active target work while preserving sessions for later continuation. Root may target any child; fanout children may target strict descendants only. Recursive cancellation defaults to true.",
     promptSnippet: "Cancel active subagent turns without deleting sessions",
     parameters: options.schemas.subagent_cancel,
     async execute(_toolCallId, parameters) {
       return runCoordinatorToolActivity(options, async () =>
         structuredToolResult(
-          await options.coordinator.cancel(parameters.agent_id, parameters.recursive ?? true),
+          await options.coordinator.cancel(
+            options.callerId,
+            parameters.agent_id,
+            parameters.recursive ?? true,
+          ),
         ),
       );
     },
@@ -237,12 +247,13 @@ export function createCoordinatorToolDefinitions(
     name: "subagent_delete",
     label: "Subagent Delete",
     description:
-      "Delete persistent child sessions post-order and retain durable ID tombstones. Recursive deletion defaults to true.",
+      "Delete persistent child sessions post-order and retain durable ID tombstones. Root may target any child; fanout children may target strict descendants only. Recursive deletion defaults to true.",
     promptSnippet: "Delete subagent sessions and tombstone their IDs",
     parameters: options.schemas.subagent_delete,
     async execute(_toolCallId, parameters) {
       return runCoordinatorToolActivity(options, async () => {
         const result = await options.coordinator.delete(
+          options.callerId,
           parameters.agent_id,
           parameters.recursive ?? true,
         );
@@ -259,8 +270,8 @@ export function createCoordinatorToolDefinitions(
   });
 
   const coordinatorTools = [spawnTool, messageTool, waitTool, statusTool, cancelTool, deleteTool];
-  const allowSpawn = options.allowSpawn ?? options.callerId === "root";
-  return allowSpawn
+  const allowFanoutTools = options.allowFanoutTools ?? options.callerId === "root";
+  return allowFanoutTools
     ? coordinatorTools
-    : coordinatorTools.filter((tool) => tool.name !== "subagent");
+    : coordinatorTools.filter((tool) => ORDINARY_CHILD_COORDINATOR_TOOL_NAMES.has(tool.name));
 }

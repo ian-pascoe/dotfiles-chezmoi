@@ -31,7 +31,7 @@ If the specifications otherwise conflict, preserve the baseline behavior. UI sta
 
 ## Goals
 
-- Make all six coordinator tools legible when Pi tool output is collapsed.
+- Make all six root coordinator tools legible when Pi tool output is collapsed.
 - Make expanded output useful for diagnosis without presenting routine raw JSON.
 - Render explicit agent messages and automatic agent results as distinct transcript items.
 - Show active nested work and recent outcomes above the editor.

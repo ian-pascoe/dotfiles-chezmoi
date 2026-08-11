@@ -171,7 +171,7 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
         createCoordinatorToolDefinitions({
           coordinator: activeCoordinator,
           callerId,
-          allowSpawn: activeCoordinator.canAgentSpawn(callerId),
+          allowFanoutTools: activeCoordinator.canAgentSpawn(callerId),
           schemas,
           captureCaller: (childContext) =>
             activeCoordinator.snapshotChildCaller(
@@ -216,7 +216,7 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
     const rootTools = createCoordinatorToolDefinitions({
       coordinator: activeCoordinator,
       callerId: "root",
-      allowSpawn: true,
+      allowFanoutTools: true,
       schemas,
       captureCaller: (toolContext) => rootCallerSnapshot(pi, toolContext),
       onActivity: () => uiController?.refresh(),

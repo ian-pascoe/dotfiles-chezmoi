@@ -22,7 +22,7 @@ This specification is the product and implementation authority for the replaceme
 - Launch persistent subagents with explicit control over inherited conversation context, project context, model, thinking level, and ordinary tools.
 - Allow unlimited parallelism with explicit, depth-bounded nested fanout.
 - Support direct parent-to-child, child-to-parent, and same-root agent messaging.
-- Let agents inspect, wait for, cancel, delete, and continue other agents.
+- Let agents inspect and wait for peers while root and authorized fanout parents manage child lifecycles.
 - Persist every child as a normal Pi session and restore the hierarchy when the owning root session resumes.
 - Automatically deliver each successful child turn to its direct parent without steering the parent's active turn.
 - Keep the extension small: one coordinator, six tools, normal Pi sessions, and native Pi session/model/tool primitives.
@@ -47,7 +47,7 @@ This specification is the product and implementation authority for the replaceme
 - **Turn:** One prompt and the resulting assistant/tool loop until completion, failure, cancellation, or interruption.
 - **Caller:** The root or child whose tool call invoked an operation.
 - **Direct parent:** The agent that spawned a child.
-- **Coordinator tools:** The six tools in this specification. Five management/messaging tools are available to every child independently of ordinary tool selection; `subagent` is available only to the root and explicitly authorized fanout children below the depth cap.
+- **Coordinator tools:** The six tools in this specification. Every child receives message, wait, and status independently of ordinary tool selection. Spawn, cancel, and delete are available only to the root and explicitly authorized fanout children below the depth cap; child cancel/delete authority is limited to strict descendants.
 - **Ordinary tools:** Built-in or extension-provided tools selected by the launch contract.
 - **Launch contract:** The immutable context, model, thinking, project-context, and ordinary-tool configuration captured when an agent is created.
 - **Conversation-plane message:** Content added to the recipient's model context.
@@ -236,7 +236,10 @@ Tool errors use Pi's ordinary error result mechanism and include a concise actio
 - `*` broadcasts to a snapshot of every existing agent except the sender.
 - Any agent may message any other agent under the same root.
 - Cross-root addresses are unsupported.
-- Cancel and delete may target any non-root agent in the same hierarchy. The root cannot be cancelled or deleted through these tools.
+- Root cancel and delete may target any non-root agent in the same hierarchy.
+- An authorized fanout child may cancel or delete only strict descendants of its own canonical ID. It may not manage itself, siblings, ancestors, or unrelated branches.
+- Ordinary children and depth-capped children do not receive cancel or delete tools.
+- The coordinator repeats these caller checks even when a stale or manually constructed tool definition reaches it. The root cannot be cancelled or deleted through these tools.
 
 ## Agent and Turn State
 
@@ -351,7 +354,7 @@ Wildcards are never accepted as tool arguments. The dynamic enum refreshes only 
 
 ## Ordinary Tool Selection
 
-Coordinator tools are injected separately from ordinary tools, including when `tools` is `none`. `subagent` spawn is omitted for ordinary children and children at the depth cap; the other five coordinator tools remain available.
+Coordinator tools are injected separately from ordinary tools, including when `tools` is `none`. Every child receives `subagent_message`, `subagent_wait`, and `subagent_status`. Root and authorized fanout children below the depth cap additionally receive `subagent`, `subagent_cancel`, and `subagent_delete`. Cancel and delete remain caller-authorized inside the coordinator.
 
 | Selection | Ordinary tools |
 | --- | --- |
@@ -381,7 +384,7 @@ Rules:
 - SDK-created child sessions do not recursively load this extension as an independent coordinator.
 - Instead, inject caller-bound coordinator tool definitions through `customTools` when each child `AgentSession` is created.
 - Exclude the extension entrypoint from the child's resource loader while allowing other discoverable extensions needed for ordinary tools.
-- Each injected tool closure identifies its caller by canonical ID and includes `subagent` only when the persisted caller contract authorizes fanout below the depth cap.
+- Each injected tool closure identifies its caller by canonical ID. It includes spawn, cancel, and delete only when the persisted caller contract authorizes fanout below the depth cap; cancel and delete pass the caller ID to the coordinator for strict-descendant authorization.
 - The root tool definitions use the same coordinator through a root-session adapter.
 
 ### Native Pi Primitives
@@ -750,7 +753,7 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 
 **Given** a read-only child,
 **when** it requests a modifying descendant,
-**then** spawn fails explicitly. It may create a read-only or tool-less descendant and always retains coordinator tools.
+**then** spawn fails explicitly. It may create a read-only or tool-less descendant and retains only the coordinator tools authorized for its caller identity.
 
 ### AS7. Explicit update and help request
 
@@ -842,6 +845,12 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 **when** the failure settles,
 **then** the turn fails after one Pi agent-level attempt, no fallback model is selected, and no replacement turn starts until an agent explicitly messages it.
 
+### AS22. Caller-scoped lifecycle management
+
+**Given** an ordinary child, an authorized fanout child with a descendant, and a sibling branch,
+**when** they inspect their coordinator tools and attempt cancellation or deletion,
+**then** the ordinary child has no cancel/delete tools, the fanout child may manage its strict descendant, neither child can manage itself, a sibling, or an ancestor, and root retains hierarchy-wide authority.
+
 ## Verification Contract
 
 | Gate | Command or proof | Done signal |
@@ -859,7 +868,7 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 ## Definition of Done
 
 - The public surface contains exactly the six specified tools and their confirmed defaults.
-- AS1-AS21 have focused automated coverage where Pi APIs permit deterministic construction; persistence, direct resume, and fork also have deployed smoke evidence.
+- AS1-AS22 have focused automated coverage where Pi APIs permit deterministic construction; persistence, direct resume, and fork also have deployed smoke evidence.
 - Every child uses a normal persisted Pi session and is visible through `/resume`.
 - The original root restores its complete hierarchy after restart without restarting interrupted work.
 - Successful final responses reach direct parents exactly once and never steer active parent turns.
