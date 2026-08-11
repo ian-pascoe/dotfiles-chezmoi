@@ -4,6 +4,7 @@ import { THINKING_LEVELS } from "./minimal-subagents-capabilities.js";
 
 const SessionContextSchema = StringEnum(["inherit", "compact", "omit"] as const);
 const ProjectContextSchema = StringEnum(["inherit", "omit"] as const);
+const DelegationSchema = StringEnum(["none", "fanout"] as const);
 const ThinkingLevelSchema = StringEnum(THINKING_LEVELS);
 const ToolSelectionSchema = Type.Union([
   StringEnum(["none", "read", "modify"] as const),
@@ -23,6 +24,7 @@ export function createCoordinatorToolSchemas(modelIds: readonly string[]) {
       model: Type.Optional(explicitModelSchema),
       thinking_level: Type.Optional(ThinkingLevelSchema),
       tools: Type.Optional(ToolSelectionSchema),
+      delegation: Type.Optional(DelegationSchema),
     }),
     subagent_message: Type.Object({
       agent_id: Type.Optional(Type.String({ description: "Canonical agent ID, parent, or *" })),

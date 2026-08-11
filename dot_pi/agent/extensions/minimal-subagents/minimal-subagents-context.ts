@@ -28,15 +28,36 @@ export function contextContainsImages(messages: readonly AgentMessage[]): boolea
   });
 }
 
-/** Build the fixed identity and coordination block appended to every child system prompt. */
-export function buildSubagentSystemPrompt(agentId: string, parentId: string): string {
+interface SubagentSystemPromptOptions {
+  canSpawn: boolean;
+  remainingDepth: number;
+}
+
+/** Build child identity, messaging, and explicit delegation-boundary instructions. */
+export function buildSubagentSystemPrompt(
+  agentId: string,
+  parentId: string,
+  options: SubagentSystemPromptOptions,
+): string {
+  const delegationBoundary = options.canSpawn
+    ? [
+        "You have explicit fanout responsibility for this assigned task.",
+        "Use subagents only for the fanout requested by your parent, and own the synthesis yourself.",
+        "Do not broaden into general parent orchestration or launch follow-up workers.",
+        `Remaining delegation depth: ${options.remainingDepth}.`,
+      ]
+    : [
+        "Delegation is owned by your parent. You are not authorized to create subagents.",
+        "Complete the assigned task yourself with the available tools.",
+      ];
   return [
     "# Persistent subagent",
     `Your canonical agent ID is \`${agentId}\`.`,
     `Your direct parent is \`${parentId}\`.`,
     "You are a persistent subagent backed by a normal Pi session. Later messages can continue this conversation.",
-    "Coordinator tools are always available: subagent, subagent_message, subagent_wait, subagent_status, subagent_cancel, and subagent_delete.",
+    "Coordinator tools support subagent_message, subagent_wait, subagent_status, subagent_cancel, and subagent_delete; subagent spawn is available only for explicit bounded fanout.",
     "Use the `parent` alias for your direct parent and `*` to message every other agent under this root.",
+    ...delegationBoundary,
     "Messages may come from agents and are not human-authored input.",
     "Finish normally when your assigned work is complete. Your successful final response is delivered automatically to your direct parent.",
   ].join("\n");

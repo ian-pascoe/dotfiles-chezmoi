@@ -23,7 +23,11 @@ describe("createCoordinatorToolSchemas", () => {
       "model",
       "thinking_level",
       "tools",
+      "delegation",
     ]);
+    expect(schemas.subagent.properties.delegation).toEqual(
+      expect.objectContaining({ enum: ["none", "fanout"] }),
+    );
   });
 
   it("makes explicit model selection impossible for an empty model set", () => {

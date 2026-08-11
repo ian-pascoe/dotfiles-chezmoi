@@ -31,6 +31,11 @@ import {
   PiAgentSessionFactory,
 } from "./minimal-subagents/minimal-subagents-sessions.js";
 import { createCoordinatorToolDefinitions } from "./minimal-subagents/minimal-subagents-tools.js";
+import {
+  renderMinimalSubagentsMessage,
+  renderMinimalSubagentsResult,
+} from "./minimal-subagents/minimal-subagents-rendering.js";
+import { MinimalSubagentsUiController } from "./minimal-subagents/minimal-subagents-ui.js";
 import type {
   CallerSnapshot,
   CoordinatorNotification,
@@ -87,6 +92,12 @@ function createRootConversationEndpoint(
   };
 }
 
+function shouldSurfaceNotification(notification: CoordinatorNotification): boolean {
+  return ["failure", "interruption", "unavailable", "fork-clone-failure"].includes(
+    notification.type,
+  );
+}
+
 function notificationLevel(notification: CoordinatorNotification): "info" | "warning" | "error" {
   if (notification.type === "failure" || notification.type === "fork-clone-failure") return "error";
   if (
@@ -114,7 +125,11 @@ function replayPreviousRoot(previousSessionFile: string): RegistrySnapshot {
 /** Register the six root coordinator tools and bind root-owned persistent subagent lifecycle hooks. */
 export default function minimalSubagentsExtension(pi: ExtensionAPI) {
   let coordinator: MinimalSubagentsCoordinator | undefined;
+  let uiController: MinimalSubagentsUiController | undefined;
   let preparedFork: ForkSnapshot | undefined;
+
+  pi.registerMessageRenderer("minimal-subagents.message", renderMinimalSubagentsMessage);
+  pi.registerMessageRenderer("minimal-subagents.result", renderMinimalSubagentsResult);
 
   pi.on("session_start", async (event, context) => {
     const rootSessionId = context.sessionManager.getSessionId();
@@ -156,6 +171,7 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
         createCoordinatorToolDefinitions({
           coordinator: activeCoordinator,
           callerId,
+          allowSpawn: activeCoordinator.canAgentSpawn(callerId),
           schemas,
           captureCaller: (childContext) =>
             activeCoordinator.snapshotChildCaller(
@@ -171,8 +187,12 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
         rootSessionId,
         append: (registryEvent) => pi.appendEntry(REGISTRY_ENTRY_TYPE, registryEvent),
       },
-      notify: (notification) =>
-        context.ui.notify(notification.message, notificationLevel(notification)),
+      notify: (notification) => {
+        uiController?.refresh();
+        if (shouldSurfaceNotification(notification)) {
+          context.ui.notify(notification.message, notificationLevel(notification));
+        }
+      },
     });
     coordinator = activeCoordinator;
 
@@ -189,12 +209,17 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
     }
     await activeCoordinator.restore(snapshot);
     activeCoordinator.writeCheckpoint();
+    uiController = new MinimalSubagentsUiController(activeCoordinator, context);
+    uiController.refresh();
 
     const rootTools = createCoordinatorToolDefinitions({
       coordinator: activeCoordinator,
       callerId: "root",
+      allowSpawn: true,
       schemas,
       captureCaller: (toolContext) => rootCallerSnapshot(pi, toolContext),
+      onActivity: () => uiController?.refresh(),
+      onAttention: (message) => context.ui.notify(message, "error"),
     });
     for (const tool of rootTools) pi.registerTool(tool);
     pi.setActiveTools([...new Set([...pi.getActiveTools(), ...COORDINATOR_TOOL_NAMES])]);
@@ -218,10 +243,13 @@ export default function minimalSubagentsExtension(pi: ExtensionAPI) {
     if (!coordinator) return;
     if (event.message.role === "toolResult" || event.message.role === "custom") {
       await coordinator.reconcileDeliveries();
+      uiController?.refresh();
     }
   });
 
   pi.on("session_shutdown", async () => {
+    uiController?.dispose();
+    uiController = undefined;
     await coordinator?.shutdown();
     coordinator = undefined;
     preparedFork = undefined;

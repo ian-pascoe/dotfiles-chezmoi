@@ -84,14 +84,27 @@ describe("contextContainsImages", () => {
 });
 
 describe("buildSubagentSystemPrompt", () => {
-  it("contains identity, aliases, tools, persistence, and completion behavior", () => {
-    const prompt = buildSubagentSystemPrompt("root.research.sources", "root.research");
-    expect(prompt).toContain("root.research.sources");
+  it("gives an ordinary child an explicit parent-owned delegation boundary", () => {
+    const prompt = buildSubagentSystemPrompt("root.research", "root", {
+      canSpawn: false,
+      remainingDepth: 0,
+    });
     expect(prompt).toContain("root.research");
     expect(prompt).toContain("parent");
-    expect(prompt).toContain("*");
     expect(prompt).toContain("persistent subagent");
     expect(prompt).toContain("subagent_wait");
+    expect(prompt).toContain("Delegation is owned by your parent");
+    expect(prompt).toContain("Complete the assigned task yourself");
+    expect(prompt).not.toContain("Coordinator tools are always available");
+  });
+
+  it("bounds an explicitly authorized fanout child to its assigned fanout", () => {
+    const prompt = buildSubagentSystemPrompt("root.lead", "root", {
+      canSpawn: true,
+      remainingDepth: 1,
+    });
+    expect(prompt).toContain("explicit fanout responsibility");
+    expect(prompt).toContain("Remaining delegation depth: 1");
     expect(prompt).toContain("final response is delivered");
   });
 });

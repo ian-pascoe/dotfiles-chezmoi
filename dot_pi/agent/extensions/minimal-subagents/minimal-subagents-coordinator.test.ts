@@ -217,7 +217,7 @@ function rootCaller(overrides: Partial<CallerSnapshot> = {}): CallerSnapshot {
   };
 }
 
-function makeCoordinator(automaticDeliveryGraceMs = 0) {
+function makeCoordinator(automaticDeliveryGraceMs = 0, now?: () => Date) {
   const sessions = new FakeSessionFactory();
   const root = new FakeRoot();
   const registry = new FakeRegistry();
@@ -227,6 +227,7 @@ function makeCoordinator(automaticDeliveryGraceMs = 0) {
     root,
     registry,
     notify,
+    now,
     automaticDeliveryGraceMs,
   });
   return { coordinator, sessions, root, registry, notify };
@@ -276,20 +277,38 @@ describe("MinimalSubagentsCoordinator spawning", () => {
     await expect(first).resolves.toEqual(expect.objectContaining({ agent_id: "root.worker" }));
   });
 
-  it("creates unlimited nested peer namespaces and rejects duplicates without overwriting", async () => {
+  it("allows explicit fanout but denies ordinary-child and depth-three delegation", async () => {
+    const { coordinator } = makeCoordinator();
+    await coordinator.spawn("root", { task: "ordinary", agent_id: "ordinary" }, rootCaller());
+    await expect(
+      coordinator.spawn("root.ordinary", { task: "nested" }, rootCaller()),
+    ).rejects.toThrow(
+      "Minimal subagents delegation denied: root.ordinary is not authorized for fanout",
+    );
+
+    await coordinator.spawn(
+      "root",
+      { task: "lead", agent_id: "lead", delegation: "fanout" },
+      rootCaller(),
+    );
+    await coordinator.spawn(
+      "root.lead",
+      { task: "review", agent_id: "review", delegation: "fanout" },
+      rootCaller(),
+    );
+    expect(coordinator.canAgentSpawn("root.lead")).toBe(true);
+    expect(coordinator.canAgentSpawn("root.lead.review")).toBe(false);
+    await expect(
+      coordinator.spawn("root.lead.review", { task: "too deep" }, rootCaller()),
+    ).rejects.toThrow(
+      "Minimal subagents maximum delegation depth reached: root.lead.review (depth 2, max 2)",
+    );
+  });
+
+  it("keeps generated peer identities unique and rejects duplicates without overwriting", async () => {
     const { coordinator } = makeCoordinator();
     await coordinator.spawn("root", { task: "a", agent_id: "a" }, rootCaller());
     await coordinator.spawn("root", { task: "b", agent_id: "b" }, rootCaller());
-    await coordinator.spawn("root.a", { task: "one", agent_id: "one" }, rootCaller());
-    await coordinator.spawn("root.b", { task: "one", agent_id: "one" }, rootCaller());
-
-    expect(coordinator.status()).toEqual({
-      root_id: "root",
-      agents: [
-        expect.objectContaining({ agent_id: "root.a", child_count: 1 }),
-        expect.objectContaining({ agent_id: "root.b", child_count: 1 }),
-      ],
-    });
     await expect(
       coordinator.spawn("root", { task: "again", agent_id: "a" }, rootCaller()),
     ).rejects.toThrow("Minimal subagents duplicate agent ID: root.a");
@@ -315,6 +334,39 @@ describe("MinimalSubagentsCoordinator spawning", () => {
 });
 
 describe("MinimalSubagentsCoordinator completion and waiting", () => {
+  it("persists the original task and terminal duration for restored UI projections", async () => {
+    let timeMs = Date.parse("2026-08-11T12:00:00.000Z");
+    const { coordinator, sessions } = makeCoordinator(0, () => new Date(timeMs));
+    const spawn = await coordinator.spawn(
+      "root",
+      { task: "Inspect the complete API surface", agent_id: "worker" },
+      rootCaller(),
+    );
+    expect(coordinator.status("root.worker")).toEqual({
+      agent: expect.objectContaining({
+        task: "Inspect the complete API surface",
+        latest_activity_at: "2026-08-11T12:00:00.000Z",
+      }),
+    });
+
+    await flushTasks();
+    timeMs += 2_500;
+    const wait = coordinator.wait("root", "root.worker");
+    sessions.runtimes.get("root.worker")!.promptOutcomes[0]!.resolve({
+      status: "completed",
+      output: "finished",
+    });
+    await expect(wait).resolves.toEqual(
+      expect.objectContaining({ turn_id: spawn.turn_id, elapsed_ms: 2_500 }),
+    );
+    expect(coordinator.status("root.worker")).toEqual({
+      agent: expect.objectContaining({
+        elapsed_ms: 2_500,
+        latest_activity_at: "2026-08-11T12:00:02.500Z",
+      }),
+    });
+  });
+
   it("returns the exact active turn to a direct-parent waiter and suppresses duplicate delivery", async () => {
     const { coordinator, sessions, root } = makeCoordinator();
     const spawn = await coordinator.spawn(
@@ -329,12 +381,15 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
       output: "finished",
     });
 
-    await expect(wait).resolves.toEqual({
-      agent_id: "root.worker",
-      turn_id: spawn.turn_id,
-      status: "completed",
-      output: "finished",
-    });
+    await expect(wait).resolves.toEqual(
+      expect.objectContaining({
+        agent_id: "root.worker",
+        turn_id: spawn.turn_id,
+        status: "completed",
+        output: "finished",
+        elapsed_ms: expect.any(Number),
+      }),
+    );
     await flushTasks();
     await coordinator.reconcileDeliveries();
     expect(root.messages).toEqual([]);
@@ -361,7 +416,11 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
         message: expect.objectContaining({
           customType: "minimal-subagents.result",
           content: "finished",
-          details: expect.objectContaining({ source_turn_id: spawn.turn_id }),
+          details: expect.objectContaining({
+            source_turn_id: spawn.turn_id,
+            destination_agent_id: "root",
+            elapsed_ms: expect.any(Number),
+          }),
         }),
       },
     ]);
@@ -431,7 +490,11 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
 describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
   it("uses an omitted child target as its direct-parent alias", async () => {
     const { coordinator, sessions } = makeCoordinator();
-    await coordinator.spawn("root", { task: "group", agent_id: "group" }, rootCaller());
+    await coordinator.spawn(
+      "root",
+      { task: "group", agent_id: "group", delegation: "fanout" },
+      rootCaller(),
+    );
     await coordinator.spawn("root.group", { task: "child", agent_id: "child" }, rootCaller());
     await flushTasks();
 
@@ -488,7 +551,11 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
 
   it("recursively cancels active turns but preserves reusable sessions", async () => {
     const { coordinator, sessions } = makeCoordinator();
-    await coordinator.spawn("root", { task: "group", agent_id: "group" }, rootCaller());
+    await coordinator.spawn(
+      "root",
+      { task: "group", agent_id: "group", delegation: "fanout" },
+      rootCaller(),
+    );
     await coordinator.spawn("root.group", { task: "child", agent_id: "child" }, rootCaller());
     await flushTasks();
 
@@ -508,7 +575,11 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
 
   it("deletes descendants before parents and keeps durable tombstones", async () => {
     const { coordinator, sessions } = makeCoordinator();
-    await coordinator.spawn("root", { task: "group", agent_id: "group" }, rootCaller());
+    await coordinator.spawn(
+      "root",
+      { task: "group", agent_id: "group", delegation: "fanout" },
+      rootCaller(),
+    );
     await coordinator.spawn("root.group", { task: "child", agent_id: "child" }, rootCaller());
     await flushTasks();
 
@@ -598,6 +669,24 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
     });
   });
 
+  it("restores old registry agents without delegation or UI metadata as non-fanout children", async () => {
+    const original = makeCoordinator();
+    await original.coordinator.spawn("root", { task: "legacy", agent_id: "worker" }, rootCaller());
+    await flushTasks();
+    await original.coordinator.cancel("root.worker");
+    const snapshot = original.coordinator.snapshot();
+    delete snapshot.agents[0]!.task;
+    delete snapshot.agents[0]!.latest_activity_at;
+    delete snapshot.agents[0]!.launch_contract.delegation;
+
+    const restored = makeCoordinator();
+    await restored.coordinator.restore(snapshot);
+    expect(restored.coordinator.canAgentSpawn("root.worker")).toBe(false);
+    expect(restored.coordinator.status("root.worker")).toEqual({
+      agent: expect.objectContaining({ task: undefined, latest_activity_at: expect.any(String) }),
+    });
+  });
+
   it("restores unfinished turns as interrupted and marks dependency drift unavailable", async () => {
     const { coordinator } = makeCoordinator();
     const first = await coordinator.spawn(
@@ -636,7 +725,11 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
   it("clones peers independently and makes a failed subtree registry-only", async () => {
     const { coordinator, sessions } = makeCoordinator();
     await coordinator.spawn("root", { task: "good", agent_id: "good" }, rootCaller());
-    await coordinator.spawn("root", { task: "bad", agent_id: "bad" }, rootCaller());
+    await coordinator.spawn(
+      "root",
+      { task: "bad", agent_id: "bad", delegation: "fanout" },
+      rootCaller(),
+    );
     await coordinator.spawn("root.bad", { task: "leaf", agent_id: "leaf" }, rootCaller());
     await flushTasks();
     await coordinator.cancel("root.good");

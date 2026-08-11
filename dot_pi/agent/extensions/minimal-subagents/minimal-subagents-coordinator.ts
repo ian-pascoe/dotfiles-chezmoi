@@ -3,7 +3,10 @@ import type { AgentMessage } from "@earendil-works/pi-agent-core";
 import type { Usage } from "@earendil-works/pi-ai";
 import { assembleImportedContext, contextContainsImages } from "./minimal-subagents-context.js";
 import {
+  canAgentContractSpawn,
+  DEFAULT_MAX_SUBAGENT_DEPTH,
   excludeCoordinatorTools,
+  getSubagentDepth,
   resolveOrdinaryToolSelection,
 } from "./minimal-subagents-capabilities.js";
 import { createRegistryEvent } from "./minimal-subagents-registry.js";
@@ -113,6 +116,7 @@ export class MinimalSubagentsCoordinator {
   ): Promise<SpawnResult> {
     this.assertAccepting();
     this.assertCallerExists(callerId);
+    this.assertCallerMaySpawn(callerId);
     if (parameters.task.trim().length === 0) {
       throw new Error("Minimal subagents spawn validation: task must not be empty");
     }
@@ -154,6 +158,8 @@ export class MinimalSubagentsCoordinator {
       friendly_id: friendlyId,
       parent_id: callerId,
       created_at: createdAt,
+      task: parameters.task,
+      latest_activity_at: createdAt,
       spawn_entry_id: caller.spawnEntryId,
       launch_contract: {
         session_context: sessionContext,
@@ -162,6 +168,7 @@ export class MinimalSubagentsCoordinator {
         thinking_level: thinkingLevel,
         tools: parameters.tools,
         ordinary_tools: ordinaryTools,
+        delegation: parameters.delegation ?? "none",
       },
       capability_ceiling: [...ordinaryTools],
       availability: "available",
@@ -316,6 +323,15 @@ export class MinimalSubagentsCoordinator {
     };
   }
 
+  /** Report whether root or one explicitly authorized child can create another agent. */
+  canAgentSpawn(callerId: string): boolean {
+    if (callerId === "root") return true;
+    const caller = this.agents.get(callerId);
+    return caller
+      ? canAgentContractSpawn(caller.agent_id, caller.launch_contract.delegation)
+      : false;
+  }
+
   /** Abort active target turns while preserving every persistent child session. */
   async cancel(agentId: string, recursive = true): Promise<CancelResult> {
     this.assertAccepting();
@@ -464,6 +480,7 @@ export class MinimalSubagentsCoordinator {
         : await this.dependencies.sessions.resolveRestorationMissingDependencies(agent);
       if (missing.length > 0 || !agent.session_file) {
         agent.availability = "unavailable";
+        agent.latest_activity_at = this.now().toISOString();
         agent.missing_dependencies = missing.length > 0 ? missing : agent.missing_dependencies;
         agent.unavailable_reason =
           agent.clone_error ??
@@ -478,8 +495,11 @@ export class MinimalSubagentsCoordinator {
         continue;
       }
       try {
+        const previousAvailability = agent.availability;
         this.runtimes.set(agent.agent_id, await this.dependencies.sessions.restoreRuntime(agent));
         agent.availability = "available";
+        if (previousAvailability !== "available")
+          agent.latest_activity_at = this.now().toISOString();
         agent.missing_dependencies = [];
         agent.unavailable_reason = undefined;
         this.dependencies.notify?.({
@@ -489,7 +509,13 @@ export class MinimalSubagentsCoordinator {
         });
       } catch (error) {
         agent.availability = "unavailable";
+        agent.latest_activity_at = this.now().toISOString();
         agent.unavailable_reason = error instanceof Error ? error.message : String(error);
+        this.dependencies.notify?.({
+          type: "unavailable",
+          agentId: agent.agent_id,
+          message: `${agent.agent_id} unavailable: ${agent.unavailable_reason}`,
+        });
       }
     }
     await this.reconcileDeliveries(true);
@@ -664,6 +690,7 @@ export class MinimalSubagentsCoordinator {
     const startedAt = this.now().toISOString();
     agent.active_turn_id = turnId;
     agent.active_turn_started_at = startedAt;
+    agent.latest_activity_at = startedAt;
     this.dependencies.registry.append(
       createRegistryEvent(this.dependencies.registry.rootSessionId, "turn-started", {
         agent_id: agent.agent_id,
@@ -676,8 +703,19 @@ export class MinimalSubagentsCoordinator {
 
   private settleTurn(agent: PersistedAgent, turnId: string, result: TurnResult): void {
     if (agent.active_turn_id !== turnId) return;
+    const settledAt = this.now();
+    const startedAt = agent.active_turn_started_at
+      ? new Date(agent.active_turn_started_at).getTime()
+      : Number.NaN;
+    result = {
+      ...result,
+      elapsed_ms:
+        result.elapsed_ms ??
+        (Number.isFinite(startedAt) ? Math.max(0, settledAt.getTime() - startedAt) : undefined),
+    };
     agent.active_turn_id = undefined;
     agent.active_turn_started_at = undefined;
+    agent.latest_activity_at = settledAt.toISOString();
     agent.latest_result = structuredClone(result);
     this.dependencies.registry.append(
       createRegistryEvent(this.dependencies.registry.rootSessionId, "turn-settled", { result }),
@@ -742,8 +780,11 @@ export class MinimalSubagentsCoordinator {
           content: result.output,
           details: {
             source_agent_id: delivery.source_agent_id,
+            destination_agent_id: delivery.destination_agent_id,
             source_turn_id: result.turn_id,
             status: result.status,
+            elapsed_ms: result.elapsed_ms,
+            usage: result.usage,
           },
         };
         await this.deliverToRecipient(delivery.destination_agent_id, message, "follow-up");
@@ -770,7 +811,11 @@ export class MinimalSubagentsCoordinator {
     const message: CoordinatorMessage = {
       customType: "minimal-subagents.message",
       content,
-      details: { source_agent_id: callerId, source_turn_id: sourceTurnId },
+      details: {
+        source_agent_id: callerId,
+        destination_agent_id: targetId,
+        source_turn_id: sourceTurnId,
+      },
     };
     if (targetId !== "root") {
       const target = this.requireUsableAgent(targetId, "message");
@@ -904,7 +949,9 @@ export class MinimalSubagentsCoordinator {
       model: agent.launch_contract.model,
       thinking_level: agent.launch_contract.thinking_level,
       tools: [...agent.launch_contract.ordinary_tools],
-      elapsed_ms: elapsed,
+      elapsed_ms: elapsed ?? agent.latest_result?.elapsed_ms,
+      latest_activity_at: agent.latest_activity_at ?? agent.created_at,
+      task: agent.task,
       latest_activity: agent.active_turn_id
         ? "turn running"
         : agent.latest_result
@@ -982,6 +1029,22 @@ export class MinimalSubagentsCoordinator {
     this.requireUsableAgent(callerId, "caller");
   }
 
+  private assertCallerMaySpawn(callerId: string): void {
+    if (callerId === "root") return;
+    const depth = getSubagentDepth(callerId);
+    if (depth >= DEFAULT_MAX_SUBAGENT_DEPTH) {
+      throw new Error(
+        `Minimal subagents maximum delegation depth reached: ${callerId} (depth ${depth}, max ${DEFAULT_MAX_SUBAGENT_DEPTH})`,
+      );
+    }
+    const caller = this.requireUsableAgent(callerId, "delegation");
+    if (caller.launch_contract.delegation !== "fanout") {
+      throw new Error(
+        `Minimal subagents delegation denied: ${callerId} is not authorized for fanout`,
+      );
+    }
+  }
+
   private validateFriendlyId(friendlyId: string): void {
     if (!FRIENDLY_AGENT_ID_PATTERN.test(friendlyId) || RESERVED_AGENT_IDS.has(friendlyId)) {
       throw new Error(
@@ -1010,6 +1073,7 @@ export class MinimalSubagentsCoordinator {
       clone_error: cloneError,
       active_turn_id: undefined,
       active_turn_started_at: undefined,
+      latest_activity_at: this.now().toISOString(),
       availability: "unavailable",
       missing_dependencies: [cloneError],
       unavailable_reason: cloneError,

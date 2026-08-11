@@ -13,6 +13,8 @@ export type SessionContextMode = "inherit" | "compact" | "omit";
 export type ProjectContextMode = "inherit" | "omit";
 /** Selects inherited, bundled, absent, or explicitly named ordinary child tools. */
 export type ToolSelection = "none" | "read" | "modify" | string[];
+/** Controls whether a child must work directly or may explicitly fan out one bounded level. */
+export type DelegationMode = "none" | "fanout";
 /** Controls whether a message steers an active turn or follows it. */
 export type MessageBehavior = "steer" | "follow-up";
 /** Reports whether a persistent agent currently owns an active turn. */
@@ -31,6 +33,7 @@ export interface SpawnParameters {
   model?: string;
   thinking_level?: ThinkingLevel;
   tools?: ToolSelection;
+  delegation?: DelegationMode;
 }
 
 /** Returns persistent agent and turn identities immediately after launch scheduling. */
@@ -48,6 +51,7 @@ export interface TurnResult {
   output: string;
   error?: string;
   usage?: Usage;
+  elapsed_ms?: number;
 }
 
 /** Reports per-recipient acceptance without rolling back successful peers. */
@@ -76,6 +80,8 @@ export interface AgentSummary {
   tools: string[];
   elapsed_ms?: number;
   latest_activity?: string;
+  latest_activity_at?: string;
+  task?: string;
   child_count: number;
   children: AgentSummary[];
 }
@@ -130,6 +136,7 @@ export interface LaunchContract {
   thinking_level: ThinkingLevel;
   tools: ToolSelection | undefined;
   ordinary_tools: string[];
+  delegation?: DelegationMode;
 }
 
 /** Captures committed caller context and its capability ceiling at spawn time. */
@@ -157,8 +164,11 @@ export interface CoordinatorMessage {
   content: string;
   details: {
     source_agent_id: string;
+    destination_agent_id?: string;
     source_turn_id: string;
     status?: TurnStatus;
+    elapsed_ms?: number;
+    usage?: Usage;
   };
 }
 
@@ -221,6 +231,8 @@ export interface PersistedAgent {
   friendly_id: string;
   parent_id: string;
   created_at: string;
+  task?: string;
+  latest_activity_at?: string;
   spawn_entry_id: string;
   session_file?: string;
   session_id?: string;

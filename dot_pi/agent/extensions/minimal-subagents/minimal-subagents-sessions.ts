@@ -21,6 +21,11 @@ import {
   buildSubagentSystemPrompt,
   snapshotCommittedContext,
 } from "./minimal-subagents-context.js";
+import {
+  canAgentContractSpawn,
+  DEFAULT_MAX_SUBAGENT_DEPTH,
+  getSubagentDepth,
+} from "./minimal-subagents-capabilities.js";
 import { CHILD_IDENTITY_ENTRY_TYPE } from "./minimal-subagents-registry.js";
 import { addMinimalSubagentsUsage } from "./minimal-subagents-usage.js";
 import type {
@@ -583,7 +588,13 @@ export class PiAgentSessionFactory implements AgentSessionFactory {
           agentDir: this.options.agentDir,
           projectContext: agent.launch_contract.project_context,
           extensionEntrypoint: this.options.extensionEntrypoint,
-          systemPromptBlock: buildSubagentSystemPrompt(agent.agent_id, agent.parent_id),
+          systemPromptBlock: buildSubagentSystemPrompt(agent.agent_id, agent.parent_id, {
+            canSpawn: canAgentContractSpawn(agent.agent_id, agent.launch_contract.delegation),
+            remainingDepth: Math.max(
+              0,
+              DEFAULT_MAX_SUBAGENT_DEPTH - getSubagentDepth(agent.agent_id),
+            ),
+          }),
           ordinaryToolNames: agent.launch_contract.ordinary_tools,
           settingsManager,
         }),
@@ -618,7 +629,13 @@ export class PiAgentSessionFactory implements AgentSessionFactory {
         agentDir: this.options.agentDir,
         projectContext: agent.launch_contract.project_context,
         extensionEntrypoint: this.options.extensionEntrypoint,
-        systemPromptBlock: buildSubagentSystemPrompt(agent.agent_id, agent.parent_id),
+        systemPromptBlock: buildSubagentSystemPrompt(agent.agent_id, agent.parent_id, {
+          canSpawn: canAgentContractSpawn(agent.agent_id, agent.launch_contract.delegation),
+          remainingDepth: Math.max(
+            0,
+            DEFAULT_MAX_SUBAGENT_DEPTH - getSubagentDepth(agent.agent_id),
+          ),
+        }),
         ordinaryToolNames: agent.launch_contract.ordinary_tools,
         settingsManager,
       }),
