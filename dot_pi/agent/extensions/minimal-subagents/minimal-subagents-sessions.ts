@@ -1,5 +1,6 @@
 import { execFile } from "node:child_process";
 import { existsSync, realpathSync, writeFileSync } from "node:fs";
+import { unlink } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { AgentMessage, ThinkingLevel } from "@earendil-works/pi-agent-core";
 import type { Model, Usage } from "@earendil-works/pi-ai";
@@ -537,14 +538,21 @@ export class PiAgentSessionFactory implements AgentSessionFactory {
     return { sessionFile, sessionId: source.getSessionId() };
   }
 
-  trashSessionFile(sessionFile: string): Promise<void> {
-    return new Promise((resolvePromise, reject) => {
-      execFile("trash", [sessionFile], (error) => {
-        if (error)
-          reject(new Error(`Minimal subagents trash failed for ${sessionFile}: ${error.message}`));
-        else resolvePromise();
-      });
+  async trashSessionFile(sessionFile: string): Promise<void> {
+    const trashError = await new Promise<Error | undefined>((resolvePromise) => {
+      const trashArguments = sessionFile.startsWith("-") ? ["--", sessionFile] : [sessionFile];
+      execFile("trash", trashArguments, (error) => resolvePromise(error ?? undefined));
     });
+    if (!trashError || !existsSync(sessionFile)) return;
+
+    try {
+      await unlink(sessionFile);
+    } catch (error) {
+      const unlinkError = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Minimal subagents session deletion failed for ${sessionFile}: ${unlinkError} (trash: ${trashError.message})`,
+      );
+    }
   }
 
   private buildChildSystemPrompt(agent: PersistedAgent): string {

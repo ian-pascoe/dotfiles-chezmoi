@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -169,6 +169,37 @@ describe("PiAgentSessionFactory launch validation", () => {
     await expect(factory.resolveLaunchMissingDependencies(agent)).resolves.toEqual([
       "runtime_only_tool",
     ]);
+  });
+});
+
+describe("PiAgentSessionFactory session deletion", () => {
+  it("deletes the session file when the trash CLI is unavailable", async () => {
+    const sessionDir = await mkdtemp(join(tmpdir(), "minimal-subagents-delete-"));
+    const sessionFile = join(sessionDir, "child.jsonl");
+    writeFileSync(sessionFile, "session\n", "utf8");
+    const factory = new PiAgentSessionFactory({
+      cwd: sessionDir,
+      agentDir: sessionDir,
+      sessionDir,
+      rootSessionId: "root-session",
+      extensionEntrypoint: join(sessionDir, "extensions", "minimal-subagents.ts"),
+      models: [],
+      eligibleModelIds: [],
+      modelScopeRestricted: false,
+      availableToolNames: [],
+      projectTrusted: true,
+      getCoordinatorTools: () => [],
+    });
+    const originalPath = process.env.PATH;
+    process.env.PATH = sessionDir;
+
+    try {
+      await expect(factory.trashSessionFile(sessionFile)).resolves.toBeUndefined();
+    } finally {
+      if (originalPath === undefined) delete process.env.PATH;
+      else process.env.PATH = originalPath;
+    }
+    expect(existsSync(sessionFile)).toBe(false);
   });
 });
 
