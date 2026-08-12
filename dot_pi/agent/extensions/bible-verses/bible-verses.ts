@@ -1,4 +1,4 @@
-import type { BibleTranslationAbbreviation } from "./whimsical-bible-translations.js";
+import type { BibleTranslationAbbreviation } from "./bible-translations.js";
 
 /** One self-contained Bible passage selected for the working-message rotation. */
 export type BibleVerseMessage = {

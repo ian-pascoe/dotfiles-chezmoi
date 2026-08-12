@@ -1,9 +1,9 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { createBibleVersePicker, formatBibleVerseMessage } from "./whimsical-bible-picker.js";
+import { createBibleVersePicker, formatBibleVerseMessage } from "./bible-verse-picker.js";
 
 const pickBibleVerseMessage = createBibleVersePicker();
 
-export default function (pi: ExtensionAPI) {
+export default function bibleVersesExtension(pi: ExtensionAPI) {
   pi.on("turn_start", async (_event, ctx) => {
     ctx.ui.setWorkingMessage(formatBibleVerseMessage(pickBibleVerseMessage()));
   });

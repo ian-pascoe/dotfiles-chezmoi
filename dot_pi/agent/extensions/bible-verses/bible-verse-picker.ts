@@ -1,4 +1,4 @@
-import { bibleVerseMessages, type BibleVerseMessage } from "./whimsical-bible-verses.js";
+import { bibleVerseMessages, type BibleVerseMessage } from "./bible-verses.js";
 
 /** Number of prior readings excluded from random selection. */
 export const RECENT_BIBLE_VERSE_LIMIT = 20;

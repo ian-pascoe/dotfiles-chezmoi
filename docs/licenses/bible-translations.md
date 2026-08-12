@@ -1,9 +1,9 @@
 # Bible translation sources and rights
 
 The Pi working-message extension at
-`dot_pi/agent/extensions/whimsical.ts` displays an offline rotation of short
-Bible readings. Each passage uses the translation chosen for clarity, literary
-force, self-contained meaning, and a maximum 280-character display.
+`dot_pi/agent/extensions/bible-verses/index.ts` displays an offline rotation of
+short Bible readings. Each passage uses the translation chosen for clarity,
+literary force, self-contained meaning, and a maximum 280-character display.
 
 This note records the source and rights review performed on 2026-08-12. It is
 provenance and implementation guidance, not legal advice.
@@ -13,7 +13,7 @@ provenance and implementation guidance, not legal advice.
 All embedded translations permit unrestricted static redistribution. No
 copyrighted translation with a quotation-percentage restriction is included.
 The source archives are not committed; only selected passages are stored in
-`extensions/whimsical/whimsical-bible-verses.ts`.
+`extensions/bible-verses/bible-verses.ts`.
 
 | Mark | Translation and edition | Readings | Verses | Rights | Source |
 | --- | --- | ---: | ---: | --- | --- |
@@ -26,7 +26,7 @@ The source archives are not committed; only selected passages are stored in
 | OEB | Open English Bible, US spelling, eBible source dated 2026-08-08 | 59 | 101 | [CC0/public domain](https://openenglishbible.org/) | [USFX](https://ebible.org/Scriptures/engoebus_usfx.zip) |
 
 The full names, notices, source URLs, and downloaded archive checksums are kept
-in `extensions/whimsical/whimsical-bible-translations.ts`. The displayed abbreviation
+in `extensions/bible-verses/bible-translations.ts`. The displayed abbreviation
 identifies the translation used for every passage.
 
 ## Copyrighted translations reviewed but excluded
@@ -73,7 +73,7 @@ terms. Do not copy text from an unofficial Bible API or a scraped website.
 
 ## Maintenance checks
 
-`extensions/whimsical/whimsical-bible-verses.test.ts` verifies that:
+`extensions/bible-verses/bible-verses.test.ts` verifies that:
 
 - passage and citation IDs are unique;
 - reference metadata and verse counts agree;

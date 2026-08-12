@@ -4,15 +4,17 @@ import { describe, expect, it } from "vitest";
 
 const agentDirectory = resolve(import.meta.dirname, "../..");
 
-describe("whimsical extension discovery", () => {
+describe("Bible verses extension discovery", () => {
   it("loads only the factory entrypoint and ignores its support modules", async () => {
     const result = await discoverAndLoadExtensions([], process.cwd(), agentDirectory);
-    const whimsicalErrors = result.errors.filter(({ path }) => path.includes("whimsical"));
-    const whimsicalExtensionPaths = result.extensions
+    const bibleVerseErrors = result.errors.filter(({ path }) => path.includes("bible-verses"));
+    const bibleVerseExtensionPaths = result.extensions
       .map(({ path }) => path)
-      .filter((path) => path.includes("whimsical"));
+      .filter((path) => path.includes("bible-verses"));
 
-    expect(whimsicalErrors).toEqual([]);
-    expect(whimsicalExtensionPaths).toEqual([resolve(agentDirectory, "extensions/whimsical.ts")]);
+    expect(bibleVerseErrors).toEqual([]);
+    expect(bibleVerseExtensionPaths).toEqual([
+      resolve(agentDirectory, "extensions/bible-verses/index.ts"),
+    ]);
   });
 });

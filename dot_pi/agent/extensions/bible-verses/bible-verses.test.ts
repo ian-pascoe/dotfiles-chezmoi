@@ -3,9 +3,9 @@ import {
   createBibleVersePicker,
   formatBibleVerseMessage,
   RECENT_BIBLE_VERSE_LIMIT,
-} from "./whimsical-bible-picker.js";
-import { bibleTranslationMetadata } from "./whimsical-bible-translations.js";
-import { bibleVerseMessages } from "./whimsical-bible-verses.js";
+} from "./bible-verse-picker.js";
+import { bibleTranslationMetadata } from "./bible-translations.js";
+import { bibleVerseMessages } from "./bible-verses.js";
 
 const referencePattern = /^(?<book>.+) \d+:(?<firstVerse>\d+)(?:-(?<lastVerse>\d+))?$/;
 
