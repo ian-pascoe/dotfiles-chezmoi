@@ -82,6 +82,15 @@ if command -v hunk &>/dev/null; then
   }
 fi
 
+if command -v pi &>/dev/null; then
+  pi() {
+    command pi \
+      --theme "$HOME/.config/theme/pi.json" \
+      --active-theme "$(basename "$(readlink "$HOME/.config/theme")")" \
+      "$@"
+  }
+fi
+
 if command -v omp &>/dev/null; then
   eval "$(omp completions zsh)"
 fi

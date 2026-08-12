@@ -6,7 +6,6 @@
 @firecrawl/anydoc
 @googleworkspace/cli
 @openai/codex
-@opencode-ai/cli
 @playwright/cli
 agent-browser
 caplets
@@ -16,6 +15,7 @@ hunkdiff
 impeccable
 just-bash
 node-gyp
+opencode-ai
 oxfmt
 oxlint
 playwright

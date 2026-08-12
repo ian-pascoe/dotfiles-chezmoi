@@ -1,7 +1,7 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "0be29a9"
-hash = "fbb53c3c04f816d737f9f4b1d29f3310"
+rev = "3f2b882"
+hash = "336548d9f67926e12d5584f60b790f1"
 
 [[flavor.deps]]
 use = "Mintass/rose-pine"

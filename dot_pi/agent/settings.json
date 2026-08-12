@@ -7,10 +7,8 @@
     "npm:@ian-pascoe/pi-minimal-subagents",
     "npm:@ian-pascoe/pi-tps-tracker",
     "npm:@plannotator/pi-extension",
-    "npm:pi-adaptive-thinking",
     "npm:pi-autoresearch",
-    "npm:pi-mcp-adapter",
-    "npm:pi-terminal-theme"
+    "npm:pi-mcp-adapter"
   ],
   "defaultModel": "gpt-5.6-sol",
   "defaultProjectTrust": "always",
@@ -24,9 +22,8 @@
     "opencode-go/glm-5.2"
   ],
   "enableInstallTelemetry": false,
-  "theme": "terminal",
-  "tuiMode": "fullscreen",
   "collapseChangelog": true,
+  "showCacheMissNotices": true,
   "minimalSubagents": {
     "modelRoles": {
       "default": "openai-codex/gpt-5.6-sol",
@@ -39,6 +36,5 @@
       "research": "openai-codex/gpt-5.6-luna",
       "review": "openai-codex/gpt-5.6-sol"
     }
-  },
-  "showCacheMissNotices": true
+  }
 }
