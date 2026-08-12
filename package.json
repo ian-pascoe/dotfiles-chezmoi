@@ -1,5 +1,5 @@
 {
-  "name": "chezmoi",
+  "name": "@ian-pascoe/dotfiles",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,13 +9,21 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && turbo typecheck"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
     "oxfmt": "^0.63.0",
     "oxlint": "^1.78.0",
+    "turbo": "^2.10.9",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.20.0",
+      "onFail": "download"
+    }
   }
 }

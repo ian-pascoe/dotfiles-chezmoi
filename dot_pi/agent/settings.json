@@ -21,5 +21,18 @@
   "enableInstallTelemetry": false,
   "theme": "terminal",
   "tuiMode": "fullscreen",
-  "collapseChangelog": true
+  "collapseChangelog": true,
+  "minimalSubagents": {
+    "modelRoles": {
+      "default": "openai-codex/gpt-5.6-sol",
+      "small": "openai-codex/gpt-5.6-luna",
+      "medium": "openai-codex/gpt-5.6-terra",
+      "large": "openai-codex/gpt-5.6-sol",
+      "design": "opencode-go/kimi-k3",
+      "explore": "openai-codex/gpt-5.6-luna",
+      "plan": "openai-codex/gpt-5.6-sol",
+      "research": "openai-codex/gpt-5.6-luna",
+      "review": "openai-codex/gpt-5.6-sol"
+    }
+  }
 }

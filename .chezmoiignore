@@ -2,6 +2,8 @@ README.md
 AGENTS.md
 docs
 tests
+CONTEXT-MAP.md
+**/CONTEXT.md
 
 node_modules
 package.json
@@ -10,6 +12,7 @@ bun.lock
 pnpm-lock.yaml
 pnpm-workspace.yaml
 tsconfig.json
+turbo.json
 
 # Syncthing
 **/.stfolder
