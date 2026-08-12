@@ -1,11 +1,11 @@
 README.md
 AGENTS.md
-docs
-tests
+docs/**
 CONTEXT-MAP.md
 **/CONTEXT.md
+**/docs/adr/**
 
-node_modules
+node_modules/**
 package.json
 package-lock.json
 bun.lock
@@ -13,9 +13,10 @@ pnpm-lock.yaml
 pnpm-workspace.yaml
 tsconfig.json
 turbo.json
+**/.turbo/**
 
 # Syncthing
-**/.stfolder
+**/.stfolder/
 **/.stignore
 **/*.sync-conflict*
 **/.*.sync-conflict*

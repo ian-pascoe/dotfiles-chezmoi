@@ -1,33 +1,45 @@
 # Domain Docs
 
-How the engineering skills should consume this repo's domain documentation when exploring the codebase.
+How engineering skills consume this repository's domain documentation.
 
-## Before exploring, read these
+## Before exploring
 
-- **`CONTEXT.md`** at the repo root.
-- **`docs/adr/`** — read ADRs that touch the area you're about to work in.
+Read `CONTEXT-MAP.md`, then read each `CONTEXT.md` relevant to the work.
 
-If either location doesn't exist, **proceed silently**. Don't flag its absence; don't suggest creating it upfront. The `/domain-modeling` skill (reached via `/grill-with-docs` and `/improve-codebase-architecture`) creates it lazily when terms or decisions actually get resolved.
+Also read:
 
-## File structure
+- `docs/adr/` for cross-context decisions.
+- The relevant context's `docs/adr/` for scoped decisions.
 
-```text
-/
-├── CONTEXT.md
-├── docs/adr/
-│   ├── 0001-event-sourced-orders.md
-│   └── 0002-postgres-for-write-model.md
-└── src/
-```
+If a referenced context or ADR directory does not exist, proceed silently. Domain-modeling
+creates these files lazily when terminology or decisions are resolved.
+
+## Contexts
+
+- **Pi agent configuration**
+  - Source: `dot_pi/agent/`
+  - Glossary: `dot_pi/agent/CONTEXT.md`
+  - ADRs: `dot_pi/agent/docs/adr/`
+- **Oh My Pi configuration**
+  - Source: `dot_omp/agent/`
+  - Glossary: `dot_omp/agent/CONTEXT.md`
+  - ADRs: `dot_omp/agent/docs/adr/`
+- **OpenCode configuration**
+  - Source: `dot_config/opencode/`
+  - Glossary: `dot_config/opencode/CONTEXT.md`
+  - ADRs: `dot_config/opencode/docs/adr/`
+
+Read every affected context for cross-context changes.
 
 ## Use the glossary's vocabulary
 
-When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in `CONTEXT.md`. Don't drift to synonyms the glossary explicitly avoids.
+Use terms as defined by the relevant `CONTEXT.md`. Avoid synonyms that its glossary
+explicitly rejects.
 
-If the concept you need isn't in the glossary yet, that's a signal — either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `/domain-modeling`).
+If a needed concept is absent, reconsider whether it belongs to the domain or
+record the gap for domain-modeling.
 
 ## Flag ADR conflicts
 
-If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
-
-> _Contradicts ADR-0007 (event-sourced orders) — but worth reopening because…_
+Surface conflicts with existing ADRs explicitly rather than silently
+overriding them.
