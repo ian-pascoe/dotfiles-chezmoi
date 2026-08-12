@@ -657,8 +657,8 @@ Implement the extension in the chezmoi source tree:
 
 ```text
 dot_pi/agent/extensions/
-├── minimal-subagents.ts
 └── minimal-subagents/
+    ├── index.ts
     ├── README.md
     ├── minimal-subagents-capabilities.ts
     ├── minimal-subagents-config.ts
@@ -675,8 +675,8 @@ dot_pi/agent/extensions/
     └── minimal-subagents-*.test.ts
 ```
 
-- `minimal-subagents.ts` is the only extension entrypoint.
-- Helpers and tests live below the sibling directory so Pi does not treat them as independent extension entrypoints.
+- `minimal-subagents/index.ts` is the only extension entrypoint.
+- Helpers and tests live beside the directory entrypoint; Pi does not treat them as independent extension entrypoints.
 - Keep the coordinator independent from rendering and TypeBox schemas so lifecycle and recovery tests can use in-memory fakes.
 - Keep registry replay and context transformation pure where possible.
 
