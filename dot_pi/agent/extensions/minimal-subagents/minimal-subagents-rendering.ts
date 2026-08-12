@@ -294,11 +294,12 @@ function renderMessageResult(
   args: Record<string, unknown>,
 ): Component {
   const agentId = asString(details.agent_id) ?? asString(args.agent_id) ?? "parent";
-  const behavior = asString(details.behavior) ?? asString(args.behavior) ?? "steer";
+  const historicalBehavior = asString(details.behavior) ?? asString(args.behavior);
+  const metrics = historicalBehavior ? [historicalBehavior] : [];
   const delivered = details.delivered === true;
   const summary = delivered
-    ? renderSubagentSummary(theme, "delivered", agentId, [behavior])
-    : renderSubagentSummary(theme, "failed", agentId, [behavior]);
+    ? renderSubagentSummary(theme, "delivered", agentId, metrics)
+    : renderSubagentSummary(theme, "failed", agentId, metrics);
   if (!options.expanded) return new Text(`${summary}${collapsedExpansionHint(theme)}`, 0, 0);
   const container = new Container();
   container.addChild(new Text(summary, 0, 0));
@@ -610,9 +611,7 @@ const COORDINATOR_DETAIL_VALIDATORS: Record<
     asString(details.turn_id) !== undefined &&
     asString(details.status) !== undefined,
   agent_message: (details) =>
-    asString(details.agent_id) !== undefined &&
-    asString(details.behavior) !== undefined &&
-    typeof details.delivered === "boolean",
+    asString(details.agent_id) !== undefined && typeof details.delivered === "boolean",
   subagent_wait: (details) =>
     asString(details.agent_id) !== undefined && asString(details.status) !== undefined,
   subagent_status: (details) =>

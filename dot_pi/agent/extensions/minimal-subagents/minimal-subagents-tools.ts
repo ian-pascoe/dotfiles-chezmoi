@@ -17,11 +17,7 @@ import {
   type CoordinatorToolName,
 } from "./minimal-subagents-rendering.js";
 import type { createCoordinatorToolSchemas } from "./minimal-subagents-tool-schemas.js";
-import type {
-  CallerSnapshot,
-  MessageBehavior,
-  SpawnParameters,
-} from "./minimal-subagents-types.js";
+import type { CallerSnapshot, SpawnParameters } from "./minimal-subagents-types.js";
 
 const ORDINARY_CHILD_COORDINATOR_TOOL_NAMES = new Set([
   "agent_message",
@@ -165,7 +161,6 @@ export function createCoordinatorToolDefinitions(
           {
             agent_id: parameters.agent_id,
             message: parameters.message,
-            behavior: parameters.behavior as MessageBehavior | undefined,
           },
           callerSourceTurnId(options.coordinator, options.callerId, toolCallId),
         );

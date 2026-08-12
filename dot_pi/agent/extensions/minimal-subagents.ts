@@ -74,8 +74,7 @@ function createRootConversationEndpoint(
   context: ExtensionContext,
 ): RootConversationEndpoint {
   return {
-    isRunning: () => !context.isIdle(),
-    async deliverMessage(message, behavior) {
+    async steerCoordinatorMessage(message) {
       pi.sendMessage(
         {
           customType: message.customType,
@@ -85,7 +84,7 @@ function createRootConversationEndpoint(
         },
         {
           triggerTurn: true,
-          deliverAs: behavior === "follow-up" ? "followUp" : "steer",
+          deliverAs: "steer",
         },
       );
     },

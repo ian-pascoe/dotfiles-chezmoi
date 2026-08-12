@@ -33,7 +33,6 @@ import type {
   AgentSessionFactory,
   ChildAgentRuntime,
   CoordinatorMessage,
-  MessageBehavior,
   PersistedAgent,
   PersistedSessionIdentity,
   ProjectContextMode,
@@ -308,7 +307,7 @@ class PiChildAgentRuntime implements ChildAgentRuntime {
     );
   }
 
-  async queueMessage(message: CoordinatorMessage, behavior: MessageBehavior): Promise<void> {
+  async steerCoordinatorMessage(message: CoordinatorMessage): Promise<void> {
     await this.session.sendCustomMessage(
       {
         customType: message.customType,
@@ -316,7 +315,7 @@ class PiChildAgentRuntime implements ChildAgentRuntime {
         display: true,
         details: message.details,
       },
-      { triggerTurn: true, deliverAs: behavior === "follow-up" ? "followUp" : "steer" },
+      { triggerTurn: true, deliverAs: "steer" },
     );
   }
 

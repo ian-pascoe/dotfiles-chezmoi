@@ -35,7 +35,7 @@ class DeferredOutcome {
 }
 
 class FakeRuntime implements ChildAgentRuntime {
-  readonly queued: Array<{ message: CoordinatorMessage; behavior: string }> = [];
+  readonly steeredMessages: CoordinatorMessage[] = [];
   readonly messages: CoordinatorMessage[] = [];
   readonly promptOutcomes: DeferredOutcome[] = [];
   readonly messageOutcomes: DeferredOutcome[] = [];
@@ -69,8 +69,8 @@ class FakeRuntime implements ChildAgentRuntime {
     });
   }
 
-  async queueMessage(message: CoordinatorMessage, behavior: "steer" | "follow-up"): Promise<void> {
-    this.queued.push({ message, behavior });
+  async steerCoordinatorMessage(message: CoordinatorMessage): Promise<void> {
+    this.steeredMessages.push(message);
   }
 
   async abort(): Promise<void> {
@@ -175,19 +175,11 @@ class FakeSessionFactory implements AgentSessionFactory {
 }
 
 class FakeRoot implements RootConversationEndpoint {
-  running = false;
-  readonly messages: Array<{ message: CoordinatorMessage; behavior: string }> = [];
+  readonly messages: CoordinatorMessage[] = [];
   readonly evidence = new Set<string>();
 
-  isRunning(): boolean {
-    return this.running;
-  }
-
-  async deliverMessage(
-    message: CoordinatorMessage,
-    behavior: "steer" | "follow-up",
-  ): Promise<void> {
-    this.messages.push({ message, behavior });
+  async steerCoordinatorMessage(message: CoordinatorMessage): Promise<void> {
+    this.messages.push(message);
   }
 
   hasDeliveryEvidence(sourceAgentId: string, sourceTurnId: string): boolean {
@@ -472,9 +464,8 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
     expect(root.messages).toEqual([]);
   });
 
-  it("steers a running parent with successful background completion", async () => {
+  it("delivers successful background completion to the root", async () => {
     const { coordinator, sessions, root } = makeCoordinator();
-    root.running = true;
     const spawn = await coordinator.spawn(
       "root",
       { task: "work", agent_id: "worker" },
@@ -488,22 +479,19 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
     await flushTasks();
 
     expect(root.messages).toEqual([
-      {
-        behavior: "steer",
-        message: expect.objectContaining({
-          customType: "minimal-subagents.result",
-          content: "finished",
-          details: expect.objectContaining({
-            source_turn_id: spawn.turn_id,
-            destination_agent_id: "root",
-            elapsed_ms: expect.any(Number),
-          }),
+      expect.objectContaining({
+        customType: "minimal-subagents.result",
+        content: "finished",
+        details: expect.objectContaining({
+          source_turn_id: spawn.turn_id,
+          destination_agent_id: "root",
+          elapsed_ms: expect.any(Number),
         }),
-      },
+      }),
     ]);
   });
 
-  it("steers a running child parent with a nested child's successful completion", async () => {
+  it("steers nested completion into a running child parent", async () => {
     const { coordinator, sessions } = makeCoordinator();
     await coordinator.spawn(
       "root",
@@ -519,13 +507,10 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
     });
     await flushTasks();
 
-    expect(sessions.runtimes.get("group")!.queued).toContainEqual(
+    expect(sessions.runtimes.get("group")!.steeredMessages).toContainEqual(
       expect.objectContaining({
-        behavior: "steer",
-        message: expect.objectContaining({
-          customType: "minimal-subagents.result",
-          content: "nested result",
-        }),
+        customType: "minimal-subagents.result",
+        content: "nested result",
       }),
     );
   });
@@ -543,7 +528,6 @@ describe("MinimalSubagentsCoordinator completion and waiting", () => {
 
   it("lets a just-completed parent wait settle evidence before delayed automatic delivery", async () => {
     const { coordinator, sessions, root } = makeCoordinator(20);
-    root.running = true;
     const spawn = await coordinator.spawn(
       "root",
       { task: "work", agent_id: "worker" },
@@ -612,7 +596,6 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       ),
     ).resolves.toEqual({
       agent_id: "group.two",
-      behavior: "steer",
       delivered: true,
     });
     await expect(
@@ -623,12 +606,11 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       ),
     ).resolves.toEqual({
       agent_id: "group.one",
-      behavior: "steer",
       delivered: true,
     });
     await expect(
       coordinator.message("group", { agent_id: "parent", message: "parent update" }, "group-turn"),
-    ).resolves.toEqual({ agent_id: "root", behavior: "steer", delivered: true });
+    ).resolves.toEqual({ agent_id: "root", delivered: true });
 
     await expect(
       coordinator.message("group.one", { agent_id: "peer", message: "uncle update" }, "one-turn"),
@@ -677,7 +659,6 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       coordinator.message("root", { agent_id: "worker", message: "direct update" }, "root-turn"),
     ).resolves.toEqual({
       agent_id: "worker",
-      behavior: "steer",
       delivered: false,
       error: "missing model",
     });
@@ -761,13 +742,11 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     await flushTasks();
 
     const result = await coordinator.message("group.child", { message: "need help" }, "child-turn");
-    expect(result).toEqual({ agent_id: "group", behavior: "steer", delivered: true });
-    expect(sessions.runtimes.get("group")!.queued).toEqual([
+    expect(result).toEqual({ agent_id: "group", delivered: true });
+    expect(sessions.runtimes.get("group")!.steeredMessages).toEqual([
       expect.objectContaining({
-        message: expect.objectContaining({
-          customType: "minimal-subagents.message",
-          details: expect.objectContaining({ source_agent_id: "group.child" }),
-        }),
+        customType: "minimal-subagents.message",
+        details: expect.objectContaining({ source_agent_id: "group.child" }),
       }),
     ]);
   });
@@ -922,7 +901,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
 
     const restored = makeCoordinator();
     await restored.coordinator.restore(original.coordinator.snapshot());
-    expect(restored.root.messages.map(({ message }) => message.content)).toEqual([
+    expect(restored.root.messages.map((message) => message.content)).toEqual([
       "first output",
       "second output",
     ]);
@@ -940,11 +919,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
 
     const restored = makeCoordinator();
     await restored.coordinator.restore(original.coordinator.snapshot());
-    expect(restored.root.messages).toEqual([
-      expect.objectContaining({
-        message: expect.objectContaining({ content: "recover me" }),
-      }),
-    ]);
+    expect(restored.root.messages).toEqual([expect.objectContaining({ content: "recover me" })]);
     await restored.coordinator.reconcileDeliveries();
     expect(restored.root.messages).toHaveLength(1);
   });
@@ -1069,9 +1044,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
 
     expect(runtime.aborted).toBe(false);
     expect(runtime.disposed).toBe(true);
-    expect(root.messages).toEqual([
-      expect.objectContaining({ message: expect.objectContaining({ content: "done" }) }),
-    ]);
+    expect(root.messages).toEqual([expect.objectContaining({ content: "done" })]);
     expect(coordinator.inspectStatus("worker")).toEqual({
       agent: expect.objectContaining({
         latest_result: expect.objectContaining({

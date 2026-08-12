@@ -46,7 +46,6 @@ export function createCoordinatorToolSchemas(modelIds: readonly string[]) {
         ),
       ),
       message: Type.String({ minLength: 1 }),
-      behavior: Type.Optional(StringEnum(["steer", "follow-up"] as const)),
     }),
     subagent_wait: Type.Object({
       agent_id: canonicalAgentIdSchema("Direct child canonical agent ID"),

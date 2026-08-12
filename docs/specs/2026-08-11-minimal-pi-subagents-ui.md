@@ -229,16 +229,16 @@ Message <direct-relative-canonical-id | parent> · “<one-line message preview>
 **Collapsed result**
 
 ```text
-→ <canonical-agent-id> · delivered · <steer | follow-up>
+→ <canonical-agent-id> · delivered
 ```
 
 Use `×` and `failed` when the recipient does not accept the message.
+Historical results retain their recorded `steer` or `follow-up` label when present.
 
 **Expanded result sections**
 
-1. Behavior.
-2. Full message.
-3. The single recipient and any actionable delivery error.
+1. Full message.
+2. The single recipient and any actionable delivery error.
 
 ### `subagent_wait`
 

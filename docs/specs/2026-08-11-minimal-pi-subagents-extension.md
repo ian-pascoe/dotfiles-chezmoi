@@ -86,7 +86,6 @@ subagent({
 agent_message({
   agent_id?: string,
   message: string,
-  behavior?: "steer" | "follow-up",
 });
 
 subagent_wait({
@@ -145,7 +144,6 @@ interface TurnResult {
 
 interface AgentMessageResult {
   agent_id: string;
-  behavior: "steer" | "follow-up";
   delivered: boolean;
   error?: string;
 }
@@ -449,7 +447,7 @@ Required information across these events:
 - Exact original task, sortable latest-activity timestamp, and terminal turn duration.
 - Active/latest turn ID and terminal state.
 - Availability failures and missing dependency names.
-- Delivery source turn, destination parent, chosen delivery path, and settlement receipt.
+- Delivery source turn, destination parent, and settlement receipt.
 - Deletion tombstones.
 - A complete checkpoint after initial root ownership and after root forks.
 
@@ -461,17 +459,15 @@ Registries created by an older extension version may contain `root.`-prefixed ca
 
 ### Explicit Messages
 
-`agent_message` sends one conversation-plane message and returns immediately after coordinator acceptance.
+`agent_message` sends one action-required mid-turn message and returns immediately after coordinator acceptance.
 
-- `behavior` defaults to `steer`.
 - The target must be the caller's direct parent, direct sibling, or direct child. There is no wildcard or multi-recipient form; Pi may issue several independent calls in parallel.
-- For a running recipient, `steer` routes through steering and `follow-up` routes through the follow-up queue.
-- For an idle recipient, either behavior starts a new prompt immediately.
+- For a running recipient, route the message through steering. For an idle recipient, start a new prompt immediately.
 - Serialize deliveries per recipient in coordinator-receipt order.
 - Return one model-visible `AgentMessageResult`; delivery failure sets `delivered: false` and includes an actionable `error`.
-- Render explicit messages with custom type `minimal-subagents.message`, visible content, and details containing source agent ID and source turn ID. Deliver them through `sendCustomMessage()` for children or `pi.sendMessage()` for the root, with `triggerTurn: true` when idle and the requested `deliverAs` mode when running. They participate in recipient context without masquerading as human-authored input.
+- Render explicit messages with custom type `minimal-subagents.message`, visible content, and details containing source agent ID and source turn ID. Deliver them through `sendCustomMessage()` for children or `pi.sendMessage()` for the root with `triggerTurn: true` and `deliverAs: "steer"`. They participate in recipient context without masquerading as human-authored input.
 
-An agent requesting help sends its parent a message and finishes its own turn. Messaging has no blocking request/response protocol.
+Reserve messaging for coordination that requires the recipient to act before the caller's turn finishes. Otherwise, continue working and report through the automatically delivered final response. Messaging has no blocking request/response protocol.
 
 ### Automatic Final-Response Delivery
 
@@ -725,7 +721,7 @@ Existing `pi-subagents` runs, missions, artifacts, schedules, and agent profiles
 
 ### U4. Messaging, completion, wait, and status
 
-- Implement per-recipient queues, steering/follow-up behavior, the parent alias, adjacent-agent authorization, and one direct message result.
+- Implement per-recipient steering queues, the parent alias, adjacent-agent authorization, and one direct message result.
 - Subscribe to child lifecycle events and implement automatic direct-parent final delivery.
 - Implement direct-child exact-turn waits and duplicate suppression.
 - Implement direct-child public status, a separate trusted hierarchy projection, and native notifications.

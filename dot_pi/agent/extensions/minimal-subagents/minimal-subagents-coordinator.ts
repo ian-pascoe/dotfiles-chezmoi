@@ -22,7 +22,6 @@ import type {
   DeleteResult,
   ForkSnapshot,
   HierarchyStatusResult,
-  MessageBehavior,
   PersistedAgent,
   PersistedDelivery,
   RegistrySnapshot,
@@ -41,7 +40,6 @@ const DEFAULT_AUTOMATIC_DELIVERY_GRACE_MS = 1_000;
 interface MessageParameters {
   agent_id?: string;
   message: string;
-  behavior?: MessageBehavior;
 }
 
 interface TurnWaiter {
@@ -243,23 +241,15 @@ export class MinimalSubagentsCoordinator {
   ): Promise<AgentMessageResult> {
     this.assertAccepting();
     this.assertCallerExists(callerId);
-    const behavior = parameters.behavior ?? "steer";
     const targetId = this.resolveMessageTarget(callerId, parameters.agent_id);
     try {
       await this.enqueueRecipientDelivery(targetId, async () => {
-        await this.deliverExplicitMessage(
-          callerId,
-          targetId,
-          sourceTurnId,
-          parameters.message,
-          behavior,
-        );
+        await this.deliverExplicitMessage(callerId, targetId, sourceTurnId, parameters.message);
       });
-      return { agent_id: targetId, behavior, delivered: true };
+      return { agent_id: targetId, delivered: true };
     } catch (error) {
       return {
         agent_id: targetId,
-        behavior,
         delivered: false,
         error: error instanceof Error ? error.message : String(error),
       };
@@ -844,7 +834,7 @@ export class MinimalSubagentsCoordinator {
             usage: result.usage,
           },
         };
-        await this.deliverToRecipient(delivery.destination_agent_id, message, "steer");
+        await this.deliverToRecipient(delivery.destination_agent_id, message);
       });
     } catch (error) {
       delivery.error = error instanceof Error ? error.message : String(error);
@@ -863,7 +853,6 @@ export class MinimalSubagentsCoordinator {
     targetId: string,
     sourceTurnId: string,
     content: string,
-    behavior: MessageBehavior,
   ): Promise<void> {
     const message: CoordinatorMessage = {
       customType: "minimal-subagents.message",
@@ -883,28 +872,21 @@ export class MinimalSubagentsCoordinator {
       });
       if (target.recent_messages.length > RECENT_MESSAGE_LIMIT) target.recent_messages.shift();
     }
-    await this.deliverToRecipient(targetId, message, behavior);
+    await this.deliverToRecipient(targetId, message);
   }
 
-  private async deliverToRecipient(
-    targetId: string,
-    message: CoordinatorMessage,
-    behavior: MessageBehavior,
-  ): Promise<void> {
+  private async deliverToRecipient(targetId: string, message: CoordinatorMessage): Promise<void> {
     if (!this.acceptingOperations) {
       throw new Error("Minimal subagents delivery stopped during coordinator shutdown");
     }
     if (targetId === "root") {
-      await this.dependencies.root.deliverMessage(
-        message,
-        this.dependencies.root.isRunning() ? behavior : "steer",
-      );
+      await this.dependencies.root.steerCoordinatorMessage(message);
       return;
     }
     const target = this.requireUsableAgent(targetId, "message");
     const runtime = await this.ensureRuntime(target);
     if (target.active_turn_id || runtime.isRunning) {
-      await runtime.queueMessage(message, behavior);
+      await runtime.steerCoordinatorMessage(message);
       return;
     }
     const turnId = this.beginTurn(target);

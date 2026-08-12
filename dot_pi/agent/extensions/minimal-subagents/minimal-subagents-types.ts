@@ -15,8 +15,6 @@ export type ProjectContextMode = "inherit" | "omit";
 export type ToolSelection = "none" | "read" | "modify" | string[];
 /** Controls whether a child must work directly or may explicitly fan out one bounded level. */
 export type DelegationMode = "none" | "fanout";
-/** Controls whether a message steers an active turn or follows it. */
-export type MessageBehavior = "steer" | "follow-up";
 /** Reports whether a persistent agent currently owns an active turn. */
 export type AgentState = "running" | "idle";
 /** Reports whether saved launch dependencies can recreate an agent runtime. */
@@ -57,7 +55,6 @@ export interface TurnResult {
 /** Reports delivery of one direct message to an authorized adjacent agent. */
 export interface AgentMessageResult {
   agent_id: string;
-  behavior: MessageBehavior;
   delivered: boolean;
   error?: string;
 }
@@ -183,7 +180,8 @@ export interface ChildAgentRuntime {
     callerThinkingLevel: ThinkingLevel,
   ): Promise<RuntimeTurnOutcome>;
   runMessage(message: CoordinatorMessage): Promise<RuntimeTurnOutcome>;
-  queueMessage(message: CoordinatorMessage, behavior: MessageBehavior): Promise<void>;
+  /** Steer one typed coordinator message into the child session. */
+  steerCoordinatorMessage(message: CoordinatorMessage): Promise<void>;
   abort(): Promise<void>;
   dispose(): void;
   snapshotCommittedMessages(): AgentMessage[];
@@ -219,8 +217,8 @@ export interface AgentSessionFactory {
 
 /** Abstracts root message delivery and durable delivery-evidence lookup. */
 export interface RootConversationEndpoint {
-  isRunning(): boolean;
-  deliverMessage(message: CoordinatorMessage, behavior: MessageBehavior): Promise<void>;
+  /** Steer one typed coordinator message into the root conversation. */
+  steerCoordinatorMessage(message: CoordinatorMessage): Promise<void>;
   hasDeliveryEvidence(sourceAgentId: string, sourceTurnId: string): boolean;
 }
 

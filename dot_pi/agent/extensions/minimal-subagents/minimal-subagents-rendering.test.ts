@@ -59,7 +59,6 @@ describe("renderCoordinatorToolResult", () => {
       content: [{ type: "text" as const, text: "machine-readable output" }],
       details: {
         agent_id: "child",
-        behavior: "steer",
         delivered: true,
       },
     };
@@ -72,7 +71,8 @@ describe("renderCoordinatorToolResult", () => {
         { agent_id: "child", message: "Please compare results" },
       ),
     );
-    expect(collapsed).toContain("→ child  ·  delivered  ·  steer");
+    expect(collapsed).toContain("→ child  ·  delivered");
+    expect(collapsed).not.toContain("steer");
 
     const expanded = render(
       renderCoordinatorToolResult(
@@ -86,6 +86,28 @@ describe("renderCoordinatorToolResult", () => {
     expect(expanded).toContain("Recipient");
     expect(expanded).toContain("child");
     expect(expanded).toContain("Please compare results");
+  });
+
+  it("retains the delivery behavior label for historical agent-message results", () => {
+    const historicalResult = {
+      content: [{ type: "text" as const, text: "machine-readable output" }],
+      details: {
+        agent_id: "child",
+        behavior: "follow-up",
+        delivered: true,
+      },
+    };
+
+    const collapsed = render(
+      renderCoordinatorToolResult(
+        "agent_message",
+        historicalResult,
+        { expanded: false, isPartial: false },
+        theme,
+        { agent_id: "child", message: "Historical update", behavior: "follow-up" },
+      ),
+    );
+    expect(collapsed).toContain("→ child  ·  delivered  ·  follow-up");
   });
 
   it("renders compact and expanded wait results without raw JSON in the compact row", () => {

@@ -28,6 +28,7 @@ describe("createCoordinatorToolSchemas", () => {
     expect(schemas.subagent.properties.delegation).toEqual(
       expect.objectContaining({ enum: ["none", "fanout"] }),
     );
+    expect(Object.keys(schemas.agent_message.properties)).toEqual(["agent_id", "message"]);
     const messageTargetPattern = (schemas.agent_message.properties.agent_id as { pattern?: string })
       .pattern;
     expect(messageTargetPattern).toBeDefined();
