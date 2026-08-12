@@ -5,6 +5,7 @@ CONTEXT-MAP.md
 **/CONTEXT.md
 **/docs/adr/**
 
+# JS/TS
 node_modules/**
 package.json
 package-lock.json
@@ -12,6 +13,8 @@ bun.lock
 pnpm-lock.yaml
 pnpm-workspace.yaml
 tsconfig.json
+
+# TurboRepo
 turbo.json
 **/.turbo/**
 
@@ -25,6 +28,7 @@ turbo.json
 **/.gitignore
 **/.gitkeep
 
+# Temp files & Logs
 **/tmp/**
 **/log/**
 **/*.log
@@ -32,11 +36,10 @@ turbo.json
 **/*.bak
 
 # Tests
-vitest.config.ts
-**/tests/**
+**/vitest.config.ts
 **/*.test.ts
 
-# Non-Darwin
+# Non-Mac Ignores
 {{ if ne .chezmoi.os "darwin" }}
 Brewfile
 .hammerspoon
@@ -45,12 +48,12 @@ Brewfile
 .config/karabiner
 {{ end }}
 
-# Non-Linux
+# Non-Linux Ignores
 {{ if ne .chezmoi.os "linux" }}
 .config/systemd
 {{ end }}
 
-# Non-Windows
+# Non-Windows Ignores
 {{ if ne .chezmoi.os "windows" }}
 Documents/PowerShell
 .wslconfig
@@ -63,7 +66,7 @@ Documents/PowerShell
 .local/bin/*.ps1
 {{ end }}
 
-# Non-Unix (Windows)
+# Windows-Only Ignores
 {{ if eq .chezmoi.os "windows" }}
 .config/tmux
 .config/zellij
@@ -71,6 +74,7 @@ Documents/PowerShell
 !.local/bin/*.ps1
 {{ end }}
 
+# Windows and Mac Only Ignores
 {{ if and (ne .chezmoi.os "windows") (ne .chezmoi.os "darwin") }}
 .glzr
 {{ end }}
