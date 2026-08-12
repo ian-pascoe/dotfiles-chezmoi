@@ -664,6 +664,7 @@ dot_pi/agent/extensions/
     ├── minimal-subagents-config.ts
     ├── minimal-subagents-context.ts
     ├── minimal-subagents-coordinator.ts
+    ├── minimal-subagents-extension.ts
     ├── minimal-subagents-fork-lifecycle.ts
     ├── minimal-subagents-registry.ts
     ├── minimal-subagents-sessions.ts
@@ -675,7 +676,7 @@ dot_pi/agent/extensions/
     └── minimal-subagents-*.test.ts
 ```
 
-- `minimal-subagents/index.ts` is the only extension entrypoint.
+- `minimal-subagents/index.ts` is the only extension entrypoint and thinly re-exports `minimal-subagents-extension.ts`.
 - Helpers and tests live beside the directory entrypoint; Pi does not treat them as independent extension entrypoints.
 - Keep the coordinator independent from rendering and TypeBox schemas so lifecycle and recovery tests can use in-memory fakes.
 - Keep registry replay and context transformation pure where possible.

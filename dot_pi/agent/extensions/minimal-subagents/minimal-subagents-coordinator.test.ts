@@ -589,7 +589,7 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     await flushTasks();
 
     await expect(
-      coordinator.message(
+      coordinator.sendAgentMessage(
         "group.one",
         { agent_id: "group.two", message: "sibling update" },
         "one-turn",
@@ -599,7 +599,7 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       delivered: true,
     });
     await expect(
-      coordinator.message(
+      coordinator.sendAgentMessage(
         "group",
         { agent_id: "group.one", message: "child update" },
         "group-turn",
@@ -609,16 +609,24 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       delivered: true,
     });
     await expect(
-      coordinator.message("group", { agent_id: "parent", message: "parent update" }, "group-turn"),
+      coordinator.sendAgentMessage(
+        "group",
+        { agent_id: "parent", message: "parent update" },
+        "group-turn",
+      ),
     ).resolves.toEqual({ agent_id: "root", delivered: true });
 
     await expect(
-      coordinator.message("group.one", { agent_id: "peer", message: "uncle update" }, "one-turn"),
+      coordinator.sendAgentMessage(
+        "group.one",
+        { agent_id: "peer", message: "uncle update" },
+        "one-turn",
+      ),
     ).rejects.toThrow(
       "Minimal subagents message authorization denied: group.one cannot message peer",
     );
     await expect(
-      coordinator.message(
+      coordinator.sendAgentMessage(
         "group.one",
         { agent_id: "group.one", message: "self update" },
         "one-turn",
@@ -627,7 +635,7 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       "Minimal subagents message authorization denied: group.one cannot message group.one",
     );
     await expect(
-      coordinator.message(
+      coordinator.sendAgentMessage(
         "root",
         { agent_id: "group.one", message: "indirect update" },
         "root-turn",
@@ -636,7 +644,7 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       "Minimal subagents message authorization denied: root cannot message group.one",
     );
     await expect(
-      coordinator.message("group", { agent_id: "*", message: "broadcast" }, "group-turn"),
+      coordinator.sendAgentMessage("group", { agent_id: "*", message: "broadcast" }, "group-turn"),
     ).rejects.toThrow('Minimal subagents message target "*" is unsupported');
   });
 
@@ -656,7 +664,11 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     await coordinator.restore(snapshot);
 
     await expect(
-      coordinator.message("root", { agent_id: "worker", message: "direct update" }, "root-turn"),
+      coordinator.sendAgentMessage(
+        "root",
+        { agent_id: "worker", message: "direct update" },
+        "root-turn",
+      ),
     ).resolves.toEqual({
       agent_id: "worker",
       delivered: false,
@@ -741,7 +753,11 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
     await coordinator.spawn("group", { task: "child", agent_id: "child" }, rootCaller());
     await flushTasks();
 
-    const result = await coordinator.message("group.child", { message: "need help" }, "child-turn");
+    const result = await coordinator.sendAgentMessage(
+      "group.child",
+      { message: "need help" },
+      "child-turn",
+    );
     expect(result).toEqual({ agent_id: "group", delivered: true });
     expect(sessions.runtimes.get("group")!.steeredMessages).toEqual([
       expect.objectContaining({
@@ -839,7 +855,11 @@ describe("MinimalSubagentsCoordinator messaging and lifecycle", () => {
       agent: expect.objectContaining({ state: "idle" }),
     });
 
-    await coordinator.message("root", { agent_id: "group", message: "continue" }, "root-turn");
+    await coordinator.sendAgentMessage(
+      "root",
+      { agent_id: "group", message: "continue" },
+      "root-turn",
+    );
     expect(coordinator.inspectStatus("group")).toEqual({
       agent: expect.objectContaining({ state: "running" }),
     });
@@ -888,7 +908,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
       output: "first output",
     });
     await flushTasks();
-    await original.coordinator.message(
+    await original.coordinator.sendAgentMessage(
       "root",
       { agent_id: "worker", message: "second" },
       "root-second-turn",
@@ -936,7 +956,7 @@ describe("MinimalSubagentsCoordinator restoration and fork", () => {
 
     const restored = makeCoordinator();
     await restored.coordinator.restore(original.coordinator.snapshot());
-    await restored.coordinator.message(
+    await restored.coordinator.sendAgentMessage(
       "root",
       { agent_id: "worker", message: "again" },
       "root-message-turn",

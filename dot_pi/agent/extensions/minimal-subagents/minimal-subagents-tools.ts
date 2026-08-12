@@ -156,7 +156,7 @@ export function createCoordinatorToolDefinitions(
     parameters: options.schemas.agent_message,
     async execute(toolCallId, parameters) {
       return runCoordinatorToolActivity(options, async () => {
-        const result = await options.coordinator.message(
+        const result = await options.coordinator.sendAgentMessage(
           options.callerId,
           {
             agent_id: parameters.agent_id,

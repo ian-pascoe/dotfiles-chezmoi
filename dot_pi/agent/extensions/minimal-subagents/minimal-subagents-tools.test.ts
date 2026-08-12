@@ -149,12 +149,12 @@ describe("createCoordinatorToolDefinitions", () => {
   });
 
   it("executes one direct agent message with the bound caller identity", async () => {
-    const message = vi.fn(async () => ({
+    const sendAgentMessage = vi.fn(async () => ({
       agent_id: "child",
       delivered: true,
     }));
     const tools = createCoordinatorToolDefinitions({
-      coordinator: { message } as never,
+      coordinator: { sendAgentMessage } as never,
       callerId: "root",
       schemas: createCoordinatorToolSchemas([]),
       captureCaller: () => {
@@ -172,7 +172,7 @@ describe("createCoordinatorToolDefinitions", () => {
         {} as never,
       );
 
-    expect(message).toHaveBeenCalledWith(
+    expect(sendAgentMessage).toHaveBeenCalledWith(
       "root",
       { agent_id: "child", message: "update" },
       "root:message-call",
@@ -184,13 +184,13 @@ describe("createCoordinatorToolDefinitions", () => {
   });
 
   it("preserves a failed direct-message result as model-visible structured details", async () => {
-    const message = vi.fn(async () => ({
+    const sendAgentMessage = vi.fn(async () => ({
       agent_id: "child",
       delivered: false,
       error: "child unavailable",
     }));
     const tools = createCoordinatorToolDefinitions({
-      coordinator: { message } as never,
+      coordinator: { sendAgentMessage } as never,
       callerId: "root",
       schemas: createCoordinatorToolSchemas([]),
       captureCaller: () => {

@@ -233,8 +233,8 @@ export class MinimalSubagentsCoordinator {
     };
   }
 
-  /** Send one conversation-plane message to an authorized parent, sibling, or direct child. */
-  async message(
+  /** Send one steer-only coordination message to an authorized adjacent agent. */
+  async sendAgentMessage(
     callerId: string,
     parameters: MessageParameters,
     sourceTurnId: string,

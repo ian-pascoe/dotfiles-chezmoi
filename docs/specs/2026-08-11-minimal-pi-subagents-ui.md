@@ -523,18 +523,7 @@ Extend `CoordinatorNotification` only if needed to report partial destructive-op
 
 ## Source Layout
 
-Keep rendering and session UI below the existing helper directory so Pi sees one extension entrypoint:
-
-```text
-dot_pi/agent/extensions/
-└── minimal-subagents/
-    ├── index.ts
-    ├── minimal-subagents-rendering.ts
-    ├── minimal-subagents-rendering.test.ts
-    ├── minimal-subagents-ui.ts
-    ├── minimal-subagents-ui.test.ts
-    └── ... existing implementation and tests
-```
+Use the authoritative directory layout in the [extension specification](./2026-08-11-minimal-pi-subagents-extension.md#source-layout). Keep rendering and session UI beside the directory entrypoint so Pi sees one extension factory.
 
 Responsibilities:
 
@@ -542,7 +531,7 @@ Responsibilities:
 - `minimal-subagents-ui.ts`: pure hierarchy projection plus the root UI controller and responsive widget component.
 - `minimal-subagents-tools.ts`: tool execution and attachment of renderer/callback definitions; no widget state.
 - `minimal-subagents-coordinator.ts`: additive task/timing state only; no Pi TUI imports.
-- `minimal-subagents/index.ts`: register message renderers and bind/dispose the root UI controller.
+- `minimal-subagents-extension.ts`: register message renderers and bind/dispose the root UI controller.
 
 Keep reusable formatting functions independent of the coordinator. Keep Pi TUI imports out of persistence and lifecycle modules.
 
