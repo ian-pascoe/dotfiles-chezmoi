@@ -29,6 +29,25 @@ describe("createCoordinatorToolDefinitions", () => {
     expect(tools.every((tool) => tool.promptGuidelines === undefined)).toBe(true);
   });
 
+  it("presents agent messaging as required mid-turn coordination", () => {
+    const tools = createCoordinatorToolDefinitions({
+      coordinator: {} as never,
+      callerId: "root",
+      schemas: createCoordinatorToolSchemas([]),
+      captureCaller: () => {
+        throw new Error("not used");
+      },
+    });
+    const messageTool = tools.find((tool) => tool.name === "agent_message");
+
+    expect(messageTool?.description).toBe(
+      "Send one mid-turn coordination message to a direct parent, direct sibling, or direct child when the recipient must act before the caller's turn finishes.",
+    );
+    expect(messageTool?.promptSnippet).toBe(
+      "Coordinate required mid-turn action with one adjacent agent",
+    );
+  });
+
   it("adds configured model roles only to spawn guidance", () => {
     const tools = createCoordinatorToolDefinitions({
       coordinator: {} as never,

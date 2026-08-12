@@ -93,9 +93,9 @@ describe("buildSubagentSystemPrompt", () => {
     expect(prompt).toContain("parent");
     expect(prompt).toContain("persistent subagent");
     expect(prompt).toContain("agent_message");
-    expect(prompt).toContain("direct parent, direct siblings, or direct children");
+    expect(prompt).toContain("your direct parent, a direct sibling, or a direct child");
     expect(prompt).toContain("wait and status target direct children only");
-    expect(prompt).toContain("Sibling canonical IDs must come from your parent");
+    expect(prompt).toContain("Obtain sibling canonical IDs from your parent");
     expect(prompt).not.toContain("*");
     expect(prompt).not.toContain("subagent_cancel");
     expect(prompt).not.toContain("subagent_delete");
@@ -114,5 +114,18 @@ describe("buildSubagentSystemPrompt", () => {
     expect(prompt).toContain("target direct children only");
     expect(prompt).toContain("Remaining delegation depth: 1");
     expect(prompt).toContain("final response is delivered");
+  });
+
+  it("reserves agent messages for coordination that cannot wait for the final response", () => {
+    const prompt = buildSubagentSystemPrompt("research", "root", {
+      canSpawn: false,
+      remainingDepth: 0,
+    });
+
+    expect(prompt).toContain("Work through the assigned task to completion");
+    expect(prompt).toContain("successful final response is delivered automatically");
+    expect(prompt).toContain("action-required mid-turn coordination");
+    expect(prompt).toContain("request a blocking decision");
+    expect(prompt).toContain("Otherwise, continue working");
   });
 });

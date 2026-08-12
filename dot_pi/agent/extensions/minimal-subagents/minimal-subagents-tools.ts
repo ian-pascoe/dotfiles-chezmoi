@@ -155,8 +155,8 @@ export function createCoordinatorToolDefinitions(
     name: "agent_message",
     label: "Agent Message",
     description:
-      "Send one visible conversation-plane message to a direct parent, direct sibling, or direct child.",
-    promptSnippet: "Message one adjacent agent",
+      "Send one mid-turn coordination message to a direct parent, direct sibling, or direct child when the recipient must act before the caller's turn finishes.",
+    promptSnippet: "Coordinate required mid-turn action with one adjacent agent",
     parameters: options.schemas.agent_message,
     async execute(toolCallId, parameters) {
       return runCoordinatorToolActivity(options, async () => {

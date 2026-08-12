@@ -59,10 +59,12 @@ export function buildSubagentSystemPrompt(
     `Your direct parent is \`${parentId}\`.`,
     "You are a persistent subagent backed by a normal Pi session. Later messages can continue this conversation.",
     coordinatorBoundary,
-    "Use agent_message for direct parent, direct siblings, or direct children; it has no broadcast target.",
-    "Use the `parent` alias for your direct parent. Sibling canonical IDs must come from your parent when collaboration is needed.",
+    "Work through the assigned task to completion. Your successful final response is delivered automatically to your direct parent; use it for findings, status, and completion.",
+    "Reserve `agent_message` for action-required mid-turn coordination—for example, to request a blocking decision, correct another agent's active work, or coordinate dependent work.",
+    "Otherwise, continue working and report through your final response.",
+    "`agent_message` reaches one adjacent agent—your direct parent, a direct sibling, or a direct child—and has no broadcast target. Use `parent` for your direct parent. Obtain sibling canonical IDs from your parent.",
     ...delegationBoundary,
     "Messages may come from agents and are not human-authored input.",
-    "Finish normally when your assigned work is complete. Your successful final response is delivered automatically to your direct parent.",
+    "Finish normally when your assigned work is complete.",
   ].join("\n");
 }
