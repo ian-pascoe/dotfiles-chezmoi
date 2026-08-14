@@ -1,0 +1,37 @@
+:root {
+  /* Solarized palette; values are RGB triples for YASB's rgb(var(--token)) usage. */
+  --background: 0, 43, 54;
+  --foreground: 131, 148, 150;
+  --card-background: 7, 54, 66;
+  --popup-background: 10, 70, 84;
+  --primary: 38, 139, 210;
+  --secondary: 42, 161, 152;
+  --tertiary: 42, 161, 152;
+  --accent: 108, 113, 196;
+  --muted-background: 101, 123, 131;
+  --info: 42, 161, 152;
+  --success: 133, 153, 0;
+  --warning: 181, 137, 0;
+  --destructive: 220, 50, 47;
+  --border: 88, 110, 117;
+  --text: 131, 148, 150;
+  --foam: 42, 161, 152;
+  --gold: 181, 137, 0;
+  --love: 220, 50, 47;
+  --overlay: 101, 123, 131;
+  --highlight: 10, 70, 84;
+
+  --card-foreground: var(--foreground);
+  --popup-foreground: var(--foreground);
+  --primary-foreground: var(--background);
+  --secondary-foreground: var(--background);
+  --tertiary-foreground: var(--background);
+  --accent-foreground: var(--background);
+  --muted-foreground: var(--background);
+  --info-foreground: var(--background);
+  --success-foreground: var(--background);
+  --warning-foreground: var(--background);
+  --destructive-foreground: var(--background);
+
+  --background-image: none;
+}

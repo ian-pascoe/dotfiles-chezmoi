@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+set-theme "$(list-themes | shuf -n 1)"

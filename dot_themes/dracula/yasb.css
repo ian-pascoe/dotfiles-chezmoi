@@ -1,0 +1,37 @@
+:root {
+  /* Dracula palette; values are RGB triples for YASB's rgb(var(--token)) usage. */
+  --background: 40, 42, 54;
+  --foreground: 248, 248, 242;
+  --card-background: 68, 71, 90;
+  --popup-background: 98, 114, 164;
+  --primary: 189, 147, 249;
+  --secondary: 139, 233, 253;
+  --tertiary: 139, 233, 253;
+  --accent: 189, 147, 249;
+  --muted-background: 98, 114, 164;
+  --info: 139, 233, 253;
+  --success: 80, 250, 123;
+  --warning: 241, 250, 140;
+  --destructive: 255, 85, 85;
+  --border: 98, 114, 164;
+  --text: 248, 248, 242;
+  --foam: 139, 233, 253;
+  --gold: 241, 250, 140;
+  --love: 255, 85, 85;
+  --overlay: 98, 114, 164;
+  --highlight: 98, 114, 164;
+
+  --card-foreground: var(--foreground);
+  --popup-foreground: var(--foreground);
+  --primary-foreground: var(--background);
+  --secondary-foreground: var(--background);
+  --tertiary-foreground: var(--background);
+  --accent-foreground: var(--background);
+  --muted-foreground: var(--background);
+  --info-foreground: var(--background);
+  --success-foreground: var(--background);
+  --warning-foreground: var(--background);
+  --destructive-foreground: var(--background);
+
+  --background-image: none;
+}

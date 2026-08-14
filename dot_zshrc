@@ -74,7 +74,20 @@ if command -v hunk &>/dev/null; then
         --transparent-bg \
         --mode stack \
         --wrap \
-        --theme "$(basename "$(readlink ~/.config/theme)")" \
+        --theme "$(
+          case "$(basename "$(readlink ~/.config/theme)")" in
+            catppuccin) echo catppuccin-mocha ;;
+            gruvbox) echo gruvbox-dark-medium ;;
+            kanagawa) echo kanagawa-wave ;;
+            everforest) echo everforest-dark ;;
+            dracula) echo dracula ;;
+            solarized) echo solarized-dark ;;
+            one-dark) echo one-dark-pro ;;
+            vesper) echo vesper ;;
+            flexoki) echo github-dark-default ;;
+            *) basename "$(readlink ~/.config/theme)" ;;
+          esac
+        )" \
         "$@"
     else
       command hunk "$@"
@@ -84,10 +97,18 @@ fi
 
 if command -v pi &>/dev/null; then
   pi() {
-    command pi \
-      --theme "$HOME/.config/theme/pi.json" \
-      --active-theme "$(basename "$(readlink "$HOME/.config/theme")")" \
-      "$@"
+    case "$1" in
+      auth|config|install|list|remove|uninstall|update)
+        # Pi only recognizes subcommands when they are the first argument.
+        command pi "$@"
+        ;;
+      *)
+        command pi \
+          --theme "$HOME/.config/theme/pi.json" \
+          --active-theme "$(basename "$(readlink "$HOME/.config/theme")")" \
+          "$@"
+        ;;
+    esac
   }
 fi
 

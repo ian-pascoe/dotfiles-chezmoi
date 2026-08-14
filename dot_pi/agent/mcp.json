@@ -1,4 +1,7 @@
 {
+  "settings": {
+    "showStatusIcon": false
+  },
   "mcpServers": {
     "executor": {
       "url": "${EXECUTOR_BASE_URL}/mcp?elicitation_mode=native",

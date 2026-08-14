@@ -1,7 +1,7 @@
 {
   "voiceFeaturesOnly": false,
   "prompt": {
-    "heavySystemPromptOverwrite": true
+    "heavySystemPromptOverwrite": false
   },
   "scope": {
     "allProviders": "off",
@@ -32,13 +32,16 @@
     "responsesCompaction": true
   },
   "beta": {
-    "codeMode": true,
+    "codeMode": false,
     "responsesLite": false,
-    "v2UserMessageRetention": 16
+    "v2UserMessageRetention": 64
   },
   "voice": {
     "v3Voice": "cove",
     "autoResumeRealtime": false,
+    "audioSetupCompleted": false,
+    "delegationAcknowledgements": true,
+    "forwardReasoningSummaries": true,
     "dictationShortcut": "ctrl+alt+d",
     "realtimeShortcut": "ctrl+alt+space",
     "muteShortcut": "ctrl+alt+m",

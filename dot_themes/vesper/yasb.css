@@ -1,0 +1,37 @@
+:root {
+  /* Vesper palette; values are RGB triples for YASB's rgb(var(--token)) usage. */
+  --background: 16, 16, 16;
+  --foreground: 184, 184, 184;
+  --card-background: 28, 28, 28;
+  --popup-background: 38, 38, 38;
+  --primary: 153, 192, 255;
+  --secondary: 153, 255, 228;
+  --tertiary: 153, 192, 255;
+  --accent: 221, 182, 242;
+  --muted-background: 118, 118, 118;
+  --info: 153, 192, 255;
+  --success: 153, 255, 228;
+  --warning: 255, 199, 153;
+  --destructive: 255, 128, 128;
+  --border: 82, 82, 82;
+  --text: 184, 184, 184;
+  --foam: 153, 192, 255;
+  --gold: 255, 199, 153;
+  --love: 255, 128, 128;
+  --overlay: 118, 118, 118;
+  --highlight: 38, 38, 38;
+
+  --card-foreground: var(--foreground);
+  --popup-foreground: var(--foreground);
+  --primary-foreground: var(--background);
+  --secondary-foreground: var(--background);
+  --tertiary-foreground: var(--background);
+  --accent-foreground: var(--background);
+  --muted-foreground: var(--background);
+  --info-foreground: var(--background);
+  --success-foreground: var(--background);
+  --warning-foreground: var(--background);
+  --destructive-foreground: var(--background);
+
+  --background-image: none;
+}

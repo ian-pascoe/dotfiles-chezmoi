@@ -24,9 +24,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "950300c77501943c8ac176d91742edd0293cc816",
+      "skillFolderHash": "cd623e120a140eed2a0f0ea993a9ded78f8b856f",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-08-12T13:56:47.259Z"
+      "updatedAt": "2026-08-14T10:27:36.208Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -168,10 +168,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/engineering/domain-modeling/SKILL.md",
-      "skillFolderHash": "959e63161ff78b4b1cd553b2c0e09e0c68418e5f",
-      "pluginName": "mattpocock-skills",
+      "skillFolderHash": "05c3244ec75b7548bbc2b635b0624bb9f70369c3",
       "installedAt": "2026-06-26T01:17:29.447Z",
-      "updatedAt": "2026-08-06T10:56:02.760Z"
+      "updatedAt": "2026-08-14T10:27:37.239Z"
     },
     "grilling": {
       "source": "mattpocock/skills",
@@ -338,9 +337,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/remotion-dev/skills.git",
       "skillPath": "skills/remotion-best-practices/SKILL.md",
-      "skillFolderHash": "0a9d68209c079096230cea40d26cd90bcd766fda",
+      "skillFolderHash": "6682572e3544720b6ccdbda45f98c18c1d0ecfb3",
       "installedAt": "2026-07-21T10:41:08.762Z",
-      "updatedAt": "2026-08-11T14:08:35.317Z"
+      "updatedAt": "2026-08-14T10:27:39.282Z"
     },
     "agent-browser": {
       "source": "vercel-labs/agent-browser",
@@ -374,9 +373,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/herdrdev/herdr.git",
       "skillPath": "skills/herdr/SKILL.md",
-      "skillFolderHash": "4821f1d39ccae24b9b274b03184edaaf198a3994",
+      "skillFolderHash": "9ea7b409135fc1be2ff7bc3e3e69764961536dd4",
       "installedAt": "2026-08-01T09:26:32.630Z",
-      "updatedAt": "2026-08-05T15:48:58.339Z"
+      "updatedAt": "2026-08-14T10:27:41.450Z"
     },
     "terminal-control": {
       "source": "anomalyco/terminal-control",
@@ -434,6 +433,33 @@
       "skillFolderHash": "eb3266eddb4cb0577f0230604189c126274e089f",
       "installedAt": "2026-08-07T17:01:23.653Z",
       "updatedAt": "2026-08-07T17:01:23.653Z"
+    },
+    "plannotator-compound": {
+      "source": "backnotprop/plannotator",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/backnotprop/plannotator.git",
+      "skillPath": "apps/skills/extra/plannotator-compound/SKILL.md",
+      "skillFolderHash": "e7cb3bf5836705facedb2f94c6648f269d3f0748",
+      "installedAt": "2026-08-13T18:00:35.960Z",
+      "updatedAt": "2026-08-13T18:00:35.960Z"
+    },
+    "plannotator-setup-goal": {
+      "source": "backnotprop/plannotator",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/backnotprop/plannotator.git",
+      "skillPath": "apps/skills/extra/plannotator-setup-goal/SKILL.md",
+      "skillFolderHash": "29d5d60c2b8a88c1786d7bbdbbfa37e44b64f6a5",
+      "installedAt": "2026-08-13T18:00:35.961Z",
+      "updatedAt": "2026-08-13T18:00:35.961Z"
+    },
+    "plannotator-visual-explainer": {
+      "source": "backnotprop/plannotator",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/backnotprop/plannotator.git",
+      "skillPath": "apps/skills/extra/plannotator-visual-explainer/SKILL.md",
+      "skillFolderHash": "e63f538e4fe05f9b101f3ad11559a79d43073d06",
+      "installedAt": "2026-08-13T18:00:35.962Z",
+      "updatedAt": "2026-08-13T18:00:35.962Z"
     }
   },
   "dismissed": {

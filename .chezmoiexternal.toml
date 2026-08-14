@@ -3,6 +3,77 @@ type = "file"
 url = "https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm"
 refreshPeriod = "168h"
 
+# Theme wallpapers are kept external so the source tree does not carry large
+# binary assets. Unsplash images are available under the Unsplash License;
+# photographer credit is retained here for convenience.
+#
+# Christian imagery:
+# - Cross: https://unsplash.com/photos/a-wooden-cross-with-a-sky-background-3APnkQ8h60Q
+#   Shutter Speed (@shutter_speed_)
+# - Church interior: https://unsplash.com/photos/church-interior-JRsZWmRd_Ws
+#   Karl Fredrickson (@kfred)
+# Other sources:
+# - Japanese temple: https://unsplash.com/photos/japanese-temple-SQVsEelctgg
+#   Dynamic Wang (@dynamicwang)
+# - Misty forest: https://unsplash.com/photos/misty-forest-with-sunlit-fog-overhead-ufjI0V-mtoc/
+#   Valentin (@omikron)
+# - Purple mountain: https://unsplash.com/photos/mountain-under-purple-sky-OgoCiyXSwUE
+#   Nathan Anderson
+# - Golden forest: https://unsplash.com/photos/mountains-and-tree-range-during-golden-hour-8c6eS43iq1o
+#   Artem Sapegin (@sapegin)
+# - Storm mountain: https://unsplash.com/photos/dramatic-mountain-landscape-with-a-lake-and-stormy-sky-F2UvQ-iIqqA
+#   Jerry Kavan
+# - Night mountain: https://unsplash.com/photos/a-night-sky-with-stars-above-a-snowy-mountain-kh-WRlKnEkQ
+#   Felix Rottmann (@felixrottmann)
+
+[".themes/gruvbox/backgrounds/background-1.jpg"]
+type = "file"
+url = "https://images.unsplash.com/photo-1727017840627-1f01008e165e?auto=format&fit=crop&w=3840&q=90&fm=jpg"
+checksum.sha256 = "c3068bee3d923dc02d40fcd5c4499a6904f5cdd251de78608994816ba2a81996"
+refreshPeriod = "168h"
+
+[".themes/kanagawa/backgrounds/background-1.jpg"]
+type = "file"
+url = "https://images.unsplash.com/photo-1545336245-e78140576444?auto=format&fit=crop&w=3840&q=90&fm=jpg"
+checksum.sha256 = "f54b031132436fd8b4948aa32444e6e2d2b328b14260945034953cea76229f3e"
+refreshPeriod = "168h"
+
+[".themes/everforest/backgrounds/background-1.jpg"]
+type = "file"
+url = "https://images.unsplash.com/photo-1757353071874-38ba5deb546e?auto=format&fit=crop&w=3840&q=90&fm=jpg"
+checksum.sha256 = "2e84ba1f95ab47d232eccac54afe83ccffbd470213828b78c8235e7ffb29365d"
+refreshPeriod = "168h"
+
+[".themes/dracula/backgrounds/background-1.jpg"]
+type = "file"
+url = "https://images.unsplash.com/photo-1500278170415-daa5b83e9443?auto=format&fit=crop&w=3840&q=90&fm=jpg"
+checksum.sha256 = "ff7b8bd461b2f325d8470fa1529c5b6f200fa47a34bb7a2cd4dc9e46903343e9"
+refreshPeriod = "168h"
+
+[".themes/solarized/backgrounds/background-1.jpg"]
+type = "file"
+url = "https://images.unsplash.com/photo-1490682143684-14369e18dce8?auto=format&fit=crop&w=3840&q=90&fm=jpg"
+checksum.sha256 = "d83fca8ae82cfaa9283f2e71ecf642ac8528b03fe79a54a5b7b0057bc9baf92d"
+refreshPeriod = "168h"
+
+[".themes/one-dark/backgrounds/background-1.jpg"]
+type = "file"
+url = "https://images.unsplash.com/photo-1756726270255-9689c64a49d1?auto=format&fit=crop&w=3840&q=90&fm=jpg"
+checksum.sha256 = "b76f89e08b135b11a3a7405937582c92662f618fe17addae58699183b740c75e"
+refreshPeriod = "168h"
+
+[".themes/vesper/backgrounds/background-1.jpg"]
+type = "file"
+url = "https://images.unsplash.com/photo-1725663656850-7bc515816fcd?auto=format&fit=crop&w=3840&q=90&fm=jpg"
+checksum.sha256 = "b8719a616aa19f7d187aed7b6c9048caf07f01d5923248cbb339152570bb98e8"
+refreshPeriod = "168h"
+
+[".themes/flexoki/backgrounds/background-1.jpg"]
+type = "file"
+url = "https://images.unsplash.com/photo-1438032005730-c779502df39b?auto=format&fit=crop&w=3840&q=90&fm=jpg"
+checksum.sha256 = "88be97546bc865905accf8dd5e30175a8b54267cc28e6e9feefe80c182aca560"
+refreshPeriod = "168h"
+
 [".config/zellij/plugins/vim-zellij-navigator.wasm"]
 type = "file"
 url = "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm"

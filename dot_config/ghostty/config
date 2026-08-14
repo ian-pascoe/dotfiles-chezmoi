@@ -11,7 +11,7 @@ confirm-close-surface = false
 quit-after-last-window-closed = true
 
 # background
-background-opacity = 0.9
+background-opacity = 0.95
 
 # font
 font-family = "GeistMono Nerd Font"

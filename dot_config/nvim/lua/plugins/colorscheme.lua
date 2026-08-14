@@ -16,114 +16,137 @@ local M = {
   },
 }
 
-if theme == 'tokyo-night' then
-  M = vim.list_extend(M, {
-    { -- add tokyonight
-      'folke/tokyonight.nvim',
-      name = 'tokyonight',
-      lazy = false,
-      priority = 1000,
-      opts = {
+local theme_specs = {
+  ['tokyo-night'] = {
+    repo = 'folke/tokyonight.nvim',
+    name = 'tokyonight',
+    colorscheme = 'tokyonight',
+    opts = {
+      transparent = vim.g.transparent_enabled,
+    },
+  },
+  catppuccin = {
+    repo = 'catppuccin/nvim',
+    name = 'catppuccin',
+    colorscheme = 'catppuccin',
+    opts = function(_, opts)
+      opts.auto_integrations = true
+      opts.transparent_background = vim.g.transparent_enabled
+      opts.float = opts.float or {}
+      opts.float.transparent = vim.g.transparent_enabled
+    end,
+  },
+  nord = {
+    repo = 'shaunsingh/nord.nvim',
+    name = 'nord',
+    colorscheme = 'nord',
+    opts = function()
+      vim.g.nord_disable_background = vim.g.transparent_enabled
+    end,
+    config = function()
+      require('nord').set()
+    end,
+  },
+  ['rose-pine'] = {
+    repo = 'rose-pine/neovim',
+    name = 'rose-pine',
+    colorscheme = 'rose-pine',
+    opts = {
+      styles = { transparency = vim.g.transparent_enabled },
+    },
+  },
+  gruvbox = {
+    repo = 'ellisonleao/gruvbox.nvim',
+    name = 'gruvbox',
+    colorscheme = 'gruvbox',
+    opts = {
+      transparent_mode = vim.g.transparent_enabled,
+      contrast = 'medium',
+    },
+  },
+  kanagawa = {
+    repo = 'rebelot/kanagawa.nvim',
+    name = 'kanagawa',
+    colorscheme = 'kanagawa',
+    opts = {
+      transparent = vim.g.transparent_enabled,
+    },
+  },
+  everforest = {
+    repo = 'sainnhe/everforest',
+    name = 'everforest',
+    colorscheme = 'everforest',
+    config = function()
+      vim.g.everforest_background = 'medium'
+      vim.g.everforest_transparent_background = vim.g.transparent_enabled and 1 or 0
+    end,
+  },
+  dracula = {
+    repo = 'Mofiqul/dracula.nvim',
+    name = 'dracula',
+    colorscheme = 'dracula',
+    opts = {
+      transparent_bg = vim.g.transparent_enabled,
+    },
+  },
+  solarized = {
+    repo = 'maxmx03/solarized.nvim',
+    name = 'solarized',
+    colorscheme = 'solarized',
+    opts = {},
+    config = function(_, opts)
+      vim.o.termguicolors = true
+      vim.o.background = 'dark'
+      require('solarized').setup(opts)
+    end,
+  },
+  ['one-dark'] = {
+    repo = 'navarasu/onedark.nvim',
+    name = 'onedark',
+    colorscheme = 'onedark',
+    config = function()
+      require('onedark').setup({
+        style = 'dark',
         transparent = vim.g.transparent_enabled,
-      },
-    },
-    { -- tell LazyVim to use tokyonight
-      'LazyVim/LazyVim',
-      opts = { colorscheme = 'tokyonight' },
-    },
-  })
-else
-  M = vim.list_extend(M, {
-    { -- remove tokyonight if not used
-      'folke/tokyonight.nvim',
-      name = 'tokyonight',
-      enabled = false,
-    },
+      })
+      require('onedark').load()
+    end,
+  },
+  vesper = {
+    repo = 'datsfilipe/vesper.nvim',
+    name = 'vesper',
+    colorscheme = 'vesper',
+    config = function()
+      require('vesper').setup({
+        transparent = vim.g.transparent_enabled,
+      })
+    end,
+  },
+  flexoki = {
+    repo = 'kepano/flexoki-neovim',
+    name = 'flexoki',
+    colorscheme = 'flexoki-dark',
+  },
+}
+
+local active_theme = theme_specs[theme] and theme or 'rose-pine'
+local active_spec = theme_specs[active_theme]
+
+for theme_name, spec in pairs(theme_specs) do
+  table.insert(M, {
+    spec.repo,
+    name = spec.name,
+    enabled = theme_name == active_theme,
+    lazy = false,
+    priority = 1000,
+    opts = spec.opts,
+    config = spec.config,
   })
 end
 
-if theme == 'catppuccin' then
-  M = vim.list_extend(M, {
-    { -- add catppuccin
-      'catppuccin/nvim',
-      name = 'catppuccin',
-      lazy = false,
-      priority = 1000,
-      opts = function(_, opts)
-        opts.auto_integrations = true
-        opts.transparent_background = vim.g.transparent_enabled
-        opts.float = opts.float or {}
-        opts.float.transparent = vim.g.transparent_enabled
-      end,
-    },
-    { -- tell LazyVim to use catppuccin
-      'LazyVim/LazyVim',
-      opts = { colorscheme = 'catppuccin' },
-    },
-  })
-else
-  M = vim.list_extend(M, {
-    { -- remove catppuccin if not used
-      'catppuccin/nvim',
-      name = 'catppuccin',
-      enabled = false,
-    },
-  })
-end
-
-if theme == 'nord' then
-  M = vim.list_extend(M, {
-    { -- add nord
-      'shaunsingh/nord.nvim',
-      name = 'nord',
-      lazy = false,
-      priority = 1000,
-      opts = function()
-        vim.g.nord_disable_background = vim.g.transparent_enabled
-      end,
-      config = function()
-        require('nord').set()
-      end,
-    },
-    { -- tell LazyVim to use nord
-      'LazyVim/LazyVim',
-      opts = { colorscheme = 'nord' },
-    },
-  })
-else
-  M = vim.list_extend(M, {
-    { -- remove nord if not used
-      'shaunsingh/nord.nvim',
-      name = 'nord',
-      enabled = false,
-    },
-  })
-end
-
-if not theme or theme == 'rose-pine' then
-  M = vim.list_extend(M, {
-    { -- add rose-pine
-      'rose-pine/neovim',
-      name = 'rose-pine',
-      lazy = false,
-      priority = 1000,
-      opts = {
-        styles = { transparency = vim.g.transparent_enabled },
-      },
-    },
-    { -- tell LazyVim to use rose-pine
-      'LazyVim/LazyVim',
-      opts = { colorscheme = 'rose-pine' },
-    },
-  })
-else
-  M = vim.list_extend(M, {
-    { -- remove rose-pine if not used
-      'rose-pine/neovim',
-      name = 'rose-pine',
-      enabled = false,
-    },
-  })
-end
+table.insert(M, {
+  'LazyVim/LazyVim',
+  opts = { colorscheme = active_spec.colorscheme },
+})
 
 return M

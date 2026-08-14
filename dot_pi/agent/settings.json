@@ -1,14 +1,20 @@
 {
-  "lastChangelogVersion": "0.84.1",
+  "lastChangelogVersion": "0.84.2",
   "packages": [
     "npm:@howaboua/pi-codex-conversion",
-    "npm:@ian-pascoe/pi-bible-verses",
-    "npm:@ian-pascoe/pi-git-status-widget",
-    "npm:@ian-pascoe/pi-minimal-subagents",
-    "npm:@ian-pascoe/pi-tps-tracker",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
-    "npm:pi-mcp-adapter"
+    "npm:pi-mcp-adapter",
+    "npm:pi-web-access",
+    {
+      "source": "git:github.com/ian-pascoe/pi-extensions",
+      "extensions": [
+        "packages/pi-bible-verses/src/index.ts",
+        "packages/pi-git-status-widget/src/index.ts",
+        "packages/pi-minimal-subagents/src/index.ts",
+        "packages/pi-tps-tracker/src/index.ts"
+      ]
+    }
   ],
   "defaultModel": "gpt-5.6-sol",
   "defaultProjectTrust": "always",
@@ -24,17 +30,18 @@
   "enableInstallTelemetry": false,
   "collapseChangelog": true,
   "showCacheMissNotices": true,
+  "tuiMode": "fullscreen",
   "minimalSubagents": {
     "modelRoles": {
-      "default": "openai-codex/gpt-5.6-sol",
       "small": "openai-codex/gpt-5.6-luna",
       "medium": "openai-codex/gpt-5.6-terra",
       "large": "openai-codex/gpt-5.6-sol",
-      "design": "opencode-go/kimi-k3",
-      "explore": "openai-codex/gpt-5.6-luna",
-      "plan": "openai-codex/gpt-5.6-sol",
-      "research": "openai-codex/gpt-5.6-luna",
-      "review": "openai-codex/gpt-5.6-sol"
+      "design": "opencode-go/kimi-k3:max",
+      "explore": "openai-codex/gpt-5.6-luna:medium",
+      "plan": "openai-codex/gpt-5.6-sol:xhigh",
+      "research": "openai-codex/gpt-5.6-luna:medium",
+      "review": "openai-codex/gpt-5.6-sol:xhigh",
+      "task": "openai-codex/gpt-5.6-luna:max"
     }
   }
 }

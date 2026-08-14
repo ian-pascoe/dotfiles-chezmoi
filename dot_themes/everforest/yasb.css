@@ -1,0 +1,37 @@
+:root {
+  /* Everforest palette; values are RGB triples for YASB's rgb(var(--token)) usage. */
+  --background: 45, 53, 59;
+  --foreground: 211, 198, 170;
+  --card-background: 52, 63, 68;
+  --popup-background: 61, 72, 77;
+  --primary: 127, 187, 179;
+  --secondary: 131, 192, 146;
+  --tertiary: 131, 192, 146;
+  --accent: 214, 153, 182;
+  --muted-background: 133, 146, 137;
+  --info: 131, 192, 146;
+  --success: 167, 192, 128;
+  --warning: 219, 188, 127;
+  --destructive: 230, 126, 128;
+  --border: 79, 91, 88;
+  --text: 211, 198, 170;
+  --foam: 131, 192, 146;
+  --gold: 219, 188, 127;
+  --love: 230, 126, 128;
+  --overlay: 133, 146, 137;
+  --highlight: 61, 72, 77;
+
+  --card-foreground: var(--foreground);
+  --popup-foreground: var(--foreground);
+  --primary-foreground: var(--background);
+  --secondary-foreground: var(--background);
+  --tertiary-foreground: var(--background);
+  --accent-foreground: var(--background);
+  --muted-foreground: var(--background);
+  --info-foreground: var(--background);
+  --success-foreground: var(--background);
+  --warning-foreground: var(--background);
+  --destructive-foreground: var(--background);
+
+  --background-image: none;
+}
