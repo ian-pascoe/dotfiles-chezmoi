@@ -21,6 +21,7 @@ bubblewrap
 build-essential
 bzip2
 ca-certificates
+chatgpt
 clang
 cloud-guest-utils
 cloud-init

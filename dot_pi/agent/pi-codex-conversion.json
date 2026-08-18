@@ -1,7 +1,7 @@
 {
   "voiceFeaturesOnly": false,
   "prompt": {
-    "heavySystemPromptOverwrite": false
+    "heavySystemPromptOverwrite": true
   },
   "scope": {
     "allProviders": "off",
@@ -21,7 +21,7 @@
     "statusLine": false,
     "toolRenaming": true,
     "compactTools": false,
-    "codeModeDetails": false,
+    "codeModeDetails": true,
     "backgroundShellWidget": true,
     "backgroundShellToggleShortcut": "alt+w",
     "backgroundShellPrevShortcut": "alt+q",
@@ -29,11 +29,7 @@
     "backgroundShellCloseShortcut": "alt+r"
   },
   "compaction": {
-    "responsesCompaction": true
-  },
-  "beta": {
-    "codeMode": false,
-    "responsesLite": false,
+    "responsesCompaction": true,
     "v2UserMessageRetention": 64
   },
   "voice": {
@@ -55,6 +51,11 @@
     "forceCachedWebSockets": true,
     "cacheDiagnostics": "off",
     "harnessIdentifierHeader": false,
-    "webSearchModel": "gpt-5.6-luna"
+    "webSearchModel": "gpt-5.6-luna",
+    "proxyResponsesLite": false
+  },
+  "executionMode": "normal",
+  "notebook": {
+    "maxHeapMiB": 4096
   }
 }

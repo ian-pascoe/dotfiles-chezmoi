@@ -1,7 +1,6 @@
 tap "anomalyco/tap", trusted: true
 tap "antoniorodr/memo", trusted: true
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
-tap "manaflow-ai/cmux", trusted: true
 tap "mistertea/et", "https://github.com/MisterTea/homebrew-et", trusted: { formulae: ["et"] }
 tap "nikitabobko/tap", trusted: true
 tap "openclaw/tap", trusted: true
@@ -197,8 +196,10 @@ cask "crystalfetch"
 cask "discord"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
+cask "font-geist"
 cask "font-geist-mono-nerd-font"
 cask "font-sf-pro"
+cask "font-source-serif-4"
 cask "font-symbols-only-nerd-font"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
@@ -264,6 +265,7 @@ uv "pyflakes"
 uv "pytest"
 uv "rembg"
 uv "spotdl"
+uv "trafilatura"
 uv "vdirsyncer"
 uv "yt-dlp"
 npm "@nubjs/nub"

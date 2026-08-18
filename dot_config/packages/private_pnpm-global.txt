@@ -6,6 +6,7 @@
 @firecrawl/anydoc
 @googleworkspace/cli
 @openai/codex
+@opencode-ai/cli
 @playwright/cli
 agent-browser
 caplets

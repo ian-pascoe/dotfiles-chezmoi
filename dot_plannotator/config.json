@@ -1,3 +1,16 @@
 {
-  "displayName": "ianpascoe"
+  "displayName": "ianpascoe",
+  "reviewAnalysis": {
+    "semanticDiff": true,
+    "callFlow": true
+  },
+  "diffOptions": {
+    "diffStyle": "unified",
+    "overflow": "wrap",
+    "diffIndicators": "bars",
+    "lineBgIntensity": "subtle",
+    "expandUnchanged": false,
+    "hideWhitespace": true
+  },
+  "conventionalComments": true
 }

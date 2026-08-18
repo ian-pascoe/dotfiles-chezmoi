@@ -1,6 +1,7 @@
 {
   "lastChangelogVersion": "0.84.2",
   "packages": [
+    "npm:@dietrichgebert/ponytail",
     "npm:@howaboua/pi-codex-conversion",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
@@ -10,7 +11,10 @@
       "source": "git:github.com/ian-pascoe/pi-extensions",
       "extensions": [
         "packages/pi-bible-verses/src/index.ts",
+        "packages/pi-formatter/src/index.ts",
+        "packages/pi-git-checkpoints/src/index.ts",
         "packages/pi-git-status-widget/src/index.ts",
+        "packages/pi-lsp/src/index.ts",
         "packages/pi-minimal-subagents/src/index.ts",
         "packages/pi-tps-tracker/src/index.ts"
       ]
@@ -33,15 +37,16 @@
   "tuiMode": "fullscreen",
   "minimalSubagents": {
     "modelRoles": {
+      "default": "openai-codex/gpt-5.6-sol:high",
       "small": "openai-codex/gpt-5.6-luna",
       "medium": "openai-codex/gpt-5.6-terra",
       "large": "openai-codex/gpt-5.6-sol",
       "design": "opencode-go/kimi-k3:max",
-      "explore": "openai-codex/gpt-5.6-luna:medium",
+      "explore": "openai-codex/gpt-5.6-luna:high",
       "plan": "openai-codex/gpt-5.6-sol:xhigh",
-      "research": "openai-codex/gpt-5.6-luna:medium",
+      "research": "openai-codex/gpt-5.6-luna:high",
       "review": "openai-codex/gpt-5.6-sol:xhigh",
-      "task": "openai-codex/gpt-5.6-luna:max"
+      "task": "openai-codex/gpt-5.6-sol:medium"
     }
   }
 }
