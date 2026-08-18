@@ -41,7 +41,7 @@ test("a lone dot continues the conversation without becoming a user message", as
     [
       {
         customType: "continue-on-dot",
-        content: "Continue the interrupted response.",
+        content: "Continue.",
         display: false,
       },
       { triggerTurn: true, deliverAs: "followUp" },

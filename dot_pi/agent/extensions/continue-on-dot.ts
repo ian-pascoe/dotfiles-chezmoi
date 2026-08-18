@@ -8,7 +8,7 @@ export default function continueConversationOnDot(pi: ExtensionAPI) {
     pi.sendMessage(
       {
         customType: "continue-on-dot",
-        content: "Continue the interrupted response.",
+        content: "Continue.",
         display: false,
       },
       { triggerTurn: true, deliverAs: "followUp" },
