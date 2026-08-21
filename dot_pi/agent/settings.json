@@ -3,22 +3,19 @@
   "packages": [
     "npm:@dietrichgebert/ponytail",
     "npm:@howaboua/pi-codex-conversion",
+    "npm:@ian-pascoe/pi-bible-verses",
+    "npm:@ian-pascoe/pi-dap",
+    "npm:@ian-pascoe/pi-formatter",
+    "npm:@ian-pascoe/pi-git-checkpoints",
+    "npm:@ian-pascoe/pi-git-status-widget",
+    "npm:@ian-pascoe/pi-lsp",
+    "npm:@ian-pascoe/pi-minimal-subagents",
+    "npm:@ian-pascoe/pi-tps-tracker",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
     "npm:pi-mcp-adapter",
     "npm:pi-web-access",
-    {
-      "source": "git:github.com/ian-pascoe/pi-extensions",
-      "extensions": [
-        "packages/pi-bible-verses/src/index.ts",
-        "packages/pi-formatter/src/index.ts",
-        "packages/pi-git-checkpoints/src/index.ts",
-        "packages/pi-git-status-widget/src/index.ts",
-        "packages/pi-lsp/src/index.ts",
-        "packages/pi-minimal-subagents/src/index.ts",
-        "packages/pi-tps-tracker/src/index.ts"
-      ]
-    }
+    "npm:@ian-pascoe/pi-codemode"
   ],
   "defaultModel": "gpt-5.6-sol",
   "defaultProjectTrust": "always",
@@ -29,7 +26,8 @@
     "openai-codex/gpt-5.6-terra",
     "openai-codex/gpt-5.6-luna",
     "opencode-go/kimi-k3",
-    "opencode-go/glm-5.2"
+    "opencode-go/glm-5.2",
+    "opencode-go/ox-alpha-free"
   ],
   "enableInstallTelemetry": false,
   "collapseChangelog": true,
@@ -48,5 +46,13 @@
       "review": "openai-codex/gpt-5.6-sol:xhigh",
       "task": "openai-codex/gpt-5.6-sol:medium"
     }
+  },
+  "codemode": {
+    "tools": [
+      {
+        "pattern": "executor_*",
+        "exposure": "direct-only"
+      }
+    ]
   }
 }
