@@ -10,15 +10,6 @@
       "installedAt": "2026-04-16T10:17:41.778Z",
       "updatedAt": "2026-07-11T10:37:52.017Z"
     },
-    "shadcn": {
-      "source": "shadcn/ui",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/shadcn/ui.git",
-      "skillPath": "skills/shadcn/SKILL.md",
-      "skillFolderHash": "0a31c3c2535a62b22bf23a1b10a142178a6b7dbf",
-      "installedAt": "2026-04-16T10:24:21.136Z",
-      "updatedAt": "2026-07-25T10:37:35.469Z"
-    },
     "impeccable": {
       "source": "pbakaus/impeccable",
       "sourceType": "github",
@@ -469,6 +460,33 @@
       "skillFolderHash": "0bdb821a21e793a4f6f82a7078c052154447e5cc",
       "installedAt": "2026-08-19T09:57:39.517Z",
       "updatedAt": "2026-08-19T09:57:39.517Z"
+    },
+    "unslop": {
+      "source": "cursor/plugins",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cursor/plugins.git",
+      "skillPath": "pstack/skills/unslop/SKILL.md",
+      "skillFolderHash": "6161508c5c7959b156ff0e4e10b510863b51f9cc",
+      "installedAt": "2026-08-21T17:53:33.036Z",
+      "updatedAt": "2026-08-21T17:54:16.642Z"
+    },
+    "deslop": {
+      "source": "cursor/plugins",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cursor/plugins.git",
+      "skillPath": "cursor-team-kit/skills/deslop/SKILL.md",
+      "skillFolderHash": "ac9ba043f9dd3b3a8850de6624ec5bc12e375599",
+      "installedAt": "2026-08-21T17:54:16.644Z",
+      "updatedAt": "2026-08-21T17:54:16.644Z"
+    },
+    "bro": {
+      "source": "cursor/plugins",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cursor/plugins.git",
+      "skillPath": "pstack/skills/bro/SKILL.md",
+      "skillFolderHash": "53c3b2c5dc11fe0ee4156468da27505df9239dc6",
+      "installedAt": "2026-08-21T17:54:16.645Z",
+      "updatedAt": "2026-08-21T17:54:16.645Z"
     }
   },
   "dismissed": {
