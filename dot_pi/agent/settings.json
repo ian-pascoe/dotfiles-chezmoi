@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.84.2",
+  "lastChangelogVersion": "0.84.3",
   "packages": [
     "npm:@dietrichgebert/ponytail",
     "npm:@howaboua/pi-codex-conversion",
@@ -9,12 +9,11 @@
     "npm:@ian-pascoe/pi-git-checkpoints",
     "npm:@ian-pascoe/pi-git-status-widget",
     "npm:@ian-pascoe/pi-lsp",
+    "npm:@ian-pascoe/pi-mcp",
     "npm:@ian-pascoe/pi-minimal-subagents",
     "npm:@ian-pascoe/pi-tps-tracker",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
-    "npm:pi-mcp-adapter",
-    "npm:pi-web-access",
     "npm:@ian-pascoe/pi-codemode"
   ],
   "defaultModel": "gpt-5.6-sol",
@@ -50,9 +49,88 @@
   "codemode": {
     "tools": [
       {
-        "pattern": "executor_*",
+        "pattern": "mcp__executor__*",
         "exposure": "direct-only"
       }
     ]
+  },
+  "mcp": {
+    "servers": {
+      "executor": {
+        "url": "https://exe.ianpascoe.dev/mcp"
+      }
+    }
+  },
+  "lsp": {
+    "servers": {
+      "typescript": {
+        "command": "pnpm",
+        "args": ["--workspace-root", "exec", "tsc", "--lsp", "--stdio"],
+        "languages": [
+          {
+            "extensions": [".ts", ".mts", ".cts"],
+            "languageId": "typescript"
+          },
+          {
+            "extensions": [".tsx"],
+            "languageId": "typescriptreact"
+          }
+        ],
+        "rootMarkers": ["tsconfig.json"],
+        "requireRootMarker": true
+      },
+      "oxlint": {
+        "command": "pnpm",
+        "args": ["exec", "oxlint", "--lsp"],
+        "languages": [
+          {
+            "extensions": [".js", ".mjs", ".cjs"],
+            "languageId": "javascript"
+          },
+          {
+            "extensions": [".jsx"],
+            "languageId": "javascriptreact"
+          },
+          {
+            "extensions": [".ts", ".mts", ".cts"],
+            "languageId": "typescript"
+          },
+          {
+            "extensions": [".tsx"],
+            "languageId": "typescriptreact"
+          }
+        ],
+        "rootMarkers": [".oxlintrc.json"],
+        "requireRootMarker": true
+      }
+    }
+  },
+  "formatter": {
+    "formatters": {
+      "oxfmt": {
+        "command": "pnpm",
+        "args": ["exec", "oxfmt", "--no-error-on-unmatched-pattern", "$FILE"],
+        "files": {
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx",
+            ".mjs",
+            ".cjs",
+            ".mts",
+            ".cts",
+            ".json",
+            ".jsonc",
+            ".md",
+            ".yml",
+            ".yaml",
+            ".css"
+          ]
+        },
+        "rootMarkers": [".oxfmtrc.json"],
+        "requireRootMarker": true
+      }
+    }
   }
 }

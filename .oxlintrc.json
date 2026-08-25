@@ -1,7 +1,11 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "ignorePatterns": ["**/.brv/**", "dot_agents/skills"],
+  "ignorePatterns": ["dot_agents/skills"],
   "plugins": ["typescript", "unicorn", "oxc"],
+  "options": {
+    "typeAware": true,
+    "typeCheck": true
+  },
   "categories": {
     "correctness": "error"
   },

@@ -11,20 +11,27 @@ const TITLE_COLORS = [
 ] as const;
 
 const TITLE_LINES = [
-  "  ██████╗  ██╗ ",
-  "  ██╔══██╗ ██║ ",
-  "  ██████╔╝ ██║ ",
-  "  ██╔═══╝  ██║ ",
-  "  ██║      ██║ ",
-  "  ╚═╝      ╚═╝ ",
-];
+  "               |",
+  "           \\       /",
+  "             .---.",
+  "        '-.  |   |  .-'",
+  "          ___|   |___",
+  "     -=  [           ]  =-",
+  "         `---.   .---'",
+  "      __||__ |   | __||__",
+  "      '-..-' |   | '-..-'",
+  "        ||   |   |   ||",
+  "        ||_.-|   |-,_||",
+  '      .-"`   `"`\'`   `"-.',
+  "    .'                   '.",
+].map((line) => line.padEnd(32));
 
 function titleLine(theme: Theme, text: string, row: number) {
   return theme.fg(TITLE_COLORS[row % TITLE_COLORS.length]!, text);
 }
 
 function center(text: string, width: number) {
-  const length = [...text].length;
+  const length = text.length;
   if (length >= width) return text;
   return `${" ".repeat(Math.floor((width - length) / 2))}${text}`;
 }
