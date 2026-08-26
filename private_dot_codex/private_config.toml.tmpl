@@ -1,0 +1,5 @@
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   include "private_dot_codex/.config.darwin.toml" -}}
+{{- else if eq .chezmoi.os "linux" -}}
+{{-   include "private_dot_codex/.config.linux.toml" -}}
+{{- end -}}

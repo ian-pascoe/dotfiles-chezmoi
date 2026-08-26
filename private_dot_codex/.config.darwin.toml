@@ -2,7 +2,7 @@
 
 model = "gpt-5.6-sol"
 personality = "pragmatic"
-model_reasoning_effort = "high"
+model_reasoning_effort = "low"
 plan_mode_reasoning_effort = "xhigh"
 approval_policy = "never"
 approvals_reviewer = "user"
@@ -14,6 +14,7 @@ notify = [
   "turn-ended",
 ]
 service_tier = "default"
+model_verbosity = "low"
 
 [features]
 hooks = true
@@ -37,9 +38,7 @@ use_memories = true
 inherit = "all"
 
 [shell_environment_policy.set]
-BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "583bf903a6cfb9b00a01e1583381ce921c71d7585085c6fa6b805baa0f60230b,6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f"
-NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "9230e2bd8b24b7ac7a0ba6774c64bf0d78ecdabbdd91d0ed627b02a587bae2df"
 
 [model_providers.opencode_go]
 name = "OpenCode Go"
@@ -47,8 +46,8 @@ base_url = "https://opencode.ai/zen/go/v1"
 env_key = "OPENCODE_API_KEY"
 
 [desktop]
-appearanceLightCodeThemeId = "catppuccin"
-appearanceDarkCodeThemeId = "catppuccin"
+appearanceLightCodeThemeId = "solarized"
+appearanceDarkCodeThemeId = "solarized"
 usePointerCursors = true
 appearanceTheme = "system"
 followUpQueueMode = "queue"
@@ -66,49 +65,44 @@ defaultTerminalLocation = "right"
 preventSleepWhileRunning = true
 show-context-window-usage = true
 avatar-overlay-mascot-width-px = 80
-dock-icon-preference = "codex-system"
+dock-icon-preference = "app-default"
 conversationDetailMode = "STEPS_COMMANDS"
 enabled-reasoning-efforts = ["low", "medium", "high", "xhigh", "ultra", "max"]
 
 [desktop.appearanceLightChromeTheme]
-accent = "#8839ef"
+accent = "#b58900"
 contrast = 45
-ink = "#4c4f69"
+ink = "#657b83"
 opaqueWindows = false
-surface = "#eff1f5"
+surface = "#fdf6e3"
 
 [desktop.appearanceLightChromeTheme.fonts]
-code = '"GeistMono Nerd Font", monospace'
-ui = '"SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+code = '"GeistMono Nerd Font Mono"'
+ui = '"Geist"'
 
 [desktop.appearanceLightChromeTheme.semanticColors]
-diffAdded = "#40a02b"
-diffRemoved = "#d20f39"
-skill = "#8839ef"
+diffAdded = "#859900"
+diffRemoved = "#dc322f"
+skill = "#d33682"
 
 [desktop.appearanceDarkChromeTheme]
-accent = "#cba6f7"
+accent = "#d30102"
 contrast = 60
-ink = "#cdd6f4"
+ink = "#839496"
 opaqueWindows = false
-surface = "#1e1e2e"
+surface = "#002b36"
 
 [desktop.appearanceDarkChromeTheme.fonts]
-code = '"GeistMono Nerd Font", monospace'
-ui = '"SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+code = '"GeistMono Nerd Font Mono"'
+ui = '"Geist"'
 
 [desktop.appearanceDarkChromeTheme.semanticColors]
-diffAdded = "#a6e3a1"
-diffRemoved = "#f38ba8"
-skill = "#cba6f7"
+diffAdded = "#859900"
+diffRemoved = "#dc322f"
+skill = "#d33682"
 
 [desktop.open-in-target-preferences]
 global = "ghostty"
-
-[mcp_servers.caplets]
-command = "caplets"
-args = ["attach", "http://127.0.0.1:5387"]
-enabled = true
 
 [mcp_servers.node_repl]
 args = []
@@ -119,16 +113,16 @@ startup_timeout_sec = 120
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
 NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
 NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
-NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/ianpascoe/.codex:/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
 CODEX_HOME = "/Users/ianpascoe/.codex"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "583bf903a6cfb9b00a01e1583381ce921c71d7585085c6fa6b805baa0f60230b,6d25aa7656feac858f3a3bdaea5bcbab0dbfd426c9de8e6931ce90c399ee8e4f"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = "Control desktop apps on macOS through Computer Use."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.715.52143"
-SKY_CUA_SERVICE_PATH = "/Users/ianpascoe/.codex/plugins/cache/openai-bundled/computer-use/1.0.1000451/Codex Computer Use.app"
+BROWSER_USE_CODEX_APP_VERSION = "26.814.41407"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/ianpascoe/.codex/plugins/cache/openai-bundled/browser/26.814.41407/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+SKY_CUA_SERVICE_PATH = "/Users/ianpascoe/.codex/computer-use/Codex Computer Use.app"
 CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex"
 
 [mcp_servers.computer-use]
@@ -169,19 +163,22 @@ trusted_hash = "sha256:35b080a7fb129f9778972c5ce8134084f61e61ee16d1f7935a9b71e41
 trusted_hash = "sha256:a9874cba0d3fb14df113fd814ccc0b96a7ff4c3165d0f2cfe060bcef257ab62a"
 
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:session_start:1:0"]
-trusted_hash = "sha256:252150ddae4d9a70c585366d7c51cff09603b5af2d9dfb22cb5bb0728fca53f1"
+trusted_hash = "sha256:341f095eb06db5b52fa3c919f6e3ba2ada4c63883b73a18707a760623a7fc589"
 
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:permission_request:0:0"]
-trusted_hash = "sha256:fcec2a18f441c5694bc9469cf13d7014e823c57ab420e02d63a8bf7ebdfcc72b"
+trusted_hash = "sha256:4f7ccd5a87df89d729d9df3039225104fd9959c7b4de1258667eb79e96f016d1"
 
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:session_start:2:0"]
-trusted_hash = "sha256:32c80cd33fbfcfc4ae4f2feca77149fe3334b1113c6598676f753fd942500de2"
+trusted_hash = "sha256:b0907c2168fcf54c02ba5b2e6c2a672fb3a9a18ebf0d70189cc57411154f0549"
 
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:user_prompt_submit:0:0"]
-trusted_hash = "sha256:78297874884298bf02ef5d48433f2bb34166de580ee027e9e85d564cdf23fe63"
+trusted_hash = "sha256:9e510ed3e657593696b53923b54795906c5d59e8a8ed9d466c7a49d7b5ad7904"
 
 [hooks.state."/Users/ianpascoe/.codex/hooks.json:stop:1:0"]
-trusted_hash = "sha256:a0550731637177c048527d803117304a1b3d0f9e4f2580a9fba31d53bfe4cb8f"
+trusted_hash = "sha256:f6a0661b5bae26b83349978111ce0869ad956ce6900c3b24acaf84b99308543d"
+
+[hooks.state."/Users/ianpascoe/.codex/hooks.json:stop:2:0"]
+trusted_hash = "sha256:9114598116543bd2a5cd3d9ada69aecdce6e42759abc480f4e37ab818bb1862b"
 
 [projects."/Users/ianpascoe/.local/share/chezmoi"]
 trust_level = "trusted"
@@ -249,13 +246,22 @@ trust_level = "trusted"
 [projects."/Users/ianpascoe/Documents/Codex/2026-07-14/er-bill-dispute-options-chatgpt-conversation"]
 trust_level = "trusted"
 
+[projects."/Users/ianpascoe/Documents/Codex/2026-08-15/hatch-pet-users-ianpascoe-codex-skills"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-08-15/tell-me-about-your-new-codemode"]
+trust_level = "trusted"
+
+[projects."/Users/ianpascoe/Documents/Codex/2026-08-15/let-s-set-up-a-scheduled"]
+trust_level = "trusted"
+
 [marketplaces.openai-bundled]
-last_updated = "2026-08-11T20:33:34Z"
+last_updated = "2026-08-21T19:23:51Z"
 source_type = "local"
-source = "/home/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
+source = "/Users/ianpascoe/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-07-18T10:52:33Z"
+last_updated = "2026-08-15T10:10:54Z"
 source_type = "local"
 source = "/Users/ianpascoe/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
@@ -284,6 +290,15 @@ enabled = true
 enabled = true
 
 [plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."computer-history@openai-bundled"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."codex-app-tools@openai-bundled"]
 enabled = true
 
 [notice]
