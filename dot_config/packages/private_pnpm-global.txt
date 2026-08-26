@@ -1,20 +1,17 @@
 # pnpm global packages
 # One package spec per line.
-@anthropic-ai/claude-code
-@biomejs/biome
 @earendil-works/pi-coding-agent
 @firecrawl/anydoc
 @googleworkspace/cli
+@ian-pascoe/pi-mcp
 @openai/codex
 @opencode-ai/cli
 @playwright/cli
 agent-browser
-caplets
 ctx7
 executor
 hunkdiff
 impeccable
-just-bash
 node-gyp
 opencode-ai
 oxfmt

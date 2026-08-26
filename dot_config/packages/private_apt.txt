@@ -6,6 +6,7 @@ apt
 apt-listchanges
 apt-transport-https
 apt-utils
+at-spi2-core
 autoconf
 autocutsel
 base-files

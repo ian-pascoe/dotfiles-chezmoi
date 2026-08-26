@@ -15,9 +15,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "c10903ca3e7fe0b1815576f9b67730b588fba665",
+      "skillFolderHash": "0024cd8b54c3e23531bdeaed20409b4ac569e2cc",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-08-17T09:32:16.746Z"
+      "updatedAt": "2026-08-25T18:42:34.637Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -177,9 +177,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
       "skillPath": "skills/copywriting/SKILL.md",
-      "skillFolderHash": "13d216690bbbcb88e2fee9f3e2d8f5a5bbc4b338",
+      "skillFolderHash": "e5457b0306878bac731cda9a05e8b68d882b7b40",
       "installedAt": "2026-07-01T09:08:59.310Z",
-      "updatedAt": "2026-07-01T09:08:59.310Z"
+      "updatedAt": "2026-08-25T18:42:36.202Z"
     },
     "marketing-psychology": {
       "source": "coreyhaines31/marketingskills",
@@ -195,18 +195,18 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
       "skillPath": "skills/content-strategy/SKILL.md",
-      "skillFolderHash": "69ea566b1bb2bc4e26f556fd60dfbe880350ba5f",
+      "skillFolderHash": "331845a9e8be071ca8b7506bd9e07d5a54815cea",
       "installedAt": "2026-07-01T09:08:59.311Z",
-      "updatedAt": "2026-08-21T17:45:18.254Z"
+      "updatedAt": "2026-08-25T18:42:37.571Z"
     },
     "marketing-ideas": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
       "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
       "skillPath": "skills/marketing-ideas/SKILL.md",
-      "skillFolderHash": "332eaf2f71e0fca00be2b64d4d90034e36714b63",
+      "skillFolderHash": "c28943ec678fba961dd1a6aac2503b967d8accdc",
       "installedAt": "2026-07-01T09:08:59.312Z",
-      "updatedAt": "2026-07-01T09:08:59.312Z"
+      "updatedAt": "2026-08-25T18:42:39.021Z"
     },
     "copy-editing": {
       "source": "coreyhaines31/marketingskills",
@@ -222,9 +222,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
       "skillPath": "skills/ad-creative/SKILL.md",
-      "skillFolderHash": "d289f9db47842911bbbd0c1d5a18410bf81a2a22",
+      "skillFolderHash": "54521f47698ac0614c692ebd713cdd1cadea5c7f",
       "installedAt": "2026-07-01T09:08:59.314Z",
-      "updatedAt": "2026-07-18T09:28:06.168Z"
+      "updatedAt": "2026-08-25T18:42:40.477Z"
     },
     "social": {
       "source": "coreyhaines31/marketingskills",
@@ -313,18 +313,18 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/remotion-dev/skills.git",
       "skillPath": "skills/remotion-best-practices/SKILL.md",
-      "skillFolderHash": "8c80f3d1da3ba88fac5a15ae6c30fc1a9176cd8f",
+      "skillFolderHash": "98e922a2fea3f3c248f407dcbcf7f39fadc4c097",
       "installedAt": "2026-07-21T10:41:08.762Z",
-      "updatedAt": "2026-08-21T17:45:20.082Z"
+      "updatedAt": "2026-08-25T18:42:41.933Z"
     },
     "agent-browser": {
       "source": "vercel-labs/agent-browser",
       "sourceType": "github",
       "sourceUrl": "https://github.com/vercel-labs/agent-browser.git",
       "skillPath": "skills/agent-browser/SKILL.md",
-      "skillFolderHash": "037e8078db4b20b4aa25c04f21c6de7d335ec449",
+      "skillFolderHash": "82def67855a0d2aad7794207951820fa5422fdb0",
       "installedAt": "2026-07-21T10:41:35.094Z",
-      "updatedAt": "2026-07-21T10:41:35.094Z"
+      "updatedAt": "2026-08-25T18:42:42.462Z"
     },
     "coding-standards": {
       "source": "dmmulroy/.dotfiles",
@@ -358,9 +358,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/anomalyco/terminal-control.git",
       "skillPath": "skills/terminal-control/SKILL.md",
-      "skillFolderHash": "652efdccf2cc06c20550238e9df85788d3fc1d3b",
+      "skillFolderHash": "ef4592e9101a709a71f9750b829c0d1ddfbaa600",
       "installedAt": "2026-08-03T10:18:27.638Z",
-      "updatedAt": "2026-08-03T10:18:27.638Z"
+      "updatedAt": "2026-08-25T18:42:43.184Z"
     },
     "to-questionnaire": {
       "source": "mattpocock/skills",
@@ -505,6 +505,7 @@
     "kimi-code-cli",
     "opencode",
     "warp",
-    "zed"
+    "zed",
+    "openclaw"
   ]
 }
