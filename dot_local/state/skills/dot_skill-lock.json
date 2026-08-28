@@ -15,9 +15,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "0024cd8b54c3e23531bdeaed20409b4ac569e2cc",
+      "skillFolderHash": "a9984b2ae388527e1adbb26224a5f69cc49e805f",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-08-25T18:42:34.637Z"
+      "updatedAt": "2026-08-28T11:28:55.641Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -313,9 +313,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/remotion-dev/skills.git",
       "skillPath": "skills/remotion-best-practices/SKILL.md",
-      "skillFolderHash": "98e922a2fea3f3c248f407dcbcf7f39fadc4c097",
+      "skillFolderHash": "9d0121091aca40696438b9dc8e9728546e139801",
       "installedAt": "2026-07-21T10:41:08.762Z",
-      "updatedAt": "2026-08-25T18:42:41.933Z"
+      "updatedAt": "2026-08-28T11:28:57.148Z"
     },
     "agent-browser": {
       "source": "vercel-labs/agent-browser",
@@ -403,9 +403,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/firecrawl/anydoc.git",
       "skillPath": "skills/convert-documents-to-markdown/SKILL.md",
-      "skillFolderHash": "eb3266eddb4cb0577f0230604189c126274e089f",
+      "skillFolderHash": "8559245000abebb500dfad53ef82fa383448b719",
       "installedAt": "2026-08-07T17:01:23.653Z",
-      "updatedAt": "2026-08-07T17:01:23.653Z"
+      "updatedAt": "2026-08-28T11:28:58.025Z"
     },
     "plannotator-compound": {
       "source": "backnotprop/plannotator",

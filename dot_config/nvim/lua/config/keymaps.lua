@@ -7,3 +7,17 @@ vim.keymap.set('n', '<leader>sN', LazyVim.pick('files', { cwd = vim.fn.stdpath('
 
 -- No autcmd write
 vim.keymap.set('n', '<leader>W', '<cmd>noautocmd write<cr>', { desc = 'No autocmd write' })
+
+-- Herdr annotate
+if vim.env.HERDR_ENV == '1' then
+  vim.keymap.set('x', '<leader>aa', function()
+    vim.cmd('normal! "+y')
+    vim.fn.jobstart({
+      'herdr',
+      'plugin',
+      'action',
+      'invoke',
+      'annotate.capture',
+    })
+  end, { desc = 'Annotate in Herdr' })
+end

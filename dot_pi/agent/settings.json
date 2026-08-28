@@ -65,7 +65,7 @@
     "servers": {
       "typescript": {
         "command": "pnpm",
-        "args": ["--workspace-root", "exec", "tsc", "--lsp", "--stdio"],
+        "args": ["dlx", "typescript@latest", "--lsp", "--stdio"],
         "languages": [
           {
             "extensions": [".ts", ".mts", ".cts"],
@@ -81,7 +81,7 @@
       },
       "oxlint": {
         "command": "pnpm",
-        "args": ["exec", "oxlint", "--lsp"],
+        "args": ["dlx", "oxlint@latest", "--lsp"],
         "languages": [
           {
             "extensions": [".js", ".mjs", ".cjs"],
@@ -102,6 +102,17 @@
         ],
         "rootMarkers": [".oxlintrc.json"],
         "requireRootMarker": true
+      },
+      "rust": {
+        "command": "rust-analyzer",
+        "languages": [
+          {
+            "extensions": [".rs"],
+            "languageId": "rust"
+          }
+        ],
+        "rootMarkers": ["Cargo.toml"],
+        "requireRootMarker": true
       }
     }
   },
@@ -109,7 +120,7 @@
     "formatters": {
       "oxfmt": {
         "command": "pnpm",
-        "args": ["exec", "oxfmt", "--no-error-on-unmatched-pattern", "$FILE"],
+        "args": ["dlx", "oxfmt@latest", "--no-error-on-unmatched-pattern", "$FILE"],
         "files": {
           "extensions": [
             ".js",
@@ -129,6 +140,15 @@
           ]
         },
         "rootMarkers": [".oxfmtrc.json"],
+        "requireRootMarker": true
+      },
+      "rustfmt": {
+        "command": "rustfmt",
+        "args": ["$FILE"],
+        "files": {
+          "extensions": [".rs"]
+        },
+        "rootMarkers": ["Cargo.toml"],
         "requireRootMarker": true
       }
     }
