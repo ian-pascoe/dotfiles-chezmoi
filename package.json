@@ -1,5 +1,5 @@
 {
-  "name": "@ian-pascoe/dotfiles",
+  "name": "@ian-pascoe/dotfiles-chezmoi",
   "version": "0.0.0",
   "private": true,
   "type": "module",
