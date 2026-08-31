@@ -24,9 +24,8 @@
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-terra",
     "openai-codex/gpt-5.6-luna",
-    "opencode-go/kimi-k3",
-    "opencode-go/glm-5.2",
-    "opencode-go/ox-alpha-free"
+    "opencode-go/glm-5.3",
+    "opencode-go/glm-5.3-flash"
   ],
   "enableInstallTelemetry": false,
   "collapseChangelog": true,
@@ -38,7 +37,7 @@
       "small": "openai-codex/gpt-5.6-luna",
       "medium": "openai-codex/gpt-5.6-terra",
       "large": "openai-codex/gpt-5.6-sol",
-      "design": "opencode-go/kimi-k3:max",
+      "design": "opencode-go/glm-5.3:xhigh",
       "explore": "openai-codex/gpt-5.6-luna:high",
       "plan": "openai-codex/gpt-5.6-sol:xhigh",
       "research": "openai-codex/gpt-5.6-luna:high",
@@ -48,6 +47,10 @@
   },
   "codemode": {
     "tools": [
+      {
+        "pattern": "mcp__*",
+        "exposure": "codemode-only"
+      },
       {
         "pattern": "mcp__executor__*",
         "exposure": "direct-only"

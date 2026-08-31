@@ -127,7 +127,7 @@ key = "prefix+g"
 type = "popup"
 command = "lazygit"
 
-
+## Vim navigation
 [[keys.command]]
 key = "ctrl+h"
 type = "shell"
@@ -152,6 +152,7 @@ type = "shell"
 command = '~/.config/herdr/scripts/navigate.sh right'
 description = "navigate right (vim/herdr)"
 
+## File viewer
 [[keys.command]]
 key = "prefix+f"
 type = "plugin_action"
@@ -162,6 +163,8 @@ key = "prefix+shift+f"
 type = "plugin_action"
 command = "herdr-file-viewer.open-file-viewer-tab"
 
+## Plannotator
+# Terminal annotations
 [[keys.command]]
 key = "prefix+a"
 type = "plugin_action"
@@ -179,6 +182,19 @@ key = "prefix+m"
 type = "plugin_action"
 command = "annotate.manage"
 description = "manage annotations"
+
+# Document review (plannotator-tui)
+[[keys.command]]
+key = "prefix+o"
+type = "plugin_action"
+command = "annotate.open"
+description = "review documents in this folder"
+
+[[keys.command]]
+key = "prefix+shift+o"
+type = "plugin_action"
+command = "annotate.last"
+description = "review the agent's last reply"
 
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
