@@ -85,19 +85,10 @@ url = "https://github.com/akinomyoga/ble.sh/releases/download/v0.3.4/ble-0.3.4.t
 stripComponents = 1
 refreshPeriod = "168h"
 
-[".config/tmux/plugins/tpm"]
-
-
 {{ if eq .chezmoi.os "linux" }}
+[".config/tmux/plugins/tpm"]
 type = "archive"
 url = "https://github.com/tmux-plugins/tpm/archive/refs/heads/master.zip"
 stripComponents = 1
 refreshPeriod = "168h"
-[".local/share/fonts/GeistMonoNerdFont"]
-
 {{ end }}
-type = "archive"
-url = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/GeistMono.zip"
-checksum.sha256 = "a9f61b7b7f0429db4fa9a526940f71190127ed95dbe3533163d80d7cafdb3ec9"
-include = ["*.otf"]
-exact = true
