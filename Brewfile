@@ -231,8 +231,6 @@ cask "t3-code"
 cask "t3-code@nightly"
 # Mesh VPN based on WireGuard
 cask "tailscale-app"
-# Messaging app with a focus on speed and security
-cask "telegram"
 # Multi-platform VNC client and server
 cask "tigervnc"
 # Virtual machines UI using QEMU
@@ -241,8 +239,11 @@ cask "utm"
 cask "xquartz"
 # Multiplayer code editor
 cask "zed"
+go "github.com/go-delve/delve/cmd/dlv"
 go "cmd/go"
 go "cmd/gofmt"
+go "mvdan.cc/gofumpt"
+go "golang.org/x/tools/cmd/goimports"
 cargo "cargo-audit"
 cargo "cargo-binstall"
 cargo "cargo-cache"

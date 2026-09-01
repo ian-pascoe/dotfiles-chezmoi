@@ -294,12 +294,12 @@ binding_modes:
           - k
           - up
         commands:
-          - resize --height +2%
+          - resize --height -2%
       - bindings:
           - j
           - down
         commands:
-          - resize --height -2%
+          - resize --height +2%
       - bindings:
           - escape
           - enter
