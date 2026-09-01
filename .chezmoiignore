@@ -58,7 +58,6 @@ Brewfile
 Documents/PowerShell
 .wslconfig
 .config/autohotkey
-.config/flow-launcher
 .config/scoop
 .config/windows-terminal
 .config/vcxsrv
@@ -68,8 +67,6 @@ Documents/PowerShell
 
 # Windows-Only Ignores
 {{ if eq .chezmoi.os "windows" }}
-.config/tmux
-.config/zellij
 .local/bin/*
 !.local/bin/*.ps1
 {{ end }}

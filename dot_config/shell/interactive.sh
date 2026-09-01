@@ -28,32 +28,12 @@ if command -v yazi &>/dev/null; then
   alias y='yazi'
 fi
 
-## Eternal Terminal
-# ET reads ~/.ssh/config; mirror its ForwardAgent setting for the ET session.
-if command -v et &>/dev/null; then
-  et() {
-    command et --forward-ssh-agent "$@"
-  }
-fi
-
-## Zellij
-if command -v zellij &>/dev/null; then
-  alias zj='zellij'
-  alias zjl='zellij list-sessions'
-  alias zja='zellij attach'
-  alias zjd='zellij delete-session'
-  alias zjda='zellij delete-all-sessions'
-  alias zjk='zellij kill-session'
-  alias zjka='zellij kill-all-sessions'
-  alias zj-dev='zellij --layout dev'
-fi
-
 ## Brewfile
 if command -v brew &>/dev/null; then
   brew() {
     command brew "$@"
     case "$1" in
-    install|uninstall|remove|upgrade)
+    install | uninstall | remove | upgrade)
       command brew bundle dump --force --file="$HOME/Brewfile"
       ;;
     esac

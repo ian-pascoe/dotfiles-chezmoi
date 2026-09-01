@@ -1,8 +1,3 @@
-[".config/zellij/plugins/zjstatus.wasm"]
-type = "file"
-url = "https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm"
-refreshPeriod = "168h"
-
 # Theme wallpapers are kept external so the source tree does not carry large
 # binary assets. Unsplash images are available under the Unsplash License;
 # photographer credit is retained here for convenience.
@@ -74,21 +69,8 @@ url = "https://images.unsplash.com/photo-1438032005730-c779502df39b?auto=format&
 checksum.sha256 = "88be97546bc865905accf8dd5e30175a8b54267cc28e6e9feefe80c182aca560"
 refreshPeriod = "168h"
 
-[".config/zellij/plugins/vim-zellij-navigator.wasm"]
-type = "file"
-url = "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.3.0/vim-zellij-navigator.wasm"
-refreshPeriod = "168h"
-
 [".local/share/blesh"]
 type = "archive"
 url = "https://github.com/akinomyoga/ble.sh/releases/download/v0.3.4/ble-0.3.4.tar.xz"
 stripComponents = 1
 refreshPeriod = "168h"
-
-{{ if eq .chezmoi.os "linux" }}
-[".config/tmux/plugins/tpm"]
-type = "archive"
-url = "https://github.com/tmux-plugins/tpm/archive/refs/heads/master.zip"
-stripComponents = 1
-refreshPeriod = "168h"
-{{ end }}

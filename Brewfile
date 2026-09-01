@@ -135,16 +135,12 @@ brew "summarize"
 brew "syncthing", restart_service: :changed
 # Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale"
-# Terminal multiplexer
-brew "tmux"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
 # Your CLI home video recorder
 brew "vhs"
 # Blazing fast terminal file manager written in Rust, based on async I/O
 brew "yazi"
-# Pluggable terminal workspace, with terminal multiplexer as the base feature
-brew "zellij"
 # General-purpose lossless data-compression library
 brew "zlib"
 # Shell extension to navigate your filesystem faster
