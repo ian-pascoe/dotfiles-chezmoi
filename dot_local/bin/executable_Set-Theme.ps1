@@ -3,7 +3,7 @@
   Sets the current theme by creating symbolic links to the selected theme's resources.
 .DESCRIPTION
   This script links the specified theme from the user's .themes directory to the current theme configuration directory.
-  It also updates themes for various applications including bat, btop, Flow Launcher, k9s, lsd, and yazi.
+  It also updates themes for various applications including bat, btop, k9s, lsd, and yazi.
 .PARAMETER ThemeName
   The name of the theme to set. HTML tags and spaces will be sanitized.
 #>
@@ -49,27 +49,6 @@ New-Symlink -Target $BtopTheme -Link $BtopLink -Force
 $BtopPersistedThemesDir = "$env:SCOOP\persist\btop\themes"
 $BtopPersistedLink = Join-Path $BtopPersistedThemesDir "current.theme"
 New-Symlink -Target $BtopTheme -Link $BtopPersistedLink -Force
-
-# flow launcher
-$FlowLauncherThemesDir = "$env:SCOOP\persist\flow-launcher\UserData\Themes"
-if (-not (Test-Path $FlowLauncherThemesDir)) {
-  New-Item -ItemType Directory -Path $FlowLauncherThemesDir | Out-Null
-}
-$FlowLauncherTheme = Join-Path $CURRENT_THEME_DIR "flow-launcher.xaml"
-if (Test-Path $FlowLauncherTheme) {
-  $FlowLauncherLink = Join-Path $FlowLauncherThemesDir "current.xaml"
-  New-Symlink -Target $FlowLauncherTheme -Link $FlowLauncherLink -Force
-
-  # Restart Flow Launcher scheduled task
-  Stop-Process -Name Flow.Launcher -Force -ErrorAction SilentlyContinue
-  $taskName = "FlowLauncher"
-  $task = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
-  if ($task) {
-    Stop-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
-    Start-ScheduledTask -TaskName $taskName
-    Write-Log -Message "Restarted Flow Launcher" -Level Info
-  }
-}
 
 # glazewm
 $glazewmSettingsFile = Join-Path $env:HOME ".glzr\glazewm\config.yaml"
