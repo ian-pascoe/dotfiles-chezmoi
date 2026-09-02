@@ -196,9 +196,6 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
           );
         }
 
-        lines.splice(bottomBorderIndex, 0, " ".repeat(width));
-        lines.splice(1, 0, " ".repeat(width));
-
         return lines;
       }
     }

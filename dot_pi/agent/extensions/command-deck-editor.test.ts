@@ -124,9 +124,7 @@ test("the command deck renders concise editor status and an empty prompt", async
   assert.ok(idleLines.every((line) => visibleWidth(line) === 120));
   assert.match(idleLines[0] ?? "", /gpt-test · high/);
   assert.doesNotMatch(idleLines[0] ?? "", /ready|working/);
-  assert.equal(idleLines[1], " ".repeat(120));
-  assert.match(idleLines[2] ?? "", /Type your prompt…/);
-  assert.equal(idleLines[3], " ".repeat(120));
+  assert.match(idleLines[1] ?? "", /Type your prompt…/);
   assert.match(idleLines.at(-1) ?? "", /project · main · ⇡2 · ⇣1 · \?1 · 1/);
   assert.match(idleLines.at(-1) ?? "", /cache 70\.0% · ctx 38%/);
   assert.doesNotMatch(idleLines.at(-1) ?? "", /MCP|tok\/s|running/);
