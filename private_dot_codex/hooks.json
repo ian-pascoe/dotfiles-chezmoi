@@ -1,23 +1,13 @@
 {
   "hooks": {
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "command": "/usr/bin/env zsh -lc 'moshi-hook codex-hook'",
-            "type": "command"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "hooks": [
           {
+            "type": "command",
             "command": "/usr/bin/env python3 \"$HOME/.codex/skills/codex-autoresearch/scripts/autoresearch_hook_session_start.py\"",
             "statusMessage": "codex-autoresearch SessionStart hook",
-            "timeout": 5,
-            "type": "command"
+            "timeout": 5
           }
         ],
         "matcher": "startup|resume|compact"
@@ -25,17 +15,9 @@
       {
         "hooks": [
           {
+            "type": "command",
             "command": "/usr/bin/env bash \"$HOME/.codex/herdr-agent-state.sh\" session",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "/usr/bin/env zsh -lc 'moshi-hook codex-hook'",
-            "type": "command"
+            "timeout": 10
           }
         ]
       }
@@ -44,18 +26,10 @@
       {
         "hooks": [
           {
+            "type": "command",
             "command": "/usr/bin/env python3 \"$HOME/.codex/skills/codex-autoresearch/scripts/autoresearch_hook_stop.py\"",
             "statusMessage": "codex-autoresearch Stop hook",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "command": "/usr/bin/env zsh -lc 'moshi-hook codex-hook'",
-            "type": "command"
+            "timeout": 10
           }
         ]
       },
@@ -65,16 +39,6 @@
             "type": "command",
             "command": "/usr/bin/env zsh -lc 'plannotator'",
             "timeout": 345600
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "/usr/bin/env zsh -lc 'moshi-hook codex-hook'",
-            "type": "command"
           }
         ]
       }

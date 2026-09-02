@@ -1,12 +1,11 @@
 # uv tools
 # One tool spec per line.
+browser-use
 camoufox
-khal
 nano-pdf
 pipx
 pyflakes
 pytest
 spotdl
 trafilatura
-vdirsyncer
 yt-dlp
