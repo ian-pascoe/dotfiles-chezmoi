@@ -34,7 +34,7 @@ if command -v brew &>/dev/null; then
     command brew "$@"
     case "$1" in
     install | uninstall | remove | upgrade)
-      command brew bundle dump --force --file="$HOME/Brewfile"
+      command brew bundle dump --force --no-cargo --no-go --no-npm --no-uv --file="$HOME/Brewfile"
       ;;
     esac
   }

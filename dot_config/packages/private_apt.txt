@@ -1,9 +1,7 @@
 # Debian/Ubuntu apt packages
 # One package name per line.
-7zip
 apparmor
 apt
-apt-listchanges
 apt-transport-https
 apt-utils
 at-spi2-core
@@ -17,16 +15,12 @@ bind9-dnsutils
 bind9-host
 bison
 bsdutils
-btop
 bubblewrap
 build-essential
 bzip2
 ca-certificates
 chatgpt
 clang
-cloud-guest-utils
-cloud-init
-cloud-initramfs-growroot
 cmake
 containerd.io
 coreutils
@@ -48,7 +42,6 @@ dpkg
 e2fsprogs
 et
 ethtool
-ffmpeg
 findutils
 flex
 fonts-freefont-ttf
@@ -65,10 +58,8 @@ gcc-multilib
 gdb
 git
 git-delta
-git-lfs
 glow
 gnupg
-google-chrome-stable
 gpg
 grep
 grub-cloud-amd64
@@ -77,12 +68,11 @@ gstreamer1.0-plugins-bad
 gstreamer1.0-plugins-base
 gstreamer1.0-plugins-good
 gzip
+helium-bin
 hostname
 htop
-imagemagick
 init
 init-system-helpers
-iotop
 iptables
 iputils-ping
 less
@@ -110,7 +100,6 @@ libc6-dev
 libc6-dev-i386
 libcairo-gobject2
 libcairo2
-libcairo2-dev
 libcap-ng0
 libcap2
 libcap2-bin
@@ -190,7 +179,6 @@ libpangocairo-1.0-0
 libpcre2-8-0
 libpng16-16t64
 libproxy1v5
-libpulse-dev
 libreadline-dev
 libseccomp2
 libsecret-1-0
@@ -211,7 +199,6 @@ libtinfo6
 libudev-dev
 libudev1
 libuuid1
-libvulkan-dev
 libwayland-client0
 libwayland-egl1
 libwayland-server0
@@ -247,7 +234,6 @@ linux-image-amd64
 linux-sysctl-defaults
 lld
 lld-19
-llvm-dev
 login
 login.defs
 man-db
@@ -264,10 +250,8 @@ ncdu
 ncurses-base
 ncurses-bin
 netbase
-netplan.io
 ninja-build
 nushell
-openbox
 openssh-server
 openssl
 openssl-provider-legacy
@@ -282,20 +266,13 @@ polkitd
 poppler-utils
 powershell
 psmisc
-python3
-python3-dev
 qemu-guest-agent
-reportbug
-resvg
-rustc
 screen
 sed
 socat
 speedtest
 sqv
-ssh-import-id
 sudo
-syncthing
 sysstat
 systemd-resolved
 systemd-timesyncd
@@ -308,11 +285,8 @@ tcpdump
 tigervnc-common
 tigervnc-standalone-server
 tint2
-tmux
 traceroute
 tzdata
-ufw
-unattended-upgrades
 universal-ctags
 unzip
 util-linux

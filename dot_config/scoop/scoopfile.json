@@ -1,32 +1,11 @@
 {
   "apps": [
     {
-      "Updated": "2025-10-13T09:25:20.1017531-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "7zip",
-      "Version": "25.01"
-    },
-    {
       "Updated": "2025-10-13T09:30:33.3843688-04:00",
       "Source": "extras",
       "Info": "",
       "Name": "autohotkey",
       "Version": "2.0.19"
-    },
-    {
-      "Updated": "2025-11-10T22:36:36.7688921-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "aws",
-      "Version": "2.31.33"
-    },
-    {
-      "Updated": "2025-10-20T08:50:39.554863-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "bat",
-      "Version": "0.26.0"
     },
     {
       "Updated": "2025-10-17T10:04:58.514101-04:00",
@@ -36,39 +15,11 @@
       "Version": "2025.10.0"
     },
     {
-      "Updated": "2025-11-05T09:14:06.7940086-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "btop",
-      "Version": "1.0.5"
-    },
-    {
-      "Updated": "2025-11-10T22:37:04.3252409-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "bun",
-      "Version": "1.3.2"
-    },
-    {
-      "Updated": "2025-11-10T22:37:08.1062673-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "cargo-binstall",
-      "Version": "1.15.11"
-    },
-    {
       "Updated": "2025-11-03T15:47:10.5868696-05:00",
       "Source": "main",
       "Info": "",
       "Name": "clink",
       "Version": "1.8.8"
-    },
-    {
-      "Updated": "2025-10-22T09:31:31.5764317-04:00",
-      "Source": "java",
-      "Info": "",
-      "Name": "corretto-jdk",
-      "Version": "21.0.9.10.1"
     },
     {
       "Updated": "2025-10-13T09:36:55.326297-04:00",
@@ -92,20 +43,6 @@
       "Version": "2025-09"
     },
     {
-      "Updated": "2025-10-13T09:37:09.5077451-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "fd",
-      "Version": "10.3.0"
-    },
-    {
-      "Updated": "2025-10-13T09:37:35.0814192-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "ffmpeg",
-      "Version": "8.0"
-    },
-    {
       "Updated": "2025-10-13T09:37:38.7590483-04:00",
       "Source": "main",
       "Info": "",
@@ -118,20 +55,6 @@
       "Info": "",
       "Name": "flow-launcher",
       "Version": "2.0.2"
-    },
-    {
-      "Updated": "2025-10-27T09:39:47.5997142-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "fzf",
-      "Version": "0.66.1"
-    },
-    {
-      "Updated": "2025-11-05T09:41:25.5190948-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "gh",
-      "Version": "2.83.0"
     },
     {
       "Updated": "2025-10-13T09:38:57.9893065-04:00",
@@ -148,32 +71,11 @@
       "Version": "2.51.2"
     },
     {
-      "Updated": "2025-11-07T06:31:18.4759589-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "git-lfs",
-      "Version": "3.7.1"
-    },
-    {
       "Updated": "2025-10-13T09:39:16.2104016-04:00",
       "Source": "extras",
       "Info": "",
       "Name": "glazewm",
       "Version": "3.9.1"
-    },
-    {
-      "Updated": "2025-11-06T06:03:34.9222359-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "go",
-      "Version": "1.25.4"
-    },
-    {
-      "Updated": "2025-10-30T13:24:06.9015232-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "gradle",
-      "Version": "9.2.0"
     },
     {
       "Updated": "2025-10-14T16:49:11.0678299-04:00",
@@ -211,32 +113,11 @@
       "Version": "0.7.6"
     },
     {
-      "Updated": "2025-10-13T09:46:23.2751269-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "jq",
-      "Version": "1.8.1"
-    },
-    {
-      "Updated": "2025-11-07T07:13:40.3118348-05:00",
-      "Source": "extras",
-      "Info": "",
-      "Name": "lazygit",
-      "Version": "0.56.0"
-    },
-    {
       "Updated": "2025-10-15T09:59:12.7182073-04:00",
       "Source": "main",
       "Info": "",
       "Name": "less",
       "Version": "685"
-    },
-    {
-      "Updated": "2025-10-13T09:46:29.9316597-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "lsd",
-      "Version": "1.2.0"
     },
     {
       "Updated": "2025-10-13T09:48:59.8432004-04:00",
@@ -246,39 +127,11 @@
       "Version": "15.2.0-rt_v13-rev0"
     },
     {
-      "Updated": "2025-11-04T05:36:28.299957-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "neovim",
-      "Version": "0.11.5"
-    },
-    {
-      "Updated": "2025-10-30T13:24:40.035917-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "nodejs",
-      "Version": "25.1.0"
-    },
-    {
       "Updated": "2025-10-13T09:50:28.488515-04:00",
       "Source": "extras",
       "Info": "",
       "Name": "obsidian",
       "Version": "1.9.14"
-    },
-    {
-      "Updated": "2025-11-10T22:37:21.5221196-05:00",
-      "Source": "extras",
-      "Info": "",
-      "Name": "opencode",
-      "Version": "1.0.55"
-    },
-    {
-      "Updated": "2025-11-04T10:25:26.6129134-05:00",
-      "Source": "java",
-      "Info": "",
-      "Name": "openjdk",
-      "Version": "25.0.1-8"
     },
     {
       "Updated": "2025-10-13T13:08:57.5424173-04:00",
@@ -302,13 +155,6 @@
       "Version": "0.83"
     },
     {
-      "Updated": "2025-10-13T09:54:57.449475-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "python",
-      "Version": "3.14.0"
-    },
-    {
       "Updated": "2025-10-30T13:25:10.5168277-04:00",
       "Source": "extras",
       "Info": "",
@@ -316,53 +162,11 @@
       "Version": "5.8.1"
     },
     {
-      "Updated": "2025-10-13T09:55:09.7137198-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "resvg",
-      "Version": "0.45.1"
-    },
-    {
-      "Updated": "2025-10-22T13:28:36.9727347-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "ripgrep",
-      "Version": "15.1.0"
-    },
-    {
-      "Updated": "2025-10-13T09:56:39.4994201-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "rustup",
-      "Version": "1.28.2"
-    },
-    {
       "Updated": "2025-10-13T10:46:11.5044998-04:00",
       "Source": "main",
       "Info": "",
       "Name": "scoop-search",
       "Version": "2.1.0"
-    },
-    {
-      "Updated": "2025-10-27T09:40:23.4646471-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "starship",
-      "Version": "1.24.0"
-    },
-    {
-      "Updated": "2025-11-05T09:16:00.1818071-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "syncthing",
-      "Version": "2.0.11"
-    },
-    {
-      "Updated": "2025-11-04T09:25:40.6394059-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "tree-sitter",
-      "Version": "0.25.10"
     },
     {
       "Updated": "2025-10-22T09:33:08.0477372-04:00",
@@ -414,25 +218,11 @@
       "Version": "1.8.4"
     },
     {
-      "Updated": "2025-10-13T10:05:33.9530211-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "yazi",
-      "Version": "25.5.31"
-    },
-    {
       "Updated": "2025-10-27T09:40:19.2985944-04:00",
       "Source": "extras",
       "Info": "",
       "Name": "zoom",
       "Version": "6.6.6.19875"
-    },
-    {
-      "Updated": "2025-10-13T10:05:36.5311916-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "zoxide",
-      "Version": "0.9.8"
     }
   ],
   "config": {

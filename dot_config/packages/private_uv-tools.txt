@@ -2,7 +2,6 @@
 # One tool spec per line.
 browser-use
 camoufox
-nano-pdf
 pipx
 pyflakes
 pytest

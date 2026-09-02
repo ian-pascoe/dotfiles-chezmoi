@@ -42,6 +42,7 @@ turbo.json
 # Non-Mac Ignores
 {{ if ne .chezmoi.os "darwin" }}
 Brewfile
+Library/LaunchAgents/net.syncthing.syncthing.plist
 .hammerspoon
 .config/aerospace
 .config/borders
