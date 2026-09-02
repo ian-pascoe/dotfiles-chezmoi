@@ -8,20 +8,6 @@
       "Version": "2.0.19"
     },
     {
-      "Updated": "2025-10-17T10:04:58.514101-04:00",
-      "Source": "extras",
-      "Info": "",
-      "Name": "bitwarden",
-      "Version": "2025.10.0"
-    },
-    {
-      "Updated": "2025-11-03T15:47:10.5868696-05:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "clink",
-      "Version": "1.8.8"
-    },
-    {
       "Updated": "2025-10-13T09:36:55.326297-04:00",
       "Source": "main",
       "Info": "",
@@ -148,13 +134,6 @@
       "Version": "0.83"
     },
     {
-      "Updated": "2025-10-30T13:25:10.5168277-04:00",
-      "Source": "extras",
-      "Info": "",
-      "Name": "qalculate",
-      "Version": "5.8.1"
-    },
-    {
       "Updated": "2025-10-13T10:46:11.5044998-04:00",
       "Source": "main",
       "Info": "",
@@ -197,13 +176,6 @@
       "Version": "1.23.12811.0"
     },
     {
-      "Updated": "2025-10-13T10:03:57.1545478-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "winfetch",
-      "Version": "2.5.1"
-    },
-    {
       "Updated": "2025-11-11T11:19:36.103289-05:00",
       "Source": "extras",
       "Info": "",
@@ -242,12 +214,6 @@
       "Source": "https://github.com/matthewjberger/scoop-nerd-fonts",
       "Updated": "2025-11-08T09:20:17-05:00",
       "Manifests": 367
-    },
-    {
-      "Name": "nonportable",
-      "Source": "https://github.com/ScoopInstaller/Nonportable",
-      "Updated": "2025-11-11T08:04:20-05:00",
-      "Manifests": 128
     },
     {
       "Name": "java",
