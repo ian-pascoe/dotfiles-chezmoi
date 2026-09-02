@@ -106,7 +106,6 @@ function formatCommandDeckGitStatus(statusOutput: string | undefined, theme: The
 /** Replaces Pi's editor and footer with a compact command deck that follows the active theme. */
 export default function commandDeckEditor(pi: ExtensionAPI) {
   let activeTui: TUI | undefined;
-  let isWorking = false;
   let getGitBranch = (): string | null => null;
   let gitStatusOutput: string | undefined;
 
@@ -121,16 +120,6 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
     gitStatusOutput = result?.code === 0 ? result.stdout : undefined;
     activeTui?.requestRender();
   };
-
-  pi.on("agent_start", () => {
-    isWorking = true;
-    activeTui?.requestRender();
-  });
-
-  pi.on("agent_settled", () => {
-    isWorking = false;
-    activeTui?.requestRender();
-  });
 
   pi.on("session_shutdown", () => {
     activeTui = undefined;
@@ -179,9 +168,6 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
         const theme = ctx.ui.theme;
         const borderColor = (text: string) => this.borderColor(text);
         const bottomBorderIndex = findCommandDeckBottomBorder(lines, width, borderColor);
-        const status = isWorking
-          ? theme.fg("accent", " ● working ")
-          : theme.fg("success", " ● ready ");
         const model = ctx.model?.id ?? "no model";
         const thinking = pi.getThinkingLevel();
         const topRight = ` ${theme.fg("syntaxFunction", model)} ${theme.fg("dim", "·")} ${theme.getThinkingBorderColor(thinking)(thinking)} `;
@@ -194,7 +180,7 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
         ].filter((status) => status !== undefined);
         const bottomRight = ` ${bottomStatus.join(theme.fg("dim", " · "))} `;
 
-        lines[0] = renderCommandDeckBorder(status, topRight, width, borderColor);
+        lines[0] = renderCommandDeckBorder("", topRight, width, borderColor);
         lines[bottomBorderIndex] = renderCommandDeckBorder(
           bottomLeft,
           bottomRight,

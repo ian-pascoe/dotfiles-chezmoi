@@ -122,8 +122,8 @@ test("the command deck renders concise editor status and an empty prompt", async
   const editor = editorFactory(tui, editorTheme, {} as KeybindingsManager);
   const idleLines = editor.render(120);
   assert.ok(idleLines.every((line) => visibleWidth(line) === 120));
-  assert.match(idleLines[0] ?? "", /● ready/);
   assert.match(idleLines[0] ?? "", /gpt-test · high/);
+  assert.doesNotMatch(idleLines[0] ?? "", /ready|working/);
   assert.equal(idleLines[1], " ".repeat(120));
   assert.match(idleLines[2] ?? "", /Type your prompt…/);
   assert.equal(idleLines[3], " ".repeat(120));
@@ -134,12 +134,7 @@ test("the command deck renders concise editor status and an empty prompt", async
   assert.deepEqual(footerComponent.render(120), [
     "◉ 1 running · 1 live · ◉ 2 running · 3 retained · MCP 1/1 · 12.3 tok/s",
   ]);
-  assert.ok(usedColors.includes("success"));
   assert.ok(usedColors.includes("syntaxFunction"));
   assert.ok(usedColors.includes("thinkingHigh"));
   assert.ok(editor.render(4).every((line) => visibleWidth(line) === 4));
-
-  handlers.get("agent_start")?.({ type: "agent_start" }, context);
-  assert.match(editor.render(80)[0] ?? "", /working/);
-  handlers.get("agent_settled")?.({ type: "agent_settled" }, context);
 });
