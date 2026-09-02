@@ -157,8 +157,6 @@ brew "antoniorodr/memo/memo"
 brew "felixkratz/formulae/borders", trusted: true
 # Incredibly fast JavaScript runtime, bundler, transpiler and package manager - all in one.
 brew "oven-sh/bun/bun"
-# Portable daemon + CLI that bridges AI coding agents to the Moshi mobile app
-brew "rjyo/moshi/moshi-hook"
 # Send and read iMessage / SMS from the terminal
 brew "steipete/tap/imsg"
 # Lightning-fast macOS screenshots & AI vision analysis
@@ -176,8 +174,6 @@ cask "aldente"
 cask "balenaetcher"
 # Display management tool
 cask "betterdisplay"
-# Open source IDE for exploring and testing APIs
-cask "bruno"
 # OpenAI's official ChatGPT desktop app
 cask "chatgpt"
 # Terminal-based AI coding assistant
@@ -186,8 +182,6 @@ cask "claude-code"
 cask "codex"
 # Menu bar usage monitor for Codex and Claude
 cask "steipete/tap/codexbar"
-# UI for creating Windows installer ISO from UUPDump
-cask "crystalfetch"
 # Voice and text chat software
 cask "discord"
 # App to build and share containerised applications and microservices
@@ -197,8 +191,6 @@ cask "font-geist-mono-nerd-font"
 cask "font-sf-pro"
 cask "font-source-serif-4"
 cask "font-symbols-only-nerd-font"
-# Set of tools to manage resources and applications hosted on Google Cloud
-cask "gcloud-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Web browser
@@ -215,16 +207,10 @@ cask "karabiner-elements"
 cask "linear"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
-# AI coding agent desktop client
-cask "opencode-desktop"
 # Utility to uninstall apps and remove leftover files from old/uninstalled apps
 cask "pearcleaner"
 # Control your tools with a few keystrokes
 cask "raycast"
-# Minimal GUI for AI code agents
-cask "t3-code"
-# Minimal GUI for AI code agents
-cask "t3-code@nightly"
 # Mesh VPN based on WireGuard
 cask "tailscale-app"
 # Multi-platform VNC client and server
@@ -233,8 +219,6 @@ cask "tigervnc"
 cask "utm"
 # Open-source version of the X.Org X Window System
 cask "xquartz"
-# Multiplayer code editor
-cask "zed"
 go "github.com/go-delve/delve/cmd/dlv"
 go "cmd/go"
 go "cmd/gofmt"
@@ -260,9 +244,7 @@ uv "nano-pdf"
 uv "pipx"
 uv "pyflakes"
 uv "pytest"
-uv "rembg"
 uv "spotdl"
 uv "trafilatura"
 uv "vdirsyncer"
 uv "yt-dlp"
-npm "@nubjs/nub"
