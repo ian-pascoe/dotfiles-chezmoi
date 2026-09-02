@@ -7,7 +7,6 @@
     "npm:@ian-pascoe/pi-dap",
     "npm:@ian-pascoe/pi-formatter",
     "npm:@ian-pascoe/pi-git-checkpoints",
-    "npm:@ian-pascoe/pi-git-status-widget",
     "npm:@ian-pascoe/pi-lsp",
     "npm:@ian-pascoe/pi-mcp",
     "npm:@ian-pascoe/pi-minimal-subagents",
