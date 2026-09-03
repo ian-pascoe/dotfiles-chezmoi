@@ -65,7 +65,10 @@
       "computer-use": {
         "enabled": true,
         "command": "cua-driver",
-        "args": ["mcp"]
+        "args": ["mcp"],
+        "environment": {
+          "DISPLAY": ":1"
+        }
       }
     }
   },
