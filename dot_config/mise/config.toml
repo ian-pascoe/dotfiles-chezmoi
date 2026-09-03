@@ -25,7 +25,6 @@ helm = "latest"
 herdr = "latest"
 imagemagick = "latest"
 java = ["latest", "corretto-21"]
-jj = "latest"
 jq = "latest"
 k9s = "latest"
 kubectl = "latest"

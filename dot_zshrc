@@ -52,11 +52,6 @@ if ! command -v compdef &>/dev/null; then
   autoload -U compinit && compinit
 fi
 
-## JJ
-if command -v jj &>/dev/null; then
-  source <(jj util completion zsh)
-fi
-
 if command -v lazygit &>/dev/null; then
   alias lg="lazygit"
 fi

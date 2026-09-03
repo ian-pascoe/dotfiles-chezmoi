@@ -51,7 +51,7 @@
         "exposure": "codemode-only"
       },
       {
-        "pattern": "mcp__executor__*",
+        "pattern": "mcp__executor__execute",
         "exposure": "direct-only"
       }
     ]
@@ -59,7 +59,13 @@
   "mcp": {
     "servers": {
       "executor": {
+        "enabled": true,
         "url": "https://exe.ianpascoe.dev/mcp"
+      },
+      "computer-use": {
+        "enabled": true,
+        "command": "cua-driver",
+        "args": ["mcp"]
       }
     }
   },

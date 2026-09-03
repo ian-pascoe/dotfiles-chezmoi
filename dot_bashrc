@@ -49,21 +49,6 @@ if command -v fzf &>/dev/null; then
   eval "$(fzf --bash)"
 fi
 
-## JJ
-if command -v jj &>/dev/null; then
-  source <(jj util completion bash)
-fi
-
-## OpenClaw
-# NOTE: Have to use full paths with no env vars here
-# or else openclaw will constantly ask about adding
-# completions to the shell. So annoying!!
-if [ -f "/home/ianpascoe/.openclaw/completions/openclaw.bash" ]; then
-  source "/home/ianpascoe/.openclaw/completions/openclaw.bash"
-elif [ -f "/Users/ianpascoe/.openclaw/completions/openclaw.bash" ]; then
-  source "/Users/ianpascoe/.openclaw/completions/openclaw.bash"
-fi
-
 ## Zoxide
 if command -v zoxide &>/dev/null; then
   eval "$(zoxide init bash)"
