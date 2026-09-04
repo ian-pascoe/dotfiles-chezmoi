@@ -5,6 +5,7 @@
 @googleworkspace/cli
 @openai/codex
 @playwright/cli
+@pnpm/exe
 agent-browser
 hunkdiff
 impeccable

@@ -2,6 +2,7 @@
 # One package name per line.
 apparmor
 apt
+apt-listchanges
 apt-transport-https
 apt-utils
 at-spi2-core
@@ -21,6 +22,9 @@ bzip2
 ca-certificates
 chatgpt
 clang
+cloud-guest-utils
+cloud-init
+cloud-initramfs-growroot
 cmake
 containerd.io
 coreutils
@@ -56,6 +60,7 @@ fuse
 gcc-14-base
 gcc-multilib
 gdb
+ghostty
 git
 git-delta
 glow
@@ -73,6 +78,7 @@ hostname
 htop
 init
 init-system-helpers
+iotop
 iptables
 iputils-ping
 less
@@ -100,6 +106,7 @@ libc6-dev
 libc6-dev-i386
 libcairo-gobject2
 libcairo2
+libcairo2-dev
 libcap-ng0
 libcap2
 libcap2-bin
@@ -179,6 +186,7 @@ libpangocairo-1.0-0
 libpcre2-8-0
 libpng16-16t64
 libproxy1v5
+libpulse-dev
 libreadline-dev
 libseccomp2
 libsecret-1-0
@@ -199,6 +207,7 @@ libtinfo6
 libudev-dev
 libudev1
 libuuid1
+libvulkan-dev
 libwayland-client0
 libwayland-egl1
 libwayland-server0
@@ -234,6 +243,7 @@ linux-image-amd64
 linux-sysctl-defaults
 lld
 lld-19
+llvm-dev
 login
 login.defs
 man-db
@@ -250,8 +260,10 @@ ncdu
 ncurses-base
 ncurses-bin
 netbase
+netplan.io
 ninja-build
 nushell
+openbox
 openssh-server
 openssl
 openssl-provider-legacy
@@ -267,11 +279,13 @@ poppler-utils
 powershell
 psmisc
 qemu-guest-agent
+reportbug
 screen
 sed
 socat
 speedtest
 sqv
+ssh-import-id
 sudo
 sysstat
 systemd-resolved
@@ -287,6 +301,8 @@ tigervnc-standalone-server
 tint2
 traceroute
 tzdata
+ufw
+unattended-upgrades
 universal-ctags
 unzip
 util-linux

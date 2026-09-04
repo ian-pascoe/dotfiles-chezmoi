@@ -93,7 +93,7 @@ fi
 if command -v pi &>/dev/null; then
   pi() {
     case "$1" in
-      auth|config|install|list|remove|uninstall|update)
+      auth|config|install|list|remove|uninstall|update|--no-extensions|-ne)
         # Pi only recognizes subcommands when they are the first argument.
         command pi "$@"
         ;;

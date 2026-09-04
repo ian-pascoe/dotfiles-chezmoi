@@ -35,6 +35,7 @@ lua = "latest"
 markdownlint-cli2 = "latest"
 neovim = "latest"
 node = "latest"
+nub = { version = "latest", allow_builds = ["@nubjs/nub"] }
 pnpm = "latest"
 python = ["latest", "3.13"]
 resvg = "latest"

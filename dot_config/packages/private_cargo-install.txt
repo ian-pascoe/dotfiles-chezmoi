@@ -12,4 +12,5 @@ cargo-update
 cargo-watch
 cargo-zigbuild
 cross
+lspc
 terminal-control
