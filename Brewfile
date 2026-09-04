@@ -1,12 +1,5 @@
-tap "antoniorodr/memo", trusted: true
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
-tap "mistertea/et", "https://github.com/MisterTea/homebrew-et", trusted: { formulae: ["et"] }
 tap "nikitabobko/tap", trusted: true
-tap "openclaw/tap", trusted: true
-tap "rjyo/moshi", trusted: true
-tap "steipete/tap", trusted: true
-tap "teamookla/speedtest", trusted: true
-tap "yakitrak/yakitrak", trusted: true
 # Automatic configure script builder
 brew "autoconf"
 # Library for command-line editing
@@ -87,21 +80,11 @@ brew "zlib"
 brew "zplug"
 # UNIX shell (command interpreter)
 brew "zsh"
-# CLI app to manage your Apple Notes and Apple reminders
-brew "antoniorodr/memo/memo"
 # A window border system for macOS
 brew "felixkratz/formulae/borders", trusted: true
-# Send and read iMessage / SMS from the terminal
-brew "steipete/tap/imsg"
-# Lightning-fast macOS screenshots & AI vision analysis
-brew "steipete/tap/peekaboo"
-# Fast CLI for Apple Reminders
-brew "steipete/tap/remindctl"
-# Ookla Speedtest
-brew "teamookla/speedtest/speedtest"
-brew "yakitrak/yakitrak/notesmd-cli", link: false
+brew "yakitrak/yakitrak/obsidian-cli"
 # AeroSpace is an i3-like tiling window manager for macOS
-cask "nikitabobko/tap/aerospace"
+cask "nikitabobko/tap/aerospace", trusted: true
 # Menu bar tool to limit maximum charging percentage
 cask "aldente"
 # Tool to flash OS images to SD cards & USB drives
@@ -112,8 +95,6 @@ cask "betterdisplay"
 cask "chatgpt"
 # Terminal-based AI coding assistant
 cask "claude-code"
-# Menu bar usage monitor for Codex and Claude
-cask "steipete/tap/codexbar"
 # Voice and text chat software
 cask "discord"
 # App to build and share containerised applications and microservices
@@ -147,20 +128,5 @@ cask "raycast"
 cask "tailscale-app"
 # Multi-platform VNC client and server
 cask "tigervnc"
-# Virtual machines UI using QEMU
-cask "utm"
 # Open-source version of the X.Org X Window System
 cask "xquartz"
-go "github.com/go-delve/delve/cmd/dlv"
-go "cmd/go"
-go "cmd/gofmt"
-go "mvdan.cc/gofumpt"
-go "golang.org/x/tools/cmd/goimports"
-uv "camoufox[geoip]"
-uv "nano-pdf"
-uv "pipx"
-uv "pyflakes"
-uv "pytest"
-uv "spotdl"
-uv "trafilatura"
-uv "yt-dlp"

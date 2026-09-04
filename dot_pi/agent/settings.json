@@ -2,22 +2,39 @@
   "lastChangelogVersion": "0.84.4",
   "packages": [
     "npm:@dietrichgebert/ponytail",
-    "npm:@howaboua/pi-codex-conversion",
-    "npm:@ian-pascoe/pi-bible-verses",
-    "npm:@ian-pascoe/pi-dap",
-    "npm:@ian-pascoe/pi-formatter",
-    "npm:@ian-pascoe/pi-git-checkpoints",
-    "npm:@ian-pascoe/pi-lsp",
-    "npm:@ian-pascoe/pi-mcp",
-    "npm:@ian-pascoe/pi-minimal-subagents",
-    "npm:@ian-pascoe/pi-tps-tracker",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:@narumitw/pi-goal",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
-    "npm:@ian-pascoe/pi-codemode"
+    {
+      "source": "git:github.com/ian-pascoe/pi-extensions",
+      "extensions": [
+        "packages/pi-bible-verses/src/index.ts",
+        "packages/pi-dap/src/index.ts",
+        "packages/pi-formatter/src/index.ts",
+        "packages/pi-git-checkpoints/src/index.ts",
+        "packages/pi-lsp/src/index.ts",
+        "packages/pi-mcp/src/index.ts",
+        "packages/pi-minimal-subagents/src/index.ts",
+        "packages/pi-tps-tracker/src/index.ts",
+        "packages/pi-codemode/src/index.ts"
+      ],
+      "skills": [
+        "packages/pi-bible-verses/skills/pi-bible-verses/SKILL.md",
+        "packages/pi-dap/skills/pi-dap/SKILL.md",
+        "packages/pi-formatter/skills/pi-formatter/SKILL.md",
+        "packages/pi-git-checkpoints/skills/pi-git-checkpoints/SKILL.md",
+        "packages/pi-lsp/skills/pi-lsp/SKILL.md",
+        "packages/pi-mcp/skills/pi-mcp/SKILL.md",
+        "packages/pi-minimal-subagents/skills/pi-minimal-subagents/SKILL.md",
+        "packages/pi-tps-tracker/skills/pi-tps-tracker/SKILL.md",
+        "packages/pi-codemode/skills/pi-codemode/SKILL.md"
+      ]
+    }
   ],
-  "defaultModel": "gpt-5.6-sol",
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
   "enabledModels": [
     "openai-codex/gpt-5.6-sol",
