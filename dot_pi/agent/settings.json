@@ -38,7 +38,7 @@
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6-astra",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "enabledModels": [
     "openai-codex/gpt-6-astra",
     "openai-codex/gpt-5.6-sol",
@@ -54,7 +54,7 @@
   "theme": "gruvbox",
   "minimalSubagents": {
     "modelRoles": {
-      "default": "openai-codex/gpt-6-astra:medium",
+      "default": "openai-codex/gpt-6-astra:high",
       "small": "openai-codex/gpt-5.6-luna",
       "medium": "openai-codex/gpt-5.6-sol",
       "large": "openai-codex/gpt-6-astra",
@@ -62,7 +62,7 @@
       "plan": "openai-codex/gpt-6-astra:xhigh",
       "research": "openai-codex/gpt-5.6-luna:high",
       "review": "openai-codex/gpt-6-astra:xhigh",
-      "task": "openai-codex/gpt-6-astra:low"
+      "task": "openai-codex/gpt-6-astra:medium"
     }
   },
   "codemode": {
