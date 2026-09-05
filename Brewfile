@@ -20,8 +20,6 @@ brew "gmp"
 brew "coreutils"
 # TIFF library and utilities
 brew "libtiff"
-# Remote terminal with IP roaming
-brew "et"
 # Like neofetch, but much faster because written mostly in C
 brew "fastfetch"
 # Cryptography and SSL/TLS Toolkit
@@ -72,6 +70,8 @@ brew "sops"
 brew "spotify_player"
 # Multi-modal AI tool to extract and summarize content
 brew "summarize"
+# Easiest, most secure way to use WireGuard and 2FA
+brew "tailscale", restart_service: :changed
 # Your CLI home video recorder
 brew "vhs"
 # General-purpose lossless data-compression library

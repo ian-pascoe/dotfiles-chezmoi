@@ -2,7 +2,6 @@
   "lastChangelogVersion": "0.85.0",
   "packages": [
     "npm:@dietrichgebert/ponytail",
-    "npm:@juicesharp/rpiv-todo",
     "npm:@narumitw/pi-goal",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
@@ -16,6 +15,7 @@
         "packages/pi-lsp/src/index.ts",
         "packages/pi-mcp/src/index.ts",
         "packages/pi-minimal-subagents/src/index.ts",
+        "packages/pi-todo/src/index.ts",
         "packages/pi-tps-tracker/src/index.ts",
         "packages/pi-web-tools/src/index.ts",
         "packages/pi-codemode/src/index.ts"
@@ -28,6 +28,7 @@
         "packages/pi-lsp/skills/pi-lsp/SKILL.md",
         "packages/pi-mcp/skills/pi-mcp/SKILL.md",
         "packages/pi-minimal-subagents/skills/pi-minimal-subagents/SKILL.md",
+        "packages/pi-todo/skills/pi-todo/SKILL.md",
         "packages/pi-tps-tracker/skills/pi-tps-tracker/SKILL.md",
         "packages/pi-web-tools/skills/pi-web-tools/SKILL.md",
         "packages/pi-codemode/skills/pi-codemode/SKILL.md"
@@ -36,11 +37,11 @@
   ],
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-sol",
-  "defaultThinkingLevel": "high",
+  "defaultModel": "gpt-6-astra",
+  "defaultThinkingLevel": "medium",
   "enabledModels": [
+    "openai-codex/gpt-6-astra",
     "openai-codex/gpt-5.6-sol",
-    "openai-codex/gpt-5.6-terra",
     "openai-codex/gpt-5.6-luna",
     "opencode-go/glm-5.3",
     "opencode-go/glm-5.3-flash"
@@ -50,18 +51,18 @@
   "npmCommand": ["pnpm", "--config.minimumReleaseAge=0"],
   "showCacheMissNotices": true,
   "tuiMode": "fullscreen",
+  "theme": "gruvbox",
   "minimalSubagents": {
     "modelRoles": {
-      "default": "openai-codex/gpt-5.6-sol:high",
+      "default": "openai-codex/gpt-6-astra:medium",
       "small": "openai-codex/gpt-5.6-luna",
-      "medium": "openai-codex/gpt-5.6-terra",
-      "large": "openai-codex/gpt-5.6-sol",
-      "design": "opencode-go/glm-5.3:xhigh",
+      "medium": "openai-codex/gpt-5.6-sol",
+      "large": "openai-codex/gpt-6-astra",
       "explore": "openai-codex/gpt-5.6-luna:high",
-      "plan": "openai-codex/gpt-5.6-sol:xhigh",
+      "plan": "openai-codex/gpt-6-astra:xhigh",
       "research": "openai-codex/gpt-5.6-luna:high",
-      "review": "openai-codex/gpt-5.6-sol:xhigh",
-      "task": "openai-codex/gpt-5.6-sol:medium"
+      "review": "openai-codex/gpt-6-astra:xhigh",
+      "task": "openai-codex/gpt-6-astra:low"
     }
   },
   "codemode": {
@@ -85,8 +86,9 @@
       "browser-use": {
         "enabled": true,
         "command": "pnpm",
-        "args": ["dlx", "@playwright/mcp@latest", "--headless", "--extension"],
+        "args": ["dlx", "@playwright/mcp@latest", "--extension"],
         "environment": {
+          "PLAYWRIGHT_MCP_EXECUTABLE_PATH": "${DEFAULT_BROWSER_EXECECUTABLE_PATH}",
           "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "${PLAYWRIGHT_MCP_EXTENSION_TOKEN}"
         }
       },
