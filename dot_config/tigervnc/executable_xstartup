@@ -1,0 +1,12 @@
+#!/bin/sh
+exec >>"$HOME/.vnc/xstartup.debug.log" 2>&1
+echo "=== $(date) ==="
+echo "DISPLAY=$DISPLAY"
+echo "XDG_SESSION_TYPE=$XDG_SESSION_TYPE"
+unset SESSION_MANAGER
+xset s off
+xsetroot -solid "#20242b"
+vncconfig -nowin &
+autocutsel -fork
+autocutsel -selection PRIMARY -fork
+exec openbox-session

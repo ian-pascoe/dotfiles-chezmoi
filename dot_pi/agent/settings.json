@@ -52,6 +52,7 @@
   "enableInstallTelemetry": false,
   "collapseChangelog": true,
   "showCacheMissNotices": true,
+  "skills": ["~/.cua-driver/skills/cua-driver"],
   "tuiMode": "fullscreen",
   "theme": "everforest",
   "minimalSubagents": {
@@ -126,7 +127,10 @@
         "command": "cua-driver",
         "args": ["mcp"],
         "environment": {
-          "DISPLAY": ":1"
+          "DISPLAY": ":1",
+          "XDG_SESSION_TYPE": "x11",
+          "XDG_RUNTIME_DIR": "${XDG_RUNTIME_DIR}",
+          "DBUS_SESSION_BUS_ADDRESS": "${DBUS_SESSION_BUS_ADDRESS}"
         }
       }
     }
