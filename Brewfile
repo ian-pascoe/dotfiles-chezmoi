@@ -1,5 +1,6 @@
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
 tap "nikitabobko/tap", trusted: true
+tap "steipete/tap", trusted: true
 # Automatic configure script builder
 brew "autoconf"
 # Library for command-line editing
@@ -95,6 +96,8 @@ cask "betterdisplay"
 cask "chatgpt"
 # Terminal-based AI coding assistant
 cask "claude-code"
+# Menu bar usage monitor for Codex and Claude
+cask "steipete/tap/codexbar", trusted: true
 # Voice and text chat software
 cask "discord"
 # App to build and share containerised applications and microservices

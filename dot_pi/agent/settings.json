@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.85.0",
+  "lastChangelogVersion": "0.85.1",
   "packages": [
     "npm:@dietrichgebert/ponytail",
     "npm:@narumitw/pi-goal",
@@ -9,6 +9,7 @@
       "source": "git:github.com/ian-pascoe/pi-extensions",
       "extensions": [
         "packages/pi-bible-verses/src/index.ts",
+        "packages/pi-context-management/src/index.ts",
         "packages/pi-dap/src/index.ts",
         "packages/pi-formatter/src/index.ts",
         "packages/pi-git-checkpoints/src/index.ts",
@@ -22,6 +23,7 @@
       ],
       "skills": [
         "packages/pi-bible-verses/skills/pi-bible-verses/SKILL.md",
+        "packages/pi-context-management/skills/pi-context-management/SKILL.md",
         "packages/pi-dap/skills/pi-dap/SKILL.md",
         "packages/pi-formatter/skills/pi-formatter/SKILL.md",
         "packages/pi-git-checkpoints/skills/pi-git-checkpoints/SKILL.md",
@@ -42,27 +44,50 @@
   "enabledModels": [
     "openai-codex/gpt-6-astra",
     "openai-codex/gpt-5.6-sol",
+    "openai-codex/gpt-5.6-terra",
     "openai-codex/gpt-5.6-luna",
     "opencode-go/glm-5.3",
     "opencode-go/glm-5.3-flash"
   ],
   "enableInstallTelemetry": false,
   "collapseChangelog": true,
-  "npmCommand": ["pnpm", "--config.minimumReleaseAge=0"],
   "showCacheMissNotices": true,
   "tuiMode": "fullscreen",
-  "theme": "gruvbox",
+  "theme": "everforest",
   "minimalSubagents": {
     "modelRoles": {
-      "default": "openai-codex/gpt-6-astra:high",
-      "small": "openai-codex/gpt-5.6-luna",
-      "medium": "openai-codex/gpt-5.6-sol",
-      "large": "openai-codex/gpt-6-astra",
-      "explore": "openai-codex/gpt-5.6-luna:high",
-      "plan": "openai-codex/gpt-6-astra:xhigh",
-      "research": "openai-codex/gpt-5.6-luna:high",
-      "review": "openai-codex/gpt-6-astra:xhigh",
-      "task": "openai-codex/gpt-6-astra:medium"
+      "debug": {
+        "model": "openai-codex/gpt-6-astra:high",
+        "hint": "Use to diagnose failures or isolate regressions."
+      },
+      "default": {
+        "model": "openai-codex/gpt-6-astra:high",
+        "hint": "Use when work spans roles or no specialized role fits."
+      },
+      "explore": {
+        "model": "openai-codex/gpt-5.6-luna:high",
+        "hint": "Use to locate code, trace behavior, or find reusable patterns."
+      },
+      "plan": {
+        "model": "openai-codex/gpt-6-astra:xhigh",
+        "hint": "Use to clarify requirements, weigh designs, or plan implementation."
+      },
+      "research": {
+        "model": "openai-codex/gpt-5.6-luna:high",
+        "hint": "Use when technical questions need external sources."
+      },
+      "review": {
+        "model": "openai-codex/gpt-6-astra:xhigh",
+        "hint": "Use when changes need independent correctness or spec review."
+      },
+      "security": {
+        "model": "openai-codex/gpt-6-astra:xhigh",
+        "hint": "Use for threat modeling, security audits, or vulnerability assessment."
+      },
+      "task": {
+        "model": "openai-codex/gpt-6-astra:medium",
+        "hint": "Use when a scoped implementation task has a settled approach."
+      }
     }
   },
   "codemode": {
@@ -70,6 +95,10 @@
       {
         "pattern": "mcp__*",
         "exposure": "codemode-only"
+      },
+      {
+        "pattern": "mcp__executor__*",
+        "exposure": "direct-and-codemode"
       },
       {
         "pattern": "mcp__executor__execute",
