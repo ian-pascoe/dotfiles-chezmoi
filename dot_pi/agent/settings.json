@@ -117,7 +117,7 @@
         "command": "pnpm",
         "args": ["dlx", "@playwright/mcp@latest", "--extension"],
         "environment": {
-          "PLAYWRIGHT_MCP_EXECUTABLE_PATH": "${DEFAULT_BROWSER_EXECECUTABLE_PATH}",
+          "PLAYWRIGHT_MCP_EXECUTABLE_PATH": "${DEFAULT_BROWSER_EXECUTABLE_PATH}",
           "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "${PLAYWRIGHT_MCP_EXTENSION_TOKEN}"
         }
       },
