@@ -142,7 +142,7 @@ function keys(editor: CustomEditor, ...inputs: string[]) {
 }
 
 function expectMode(editor: CustomEditor, mode: string) {
-  assert.match(editor.render(120)[0] ?? "", new RegExp(` ${mode} `));
+  assert.match(editor.render(120).at(-1) ?? "", new RegExp(` ${mode} `));
 }
 
 const ESC = "\x1b";
@@ -169,10 +169,12 @@ test("the command deck renders concise editor status and an empty prompt", async
   const idleLines = editor.render(120);
   assert.ok(idleLines.every((line) => visibleWidth(line) === 120));
   assert.match(idleLines[0] ?? "", /gpt-test · high/);
-  assert.match(idleLines[0] ?? "", /INSERT/);
+  assert.match(idleLines[0] ?? "", /project · main · ⇡2 · ⇣1 · \?1 · 1/);
+  assert.doesNotMatch(idleLines[0] ?? "", /INSERT/);
   assert.doesNotMatch(idleLines[0] ?? "", /ready|working/);
   assert.match(idleLines[1] ?? "", /Type your prompt…/);
-  assert.match(idleLines.at(-1) ?? "", /project · main · ⇡2 · ⇣1 · \?1 · 1/);
+  assert.match(idleLines.at(-1) ?? "", /INSERT/);
+  assert.doesNotMatch(idleLines.at(-1) ?? "", /project · main/);
   assert.match(idleLines.at(-1) ?? "", /cache 70\.0% · ctx 38%/);
   assert.doesNotMatch(idleLines.at(-1) ?? "", /MCP|tok\/s|running/);
   assert.ok(footerComponent);
@@ -193,7 +195,8 @@ test("the command deck renders concise editor status and an empty prompt", async
   await new Promise((resolve) => setTimeout(resolve, 0));
   const completionLines = editor.render(120);
   assert.equal(completionLines.length, 4);
-  assert.match(completionLines[2] ?? "", /project · main/);
+  assert.match(completionLines[0] ?? "", /project · main/);
+  assert.match(completionLines[2] ?? "", /INSERT/);
   assert.match(completionLines[3] ?? "", /\/unique/);
 });
 
@@ -234,9 +237,9 @@ test("pending Vim commands remain visible in the command deck", async () => {
   const { editor } = await createDeck();
   editor.setText("hello");
   keys(editor, ESC, "d");
-  assert.match(editor.render(120)[0] ?? "", /NORMAL d_/);
+  assert.match(editor.render(120).at(-1) ?? "", /NORMAL d_/);
   keys(editor, ESC, ":", "q");
-  assert.match(editor.render(120)[0] ?? "", /EX :q_/);
+  assert.match(editor.render(120).at(-1) ?? "", /EX :q_/);
   keys(editor, ESC);
   expectMode(editor, "NORMAL");
 });

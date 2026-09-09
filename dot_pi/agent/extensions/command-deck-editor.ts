@@ -252,7 +252,7 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
         const topRight = ` ${theme.fg("syntaxFunction", model)} ${theme.fg("dim", "·")} ${theme.getThinkingBorderColor(thinking)(thinking)} `;
         const branch = getGitBranch();
         const gitStatus = formatCommandDeckGitStatus(gitStatusOutput, theme);
-        const bottomLeft = `${theme.fg("dim", ` ${formatCommandDeckCwd(ctx.cwd)}`)}${branch ? theme.fg("syntaxVariable", ` · ${branch}`) : ""}${gitStatus ? `${theme.fg("dim", " · ")}${gitStatus}` : ""} `;
+        const topLeft = `${theme.fg("dim", ` ${formatCommandDeckCwd(ctx.cwd)}`)}${branch ? theme.fg("syntaxVariable", ` · ${branch}`) : ""}${gitStatus ? `${theme.fg("dim", " · ")}${gitStatus}` : ""} `;
         const bottomStatus = [
           theme.fg("syntaxNumber", formatCommandDeckCacheHit(ctx) ?? "cache ?"),
           theme.fg("muted", formatCommandDeckContext(ctx)),
@@ -260,13 +260,8 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
         const bottomRight = ` ${bottomStatus.join(theme.fg("dim", " · "))} `;
 
         const mode = theme.fg("accent", vimStatus ?? ` ${this.getMode().toUpperCase()} `);
-        lines[0] = renderCommandDeckBorder(mode, topRight, width, borderColor);
-        lines[bottomBorderIndex] = renderCommandDeckBorder(
-          bottomLeft,
-          bottomRight,
-          width,
-          borderColor,
-        );
+        lines[0] = renderCommandDeckBorder(topLeft, topRight, width, borderColor);
+        lines[bottomBorderIndex] = renderCommandDeckBorder(mode, bottomRight, width, borderColor);
 
         if (this.getText() === "" && lines[1]) {
           lines[1] = truncateToWidth(
