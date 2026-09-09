@@ -1,12 +1,12 @@
 [Unit]
-Description=VNC Server for display :1
+Description=VNC Server for display :%i
 After=network.target
 
 [Service]
 Type=simple
 # Keep the backend port separate from Tailscale Serve's 5901; TigerVNC checks wildcard binds.
-ExecStart=/usr/bin/vncserver :1 -fg -localhost yes -rfbport 15901 -geometry 1280x800 -depth 24 -AcceptSetDesktopSize=0
-ExecStop=/usr/bin/vncserver -kill :1
+ExecStart=/usr/bin/vncserver :%i -fg -localhost yes -rfbport 1590%i -geometry 1280x800 -depth 24 -AcceptSetDesktopSize=0
+ExecStop=/usr/bin/vncserver -kill :%i
 Restart=on-failure
 RestartSec=3
 
