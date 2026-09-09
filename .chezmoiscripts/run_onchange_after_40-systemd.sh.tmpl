@@ -1,0 +1,11 @@
+{{ $runtimeDir := env "XDG_RUNTIME_DIR" | default (printf "/run/user/%v" .chezmoi.uid) -}}
+{{ if and (eq .chezmoi.os "linux") (stat (joinPath $runtimeDir "bus")) -}}
+#!/bin/sh
+set -eu
+{{ range glob (joinPath .chezmoi.sourceDir "dot_config/systemd/user/*.service") -}}
+# {{ base . }}: {{ include . | sha256sum }}
+{{ end -}}
+export XDG_RUNTIME_DIR={{ $runtimeDir | shellQuote }}
+export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+systemctl --user daemon-reload
+{{ end -}}

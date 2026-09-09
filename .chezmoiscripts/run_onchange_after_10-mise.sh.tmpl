@@ -1,0 +1,7 @@
+{{ if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+export MISE_GLOBAL_CONFIG_FILE="$HOME/.config/mise/config.toml"
+# mise config: {{ include "dot_config/mise/config.toml" | sha256sum }}
+mise --cd "$HOME/.config/mise" install
+{{ end -}}

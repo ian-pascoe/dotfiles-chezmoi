@@ -7,7 +7,8 @@ actionlint = "latest"
 ast-grep = "latest"
 awscli = "latest"
 bat = "latest"
-btop = "latest"
+# These upstream packages are Unix-only; Windows ports are separate packages.
+btop = { version = "latest", os = ["linux", "macos"] }
 bun = "latest"
 chezmoi = "latest"
 difftastic = "latest"
@@ -52,7 +53,7 @@ stylua = "latest"
 syncthing = "latest"
 taplo = "latest"
 terraform = "latest"
-tmux = "latest"
+tmux = { version = "latest", os = ["linux", "macos"] }
 tree-sitter = "latest"
 uv = "latest"
 yazi = "latest"

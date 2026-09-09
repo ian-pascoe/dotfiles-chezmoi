@@ -1,0 +1,26 @@
+{{ if eq .chezmoi.os "windows" -}}
+{{ $configDir := env "XDG_CONFIG_HOME" | default (joinPath .chezmoi.homeDir ".config") -}}
+{{ $theme := joinPath $configDir "theme/bat.tmTheme" -}}
+{{ $batDir := env "BAT_CONFIG_DIR" | default (joinPath $configDir "bat") -}}
+{{ if stat $theme -}}
+$ErrorActionPreference = 'Stop'
+$env:MISE_GLOBAL_CONFIG_FILE = '{{ joinPath .chezmoi.homeDir ".config/mise/config.toml" | replace "'" "''" }}'
+# bat config: {{ include "dot_config/bat/config" | sha256sum }}
+{{ range glob (joinPath .chezmoi.sourceDir "dot_themes/*/bat.tmTheme") -}}
+# {{ base (dir .) }}: {{ include . | sha256sum }}
+{{ end -}}
+# selected bat theme: {{ include $theme | sha256sum }}
+$env:BAT_CONFIG_DIR = '{{ $batDir | replace "'" "''" }}'
+$themesDir = Join-Path $env:BAT_CONFIG_DIR 'themes'
+New-Item -ItemType Directory -Path $themesDir -Force | Out-Null
+$currentTheme = Join-Path $themesDir 'current.tmTheme'
+if (Test-Path -LiteralPath $currentTheme) {
+    $item = Get-Item -LiteralPath $currentTheme -Force
+    if ($item.PSIsContainer) { throw "Refusing to replace directory: $currentTheme" }
+    if ($item.LinkType) { Remove-Item -LiteralPath $currentTheme -Force }
+}
+Copy-Item -LiteralPath '{{ $theme | replace "'" "''" }}' -Destination $currentTheme -Force
+mise --cd '{{ joinPath .chezmoi.homeDir ".config/mise" | replace "'" "''" }}' exec -- bat cache --build
+if ($LASTEXITCODE -ne 0) { throw "bat cache rebuild failed with exit code $LASTEXITCODE" }
+{{ end -}}
+{{ end -}}

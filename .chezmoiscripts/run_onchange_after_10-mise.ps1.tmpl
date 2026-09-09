@@ -1,0 +1,7 @@
+{{ if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = 'Stop'
+$env:MISE_GLOBAL_CONFIG_FILE = '{{ joinPath .chezmoi.homeDir ".config/mise/config.toml" | replace "'" "''" }}'
+# mise config: {{ include "dot_config/mise/config.toml" | sha256sum }}
+mise --cd '{{ joinPath .chezmoi.homeDir ".config/mise" | replace "'" "''" }}' install
+if ($LASTEXITCODE -ne 0) { throw "mise install failed with exit code $LASTEXITCODE" }
+{{ end -}}

@@ -1,0 +1,7 @@
+{{ if ne .chezmoi.os "windows" -}}
+#!/bin/sh
+set -eu
+export MISE_GLOBAL_CONFIG_FILE="$HOME/.config/mise/config.toml"
+# Pi dependencies: {{ include "dot_pi/agent/package.json" | sha256sum }}
+mise --cd "$HOME/.config/mise" exec -- pnpm --dir "$HOME/.pi/agent" install --ignore-scripts
+{{ end -}}

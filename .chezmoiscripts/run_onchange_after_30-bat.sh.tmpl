@@ -1,0 +1,12 @@
+{{ if and (ne .chezmoi.os "windows") (stat (joinPath .chezmoi.homeDir ".config/theme/bat.tmTheme")) -}}
+#!/bin/sh
+set -eu
+export MISE_GLOBAL_CONFIG_FILE="$HOME/.config/mise/config.toml"
+# bat config: {{ include "dot_config/bat/config" | sha256sum }}
+{{ range glob (joinPath .chezmoi.sourceDir "dot_themes/*/bat.tmTheme") -}}
+# {{ base (dir .) }}: {{ include . | sha256sum }}
+{{ end -}}
+mkdir -p "$HOME/.config/bat/themes"
+ln -snf "$HOME/.config/theme/bat.tmTheme" "$HOME/.config/bat/themes/current.tmTheme"
+mise --cd "$HOME/.config/mise" exec -- bat cache --build
+{{ end -}}

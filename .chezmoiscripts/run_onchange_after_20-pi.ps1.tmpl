@@ -1,0 +1,7 @@
+{{ if eq .chezmoi.os "windows" -}}
+$ErrorActionPreference = 'Stop'
+$env:MISE_GLOBAL_CONFIG_FILE = '{{ joinPath .chezmoi.homeDir ".config/mise/config.toml" | replace "'" "''" }}'
+# Pi dependencies: {{ include "dot_pi/agent/package.json" | sha256sum }}
+mise --cd '{{ joinPath .chezmoi.homeDir ".config/mise" | replace "'" "''" }}' exec -- pnpm --dir '{{ joinPath .chezmoi.homeDir ".pi/agent" | replace "'" "''" }}' install --ignore-scripts
+if ($LASTEXITCODE -ne 0) { throw "Pi dependency install failed with exit code $LASTEXITCODE" }
+{{ end -}}
