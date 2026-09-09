@@ -44,7 +44,6 @@ docker-compose-plugin
 dosfstools
 dpkg
 e2fsprogs
-et
 ethtool
 findutils
 flex
@@ -282,7 +281,6 @@ reportbug
 screen
 sed
 socat
-speedtest
 sqv
 ssh-import-id
 sudo
