@@ -271,7 +271,6 @@ packages-microsoft-prod
 passwd
 patch
 pciutils
-pcmanfm
 perl-base
 pkg-config
 polkitd
@@ -298,7 +297,6 @@ tar
 tcpdump
 tigervnc-common
 tigervnc-standalone-server
-tint2
 traceroute
 tzdata
 ufw

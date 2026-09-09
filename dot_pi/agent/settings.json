@@ -40,7 +40,7 @@
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6-astra",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "medium",
   "enabledModels": [
     "openai-codex/gpt-6-astra",
     "openai-codex/gpt-5.6-sol",
@@ -54,7 +54,7 @@
   "showCacheMissNotices": true,
   "skills": ["~/.cua-driver/skills/cua-driver"],
   "tuiMode": "fullscreen",
-  "theme": "everforest",
+  "theme": "dracula",
   "minimalSubagents": {
     "modelRoles": {
       "debug": {
@@ -62,11 +62,11 @@
         "hint": "Use to diagnose failures or isolate regressions."
       },
       "default": {
-        "model": "openai-codex/gpt-6-astra:high",
+        "model": "openai-codex/gpt-6-astra:medium",
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
-        "model": "openai-codex/gpt-5.6-luna:high",
+        "model": "openai-codex/gpt-5.6-luna:medium",
         "hint": "Use to locate code, trace behavior, or find reusable patterns."
       },
       "plan": {
@@ -86,7 +86,7 @@
         "hint": "Use for threat modeling, security audits, or vulnerability assessment."
       },
       "task": {
-        "model": "openai-codex/gpt-6-astra:medium",
+        "model": "openai-codex/gpt-6-astra:low",
         "hint": "Use when a scoped implementation task has a settled approach."
       }
     }
