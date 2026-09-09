@@ -42,10 +42,15 @@ test("the command deck renders concise editor status and an empty prompt", async
     // SAFETY: The command deck only uses the two theme methods implemented above.
   } as unknown as Theme;
   const editorTheme = {
-    borderColor: (text: string) => text,
-    selectList: {},
-    // SAFETY: Rendering an editor with no autocomplete does not read the select-list theme.
-  } as EditorTheme;
+    borderColor: (text: string) => `\x1b[36m${text}\x1b[0m`,
+    selectList: {
+      selectedPrefix: (text: string) => text,
+      selectedText: (text: string) => text,
+      description: (text: string) => text,
+      scrollInfo: (text: string) => text,
+      noMatch: (text: string) => text,
+    },
+  } satisfies EditorTheme;
 
   const ui = {
     theme,
@@ -118,8 +123,10 @@ test("the command deck renders concise editor status and an empty prompt", async
   assert.equal(footerWasReplaced, true);
   assert.ok(editorFactory);
 
-  // SAFETY: Rendering does not consult keybindings until input is handled.
-  const editor = editorFactory(tui, editorTheme, {} as KeybindingsManager);
+  // SAFETY: No application shortcuts are needed for autocomplete input.
+  const editor = editorFactory(tui, editorTheme, {
+    matches: () => false,
+  } as unknown as KeybindingsManager);
   const idleLines = editor.render(120);
   assert.ok(idleLines.every((line) => visibleWidth(line) === 120));
   assert.match(idleLines[0] ?? "", /gpt-test · high/);
@@ -135,4 +142,18 @@ test("the command deck renders concise editor status and an empty prompt", async
   assert.ok(usedColors.includes("syntaxFunction"));
   assert.ok(usedColors.includes("thinkingHigh"));
   assert.ok(editor.render(4).every((line) => visibleWidth(line) === 4));
+
+  assert.ok(editor.setAutocompleteProvider);
+  editor.setAutocompleteProvider({
+    async getSuggestions() {
+      return { prefix: "/", items: [{ value: "/unique", label: "/unique" }] };
+    },
+    applyCompletion: (lines, cursorLine, cursorCol) => ({ lines, cursorLine, cursorCol }),
+  });
+  editor.handleInput("/");
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  const completionLines = editor.render(120);
+  assert.equal(completionLines.length, 4);
+  assert.match(completionLines[2] ?? "", /project · main/);
+  assert.match(completionLines[3] ?? "", /\/unique/);
 });

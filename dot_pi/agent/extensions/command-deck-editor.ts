@@ -43,7 +43,7 @@ function findCommandDeckBottomBorder(
   width: number,
   borderColor: (text: string) => string,
 ) {
-  const plainBorder = borderColor("─").repeat(width);
+  const plainBorder = borderColor("─".repeat(width));
   const borderIndex = lines.indexOf(plainBorder, 2);
   if (borderIndex >= 0) return borderIndex;
 
