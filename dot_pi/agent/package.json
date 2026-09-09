@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "pi-vim": "0.14.2",
+    "pi-vim": "^0.14.2",
     "tiktoken": "^1.0.22"
   },
   "devDependencies": {
