@@ -6,7 +6,7 @@ CONTEXT-MAP.md
 **/docs/adr/**
 
 # JS/TS
-node_modules/**
+**/node_modules/**
 package.json
 package-lock.json
 bun.lock
