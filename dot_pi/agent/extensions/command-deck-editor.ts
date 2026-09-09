@@ -167,10 +167,11 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
         private readonly bindings: KeybindingsManager,
       ) {
         super(tui, theme, bindings);
+        super.handleInput("\x1b");
         this.setPaddingX(0);
         this.setClipboardMirrorPolicy("never");
         this.setClipboardReadFn(() => null);
-        this.setExCommandSettings({ piDispatch: false, copyInputToClipboard: false });
+        this.setExCommandSettings({ piDispatch: true, copyInputToClipboard: false });
         this.setNotifyFn((message) => ctx.ui.notify(message, "info"));
         this.setQuitFn(() => ctx.shutdown());
         restoreCursor?.();
@@ -189,6 +190,7 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
         this.cancelVimCommand();
         if (this.getMode() !== "insert") super.handleInput("i");
         super.setText(text);
+        super.handleInput("\x1b");
       }
 
       override handleInput(data: string): void {
@@ -227,7 +229,7 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
           this.bindings.matches(data, "tui.input.submit") &&
           !this.disableSubmit &&
           this.getText() === "" &&
-          this.getMode() !== "insert"
+          this.getMode() !== "normal"
         )
           this.setText("");
       }

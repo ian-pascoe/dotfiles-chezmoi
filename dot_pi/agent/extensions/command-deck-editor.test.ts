@@ -25,6 +25,7 @@ async function createDeck() {
   let footerWasReplaced = false;
   let footerComponent: Component | undefined;
   const usedColors: string[] = [];
+  const notifications: string[] = [];
 
   const tui = {
     terminal: { rows: 40 },
@@ -78,7 +79,10 @@ async function createDeck() {
     setEditorComponent(factory: Parameters<ExtensionUIContext["setEditorComponent"]>[0]) {
       editorFactory = factory;
     },
-    // SAFETY: The extension only calls the three UI methods implemented by this recording context.
+    notify(message: string) {
+      notifications.push(message);
+    },
+    // SAFETY: The extension only calls the UI methods implemented by this recording context.
   } as unknown as ExtensionUIContext;
   const context = {
     ui,
@@ -134,7 +138,7 @@ async function createDeck() {
     }),
   );
   assert.ok(editor instanceof CustomEditor);
-  return { editor, usedColors, footerComponent };
+  return { editor, usedColors, footerComponent, notifications };
 }
 
 function keys(editor: CustomEditor, ...inputs: string[]) {
@@ -170,10 +174,10 @@ test("the command deck renders concise editor status and an empty prompt", async
   assert.ok(idleLines.every((line) => visibleWidth(line) === 120));
   assert.match(idleLines[0] ?? "", /gpt-test · high/);
   assert.match(idleLines[0] ?? "", /project · main · ⇡2 · ⇣1 · \?1 · 1/);
-  assert.doesNotMatch(idleLines[0] ?? "", /INSERT/);
+  assert.doesNotMatch(idleLines[0] ?? "", /NORMAL/);
   assert.doesNotMatch(idleLines[0] ?? "", /ready|working/);
   assert.match(idleLines[1] ?? "", /Type your prompt…/);
-  assert.match(idleLines.at(-1) ?? "", /INSERT/);
+  assert.match(idleLines.at(-1) ?? "", /NORMAL/);
   assert.doesNotMatch(idleLines.at(-1) ?? "", /project · main/);
   assert.match(idleLines.at(-1) ?? "", /cache 70\.0% · ctx 38%/);
   assert.doesNotMatch(idleLines.at(-1) ?? "", /MCP|tok\/s|running/);
@@ -191,7 +195,7 @@ test("the command deck renders concise editor status and an empty prompt", async
     },
     applyCompletion: (lines, cursorLine, cursorCol) => ({ lines, cursorLine, cursorCol }),
   });
-  editor.handleInput("/");
+  keys(editor, "i", "/");
   await new Promise((resolve) => setTimeout(resolve, 0));
   const completionLines = editor.render(120);
   assert.equal(completionLines.length, 4);
@@ -230,6 +234,19 @@ test("one Escape leaves Visual mode even with an unfinished count or motion", as
       expectMode(editor, "NORMAL");
       assert.equal(editor.getText(), "hello");
     }
+  }
+});
+
+test("Ex bash commands preserve Pi's ! and !! submit prefixes", async () => {
+  const { editor, notifications } = await createDeck();
+  const submitted: string[] = [];
+  editor.onSubmit = (text) => submitted.push(text);
+  for (const command of ["!whoami", "!!whoami"]) {
+    editor.setText("draft prompt");
+    keys(editor, ESC, ":", ...command, "\r");
+    assert.deepEqual(notifications, []);
+    assert.equal(submitted.at(-1), command);
+    assert.equal(editor.getText(), "draft prompt");
   }
 });
 
@@ -272,7 +289,7 @@ test("Pi interrupt and external-editor shortcuts survive Vim prefixes and autoco
     },
     applyCompletion: (lines, cursorLine, cursorCol) => ({ lines, cursorLine, cursorCol }),
   });
-  keys(editor, "/");
+  keys(editor, "i", "/");
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(editor.isShowingAutocomplete(), true);
   keys(editor, "\x1c");
@@ -281,19 +298,25 @@ test("Pi interrupt and external-editor shortcuts survive Vim prefixes and autoco
   assert.equal(interrupted, 1, "Escape changes mode, never interrupts");
 });
 
-test("submitted and externally replaced prompts return to Insert mode", async () => {
+test("submitted, cleared and externally replaced prompts return to Normal mode", async () => {
   const { editor } = await createDeck();
   const submitted: string[] = [];
   editor.onSubmit = (text) => submitted.push(text);
   editor.setText("hello");
   keys(editor, ESC, "\r");
   assert.deepEqual(submitted, ["hello"]);
-  expectMode(editor, "INSERT");
-  keys(editor, "next");
-  assert.equal(editor.getText(), "next");
-  keys(editor, ESC, "v", "2");
+  expectMode(editor, "NORMAL");
+  keys(editor, "i", "next", "\r");
+  assert.deepEqual(submitted, ["hello", "next"]);
+  expectMode(editor, "NORMAL");
+  editor.setText("draft");
+  keys(editor, "v", "2");
   editor.setText("restored");
-  expectMode(editor, "INSERT");
-  keys(editor, "!");
+  expectMode(editor, "NORMAL");
+  assert.deepEqual(editor.getCursor(), { line: 0, col: 7 });
+  keys(editor, "a", "!");
   assert.equal(editor.getText(), "restored!");
+  editor.setText("");
+  expectMode(editor, "NORMAL");
+  assert.equal(editor.getText(), "");
 });

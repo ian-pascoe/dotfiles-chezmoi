@@ -7,7 +7,8 @@ extension in `settings.json`: that would replace the command deck.
 
 ## Prompt
 
-New, submitted, cleared and externally replaced prompts start in **Insert** mode.
+New, submitted, cleared and externally replaced prompts start in **Normal** mode.
+Press `i` to type or `a` to append.
 `Esc` cancels pending Vim commands, leaves Visual mode, or enters Normal mode;
 it never interrupts generation. The command deck shows the current mode.
 
@@ -25,9 +26,12 @@ it never interrupts generation. The command deck shows the current mode.
 | `Ctrl+c`                          | Pi's normal clear/exit behavior                              |
 | `Alt+t`                           | Open the session tree (double-Escape behavior is disabled)   |
 
-Normal-mode `:` uses pi-vim's small Ex interface (`:q` exits); Pi/shell command
-forwarding and clipboard-copy Ex commands are disabled. Use Pi's `/commands`
-in Insert mode instead.
+Normal-mode `:` uses pi-vim's small Ex interface (`:q` exits). `:!command` runs
+through Pi's normal bash route and includes its output in context; `:!!command`
+runs it with output excluded from context. Both preserve the composed prompt.
+The same `!command` / `!!command` prefixes work directly in Insert mode. Built-in
+Pi commands can also be dispatched through Ex (for example, `:settings`);
+clipboard-copy Ex commands remain disabled.
 
 ## Menus and fullscreen transcript
 
