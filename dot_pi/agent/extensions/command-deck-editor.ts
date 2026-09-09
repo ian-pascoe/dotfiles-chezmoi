@@ -8,7 +8,9 @@ import {
   type Theme,
 } from "@earendil-works/pi-coding-agent";
 import type { EditorTheme, TUI } from "@earendil-works/pi-tui";
-import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import { CURSOR_MARKER, matchesKey, truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import { ModalEditor } from "pi-vim/index.js";
+import { enableCursorShapeSupport, type CursorShapeCleanup } from "pi-vim/cursor-shape.js";
 
 const EMPTY_PROMPT = " Type your prompt…";
 const CURSOR = "\x1b[7m \x1b[0m";
@@ -106,6 +108,7 @@ function formatCommandDeckGitStatus(statusOutput: string | undefined, theme: The
 /** Replaces Pi's editor and footer with a compact command deck that follows the active theme. */
 export default function commandDeckEditor(pi: ExtensionAPI) {
   let activeTui: TUI | undefined;
+  let restoreCursor: CursorShapeCleanup | null = null;
   let getGitBranch = (): string | null => null;
   let gitStatusOutput: string | undefined;
 
@@ -121,7 +124,9 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
     activeTui?.requestRender();
   };
 
-  pi.on("session_shutdown", () => {
+  pi.on("session_shutdown", (event) => {
+    restoreCursor?.(event);
+    restoreCursor = null;
     activeTui = undefined;
     gitStatusOutput = undefined;
   });
@@ -155,14 +160,88 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
       };
     });
 
-    class CommandDeckEditor extends CustomEditor {
-      constructor(tui: TUI, theme: EditorTheme, keybindings: KeybindingsManager) {
-        super(tui, theme, keybindings, { paddingX: 0 });
+    class CommandDeckEditor extends ModalEditor {
+      constructor(
+        tui: TUI,
+        theme: EditorTheme,
+        private readonly bindings: KeybindingsManager,
+      ) {
+        super(tui, theme, bindings);
+        this.setPaddingX(0);
+        this.setClipboardMirrorPolicy("never");
+        this.setClipboardReadFn(() => null);
+        this.setExCommandSettings({ piDispatch: false, copyInputToClipboard: false });
+        this.setNotifyFn((message) => ctx.ui.notify(message, "info"));
+        this.setQuitFn(() => ctx.shutdown());
+        restoreCursor?.();
+        restoreCursor = enableCursorShapeSupport(tui);
         activeTui = tui;
       }
 
+      private cancelVimCommand(): void {
+        // pi-vim needs two Escapes to abandon an incomplete bracketed paste.
+        this.handleInput("\x1b");
+        this.handleInput("\x1b");
+      }
+
+      override setText(text: string): void {
+        // pi-vim has no reset method; use its input API before replacing the buffer.
+        this.cancelVimCommand();
+        if (this.getMode() !== "insert") super.handleInput("i");
+        super.setText(text);
+      }
+
+      override handleInput(data: string): void {
+        if (matchesKey(data, "escape")) {
+          const onEscape = this.onEscape;
+          this.onEscape = () => {};
+          try {
+            if (this.isShowingAutocomplete()) CustomEditor.prototype.handleInput.call(this, data);
+            super.handleInput(data);
+            if (this.getMode() === "visual" || this.getMode() === "visual-line") {
+              super.handleInput(data);
+            }
+          } finally {
+            this.onEscape = onEscape;
+          }
+          return;
+        }
+        // Host actions must not be swallowed by pending Vim commands (notably r/g).
+        if (this.bindings.matches(data, "app.interrupt")) {
+          if (this.getMode() !== "insert") this.cancelVimCommand();
+          (this.onEscape ?? this.actionHandlers.get("app.interrupt"))?.();
+          return;
+        }
+        if (this.onExtensionShortcut?.(data)) return;
+        if (
+          this.bindings.matches(data, "app.exit") ||
+          this.bindings.matches(data, "app.clipboard.pasteImage") ||
+          [...this.actionHandlers.keys()].some((action) => this.bindings.matches(data, action))
+        ) {
+          if (this.getMode() !== "insert") this.cancelVimCommand();
+          CustomEditor.prototype.handleInput.call(this, data);
+          return;
+        }
+        super.handleInput(data);
+        if (
+          this.bindings.matches(data, "tui.input.submit") &&
+          !this.disableSubmit &&
+          this.getText() === "" &&
+          this.getMode() !== "insert"
+        )
+          this.setText("");
+      }
+
       render(width: number): string[] {
+        // pi-vim 0.14.2 paints its status over the last row, even during autocomplete.
+        const completionRow = this.isShowingAutocomplete()
+          ? CustomEditor.prototype.render.call(this, width).at(-1)
+          : undefined;
         const lines = super.render(width);
+        const vimStatus = stripVTControlCharacters(lines.at(-1) ?? "").match(
+          / (?:INSERT|NORMAL|VISUAL|V-LINE|EX) .*$/,
+        )?.[0];
+        if (completionRow !== undefined) lines[lines.length - 1] = completionRow;
         if (lines.length < 2) return lines;
 
         const theme = ctx.ui.theme;
@@ -180,7 +259,8 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
         ].filter((status) => status !== undefined);
         const bottomRight = ` ${bottomStatus.join(theme.fg("dim", " · "))} `;
 
-        lines[0] = renderCommandDeckBorder("", topRight, width, borderColor);
+        const mode = theme.fg("accent", vimStatus ?? ` ${this.getMode().toUpperCase()} `);
+        lines[0] = renderCommandDeckBorder(mode, topRight, width, borderColor);
         lines[bottomBorderIndex] = renderCommandDeckBorder(
           bottomLeft,
           bottomRight,
@@ -190,7 +270,9 @@ export default function commandDeckEditor(pi: ExtensionAPI) {
 
         if (this.getText() === "" && lines[1]) {
           lines[1] = truncateToWidth(
-            lines[1].replace(CURSOR, `${CURSOR}${theme.fg("muted", EMPTY_PROMPT)}`),
+            lines[1]
+              .replace(CURSOR, `${CURSOR}${theme.fg("muted", EMPTY_PROMPT)}`)
+              .replace(`${CURSOR_MARKER} `, `${CURSOR_MARKER} ${theme.fg("muted", EMPTY_PROMPT)}`),
             width,
             "",
           );
