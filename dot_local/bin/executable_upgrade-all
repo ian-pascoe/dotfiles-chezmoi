@@ -130,7 +130,8 @@ fi
 # Pi
 if has_cmd pi; then
   echo "Updating Pi packages..."
-  pi update --all
+  # Mise owns the Pi CLI; Pi only updates its extension packages here.
+  pi update --extensions
   echo "Pi packages updated successfully!"
   (
     echo "Cleaning up Pi cache..."
@@ -188,9 +189,9 @@ fi
 ####################################################################
 # Package manifests
 if has_cmd sync-package-manifests; then
-  echo "Refreshing package manifests..."
+  echo "Exporting package inventory..."
   sync-package-manifests
-  echo "Package manifests refreshed successfully!"
+  echo "Package inventory exported successfully!"
 fi
 ####################################################################
 # Dotfiles

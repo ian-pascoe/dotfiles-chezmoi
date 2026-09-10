@@ -1,16 +1,2 @@
-# cargo-installed binaries
-# One crate spec per line.
-cargo-audit
-cargo-binstall
-cargo-cache
-cargo-deny
-cargo-edit
-cargo-nextest
-cargo-outdated
-cargo-run-bin
-cargo-update
-cargo-watch
-cargo-zigbuild
-cross
-lspctl
-terminal-control
+# CLI installs are managed in ~/.config/mise/config.toml.
+# Keep this manifest empty to avoid duplicate package-manager ownership.

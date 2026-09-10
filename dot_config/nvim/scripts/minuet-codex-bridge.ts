@@ -1,8 +1,10 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { accessSync, constants, readFileSync } from "node:fs";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { delimiter, join } from "node:path";
+import { createRequire } from "node:module";
+import { delimiter, isAbsolute, join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import type { Api, AssistantMessage, Context, Model } from "@earendil-works/pi-ai";
@@ -155,14 +157,35 @@ function resolvePiCodingAgentEntry(): string {
   try {
     return import.meta.resolve("@earendil-works/pi-coding-agent");
   } catch {
+    // Deployed configs need to locate the global installation instead.
+  }
+
+  try {
+    const installRoot = execFileSync(
+      process.platform === "win32" ? "mise.exe" : "mise",
+      ["where", "npm:@earendil-works/pi-coding-agent"],
+      { encoding: "utf8", timeout: 5_000, stdio: ["ignore", "pipe", "pipe"] },
+    ).trim();
+    if (!isAbsolute(installRoot)) throw new Error("Mise returned no absolute install path");
+    const entry = createRequire(join(installRoot, "package.json")).resolve(
+      "@earendil-works/pi-coding-agent",
+    );
+    return pathToFileURL(entry).href;
+  } catch {
+    // Retain compatibility with older pnpm global installations.
     const piExecutable = findExecutable("pi");
-    if (!piExecutable) throw new Error("Minuet Codex bridge startup failed: pi is not on PATH");
+    if (!piExecutable)
+      throw new Error(
+        "Minuet Codex bridge startup failed: cannot locate Pi via Mise or PATH; set PI_PACKAGE_DIR",
+      );
 
     const shim = readFileSync(piExecutable, "utf8");
     const cliPath = /cmd-shim-target=(.+?)(?:\r?\n|$)/u.exec(shim)?.[1]?.trim();
     const marker = "dist/bundle/cli.js";
     if (!cliPath?.replaceAll("\\", "/").endsWith(marker)) {
-      throw new Error("Minuet Codex bridge startup failed: cannot locate Pi's installed package");
+      throw new Error(
+        "Minuet Codex bridge startup failed: cannot locate Pi via Mise or pnpm shim; set PI_PACKAGE_DIR",
+      );
     }
     return pathToFileURL(join(cliPath.slice(0, -marker.length), "dist", "index.js")).href;
   }

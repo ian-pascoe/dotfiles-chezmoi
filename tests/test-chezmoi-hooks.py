@@ -8,7 +8,7 @@ import subprocess
 import tempfile
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 CHEZMOI = shutil.which("chezmoi")
 PWSH = shutil.which("pwsh")
 assert CHEZMOI and PWSH, "chezmoi and PowerShell 7 (pwsh) are required"

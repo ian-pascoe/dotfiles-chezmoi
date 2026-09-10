@@ -42,7 +42,7 @@
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-6-astra",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "enabledModels": [
     "openai-codex/gpt-6-astra",
     "openai-codex/gpt-5.6-sol",
@@ -61,11 +61,11 @@
   "minimalSubagents": {
     "modelRoles": {
       "debug": {
-        "model": "openai-codex/gpt-6-astra:high",
+        "model": "openai-codex/gpt-6-astra:xhigh",
         "hint": "Use to diagnose failures or isolate regressions."
       },
       "default": {
-        "model": "openai-codex/gpt-6-astra:medium",
+        "model": "openai-codex/gpt-6-astra:high",
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
@@ -89,7 +89,7 @@
         "hint": "Use for threat modeling, security audits, or vulnerability assessment."
       },
       "task": {
-        "model": "openai-codex/gpt-6-astra:low",
+        "model": "openai-codex/gpt-6-astra:medium",
         "hint": "Use when a scoped implementation task has a settled approach."
       }
     }

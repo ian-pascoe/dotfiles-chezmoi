@@ -59,7 +59,7 @@ Do not run scripts alone against stale or missing deployed inputs. Preview with
 ## Verification
 
 ```sh
-python3 docs/tests/test-chezmoi-hooks.py
+python3 tests/test-chezmoi-hooks.py
 ```
 
 Run this harness on Linux with Python 3, chezmoi and PowerShell 7 (`pwsh`).

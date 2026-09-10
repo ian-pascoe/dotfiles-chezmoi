@@ -1,12 +1,2 @@
-# pnpm global packages
-# One package spec per line.
-@earendil-works/pi-coding-agent
-@firecrawl/anydoc
-@googleworkspace/cli
-@openai/codex
-@playwright/cli
-@pnpm/exe
-agent-browser
-hunkdiff
-impeccable
-playwright
+# CLI installs are managed in ~/.config/mise/config.toml.
+# Keep this manifest empty to avoid duplicate package-manager ownership.

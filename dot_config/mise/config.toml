@@ -1,6 +1,7 @@
 [settings]
 aqua.github_attestations = false
 
+# Shared CLI ownership lives here. OS packages/libraries stay in apt, Scoop and Brew.
 [tools]
 7zip = "latest"
 actionlint = "latest"
@@ -10,17 +11,23 @@ bat = "latest"
 # These upstream packages are Unix-only; Windows ports are separate packages.
 btop = { version = "latest", os = ["linux", "macos"] }
 bun = "latest"
+cargo-binstall = "latest"
+cargo-deny = "latest"
 chezmoi = "latest"
+cmake = "latest"
+codex = "latest"
+delta = "latest"
 difftastic = "latest"
+dotnet = "latest"
+fastfetch = "latest"
 fd = "latest"
 ffmpeg = "latest"
 fzf = "latest"
 gh = "latest"
 git-lfs = "latest"
+glow = "latest"
 go = "latest"
-"go:github.com/go-delve/delve/cmd/dlv" = "latest"
-"go:golang.org/x/tools/cmd/goimports" = "latest"
-"go:mvdan.cc/gofumpt" = "latest"
+goreleaser = "latest"
 gradle = "latest"
 helm = "latest"
 herdr = "latest"
@@ -34,10 +41,16 @@ lazygit = "latest"
 lsd = "latest"
 lua = "latest"
 markdownlint-cli2 = "latest"
+mold = { version = "latest", os = ["linux"] }
 neovim = "latest"
+ninja = "latest"
 node = "latest"
 nub = { version = "latest", allow_builds = ["@nubjs/nub"] }
+nushell = "latest"
+pipx = "latest"
+playwright = "latest"
 pnpm = "latest"
+powershell = "latest"
 python = ["latest", "3.13"]
 resvg = "latest"
 ripgrep = "latest"
@@ -58,6 +71,46 @@ tree-sitter = "latest"
 uv = "latest"
 yazi = "latest"
 yq = "latest"
+yt-dlp = "latest"
 zellij = "latest"
-zig = "latest"
+zig = "0.15.2"
 zoxide = "latest"
+
+# Explicit backends cover tools without a registry shorthand.
+"go:github.com/go-delve/delve/cmd/dlv" = "latest"
+"go:github.com/simeji/jid/cmd/jid" = "latest"
+"go:golang.org/x/tools/cmd/goimports" = "latest"
+"go:mvdan.cc/gofumpt" = "latest"
+
+"cargo:cargo-audit" = "latest"
+"cargo:cargo-cache" = "latest"
+"cargo:cargo-edit" = "latest"
+"cargo:cargo-nextest" = "latest"
+"cargo:cargo-outdated" = "latest"
+"cargo:cargo-run-bin" = "latest"
+"cargo:cargo-update" = "latest"
+"cargo:cargo-watch" = "latest"
+"cargo:cargo-zigbuild" = "latest"
+"cargo:cross" = "latest"
+"cargo:lspctl" = "latest"
+# Windows persistent sessions await upstream terminal-control PR #16.
+"cargo:terminal-control" = { version = "latest", os = [
+  "linux",
+  "macos",
+], depends = [
+  "zig",
+] }
+
+"npm:@earendil-works/pi-coding-agent" = "latest"
+"npm:@firecrawl/anydoc" = "latest"
+"npm:@googleworkspace/cli" = "latest"
+"npm:agent-browser" = "latest"
+"npm:hunkdiff" = "latest"
+"npm:impeccable" = "latest"
+
+"pipx:browser-use" = "latest"
+"pipx:camoufox" = "latest"
+"pipx:pyflakes" = "latest"
+"pipx:pytest" = "latest"
+"pipx:spotdl" = "latest"
+"pipx:trafilatura" = "latest"

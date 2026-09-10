@@ -1,10 +1,2 @@
-# uv tools
-# One tool spec per line.
-browser-use
-camoufox
-pipx
-pyflakes
-pytest
-spotdl
-trafilatura
-yt-dlp
+# CLI installs are managed in ~/.config/mise/config.toml.
+# Keep this manifest empty to avoid duplicate package-manager ownership.

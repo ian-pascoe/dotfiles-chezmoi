@@ -36,6 +36,7 @@ turbo.json
 **/*.bak
 
 # Tests
+tests/**
 **/vitest.config.ts
 **/*.test.ts
 
@@ -71,6 +72,8 @@ Documents/PowerShell
 {{ if eq .chezmoi.os "windows" }}
 .local/bin/*
 !.local/bin/*.ps1
+!.local/bin/install-package-manifests
+!.local/bin/sync-package-manifests
 {{ end }}
 
 # Windows and Mac Only Ignores

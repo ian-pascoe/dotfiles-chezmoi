@@ -13,28 +13,18 @@ brew "bash-completion"
 brew "bison"
 # Get/set bluetooth power and discoverable state
 brew "blueutil"
-# Resource monitor. C++ version and continuation of bashtop and bpytop
-brew "btop"
 # GNU multiple precision arithmetic library
 brew "gmp"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
 # TIFF library and utilities
 brew "libtiff"
-# Like neofetch, but much faster because written mostly in C
-brew "fastfetch"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
-# Play, record, convert, and stream select audio and video codecs
-brew "ffmpeg"
-# Command-line fuzzy finder written in Go
-brew "fzf"
 # GNU compiler collection
 brew "gcc"
 # Distributed revision control system
 brew "git"
-# Deliver Go binaries as fast and easily as possible
-brew "goreleaser"
 # Improved top (interactive process viewer)
 brew "htop"
 # Get events and tasks from the macOS calendar database
@@ -43,8 +33,6 @@ brew "ical-buddy"
 brew "libffi"
 # YAML Parser
 brew "libyaml"
-# Powerful, lightweight programming language
-brew "lua"
 # Package manager for the Lua programming language
 brew "luarocks"
 # Control and observe media playback from the command-line
@@ -53,16 +41,10 @@ brew "media-control"
 brew "mise"
 # Remote terminal application
 brew "mosh"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.14"
 # Port scanning utility for large networks
 brew "nmap"
-# Open-source, cross-platform JavaScript runtime environment
-brew "node"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.13"
 # Create beautiful image of your source code
 brew "silicon"
 # Editor of encrypted files

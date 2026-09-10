@@ -1,82 +1,123 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
+"""Export host inventories without changing curated install manifests (Python 3.9+)."""
+import argparse
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
 
-set -euo pipefail
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "lib"))
+from package_manifests import (  # noqa: E402
+    MANAGERS, InventoryUnavailable, capture, find_executable, inventory, name_of, scoop_apps,
+)
 
-has_cmd() {
-  command -v "$1" >/dev/null 2>&1
-}
 
-write_manifest() {
-  local file="$1"
-  local title="$2"
-  local description="$3"
-  local tmp
+def json_snapshot(data):
+    return json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
 
-  tmp="$(mktemp)"
-  {
-    printf '# %s\n' "$title"
-    printf '# %s\n' "$description"
-    sort -u | sed '/^[[:space:]]*$/d'
-  } >"$tmp"
 
-  if [ -f "$file" ] && cmp -s "$tmp" "$file"; then
-    rm -f "$tmp"
-  else
-    mv "$tmp" "$file"
-  fi
-}
+def collect():
+    snapshots = {}
+    for manager, (filename, executable, _) in MANAGERS.items():
+        executable = "apt-mark" if manager == "apt" else executable
+        if not find_executable(executable):
+            print(f"Skipping {manager}: not installed; previous snapshot left unchanged.")
+            continue
+        if manager == "apt":
+            names = set(capture("apt-mark", "showmanual").splitlines()) - {""}
+            if any(name_of("apt", name) != name for name in names):
+                raise ValueError("Invalid apt inventory")
+        else:
+            try:
+                names = inventory(manager, for_pruning=False)[0]
+            except InventoryUnavailable as error:
+                print(f"Skipping {manager}: {error}; previous snapshot left unchanged.")
+                continue
+        snapshots[filename] = f"# {manager} host inventory (not install intent)\n# One package name per line.\n" + "".join(name + "\n" for name in sorted(names))
+    for manager, command, filename in (
+        ("scoop", ["scoop", "export"], "scoopfile.json"),
+        ("mise", ["mise", "ls", "--installed", "--json"], "mise.json"),
+        ("brew", ["brew", "info", "--json=v2", "--installed"], "brew.json"),
+    ):
+        if not find_executable(manager):
+            print(f"Skipping {manager}: not installed; previous snapshot left unchanged.")
+            continue
+        data = json.loads(capture(*command))
+        if not isinstance(data, dict):
+            raise ValueError(f"Invalid {manager} JSON inventory")
+        if manager == "scoop":
+            apps = scoop_apps(data)
+            data["apps"] = [apps[key] for key in sorted(apps)]
+            if "buckets" in data:
+                buckets = data["buckets"]
+                if not isinstance(buckets, list) or not all(isinstance(bucket, dict) for bucket in buckets):
+                    raise ValueError("Invalid Scoop bucket inventory")
+                data["buckets"] = sorted(buckets, key=json_snapshot)
+        elif manager == "mise":
+            if not all(isinstance(records, list) and all(isinstance(record, dict) and isinstance(record.get("version"), str) for record in records) for records in data.values()):
+                raise ValueError("Invalid Mise version inventory")
+            data = {name: sorted(records, key=json_snapshot) for name, records in data.items()}
+        else:
+            for key in ("formulae", "casks"):
+                if not isinstance(data.get(key), list) or not all(isinstance(record, dict) for record in data[key]):
+                    raise ValueError("Invalid Homebrew inventory")
+                data[key] = sorted(data[key], key=json_snapshot)
+        snapshots[filename] = json_snapshot(data)
+    return snapshots
 
-if ! has_cmd chezmoi; then
-  echo "chezmoi is required to locate the source directory" >&2
-  exit 1
-fi
 
-MANIFEST_DIR="${MANIFEST_DIR:-$HOME/.config/packages}"
-mkdir -p "$MANIFEST_DIR"
+def write_snapshot(path, content):
+    if path.exists() and path.read_bytes() == content.encode("utf-8"):
+        return
+    # Same-directory replacement is atomic; temporary snapshots start owner-only.
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", newline="\n", dir=path.parent, prefix=".inventory-", delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
-if has_cmd apt-mark; then
-  apt-mark showmanual
-fi | write_manifest "$MANIFEST_DIR/apt.txt" "Debian/Ubuntu apt packages" "One package name per line."
 
-if has_cmd npm; then
-  npm_root="$(npm root -g)"
-  npm ls -g --depth=0 --parseable 2>/dev/null |
-    while IFS= read -r path; do
-      case "$path" in
-      "$npm_root"/*) printf '%s\n' "${path#"$npm_root/"}" ;;
-      esac
-    done
-fi | write_manifest "$MANIFEST_DIR/npm-global.txt" "npm global packages" "One package spec per line."
+def main():
+    state = Path(os.environ.get("XDG_STATE_HOME", str(Path.home() / ".local/state")))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-dir", "--manifest-dir", type=Path,
+                        default=Path(os.environ.get("MANIFEST_DIR", str(state / "package-inventory"))),
+                        help="Inventory destination (MANIFEST_DIR overrides the XDG state default)")
+    parser.add_argument("--dry-run", action="store_true", help="Collect and validate inventories, but write nothing")
+    args = parser.parse_args()
+    output = args.output_dir.resolve()
+    config = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config")))
+    curated = {config / "packages", config / "scoop", Path.home() / ".config/packages", Path.home() / ".config/scoop"}
+    if os.environ.get("PACKAGE_MANIFEST_DIR"):
+        curated.add(Path(os.environ["PACKAGE_MANIFEST_DIR"]))
+    if output in {path.resolve() for path in curated}:
+        raise ValueError(f"Refusing to overwrite curated install manifests: {output}")
+    print(f"Exporting host package inventory to {output} (inventory only; not curated install manifests).")
+    # Unexpected collector failures abort before any existing snapshot changes.
+    snapshots = collect()
+    if snapshots and not args.dry_run:
+        output.mkdir(parents=True, exist_ok=True)
+    for filename, content in snapshots.items():
+        path = output / filename
+        if args.dry_run:
+            print(f"Would export {path}")
+        else:
+            write_snapshot(path, content)
+            print(f"Exported {path}")
 
-if has_cmd bun; then
-  bun pm ls -g 2>/dev/null |
-    sed -E 's/[├└│─]+/ /g; s/^[[:space:]]*//; /^[[:space:]]*$/d; /^bun[[:space:]]/d; s/[[:space:]].*$//; s/@[^/@]+$//' || true
-fi | write_manifest "$MANIFEST_DIR/bun-global.txt" "Bun global packages" "One package spec per line."
 
-if has_cmd pnpm && has_cmd node; then
-  pnpm list -g --depth=0 --json 2>/dev/null |
-    node -e '
-      const fs = require("fs");
-      const input = fs.readFileSync(0, "utf8").trim();
-      if (!input) process.exit(0);
-      const data = JSON.parse(input);
-      for (const item of data) {
-        for (const name of Object.keys(item.dependencies || {})) console.log(name);
-      }
-    ' || true
-fi | write_manifest "$MANIFEST_DIR/pnpm-global.txt" "pnpm global packages" "One package spec per line."
-
-if has_cmd uv; then
-  uv tool list 2>/dev/null |
-    awk '/^[^-[:space:]][^[:space:]]+[[:space:]]+v[0-9]/ { print $1 }'
-fi | write_manifest "$MANIFEST_DIR/uv-tools.txt" "uv tools" "One tool spec per line."
-
-if has_cmd cargo; then
-  cargo install --list 2>/dev/null |
-    awk '/^[A-Za-z0-9_-]+[[:space:]]+v[0-9]/ { print $1 }'
-fi | write_manifest "$MANIFEST_DIR/cargo-install.txt" "cargo-installed binaries" "One crate spec per line."
-
-if has_cmd pipx && has_cmd python3; then
-  pipx list --json 2>/dev/null |
-    python3 -c 'import json, sys; print("\n".join(sorted(json.load(sys.stdin).get("venvs", {}).keys())))' || true
-fi | write_manifest "$MANIFEST_DIR/pipx.txt" "pipx tools" "One package spec per line."
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, ValueError, TypeError, RuntimeError, subprocess.CalledProcessError) as error:
+        print(f"sync-package-manifests: {error}", file=sys.stderr)
+        sys.exit(1)

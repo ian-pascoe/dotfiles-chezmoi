@@ -1,5 +1,5 @@
 # Debian/Ubuntu apt packages
-# One package name per line.
+# OS packages, system libraries and bootstrap tools only; shared CLIs live in Mise.
 apparmor
 apt
 apt-listchanges
@@ -25,7 +25,6 @@ clang
 cloud-guest-utils
 cloud-init
 cloud-initramfs-growroot
-cmake
 containerd.io
 coreutils
 cpio
@@ -61,8 +60,6 @@ gcc-multilib
 gdb
 ghostty
 git
-git-delta
-glow
 gnupg
 gpg
 grep
@@ -250,7 +247,6 @@ manpages
 mawk
 mingw-w64
 mise
-mold
 mosh
 mount
 musl-tools
@@ -260,8 +256,6 @@ ncurses-base
 ncurses-bin
 netbase
 netplan.io
-ninja-build
-nushell
 openbox
 openssh-server
 openssl
@@ -274,7 +268,6 @@ perl-base
 pkg-config
 polkitd
 poppler-utils
-powershell
 psmisc
 qemu-guest-agent
 reportbug

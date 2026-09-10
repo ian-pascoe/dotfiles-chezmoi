@@ -15,13 +15,6 @@
       "Version": "3.14.1"
     },
     {
-      "Updated": "2025-10-20T10:16:00.229771-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "dotnet-sdk",
-      "Version": "9.0.306"
-    },
-    {
       "Updated": "2025-10-27T14:52:26.5263286-04:00",
       "Source": "extras",
       "Info": "",
@@ -83,13 +76,6 @@
       "Info": "",
       "Name": "GeistMono-NF",
       "Version": "3.4.0"
-    },
-    {
-      "Updated": "2025-10-13T09:46:21.454314-04:00",
-      "Source": "main",
-      "Info": "",
-      "Name": "jid",
-      "Version": "0.7.6"
     },
     {
       "Updated": "2025-10-15T09:59:12.7182073-04:00",
