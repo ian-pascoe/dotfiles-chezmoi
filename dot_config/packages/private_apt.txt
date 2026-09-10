@@ -132,6 +132,7 @@ libfreetype6
 libfuse-dev
 libgbm1
 libgcc-s1
+libgd-dev
 libgdbm-dev
 libgdk-pixbuf-2.0-0
 libgif-dev
@@ -152,6 +153,7 @@ libharfbuzz-icu0
 libharfbuzz0b
 libhogweed6t64
 libhyphen0
+libicu-dev
 libicu76
 libjpeg62-turbo
 liblastlog2-2
@@ -169,6 +171,7 @@ libnspr4
 libnss-myhostname
 libnss-resolve
 libnss3
+libonig-dev
 libopengl0
 libopenjp2-7
 libopus0
@@ -193,6 +196,7 @@ libsepol2
 libsmartcols1
 libsoup-3.0-0
 libsqlite3-0
+libsqlite3-dev
 libssl-dev
 libssl3t64
 libstdc++6
@@ -270,6 +274,7 @@ polkitd
 poppler-utils
 psmisc
 qemu-guest-agent
+re2c
 reportbug
 screen
 sed

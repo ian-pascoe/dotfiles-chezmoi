@@ -133,6 +133,11 @@
           "DISPLAY": ":1",
           "XDG_SESSION_TYPE": "x11"
         }
+      },
+      "terminal-control": {
+        "enabled": true,
+        "command": "termctrl",
+        "args": ["mcp"]
       }
     }
   },
@@ -143,6 +148,14 @@
         "args": ["dlx", "typescript@latest", "--lsp", "--stdio"],
         "languages": [
           {
+            "extensions": [".js", ".mjs", ".cjs"],
+            "languageId": "javascript"
+          },
+          {
+            "extensions": [".jsx"],
+            "languageId": "javascriptreact"
+          },
+          {
             "extensions": [".ts", ".mts", ".cts"],
             "languageId": "typescript"
           },
@@ -151,7 +164,7 @@
             "languageId": "typescriptreact"
           }
         ],
-        "rootMarkers": ["tsconfig.json"],
+        "rootMarkers": ["tsconfig.json", "jsconfig.json"],
         "requireRootMarker": true
       },
       "oxlint": {
@@ -188,6 +201,403 @@
         ],
         "rootMarkers": ["Cargo.toml"],
         "requireRootMarker": true
+      },
+      "basedpyright": {
+        "command": "uvx",
+        "args": ["--from", "basedpyright", "basedpyright-langserver", "--stdio"],
+        "languages": [
+          {
+            "extensions": [".py", ".pyi", ".pyw"],
+            "languageId": "python"
+          }
+        ],
+        "rootMarkers": [
+          "pyproject.toml",
+          "pyrightconfig.json",
+          "setup.py",
+          "setup.cfg",
+          "requirements.txt",
+          "Pipfile"
+        ]
+      },
+      "ruff": {
+        "command": "ruff",
+        "args": ["server"],
+        "languages": [
+          {
+            "extensions": [".py", ".pyi", ".pyw"],
+            "languageId": "python"
+          }
+        ],
+        "rootMarkers": ["pyproject.toml", "ruff.toml", ".ruff.toml"]
+      },
+      "gopls": {
+        "command": "gopls",
+        "languages": [
+          {
+            "extensions": [".go"],
+            "languageId": "go"
+          },
+          {
+            "fileNames": ["go.mod"],
+            "languageId": "go.mod"
+          },
+          {
+            "fileNames": ["go.work"],
+            "languageId": "go.work"
+          }
+        ],
+        "rootMarkers": ["go.work", "go.mod"],
+        "requireRootMarker": true
+      },
+      "clangd": {
+        "command": "clangd",
+        "languages": [
+          {
+            "extensions": [".c", ".h"],
+            "languageId": "c"
+          },
+          {
+            "extensions": [".cc", ".cpp", ".cxx", ".C", ".hh", ".hpp", ".hxx", ".ipp", ".tpp"],
+            "languageId": "cpp"
+          },
+          {
+            "extensions": [".mm"],
+            "languageId": "objective-cpp"
+          },
+          {
+            "extensions": [".cu", ".cuh"],
+            "languageId": "cuda-cpp"
+          }
+        ],
+        "rootMarkers": [".clangd", "compile_commands.json", "compile_flags.txt", "CMakeLists.txt"]
+      },
+      "java": {
+        "command": "jdtls",
+        "languages": [
+          {
+            "extensions": [".java"],
+            "languageId": "java"
+          }
+        ],
+        "rootMarkers": [
+          "pom.xml",
+          "settings.gradle",
+          "settings.gradle.kts",
+          "build.gradle",
+          "build.gradle.kts"
+        ],
+        "requireRootMarker": true
+      },
+      "kotlin": {
+        "command": "intellij-server",
+        "args": ["--stdio"],
+        "languages": [
+          {
+            "extensions": [".kt", ".kts"],
+            "languageId": "kotlin"
+          }
+        ],
+        "rootMarkers": [
+          "settings.gradle",
+          "settings.gradle.kts",
+          "pom.xml",
+          "build.gradle",
+          "build.gradle.kts"
+        ],
+        "requireRootMarker": true
+      },
+      "csharp": {
+        "command": "csharp-ls",
+        "languages": [
+          {
+            "extensions": [".cs"],
+            "languageId": "csharp"
+          }
+        ],
+        "rootMarkers": ["*.sln", "*.slnx", "*.csproj"],
+        "requireRootMarker": true,
+        "initializationOptions": {
+          "AutomaticWorkspaceInit": true
+        }
+      },
+      "ruby": {
+        "command": "ruby-lsp",
+        "languages": [
+          {
+            "extensions": [".rb", ".rake", ".gemspec"],
+            "fileNames": ["Gemfile", "Rakefile", "Guardfile"],
+            "languageId": "ruby"
+          }
+        ],
+        "rootMarkers": ["Gemfile", "*.gemspec"],
+        "requireRootMarker": true
+      },
+      "php": {
+        "command": "pnpm",
+        "args": ["dlx", "intelephense@latest", "--stdio"],
+        "languages": [
+          {
+            "extensions": [".php", ".phtml"],
+            "languageId": "php"
+          }
+        ],
+        "rootMarkers": ["composer.json"],
+        "settings": {
+          "intelephense": {
+            "telemetry": {
+              "enabled": false
+            }
+          }
+        }
+      },
+      "swift": {
+        "command": "sourcekit-lsp",
+        "languages": [
+          {
+            "extensions": [".swift"],
+            "languageId": "swift"
+          }
+        ],
+        "rootMarkers": ["Package.swift", "*.xcodeproj", "*.xcworkspace"],
+        "requireRootMarker": true
+      },
+      "dart": {
+        "command": "dart",
+        "args": ["language-server", "--protocol=lsp"],
+        "languages": [
+          {
+            "extensions": [".dart"],
+            "languageId": "dart"
+          }
+        ],
+        "rootMarkers": ["pubspec.yaml"],
+        "requireRootMarker": true
+      },
+      "lua": {
+        "command": "lua-language-server",
+        "languages": [
+          {
+            "extensions": [".lua"],
+            "languageId": "lua"
+          }
+        ],
+        "rootMarkers": [".luarc.json", ".luarc.jsonc"],
+        "settings": {
+          "Lua": {
+            "telemetry": {
+              "enable": false
+            }
+          }
+        }
+      },
+      "bash": {
+        "command": "pnpm",
+        "args": ["dlx", "bash-language-server@latest", "start"],
+        "languages": [
+          {
+            "extensions": [".sh", ".bash"],
+            "fileNames": [".bashrc", ".bash_profile", ".bash_login", ".bash_logout", ".profile"],
+            "languageId": "shellscript"
+          }
+        ],
+        "rootMarkers": [".shellcheckrc"],
+        "settings": {
+          "bashIde": {
+            "globPattern": "*@(.sh|.bash)"
+          }
+        }
+      },
+      "html": {
+        "command": "pnpm",
+        "args": [
+          "--package=vscode-langservers-extracted@latest",
+          "dlx",
+          "vscode-html-language-server",
+          "--stdio"
+        ],
+        "languages": [
+          {
+            "extensions": [".html", ".htm"],
+            "languageId": "html"
+          }
+        ],
+        "rootMarkers": [],
+        "initializationOptions": {
+          "provideFormatter": true
+        }
+      },
+      "css": {
+        "command": "pnpm",
+        "args": [
+          "--package=vscode-langservers-extracted@latest",
+          "dlx",
+          "vscode-css-language-server",
+          "--stdio"
+        ],
+        "languages": [
+          {
+            "extensions": [".css"],
+            "languageId": "css"
+          },
+          {
+            "extensions": [".scss"],
+            "languageId": "scss"
+          },
+          {
+            "extensions": [".less"],
+            "languageId": "less"
+          }
+        ],
+        "rootMarkers": [],
+        "initializationOptions": {
+          "provideFormatter": true
+        }
+      },
+      "json": {
+        "command": "pnpm",
+        "args": [
+          "--package=vscode-langservers-extracted@latest",
+          "dlx",
+          "vscode-json-language-server",
+          "--stdio"
+        ],
+        "languages": [
+          {
+            "extensions": [".json"],
+            "languageId": "json"
+          },
+          {
+            "extensions": [".jsonc"],
+            "languageId": "jsonc"
+          }
+        ],
+        "rootMarkers": [],
+        "initializationOptions": {
+          "provideFormatter": true
+        }
+      },
+      "yaml": {
+        "command": "pnpm",
+        "args": ["dlx", "yaml-language-server@latest", "--stdio"],
+        "languages": [
+          {
+            "extensions": [".yaml", ".yml"],
+            "languageId": "yaml"
+          }
+        ],
+        "rootMarkers": [],
+        "settings": {
+          "redhat": {
+            "telemetry": {
+              "enabled": false
+            }
+          },
+          "yaml": {
+            "format": {
+              "enable": true
+            }
+          }
+        }
+      },
+      "toml": {
+        "command": "taplo",
+        "args": ["lsp", "stdio"],
+        "languages": [
+          {
+            "extensions": [".toml"],
+            "languageId": "toml"
+          }
+        ],
+        "rootMarkers": ["taplo.toml", ".taplo.toml"]
+      },
+      "markdown": {
+        "command": "marksman",
+        "args": ["server"],
+        "languages": [
+          {
+            "extensions": [".md", ".markdown"],
+            "languageId": "markdown"
+          }
+        ],
+        "rootMarkers": [".marksman.toml"]
+      },
+      "sql": {
+        "command": "pnpm",
+        "args": ["dlx", "sql-language-server@latest", "up", "--method", "stdio"],
+        "languages": [
+          {
+            "extensions": [".sql"],
+            "languageId": "sql"
+          }
+        ],
+        "rootMarkers": [".sqllsrc.json"],
+        "requireRootMarker": true
+      },
+      "r": {
+        "command": "R",
+        "args": ["--no-echo", "-e", "languageserver::run()"],
+        "languages": [
+          {
+            "extensions": [".r", ".R"],
+            "languageId": "r"
+          }
+        ],
+        "rootMarkers": ["*.Rproj", "DESCRIPTION"]
+      },
+      "dockerfile": {
+        "command": "pnpm",
+        "args": [
+          "--package=dockerfile-language-server-nodejs@latest",
+          "dlx",
+          "docker-langserver",
+          "--stdio"
+        ],
+        "languages": [
+          {
+            "extensions": [".dockerfile"],
+            "fileNames": ["Dockerfile", "Containerfile"],
+            "languageId": "dockerfile"
+          }
+        ],
+        "rootMarkers": ["Dockerfile", "Containerfile"]
+      },
+      "terraform": {
+        "command": "terraform-ls",
+        "args": ["serve"],
+        "languages": [
+          {
+            "extensions": [".tf"],
+            "languageId": "terraform"
+          },
+          {
+            "extensions": [".tfvars"],
+            "languageId": "terraform-vars"
+          }
+        ],
+        "rootMarkers": [".terraform", ".terraform.lock.hcl", "*.tf"],
+        "requireRootMarker": true
+      },
+      "nix": {
+        "command": "nil",
+        "languages": [
+          {
+            "extensions": [".nix"],
+            "languageId": "nix"
+          }
+        ],
+        "rootMarkers": ["flake.nix", "shell.nix", "default.nix"],
+        "requireRootMarker": true
+      },
+      "zig": {
+        "command": "zls",
+        "languages": [
+          {
+            "extensions": [".zig"],
+            "languageId": "zig"
+          }
+        ],
+        "rootMarkers": ["zls.json", "build.zig"]
       }
     }
   },
@@ -211,10 +621,19 @@
             ".md",
             ".yml",
             ".yaml",
-            ".css"
+            ".css",
+            ".scss",
+            ".less",
+            ".html",
+            ".htm",
+            ".vue",
+            ".mdx",
+            ".graphql",
+            ".gql",
+            ".hbs"
           ]
         },
-        "rootMarkers": [".oxfmtrc.json"],
+        "rootMarkers": [".oxfmtrc.json", ".oxfmtrc.jsonc"],
         "requireRootMarker": true
       },
       "rustfmt": {
@@ -225,6 +644,195 @@
         },
         "rootMarkers": ["Cargo.toml"],
         "requireRootMarker": true
+      },
+      "ruff": {
+        "command": "ruff",
+        "args": ["format", "$FILE"],
+        "files": {
+          "extensions": [".py", ".pyi", ".pyw"]
+        },
+        "rootMarkers": ["pyproject.toml", "ruff.toml", ".ruff.toml"]
+      },
+      "gofmt": {
+        "command": "gofmt",
+        "args": ["-w", "$FILE"],
+        "files": {
+          "extensions": [".go"]
+        },
+        "rootMarkers": ["go.work", "go.mod"]
+      },
+      "clang-format": {
+        "command": "clang-format",
+        "args": ["-i", "$FILE"],
+        "files": {
+          "extensions": [
+            ".c",
+            ".h",
+            ".cc",
+            ".cpp",
+            ".cxx",
+            ".C",
+            ".hh",
+            ".hpp",
+            ".hxx",
+            ".ipp",
+            ".tpp",
+            ".mm",
+            ".cu",
+            ".cuh"
+          ]
+        },
+        "rootMarkers": [".clang-format", "_clang-format"]
+      },
+      "google-java-format": {
+        "command": "google-java-format",
+        "args": ["--replace", "$FILE"],
+        "files": {
+          "extensions": [".java"]
+        },
+        "rootMarkers": ["pom.xml", "build.gradle", "build.gradle.kts"]
+      },
+      "ktlint": {
+        "command": "ktlint",
+        "args": ["--format", "$FILE"],
+        "files": {
+          "extensions": [".kt", ".kts"]
+        },
+        "rootMarkers": [
+          "settings.gradle",
+          "settings.gradle.kts",
+          "pom.xml",
+          "build.gradle",
+          "build.gradle.kts"
+        ]
+      },
+      "csharpier": {
+        "command": "csharpier",
+        "args": ["format", "$FILE"],
+        "files": {
+          "extensions": [".cs"]
+        },
+        "rootMarkers": [
+          ".csharpierrc",
+          ".csharpierrc.json",
+          ".csharpierrc.yaml",
+          "*.sln",
+          "*.slnx",
+          "*.csproj"
+        ],
+        "requireRootMarker": true
+      },
+      "rubocop": {
+        "command": "bundle",
+        "args": [
+          "exec",
+          "rubocop",
+          "--autocorrect",
+          "--only",
+          "Layout",
+          "--force-exclusion",
+          "$FILE"
+        ],
+        "files": {
+          "extensions": [".rb", ".rake", ".gemspec"],
+          "fileNames": ["Gemfile", "Rakefile", "Guardfile"]
+        },
+        "rootMarkers": ["Gemfile"],
+        "requireRootMarker": true
+      },
+      "php-cs-fixer": {
+        "command": "php-cs-fixer",
+        "args": ["fix", "--path-mode=intersection", "--allow-risky=no", "$FILE"],
+        "files": {
+          "extensions": [".php", ".phtml"]
+        },
+        "rootMarkers": [".php-cs-fixer.php", ".php-cs-fixer.dist.php"],
+        "requireRootMarker": true
+      },
+      "swift-format": {
+        "command": "swift",
+        "args": ["format", "--in-place", "$FILE"],
+        "files": {
+          "extensions": [".swift"]
+        },
+        "rootMarkers": [".swift-format", "Package.swift", "*.xcodeproj", "*.xcworkspace"]
+      },
+      "dart-format": {
+        "command": "dart",
+        "args": ["format", "$FILE"],
+        "files": {
+          "extensions": [".dart"]
+        },
+        "rootMarkers": ["pubspec.yaml"],
+        "requireRootMarker": true
+      },
+      "stylua": {
+        "command": "stylua",
+        "args": ["--search-parent-directories", "--respect-ignores", "$FILE"],
+        "files": {
+          "extensions": [".lua"]
+        },
+        "rootMarkers": ["stylua.toml", ".stylua.toml"]
+      },
+      "shfmt": {
+        "command": "shfmt",
+        "args": ["-w", "$FILE"],
+        "files": {
+          "extensions": [".sh", ".bash"],
+          "fileNames": [".bashrc", ".bash_profile", ".bash_login", ".bash_logout", ".profile"]
+        },
+        "rootMarkers": []
+      },
+      "taplo": {
+        "command": "taplo",
+        "args": ["format", "$FILE"],
+        "files": {
+          "extensions": [".toml"]
+        },
+        "rootMarkers": ["taplo.toml", ".taplo.toml"]
+      },
+      "sqlfluff": {
+        "command": "uvx",
+        "args": ["sqlfluff", "format", "$FILE"],
+        "files": {
+          "extensions": [".sql"]
+        },
+        "rootMarkers": [".sqlfluff"],
+        "requireRootMarker": true
+      },
+      "air": {
+        "command": "air",
+        "args": ["format", "$FILE"],
+        "files": {
+          "extensions": [".r", ".R"]
+        },
+        "rootMarkers": ["air.toml", ".air.toml", "*.Rproj", "DESCRIPTION"]
+      },
+      "terraform-fmt": {
+        "command": "terraform",
+        "args": ["fmt", "$FILE"],
+        "files": {
+          "extensions": [".tf", ".tfvars"]
+        },
+        "rootMarkers": [".terraform", ".terraform.lock.hcl", "*.tf"],
+        "requireRootMarker": true
+      },
+      "nixfmt": {
+        "command": "nixfmt",
+        "args": ["$FILE"],
+        "files": {
+          "extensions": [".nix"]
+        },
+        "rootMarkers": ["flake.nix", "shell.nix", "default.nix"],
+        "requireRootMarker": true
+      },
+      "zig-fmt": {
+        "command": "zig",
+        "args": ["fmt", "$FILE"],
+        "files": {
+          "extensions": [".zig"]
+        },
+        "rootMarkers": ["build.zig"]
       }
     }
   }

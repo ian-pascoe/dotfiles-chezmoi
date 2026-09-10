@@ -14,8 +14,10 @@ bun = "latest"
 cargo-binstall = "latest"
 cargo-deny = "latest"
 chezmoi = "latest"
+clang-format = "latest"
 cmake = "latest"
 codex = "latest"
+dart = "latest"
 delta = "latest"
 difftastic = "latest"
 dotnet = "latest"
@@ -27,6 +29,7 @@ gh = "latest"
 git-lfs = "latest"
 glow = "latest"
 go = "latest"
+google-java-format = "latest"
 goreleaser = "latest"
 gradle = "latest"
 helm = "latest"
@@ -35,18 +38,23 @@ imagemagick = "latest"
 java = ["latest", "corretto-21"]
 jq = "latest"
 k9s = "latest"
+ktlint = "latest"
 kubectl = "latest"
 lazydocker = "latest"
 lazygit = "latest"
 lsd = "latest"
 lua = "latest"
+lua-language-server = "latest"
 markdownlint-cli2 = "latest"
+marksman = "latest"
 mold = { version = "latest", os = ["linux"] }
 neovim = "latest"
 ninja = "latest"
 node = "latest"
 nub = { version = "latest", allow_builds = ["@nubjs/nub"] }
 nushell = "latest"
+# The PHP backend builds from source; system development libraries are still required.
+php = { version = "latest", os = ["linux", "macos"] }
 pipx = "latest"
 playwright = "latest"
 pnpm = "latest"
@@ -60,12 +68,16 @@ rust = "stable"
 sccache = "latest"
 semgrep = "latest"
 shellcheck = "latest"
+shfmt = "latest"
 sqlite = "latest"
 starship = "latest"
 stylua = "latest"
+# Debian 13 has no compatible mise Swift download; opt in per project on supported Linux distros.
+swift = { version = "latest", os = ["macos"] }
 syncthing = "latest"
 taplo = "latest"
 terraform = "latest"
+terraform-ls = "latest"
 tmux = { version = "latest", os = ["linux", "macos"] }
 tree-sitter = "latest"
 uv = "latest"
@@ -74,12 +86,37 @@ yq = "latest"
 yt-dlp = "latest"
 zellij = "latest"
 zig = "latest"
+zls = "latest"
 zoxide = "latest"
 
 # Explicit backends cover tools without a registry shorthand.
+# R packages (including languageserver) must be installed into the selected R separately.
+"conda:r-base" = { version = "latest", os = ["linux", "macos", "windows/x64"] }
+
+"dotnet:csharp-ls" = "latest"
+"dotnet:csharpier" = "latest"
+
+"gem:ruby-lsp" = "latest"
+# Projects using `bundle exec rubocop` must also declare it in their Gemfile.
+"gem:rubocop" = "latest"
+
+# Official clangd archives target x64; avoid the indexing-tools/debug-symbols assets.
+"github:clangd/clangd" = { version = "latest", asset_pattern = 'clangd-{{ os(macos="mac") }}-{{ version }}.zip', os = [
+  "linux/x64",
+  "macos/x64",
+  "windows/x64",
+] }
+"github:PHP-CS-Fixer/PHP-CS-Fixer" = { version = "latest", asset_pattern = "php-cs-fixer.phar", bin = "php-cs-fixer", os = [
+  "linux",
+  "macos",
+] }
+# `air` in the registry is the Go live-reload tool, not Posit's R formatter.
+"github:posit-dev/air" = "latest"
+
 "go:github.com/go-delve/delve/cmd/dlv" = "latest"
 "go:github.com/simeji/jid/cmd/jid" = "latest"
 "go:golang.org/x/tools/cmd/goimports" = "latest"
+"go:golang.org/x/tools/gopls" = "latest"
 "go:mvdan.cc/gofumpt" = "latest"
 
 "cargo:cargo-audit" = "latest"
