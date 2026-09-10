@@ -19,8 +19,11 @@ replace system development libraries with a Mise executable.
 
 Most tools keep the existing `latest` policy, not identical version pins across
 machines. Global Zig is pinned to `0.15.2` for terminal-control's Ghostty source
-build. Upstream platform support still matters: `btop`, `tmux`
-and `terminal-control` are restricted to Linux/macOS, and `mold` to Linux.
+build on Linux. macOS uses upstream's architecture-specific
+`@kitlangton/terminal-control-darwin-*` npm binaries instead: Zig 0.15.2 cannot
+link against the arm64e-only system-library stubs in newer macOS SDKs.
+Upstream platform support still matters: `tmux` and `terminal-control` are
+restricted to Linux/macOS, and `btop` and `mold` to Linux.
 Windows persistent-session support for terminal-control is awaiting
 [upstream PR #16](https://github.com/anomalyco/terminal-control/pull/16)
 (unmerged when checked on 2026-09-09). Revisit that guard after a supported
@@ -61,7 +64,8 @@ indexes only when an install command is needed. Dry-run executes no installs or
 removals; APT planning modifies only a temporary copy of its auto/manual state.
 Without `--yes`, installation and the resulting removal list have separate
 confirmations. Unexpected installation or inventory failures prevent pruning.
-Bun's missing-lockfile response skips Bun pruning; any explicit Bun install
+Bun's missing-lockfile or missing-global-`package.json` response skips Bun
+pruning and preserves any existing exported snapshot; explicit Bun install
 requests are reported as unverified and forwarded to Bun. Missing manifests skip
 that manager; **an existing empty manifest intentionally prunes its packages**.
 Pruning accepts named package specs (including versions/scopes/Python extras),

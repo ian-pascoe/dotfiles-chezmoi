@@ -8,8 +8,8 @@ actionlint = "latest"
 ast-grep = "latest"
 awscli = "latest"
 bat = "latest"
-# These upstream packages are Unix-only; Windows ports are separate packages.
-btop = { version = "latest", os = ["linux", "macos"] }
+# These upstream packages are Linux-only
+btop = { version = "latest", os = ["linux"] }
 bun = "latest"
 cargo-binstall = "latest"
 cargo-deny = "latest"
@@ -73,7 +73,7 @@ yazi = "latest"
 yq = "latest"
 yt-dlp = "latest"
 zellij = "latest"
-zig = "0.15.2"
+zig = "latest"
 zoxide = "latest"
 
 # Explicit backends cover tools without a registry shorthand.
@@ -93,13 +93,20 @@ zoxide = "latest"
 "cargo:cargo-zigbuild" = "latest"
 "cargo:cross" = "latest"
 "cargo:lspctl" = "latest"
-# Windows persistent sessions await upstream terminal-control PR #16.
-"cargo:terminal-control" = { version = "latest", os = [
-  "linux",
-  "macos",
-], depends = [
-  "zig",
-] }
+
+# Low-download packages: npm provenance points to anomalyco/terminal-control's npm-release.yml.
+"npm:@kitlangton/terminal-control-linux-x64-gnu" = { version = "latest", os = [
+  "linux/x64",
+], allow_low_downloads = true }
+"npm:@kitlangton/terminal-control-linux-arm64-gnu" = { version = "latest", os = [
+  "linux/arm64",
+], allow_low_downloads = true }
+"npm:@kitlangton/terminal-control-darwin-arm64" = { version = "latest", os = [
+  "macos/arm64",
+], allow_low_downloads = true }
+"npm:@kitlangton/terminal-control-darwin-x64" = { version = "latest", os = [
+  "macos/x64",
+], allow_low_downloads = true }
 
 "npm:@earendil-works/pi-coding-agent" = "latest"
 "npm:@firecrawl/anydoc" = "latest"

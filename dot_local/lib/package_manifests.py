@@ -135,10 +135,15 @@ def inventory(manager, for_pruning=True):
         try:
             output = capture("bun", "pm", "ls", "-g", stderr=subprocess.PIPE)
         except subprocess.CalledProcessError as error:
-            if error.returncode == 1 and not error.output and error.stderr.strip() == (
-                "error: missing lockfile, nothing to list\nnote: run 'bun install' first"
-            ):
-                raise InventoryUnavailable("Bun global lockfile is missing") from error
+            diagnostic = (error.stderr or "").strip()
+            if error.returncode == 1 and not error.output:
+                if diagnostic == "error: missing lockfile, nothing to list\nnote: run 'bun install' first":
+                    raise InventoryUnavailable("Bun global lockfile is missing") from error
+                if re.fullmatch(
+                    r'error: No package\.json was found for directory "[^\r\n]+"\n'
+                    r'note: Run "bun init" to initialize a project', diagnostic
+                ):
+                    raise InventoryUnavailable("Bun global package.json is missing") from error
             if error.stderr:
                 raise RuntimeError(error.stderr.strip()) from error
             raise

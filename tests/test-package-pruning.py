@@ -65,6 +65,9 @@ elif name in ("npm", "pnpm"):
                 data["dependencies"]["@pnpm/exe"] = {}
             print(json.dumps(data if name == "npm" else [data]))
 elif name == "bun" and args == ["pm", "ls", "-g"]:
+    if cfg.get("bun_missing_manifest"):
+        print('error: No package.json was found for directory "/Users/ianpascoe/.cache/.bun/install/global"\nnote: Run "bun init" to initialize a project', file=sys.stderr)
+        sys.exit(1)
     if cfg.get("bun_missing_lock"):
         print("error: missing lockfile, nothing to list\nnote: run 'bun install' first", file=sys.stderr)
         sys.exit(1)
@@ -148,8 +151,10 @@ with tempfile.TemporaryDirectory(prefix="prune-test-") as temp:
     (manifests / "cargo-install.txt").write_text("keep\n")
     _, calls = execute("--prune", answer="yes\nno\n", success=False)
     assert not removals(calls)
-    for flags in (("--prune", "--dry-run"), ("--prune", "--yes")):
-        result, calls = execute(*flags, config={"bun_missing_lock": True})
+    for flags, missing in ((flags, missing)
+                           for flags in (("--prune", "--dry-run"), ("--prune", "--yes"))
+                           for missing in ("bun_missing_lock", "bun_missing_manifest")):
+        result, calls = execute(*flags, config={missing: True})
         assert "Skipping bun pruning:" in result.stdout
         assert not any(call[0] == "bun" for call in removals(calls))
         assert "Prune npm:" in result.stdout

@@ -26,6 +26,18 @@ fi
 START_TIME=$(date +%s)
 echo "Starting upgrade process at $(date)..."
 #########################################################################
+# APT Debian/Ubuntu
+if has_cmd apt; then
+  echo "Updating APT and its packages..."
+  sudo apt update
+  sudo apt full-upgrade -y
+  echo "APT and its packages updated successfully!"
+  echo "Cleaning up APT cache..."
+  sudo apt autoremove -y
+  sudo apt clean
+  echo "APT cache cleaned successfully!"
+fi
+#########################################################################
 # Homebrew/Linuxbrew
 if has_cmd brew; then
   echo "Updating Homebrew and its packages..."
@@ -44,6 +56,7 @@ if has_cmd mise; then
   mise upgrade --bump
   echo "Mise packages updated successfully!"
   echo "Cleaning up Mise cache..."
+  mise prune --yes
   mise cache clear --yes
   echo "Mise cache cleaned successfully!"
 fi

@@ -26,6 +26,9 @@ elif name in ("npm", "pnpm") and args == ["list", "-g", "--depth=0", "--json"]:
     data = {"dependencies": {} if empty else {"zebra": {}, "@scope/alpha": {}, "npm": {}}}
     print("malformed" if config.get("bad") == name else json.dumps(data if name == "npm" else [data]))
 elif name == "bun" and args == ["pm", "ls", "-g"]:
+    if config.get("bun_missing_manifest"):
+        print('error: No package.json was found for directory "/Users/ianpascoe/.cache/.bun/install/global"\nnote: Run "bun init" to initialize a project', file=sys.stderr)
+        sys.exit(1)
     if config.get("bun_missing_lock"):
         print("error: missing lockfile, nothing to list\nnote: run 'bun install' first", file=sys.stderr)
         sys.exit(1)
@@ -95,13 +98,14 @@ with tempfile.TemporaryDirectory(prefix="inventory-' space-") as directory:
     before = saved()
     run()
     assert saved() == before
-    result = run(config={"bun_missing_lock": True})
-    assert "Skipping bun:" in result.stdout
-    assert saved() == before
-    fresh = root / "no-bun-lock"
-    run("--output-dir", str(fresh), config={"bun_missing_lock": True})
-    assert not (fresh / "bun-global.txt").exists()
-    assert (fresh / "apt.txt").exists()
+    for missing in ("bun_missing_lock", "bun_missing_manifest"):
+        result = run(config={missing: True})
+        assert "Skipping bun:" in result.stdout
+        assert saved() == before
+        fresh = root / missing
+        run("--output-dir", str(fresh), config={missing: True})
+        assert not (fresh / "bun-global.txt").exists()
+        assert (fresh / "apt.txt").exists()
     for config in ({"fail": "bun"}, {"fail": "uv"}, {"bad": "npm"}, {"bad": "scoop"}, {"fail": "brew", "apt": "new-package"}):
         run(config=config, success=False)
         assert saved() == before  # Even a late collector failure writes nothing.

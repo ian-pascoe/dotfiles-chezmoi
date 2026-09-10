@@ -55,9 +55,15 @@ for owner, names in {
     for name in names - {"git", "mise"}:
         assert native_aliases.get(name, name) not in tools, f"Duplicate owner: {owner}: {name}"
 
-for name in ("btop", "tmux", "cargo:terminal-control"):
-    assert set(tools[name]["os"]) == {"linux", "macos"}
-assert tools["mold"]["os"] == ["linux"]
+assert set(tools["tmux"]["os"]) == {"linux", "macos"}
+for name in ("btop", "mold", "cargo:terminal-control"):
+    assert tools[name]["os"] == ["linux"]
+# macOS SDKs with arm64e-only stubs cannot link Zig 0.15.2 source builds.
+for arch in ("arm64", "x64"):
+    key = f"npm:@kitlangton/terminal-control-darwin-{arch}"
+    assert tools[key] == {
+        "version": "latest", "os": [f"macos/{arch}"], "allow_low_downloads": True,
+    }
 assert tools["zig"] == "0.15.2"
 assert tools["cargo:terminal-control"]["depends"] == ["zig"]
 print("PASS: migrated tools retained, unique curated owners, platform exceptions")

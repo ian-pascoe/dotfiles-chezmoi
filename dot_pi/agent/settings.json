@@ -131,9 +131,7 @@
         "args": ["mcp"],
         "environment": {
           "DISPLAY": ":1",
-          "XDG_SESSION_TYPE": "x11",
-          "XDG_RUNTIME_DIR": "${XDG_RUNTIME_DIR}",
-          "DBUS_SESSION_BUS_ADDRESS": "${DBUS_SESSION_BUS_ADDRESS}"
+          "XDG_SESSION_TYPE": "x11"
         }
       }
     }
