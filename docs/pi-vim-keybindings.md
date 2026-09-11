@@ -7,8 +7,7 @@ extension in `settings.json`: that would replace the command deck.
 
 ## Prompt
 
-New, submitted, cleared and externally replaced prompts start in **Normal** mode.
-Press `i` to type or `a` to append.
+New, submitted, cleared and externally replaced prompts start in **Insert** mode.
 `Esc` cancels pending Vim commands, leaves Visual mode, or enters Normal mode;
 it never interrupts generation. The command deck shows the current mode.
 

@@ -174,10 +174,10 @@ test("the command deck renders concise editor status and an empty prompt", async
   assert.ok(idleLines.every((line) => visibleWidth(line) === 120));
   assert.match(idleLines[0] ?? "", /gpt-test · high/);
   assert.match(idleLines[0] ?? "", /project · main · ⇡2 · ⇣1 · \?1 · 1/);
-  assert.doesNotMatch(idleLines[0] ?? "", /NORMAL/);
+  assert.doesNotMatch(idleLines[0] ?? "", /INSERT/);
   assert.doesNotMatch(idleLines[0] ?? "", /ready|working/);
   assert.match(idleLines[1] ?? "", /Type your prompt…/);
-  assert.match(idleLines.at(-1) ?? "", /NORMAL/);
+  assert.match(idleLines.at(-1) ?? "", /INSERT/);
   assert.doesNotMatch(idleLines.at(-1) ?? "", /project · main/);
   assert.match(idleLines.at(-1) ?? "", /cache 70\.0% · ctx 38%/);
   assert.doesNotMatch(idleLines.at(-1) ?? "", /MCP|tok\/s|running/);
@@ -195,7 +195,7 @@ test("the command deck renders concise editor status and an empty prompt", async
     },
     applyCompletion: (lines, cursorLine, cursorCol) => ({ lines, cursorLine, cursorCol }),
   });
-  keys(editor, "i", "/");
+  keys(editor, "/");
   await new Promise((resolve) => setTimeout(resolve, 0));
   const completionLines = editor.render(120);
   assert.equal(completionLines.length, 4);
@@ -289,7 +289,7 @@ test("Pi interrupt and external-editor shortcuts survive Vim prefixes and autoco
     },
     applyCompletion: (lines, cursorLine, cursorCol) => ({ lines, cursorLine, cursorCol }),
   });
-  keys(editor, "i", "/");
+  keys(editor, "/");
   await new Promise((resolve) => setTimeout(resolve, 0));
   assert.equal(editor.isShowingAutocomplete(), true);
   keys(editor, "\x1c");
@@ -298,25 +298,25 @@ test("Pi interrupt and external-editor shortcuts survive Vim prefixes and autoco
   assert.equal(interrupted, 1, "Escape changes mode, never interrupts");
 });
 
-test("submitted, cleared and externally replaced prompts return to Normal mode", async () => {
+test("submitted, cleared and externally replaced prompts return to Insert mode", async () => {
   const { editor } = await createDeck();
   const submitted: string[] = [];
   editor.onSubmit = (text) => submitted.push(text);
   editor.setText("hello");
   keys(editor, ESC, "\r");
   assert.deepEqual(submitted, ["hello"]);
-  expectMode(editor, "NORMAL");
-  keys(editor, "i", "next", "\r");
+  expectMode(editor, "INSERT");
+  keys(editor, "next", "\r");
   assert.deepEqual(submitted, ["hello", "next"]);
-  expectMode(editor, "NORMAL");
+  expectMode(editor, "INSERT");
   editor.setText("draft");
-  keys(editor, "v", "2");
+  keys(editor, ESC, "v", "2");
   editor.setText("restored");
-  expectMode(editor, "NORMAL");
-  assert.deepEqual(editor.getCursor(), { line: 0, col: 7 });
-  keys(editor, "a", "!");
+  expectMode(editor, "INSERT");
+  assert.deepEqual(editor.getCursor(), { line: 0, col: 8 });
+  keys(editor, "!");
   assert.equal(editor.getText(), "restored!");
   editor.setText("");
-  expectMode(editor, "NORMAL");
+  expectMode(editor, "INSERT");
   assert.equal(editor.getText(), "");
 });
