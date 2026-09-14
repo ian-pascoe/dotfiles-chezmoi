@@ -8,6 +8,7 @@
     {
       "source": "git:github.com/ian-pascoe/pi-extensions",
       "extensions": [
+        "packages/pi-advisor/src/index.ts",
         "packages/pi-bible-verses/src/index.ts",
         "packages/pi-context-management/src/index.ts",
         "packages/pi-dap/src/index.ts",
@@ -23,7 +24,7 @@
         "packages/pi-codemode/src/index.ts"
       ],
       "skills": [
-        "packages/pi-bible-verses/skills/pi-bible-verses/SKILL.md",
+        "packages/pi-advisor/skills/pi-advisor/SKILL.md",
         "packages/pi-context-management/skills/pi-context-management/SKILL.md",
         "packages/pi-dap/skills/pi-dap/SKILL.md",
         "packages/pi-formatter/skills/pi-formatter/SKILL.md",
@@ -41,7 +42,7 @@
   ],
   "defaultProjectTrust": "always",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6-astra",
+  "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
   "enabledModels": [
     "openai-codex/gpt-6-astra",
@@ -58,38 +59,53 @@
   "tuiMode": "fullscreen",
   "doubleEscapeAction": "none",
   "theme": "dracula",
+  "advisor": {
+    "enabled": false,
+    "model": "openai-codex/gpt-6-astra",
+    "thinkingLevel": "high",
+    "allowedTools": [
+      "read",
+      "grep",
+      "find",
+      "ls",
+      "context_notes",
+      "context_history",
+      "context_rollover"
+    ]
+  },
   "minimalSubagents": {
+    "baseToolset": ["context_notes", "context_history", "context_rollover"],
     "modelRoles": {
       "debug": {
-        "model": "openai-codex/gpt-6-astra:xhigh",
+        "model": "openai-codex/gpt-5.6-sol:xhigh",
         "hint": "Use to diagnose failures or isolate regressions."
       },
       "default": {
-        "model": "openai-codex/gpt-6-astra:high",
+        "model": "openai-codex/gpt-5.6-sol:high",
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
-        "model": "openai-codex/gpt-5.6-luna:medium",
+        "model": "openai-codex/gpt-5.6-luna:high",
         "hint": "Use to locate code, trace behavior, or find reusable patterns."
       },
       "plan": {
-        "model": "openai-codex/gpt-6-astra:xhigh",
+        "model": "openai-codex/gpt-5.6-sol:xhigh",
         "hint": "Use to clarify requirements, weigh designs, or plan implementation."
       },
       "research": {
-        "model": "openai-codex/gpt-5.6-luna:high",
+        "model": "openai-codex/gpt-5.6-luna:xhigh",
         "hint": "Use when technical questions need external sources."
       },
       "review": {
-        "model": "openai-codex/gpt-6-astra:xhigh",
+        "model": "openai-codex/gpt-5.6-sol:xhigh",
         "hint": "Use when changes need independent correctness or spec review."
       },
       "security": {
-        "model": "openai-codex/gpt-6-astra:xhigh",
+        "model": "openai-codex/gpt-5.6-sol:xhigh",
         "hint": "Use for threat modeling, security audits, or vulnerability assessment."
       },
       "task": {
-        "model": "openai-codex/gpt-6-astra:medium",
+        "model": "openai-codex/gpt-5.6-sol:medium",
         "hint": "Use when a scoped implementation task has a settled approach."
       }
     }

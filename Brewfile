@@ -1,119 +1,143 @@
-tap 'felixkratz/formulae', 'https://github.com/FelixKratz/homebrew-formulae', trusted: true
-tap 'nikitabobko/tap', trusted: true
-tap 'steipete/tap', trusted: true
+tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
+tap "nikitabobko/tap", trusted: true
+tap "steipete/tap", trusted: true
 # Automatic configure script builder
-brew 'autoconf'
+brew "autoconf"
 # Library for command-line editing
-brew 'readline'
+brew "readline"
 # Bourne-Again SHell, a UNIX command interpreter
-brew 'bash'
+brew "bash"
 # Programmable completion for Bash 3.2
-brew 'bash-completion'
+brew "bash-completion"
 # Parser generator
-brew 'bison'
+brew "bison"
 # Get/set bluetooth power and discoverable state
-brew 'blueutil'
+brew "blueutil"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
-brew 'btop'
+brew "btop"
 # GNU multiple precision arithmetic library
-brew 'gmp'
+brew "gmp"
 # GNU File, Shell, and Text utilities
-brew 'coreutils'
+brew "coreutils"
 # TIFF library and utilities
-brew 'libtiff'
+brew "libtiff"
+# Like neofetch, but much faster because written mostly in C
+brew "fastfetch"
 # Cryptography and SSL/TLS Toolkit
-brew 'openssl@3'
+brew "openssl@3"
+# Play, record, convert, and stream select audio and video codecs
+brew "ffmpeg"
+# Command-line fuzzy finder written in Go
+brew "fzf"
 # GNU compiler collection
-brew 'gcc'
+brew "gcc"
 # Distributed revision control system
-brew 'git'
+brew "git"
+# Deliver Go binaries as fast and easily as possible
+brew "goreleaser"
 # Improved top (interactive process viewer)
-brew 'htop'
+brew "htop"
 # Get events and tasks from the macOS calendar database
-brew 'ical-buddy'
+brew "ical-buddy"
 # Portable Foreign Function Interface library
-brew 'libffi'
+brew "libffi"
+# Conversion library
+brew "libiconv"
 # YAML Parser
-brew 'libyaml'
+brew "libyaml"
+# Powerful, lightweight programming language
+brew "lua"
 # Package manager for the Lua programming language
-brew 'luarocks'
+brew "luarocks"
 # Control and observe media playback from the command-line
-brew 'media-control'
+brew "media-control"
 # Polyglot runtime manager (asdf rust clone)
-brew 'mise'
+brew "mise"
 # Remote terminal application
-brew 'mosh'
+brew "mosh"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.14"
 # Port scanning utility for large networks
-brew 'nmap'
+brew "nmap"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
+# Regular expressions library
+brew "oniguruma"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
 # PDF rendering library (based on the xpdf-3.0 code base)
-brew 'poppler'
+brew "poppler"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.13"
+# Generate C-based recognizers from regular expressions
+brew "re2c"
 # Create beautiful image of your source code
-brew 'silicon'
+brew "silicon"
 # Editor of encrypted files
-brew 'sops'
+brew "sops"
 # Command driven spotify player
-brew 'spotify_player'
+brew "spotify_player"
 # Multi-modal AI tool to extract and summarize content
-brew 'summarize'
+brew "summarize"
 # Easiest, most secure way to use WireGuard and 2FA
-brew 'tailscale', restart_service: :changed
+brew "tailscale", restart_service: :changed
 # Your CLI home video recorder
-brew 'vhs'
+brew "vhs"
 # General-purpose lossless data-compression library
-brew 'zlib'
+brew "zlib"
 # Next-generation plugin manager for zsh
-brew 'zplug'
+brew "zplug"
 # UNIX shell (command interpreter)
-brew 'zsh'
+brew "zsh"
 # A window border system for macOS
-brew 'felixkratz/formulae/borders', trusted: true
-brew 'yakitrak/yakitrak/obsidian-cli'
+brew "felixkratz/formulae/borders", trusted: true
+brew "yakitrak/yakitrak/obsidian-cli"
 # AeroSpace is an i3-like tiling window manager for macOS
-cask 'nikitabobko/tap/aerospace', trusted: true
+cask "nikitabobko/tap/aerospace", trusted: true
 # Menu bar tool to limit maximum charging percentage
-cask 'aldente'
+cask "aldente"
 # Tool to flash OS images to SD cards & USB drives
-cask 'balenaetcher'
+cask "balenaetcher"
 # Display management tool
-cask 'betterdisplay'
+cask "betterdisplay"
 # OpenAI's official ChatGPT desktop app
-cask 'chatgpt'
+cask "chatgpt"
 # Terminal-based AI coding assistant
-cask 'claude-code'
+cask "claude-code"
 # Menu bar usage monitor for Codex and Claude
-cask 'steipete/tap/codexbar', trusted: true
+cask "steipete/tap/codexbar", trusted: true
 # Voice and text chat software
-cask 'discord'
+cask "discord"
 # App to build and share containerised applications and microservices
-cask 'docker-desktop'
-cask 'font-geist'
-cask 'font-geist-mono-nerd-font'
-cask 'font-sf-pro'
-cask 'font-source-serif-4'
-cask 'font-symbols-only-nerd-font'
+cask "docker-desktop"
+cask "font-geist"
+cask "font-geist-mono-nerd-font"
+cask "font-sf-pro"
+cask "font-source-serif-4"
+cask "font-symbols-only-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
-cask 'ghostty'
+cask "ghostty"
 # Web browser
-cask 'google-chrome'
+cask "google-chrome"
 # Desktop automation application
-cask 'hammerspoon'
+cask "hammerspoon"
 # Speech to text application
-cask 'handy'
+cask "handy"
 # Chromium-based web browser
-cask 'helium-browser'
+cask "helium-browser"
 # Keyboard customiser
-cask 'karabiner-elements'
+cask "karabiner-elements"
 # App to manage software development and track bugs
-cask 'linear'
+cask "linear"
 # Knowledge base that works on top of a local folder of plain text Markdown files
-cask 'obsidian'
+cask "obsidian"
 # Utility to uninstall apps and remove leftover files from old/uninstalled apps
-cask 'pearcleaner'
+cask "pearcleaner"
 # Control your tools with a few keystrokes
-cask 'raycast'
+cask "raycast"
 # Mesh VPN based on WireGuard
-cask 'tailscale-app'
+cask "tailscale-app"
 # Multi-platform VNC client and server
-cask 'tigervnc'
+cask "tigervnc"
 # Open-source version of the X.Org X Window System
-cask 'xquartz'
+cask "xquartz"
