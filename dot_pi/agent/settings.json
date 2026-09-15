@@ -115,14 +115,6 @@
       {
         "pattern": "mcp__*",
         "exposure": "codemode-only"
-      },
-      {
-        "pattern": "mcp__executor__*",
-        "exposure": "direct-and-codemode"
-      },
-      {
-        "pattern": "mcp__executor__execute",
-        "exposure": "direct-only"
       }
     ]
   },
@@ -130,7 +122,7 @@
     "servers": {
       "executor": {
         "enabled": true,
-        "url": "https://exe.ianpascoe.dev/mcp"
+        "url": "https://exe.ianpascoe.dev/mcp?mode=passthrough"
       },
       "browser-use": {
         "enabled": true,
