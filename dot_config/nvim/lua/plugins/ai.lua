@@ -43,54 +43,34 @@ return {
       provider_options = {
         openai_compatible = {
           api_key = function()
-            return 'local'
+            local key = vim.env.OPENCODE_API_KEY
+            if key and key ~= '' then
+              return key
+            end
+            for _, path in ipairs({
+              vim.fn.expand('~/.pi/agent/auth.json'),
+              vim.fn.expand('~/.local/share/opencode/auth.json'),
+            }) do
+              local ok, auth = pcall(function()
+                return vim.json.decode(table.concat(vim.fn.readfile(path), '\n'))
+              end)
+              key = ok and auth['opencode-go'] and auth['opencode-go'].key
+              if key and key ~= '' then
+                return key
+              end
+            end
+            return ''
           end,
-          end_point = '',
-          model = 'gpt-5.6-sol',
-          name = 'OpenAI Codex',
+          end_point = 'https://opencode.ai/zen/go/v1/chat/completions',
+          model = 'deepseek-v4.1-flash',
+          name = 'OpenCode Go',
+          optional = {
+            max_tokens = 56,
+            thinking = { type = 'disabled' },
+          },
         },
       },
     },
-    config = function(_, opts)
-      local bridge_stdout = ''
-      local bridge_stderr = ''
-      local ready = false
-      local bridge = vim.system({
-        'node',
-        vim.fn.stdpath('config') .. '/scripts/minuet-codex-bridge.ts',
-        '0',
-      }, {
-        text = true,
-        stdin = true,
-        stdout = function(_, data)
-          bridge_stdout = bridge_stdout .. (data or '')
-          local port = tonumber(bridge_stdout:match('^(%d+)\n'))
-          if port and not ready then
-            ready = true
-            vim.schedule(function()
-              opts.provider_options.openai_compatible.end_point = ('http://127.0.0.1:%d/v1/chat/completions'):format(port)
-              require('minuet').setup(opts)
-            end)
-          end
-        end,
-        stderr = function(_, data)
-          bridge_stderr = bridge_stderr .. (data or '')
-        end,
-      }, function(result)
-        if result.code ~= 0 and result.signal == 0 then
-          vim.schedule(function()
-            vim.notify('Minuet Codex bridge failed: ' .. bridge_stderr, vim.log.levels.ERROR)
-          end)
-        end
-      end)
-
-      vim.api.nvim_create_autocmd('VimLeavePre', {
-        once = true,
-        callback = function()
-          pcall(bridge.kill, bridge, 15)
-        end,
-      })
-    end,
   },
   {
     'saghen/blink.cmp',

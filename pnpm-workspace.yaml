@@ -1,6 +1,5 @@
 packages:
   - dot_pi/agent
-  - dot_config/nvim
 
 allowBuilds:
   "@google/genai": true

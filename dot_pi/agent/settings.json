@@ -41,14 +41,12 @@
     }
   ],
   "defaultProjectTrust": "always",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-sol",
+  "defaultProvider": "xai",
+  "defaultModel": "grok-4.6",
   "defaultThinkingLevel": "high",
   "enabledModels": [
-    "openai-codex/gpt-6-astra",
-    "openai-codex/gpt-5.6-sol",
-    "openai-codex/gpt-5.6-terra",
-    "openai-codex/gpt-5.6-luna",
+    "xai/grok-4.6",
+    "opencode-go/deepseek-v4.1-flash",
     "opencode-go/glm-5.3",
     "opencode-go/glm-5.3-flash"
   ],
@@ -61,8 +59,8 @@
   "theme": "dracula",
   "advisor": {
     "enabled": false,
-    "model": "openai-codex/gpt-6-astra",
-    "thinkingLevel": "high",
+    "model": "xai/grok-4.6:xhigh",
+    "thinkingLevel": "xhigh",
     "allowedTools": [
       "read",
       "grep",
@@ -74,38 +72,39 @@
     ]
   },
   "minimalSubagents": {
+    "enabled": false,
     "baseToolset": ["context_notes", "context_history", "context_rollover"],
     "modelRoles": {
       "debug": {
-        "model": "openai-codex/gpt-5.6-sol:xhigh",
+        "model": "xai/grok-4.6:xhigh",
         "hint": "Use to diagnose failures or isolate regressions."
       },
       "default": {
-        "model": "openai-codex/gpt-5.6-sol:high",
+        "model": "xai/grok-4.6:high",
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
-        "model": "openai-codex/gpt-5.6-luna:high",
+        "model": "xai/grok-4.6:low",
         "hint": "Use to locate code, trace behavior, or find reusable patterns."
       },
       "plan": {
-        "model": "openai-codex/gpt-5.6-sol:xhigh",
+        "model": "xai/grok-4.6:xhigh",
         "hint": "Use to clarify requirements, weigh designs, or plan implementation."
       },
       "research": {
-        "model": "openai-codex/gpt-5.6-luna:xhigh",
+        "model": "xai/grok-4.6:low",
         "hint": "Use when technical questions need external sources."
       },
       "review": {
-        "model": "openai-codex/gpt-5.6-sol:xhigh",
+        "model": "xai/grok-4.6:xhigh",
         "hint": "Use when changes need independent correctness or spec review."
       },
       "security": {
-        "model": "openai-codex/gpt-5.6-sol:xhigh",
+        "model": "xai/grok-4.6:xhigh",
         "hint": "Use for threat modeling, security audits, or vulnerability assessment."
       },
       "task": {
-        "model": "openai-codex/gpt-5.6-sol:medium",
+        "model": "xai/grok-4.6:medium",
         "hint": "Use when a scoped implementation task has a settled approach."
       }
     }
