@@ -36,7 +36,7 @@ return {
     'milanglacier/minuet-ai.nvim',
     opts = {
       provider = 'openai_compatible',
-      request_timeout = 10,
+      request_timeout = 30,
       n_completions = 3,
       throttle = 1500, -- Increase to reduce costs and avoid rate limits
       debounce = 600, -- Increase to reduce costs and avoid rate limits
@@ -62,11 +62,19 @@ return {
             return ''
           end,
           end_point = 'https://opencode.ai/zen/go/v1/chat/completions',
-          model = 'deepseek-v4.1-flash',
-          name = 'OpenCode Go',
+          model = 'hy3',
+          name = 'opencode-go',
+          stream = false,
+          transform = {
+            function(args)
+              args.headers['User-Agent'] = 'minuet-ai.nvim'
+              args.headers['x-opencode-session'] = 'minuet-' .. tostring(vim.uv.os_getpid())
+              return args
+            end,
+          },
           optional = {
             max_tokens = 56,
-            thinking = { type = 'disabled' },
+            reasoning_effort = 'none',
           },
         },
       },
