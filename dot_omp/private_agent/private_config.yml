@@ -1,0 +1,33 @@
+providers:
+  webSearchOrder: []
+symbolPreset: nerd
+composer:
+  shape: band
+theme:
+  dark: dark-dracula
+  light: light
+setupVersion: 2
+modelRoles:
+  default: xai-oauth/grok-4.6:medium
+  smol: xai-oauth/grok-4.6:low
+  slow: xai-oauth/grok-4.6:xhigh
+  tiny: opencode-go/hy3:medium
+  advisor: xai-oauth/grok-4.6:xhigh
+astGrep:
+  enabled: true
+ask:
+  enabled: false
+plan:
+  enabled: false
+personality: default
+tui:
+  vimMode: true
+  vimModeDisplay: text
+compaction:
+  experimentalContextManagement: true
+generate_image:
+  enabled: true
+computer:
+  enabled: true
+checkpoint:
+  enabled: true

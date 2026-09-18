@@ -1,0 +1,10 @@
+{
+  "plugins": {
+    "@plannotator/pi-extension": {
+      "version": "0.27.15",
+      "enabledFeatures": null,
+      "enabled": true
+    }
+  },
+  "settings": {}
+}
