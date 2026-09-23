@@ -41,5 +41,20 @@
   "autoMemoryEnabled": false,
   "theme": "dark-ansi",
   "editorMode": "vim",
-  "switchModelsOnFlag": false
+  "switchModelsOnFlag": false,
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.claude/hooks/oxlint-check.sh\"",
+            "timeout": 30,
+            "statusMessage": "Running oxlint..."
+          }
+        ]
+      }
+    ]
+  }
 }
