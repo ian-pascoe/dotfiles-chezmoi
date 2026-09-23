@@ -1,3 +1,4 @@
+tap "abue-ammar/tinycast", trusted: true
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
 tap "nikitabobko/tap", trusted: true
 tap "steipete/tap", trusted: true
@@ -15,12 +16,20 @@ brew "bison"
 brew "blueutil"
 # Resource monitor. C++ version and continuation of bashtop and bpytop
 brew "btop"
+# Container runtimes on MacOS (and Linux) with minimal setup
+brew "colima"
 # GNU multiple precision arithmetic library
 brew "gmp"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
-# TIFF library and utilities
-brew "libtiff"
+# Pack, ship and run any application as a lightweight container
+brew "docker"
+# Docker CLI plugin for extended build capabilities with BuildKit
+brew "docker-buildx"
+# Isolated development environments using Docker
+brew "docker-compose"
+# Platform keystore credential helper for Docker
+brew "docker-credential-helper"
 # Like neofetch, but much faster because written mostly in C
 brew "fastfetch"
 # Cryptography and SSL/TLS Toolkit
@@ -43,12 +52,10 @@ brew "ical-buddy"
 brew "libffi"
 # Conversion library
 brew "libiconv"
+# TIFF library and utilities
+brew "libtiff"
 # YAML Parser
 brew "libyaml"
-# Powerful, lightweight programming language
-brew "lua"
-# Package manager for the Lua programming language
-brew "luarocks"
 # Control and observe media playback from the command-line
 brew "media-control"
 # Polyglot runtime manager (asdf rust clone)
@@ -73,12 +80,8 @@ brew "python@3.13"
 brew "re2c"
 # Create beautiful image of your source code
 brew "silicon"
-# Editor of encrypted files
-brew "sops"
 # Command driven spotify player
 brew "spotify_player"
-# Multi-modal AI tool to extract and summarize content
-brew "summarize"
 # Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale", restart_service: :changed
 # Your CLI home video recorder
@@ -92,6 +95,10 @@ brew "zsh"
 # A window border system for macOS
 brew "felixkratz/formulae/borders", trusted: true
 brew "yakitrak/yakitrak/obsidian-cli"
+# Password manager that keeps all passwords secure behind one password
+cask "1password"
+# Command-line interface for 1Password
+cask "1password-cli"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "nikitabobko/tap/aerospace", trusted: true
 # Menu bar tool to limit maximum charging percentage
@@ -100,16 +107,8 @@ cask "aldente"
 cask "balenaetcher"
 # Display management tool
 cask "betterdisplay"
-# OpenAI's official ChatGPT desktop app
-cask "chatgpt"
-# Terminal-based AI coding assistant
-cask "claude-code"
 # Menu bar usage monitor for Codex and Claude
 cask "steipete/tap/codexbar", trusted: true
-# Voice and text chat software
-cask "discord"
-# App to build and share containerised applications and microservices
-cask "docker-desktop"
 cask "font-geist"
 cask "font-geist-mono-nerd-font"
 cask "font-sf-pro"
@@ -119,6 +118,8 @@ cask "font-symbols-only-nerd-font"
 cask "ghostty"
 # Web browser
 cask "google-chrome"
+# AI teammates that work across your apps and tools
+cask "grok-bot"
 # Desktop automation application
 cask "hammerspoon"
 # Speech to text application
@@ -133,11 +134,13 @@ cask "linear"
 cask "obsidian"
 # Utility to uninstall apps and remove leftover files from old/uninstalled apps
 cask "pearcleaner"
-# Control your tools with a few keystrokes
-cask "raycast"
+# Minimal GUI for AI code agents
+cask "t3-code@nightly"
 # Mesh VPN based on WireGuard
 cask "tailscale-app"
 # Multi-platform VNC client and server
 cask "tigervnc"
+# Tiny, fully native launcher, hotkeys, and clipboard history
+cask "abue-ammar/tinycast/tinycast"
 # Open-source version of the X.Org X Window System
 cask "xquartz"

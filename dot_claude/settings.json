@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "model": "opus",
+  "enabledPlugins": {
+    "agents-md@builtin": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "jdtls-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true,
+    "mattpocock-skills@claude-plugins-official": true,
+    "plannotator@plannotator": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "telemetry@builtin": false,
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "plannotator": {
+      "source": {
+        "source": "github",
+        "repo": "backnotprop/plannotator"
+      }
+    }
+  },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
+  "advisorModel": "fable",
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-or-agents-md"
+      }
+    }
+  },
+  "autoMemoryEnabled": false,
+  "theme": "dark-ansi",
+  "editorMode": "vim",
+  "switchModelsOnFlag": false
+}

@@ -1,0 +1,37 @@
+{
+  "executor": {
+    "type": "http",
+    "url": "https://exe.ianpascoe.dev/mcp"
+  },
+  "browser-use": {
+    "type": "stdio",
+    "command": "pnpm",
+    "args": [
+      "dlx",
+      "@playwright/mcp@latest",
+      "--extension"
+    ],
+    "env": {
+      "PLAYWRIGHT_MCP_EXECUTABLE_PATH": "${DEFAULT_BROWSER_EXECUTABLE_PATH}",
+      "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "${PLAYWRIGHT_MCP_EXTENSION_TOKEN}"
+    }
+  },
+  "terminal-control": {
+    "type": "stdio",
+    "command": "termctrl",
+    "args": [
+      "mcp"
+    ]
+  },
+  "cua-computer-use": {
+    "type": "stdio",
+    "command": "cua-driver",
+    "args": [
+      "mcp"
+    ],
+    "env": {
+      "DISPLAY": ":1",
+      "XDG_SESSION_TYPE": "x11"
+    }
+  }
+}

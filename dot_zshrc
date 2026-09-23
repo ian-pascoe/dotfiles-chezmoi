@@ -111,6 +111,10 @@ if command -v omp &>/dev/null; then
   eval "$(omp completions zsh)"
 fi
 
+if command -v hermes &>/dev/null; then
+  eval "$(hermes completion zsh)"
+fi
+
 ## Zoxide
 if command -v zoxide &>/dev/null; then
   eval "$(zoxide init zsh)"

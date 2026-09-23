@@ -1,5 +1,7 @@
 README.md
 AGENTS.md
+CLAUDE.md
+.claude/mcp-servers.json
 docs/**
 CONTEXT-MAP.md
 **/CONTEXT.md

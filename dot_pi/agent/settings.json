@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.85.1",
+  "lastChangelogVersion": "0.87.0",
   "packages": [
     "npm:@dietrichgebert/ponytail",
     "npm:@narumitw/pi-goal",
@@ -42,10 +42,10 @@
   ],
   "defaultProjectTrust": "always",
   "defaultProvider": "xai",
-  "defaultModel": "grok-4.6",
+  "defaultModel": "grok-4.7",
   "defaultThinkingLevel": "high",
   "enabledModels": [
-    "xai/grok-4.6",
+    "xai/grok-4.7",
     "opencode-go/deepseek-v4.1-flash",
     "opencode-go/glm-5.3",
     "opencode-go/glm-5.3-flash"
@@ -59,7 +59,7 @@
   "theme": "dracula",
   "advisor": {
     "enabled": false,
-    "model": "xai/grok-4.6:xhigh",
+    "model": "xai/grok-4.7:xhigh",
     "thinkingLevel": "xhigh",
     "allowedTools": [
       "read",
@@ -76,35 +76,35 @@
     "baseToolset": ["context_notes", "context_history", "context_rollover"],
     "modelRoles": {
       "debug": {
-        "model": "xai/grok-4.6:xhigh",
+        "model": "xai/grok-4.7:xhigh",
         "hint": "Use to diagnose failures or isolate regressions."
       },
       "default": {
-        "model": "xai/grok-4.6:high",
+        "model": "xai/grok-4.7:high",
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
-        "model": "xai/grok-4.6:low",
+        "model": "xai/grok-4.7:low",
         "hint": "Use to locate code, trace behavior, or find reusable patterns."
       },
       "plan": {
-        "model": "xai/grok-4.6:xhigh",
+        "model": "xai/grok-4.7:xhigh",
         "hint": "Use to clarify requirements, weigh designs, or plan implementation."
       },
       "research": {
-        "model": "xai/grok-4.6:low",
+        "model": "xai/grok-4.7:low",
         "hint": "Use when technical questions need external sources."
       },
       "review": {
-        "model": "xai/grok-4.6:xhigh",
+        "model": "xai/grok-4.7:xhigh",
         "hint": "Use when changes need independent correctness or spec review."
       },
       "security": {
-        "model": "xai/grok-4.6:xhigh",
+        "model": "xai/grok-4.7:xhigh",
         "hint": "Use for threat modeling, security audits, or vulnerability assessment."
       },
       "task": {
-        "model": "xai/grok-4.6:medium",
+        "model": "xai/grok-4.7:medium",
         "hint": "Use when a scoped implementation task has a settled approach."
       }
     }

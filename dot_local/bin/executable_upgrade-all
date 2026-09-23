@@ -77,7 +77,7 @@ if has_cmd pnpm; then
   pnpm -g update --latest --yes
   echo "Global pnpm modules updated successfully!"
   echo "Cleaning up pnpm cache..."
-  pnpm store prune --force
+  pnpm store prune
   pnpm cache delete
   echo "pnpm cache cleaned successfully!"
 fi
@@ -189,7 +189,7 @@ fi
 # Yazi
 if has_cmd ya; then
   echo "Updating Yazi packages..."
-  ya pkg upgrade
+  ya pkg upgrade --discard
   echo "Yazi packages updated successfully!"
 fi
 ####################################################################

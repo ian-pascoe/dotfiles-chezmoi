@@ -1,0 +1,6 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /* Manage only mcpServers; the rest of ~/.claude.json is Claude Code state. */ -}}
+{{- $cfg := dict -}}
+{{- if .chezmoi.stdin }}{{ $cfg = fromJson .chezmoi.stdin }}{{ end -}}
+{{- $cfg = setValueAtPath "mcpServers" (include "dot_claude/mcp-servers.json" | fromJson) $cfg -}}
+{{- toPrettyJson $cfg }}
