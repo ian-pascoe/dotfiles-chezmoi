@@ -5,6 +5,7 @@
     "npm:@narumitw/pi-goal",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
+    "npm:pi-claude-bridge",
     {
       "source": "git:github.com/ian-pascoe/pi-extensions",
       "extensions": [
@@ -56,7 +57,7 @@
   "skills": ["~/.cua-driver/skills/cua-driver"],
   "tuiMode": "fullscreen",
   "doubleEscapeAction": "none",
-  "theme": "dracula",
+  "theme": "catppuccin",
   "advisor": {
     "enabled": false,
     "model": "xai/grok-4.7:xhigh",

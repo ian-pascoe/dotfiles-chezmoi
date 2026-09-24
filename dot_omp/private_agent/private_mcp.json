@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json",
+  "mcpServers": {
+    "executor": {
+      "enabled": true,
+      "type": "http",
+      "url": "https://exe.ianpascoe.dev/mcp?mode=passthrough",
+      "auth": {
+        "type": "oauth"
+      }
+    },
+    "browser-use": {
+      "enabled": true,
+      "command": "pnpm",
+      "args": ["dlx", "@playwright/mcp@latest", "--extension"],
+      "env": {
+        "PLAYWRIGHT_MCP_EXECUTABLE_PATH": "${DEFAULT_BROWSER_EXECUTABLE_PATH}",
+        "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "${PLAYWRIGHT_MCP_EXTENSION_TOKEN}"
+      }
+    },
+    "computer-use": {
+      "enabled": true,
+      "command": "cua-driver",
+      "args": ["mcp"],
+      "env": {
+        "DISPLAY": ":1",
+        "XDG_SESSION_TYPE": "x11"
+      }
+    },
+    "terminal-control": {
+      "enabled": true,
+      "command": "termctrl",
+      "args": ["mcp"]
+    }
+  }
+}
