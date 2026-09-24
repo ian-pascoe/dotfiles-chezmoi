@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.87.0",
+  "lastChangelogVersion": "0.87.1",
   "packages": [
     "npm:@dietrichgebert/ponytail",
     "npm:@narumitw/pi-goal",
@@ -42,14 +42,18 @@
     }
   ],
   "defaultProjectTrust": "always",
-  "defaultProvider": "xai",
-  "defaultModel": "grok-4.7",
-  "defaultThinkingLevel": "high",
+  "defaultProvider": "claude-bridge",
+  "defaultModel": "claude-opus-5-5",
+  "defaultThinkingLevel": "medium",
   "enabledModels": [
+    "claude-bridge/claude-opus-5-5",
+    "claude-bridge/claude-fable-5-1",
+    "claude-bridge/claude-sonnet-5",
+    "claude-bridge/claude-haiku-4-5",
     "xai/grok-4.7",
     "opencode-go/deepseek-v4.1-flash",
-    "opencode-go/glm-5.3",
-    "opencode-go/glm-5.3-flash"
+    "opencode-go/glm-5.3-flash",
+    "opencode-go/mimo-v2.6-flash"
   ],
   "enableInstallTelemetry": false,
   "collapseChangelog": true,
@@ -60,8 +64,8 @@
   "theme": "catppuccin",
   "advisor": {
     "enabled": false,
-    "model": "xai/grok-4.7:xhigh",
-    "thinkingLevel": "xhigh",
+    "model": "claude-bridge/claude-fable-5-1",
+    "thinkingLevel": "high",
     "allowedTools": [
       "read",
       "grep",
@@ -77,35 +81,35 @@
     "baseToolset": ["context_notes", "context_history", "context_rollover"],
     "modelRoles": {
       "debug": {
-        "model": "xai/grok-4.7:xhigh",
+        "model": "claude-bridge/claude-opus-5-5:xhigh",
         "hint": "Use to diagnose failures or isolate regressions."
       },
       "default": {
-        "model": "xai/grok-4.7:high",
+        "model": "claude-bridge/claude-opus-5-5:medium",
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
-        "model": "xai/grok-4.7:low",
+        "model": "claude-bridge/claude-haiku-4-5:high",
         "hint": "Use to locate code, trace behavior, or find reusable patterns."
       },
       "plan": {
-        "model": "xai/grok-4.7:xhigh",
+        "model": "claude-bridge/claude-opus-5-5:xhigh",
         "hint": "Use to clarify requirements, weigh designs, or plan implementation."
       },
       "research": {
-        "model": "xai/grok-4.7:low",
+        "model": "claude-bridge/claude-haiku-4-5:high",
         "hint": "Use when technical questions need external sources."
       },
       "review": {
-        "model": "xai/grok-4.7:xhigh",
+        "model": "claude-bridge/claude-opus-5-5:xhigh",
         "hint": "Use when changes need independent correctness or spec review."
       },
       "security": {
-        "model": "xai/grok-4.7:xhigh",
+        "model": "claude-bridge/claude-opus-5-5:xhigh",
         "hint": "Use for threat modeling, security audits, or vulnerability assessment."
       },
       "task": {
-        "model": "xai/grok-4.7:medium",
+        "model": "claude-bridge/claude-opus-5-5:low",
         "hint": "Use when a scoped implementation task has a settled approach."
       }
     }
