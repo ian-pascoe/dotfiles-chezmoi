@@ -1,0 +1,20 @@
+[Unit]
+Description=Orca runtime server
+After=network-online.target orca-xvfb.service
+Wants=network-online.target orca-xvfb.service
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=/home/ianpascoe
+Environment=DISPLAY=:99
+Environment=LIBGL_ALWAYS_SOFTWARE=1
+ExecStart=/usr/bin/orca-ide serve --port 6768 --pairing-address "$(/usr/bin/tailscale ip -4)"
+KillMode=mixed
+Restart=on-failure
+RestartPreventExitStatus=3
+RestartSec=5
+
+[Install]
+WantedBy=default.target

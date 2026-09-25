@@ -53,7 +53,7 @@ fi
 # Mise
 if has_cmd mise; then
   echo "Updating Mise packages..."
-  mise upgrade --bump
+  mise upgrade --bump --yes
   echo "Mise packages updated successfully!"
   echo "Cleaning up Mise cache..."
   mise prune --yes

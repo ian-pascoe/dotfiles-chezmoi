@@ -6,12 +6,13 @@ theme:
   light: light
 setupVersion: 2
 modelRoles:
-  default: anthropic/claude-opus-5-5:medium
-  smol: opencode-go/deepseek-v4.1-flash:high
+  default: anthropic/claude-opus-5-5:high
+  smol: anthropic/claude-sonnet-5:high
   slow: anthropic/claude-opus-5-5:xhigh
-  tiny: opencode-go/hy3:high
+  tiny: anthropic/claude-haiku-4-5:high
   advisor: anthropic/claude-fable-5-1:xhigh
-  memory: opencode-go/hy3:high
+  task: anthropic/claude-opus-5-5:medium
+  plan: anthropic/claude-opus-5-5:xhigh
 astGrep:
   enabled: true
 ask:
@@ -24,6 +25,7 @@ tui:
   vimModeDisplay: text
 compaction:
   experimentalContextManagement: true
+  idleEnabled: true
 generate_image:
   enabled: true
 computer:
@@ -35,3 +37,5 @@ todo:
   reminders: false
 browser:
   enabled: false
+dev:
+  autoqaConsent: denied

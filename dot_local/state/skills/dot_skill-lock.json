@@ -15,9 +15,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "de1582a945304f9d2823f08986a01dd0cc2d2042",
+      "skillFolderHash": "01fe78e7bc253016bfc30a3d12036bbf90f1c1bc",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-09-15T08:54:01.001Z"
+      "updatedAt": "2026-09-25T09:14:48.245Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -252,9 +252,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/remotion-dev/skills.git",
       "skillPath": "skills/remotion-best-practices/SKILL.md",
-      "skillFolderHash": "5af1d61fe556fb2a461ecc7e1473861777ff92a6",
+      "skillFolderHash": "8214634b910947f7462c6c4fad1afff68cbee528",
       "installedAt": "2026-07-21T10:41:08.762Z",
-      "updatedAt": "2026-09-23T10:26:56.641Z"
+      "updatedAt": "2026-09-25T09:14:50.666Z"
     },
     "agent-browser": {
       "source": "vercel-labs/agent-browser",
@@ -448,6 +448,15 @@
       "skillFolderHash": "1ec4cd3fbcc62d57cd32cf1d907c4c4761355e2b",
       "installedAt": "2026-09-15T15:00:56.151Z",
       "updatedAt": "2026-09-15T15:00:56.151Z"
+    },
+    "plannotator-tui": {
+      "source": "plannotator/herdr-annotate",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/plannotator/herdr-annotate.git",
+      "skillPath": "skills/plannotator-tui/SKILL.md",
+      "skillFolderHash": "ac3bb3a7e92d4752c2e56718ebdd5f7597502393",
+      "installedAt": "2026-09-24T18:42:51.969Z",
+      "updatedAt": "2026-09-24T18:42:51.969Z"
     }
   },
   "dismissed": {
@@ -465,6 +474,7 @@
     "kimi-code-cli",
     "opencode",
     "warp",
-    "zed"
+    "zed",
+    "claude-code"
   ]
 }

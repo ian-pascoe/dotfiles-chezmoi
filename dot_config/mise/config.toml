@@ -130,6 +130,7 @@ zoxide = "latest"
 "cargo:cargo-zigbuild" = "latest"
 "cargo:cross" = "latest"
 "cargo:lspctl" = "latest"
+"cargo:plannotator-tui" = "latest"
 
 # Low-download packages: npm provenance points to anomalyco/terminal-control's npm-release.yml.
 "npm:@kitlangton/terminal-control-linux-x64-gnu" = { version = "latest", os = [
