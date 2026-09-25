@@ -1,6 +1,7 @@
 tap "abue-ammar/tinycast", trusted: true
 tap "felixkratz/formulae", "https://github.com/FelixKratz/homebrew-formulae", trusted: true
 tap "nikitabobko/tap", trusted: true
+tap "stablyai/orca"
 tap "steipete/tap", trusted: true
 # Automatic configure script builder
 brew "autoconf"
@@ -132,6 +133,8 @@ cask "karabiner-elements"
 cask "linear"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# IDE for orchestrating AI coding agents across terminals and worktrees
+cask "stablyai/orca/orca", trusted: true
 # Utility to uninstall apps and remove leftover files from old/uninstalled apps
 cask "pearcleaner"
 # Minimal GUI for AI code agents
