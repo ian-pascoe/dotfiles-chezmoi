@@ -6,6 +6,10 @@ tools belong to Mise even though the backend is called `pipx`.
 
 - `dot_config/packages/private_apt.txt`: Linux system packages, development
   headers, native toolchains, services and bootstrap tools.
+- Orca on Linux: the `orca-ide` `.deb` from GitHub releases. It has no APT
+  repository, so `upgrade-all` installs newer releases and restarts
+  `orca-serve.service`; it is deliberately absent from `private_apt.txt`, and
+  APT pruning keeps it because no repository provides it.
 - `dot_config/scoop/scoopfile.json`: Windows apps, fonts, native libraries,
   toolchains and bootstrap tools.
 - `Brewfile`: macOS apps, native libraries, services and bootstrap tools.
@@ -73,7 +77,9 @@ not ambiguous bare Git URLs or local paths.
 
 APT retains configured roots and their dependencies, held packages, Essential
 and Protected packages, required/important/standard-priority packages, Python 3,
-and kernel/bootloader packages. Its resolver computes unused packages using the
+kernel/bootloader packages, and packages whose installed version no APT source
+provides (manually installed `.deb` files such as `orca-ide`, which cannot be
+reinstalled from a repository). Its resolver computes unused packages using the
 private state map. The exact removal set is simulated again before execution;
 real auto/manual marks are unchanged, and no purge or broad autoremove runs.
 Unresolved/virtual configured package names abort the plan rather than risking

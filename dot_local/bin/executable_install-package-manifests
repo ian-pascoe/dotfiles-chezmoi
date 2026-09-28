@@ -82,6 +82,27 @@ def apt_packages():
     return [line.split("\t") for line in rows.splitlines()]
 
 
+def apt_local_packages(names):
+    """Return installed packages whose installed version no APT source provides.
+
+    Manually installed .debs (e.g. release downloads) cannot be reinstalled
+    from a repository, so pruning must never remove them.
+    """
+    local, package, sources = set(), None, None
+    for line in capture("apt-cache", "policy", *sorted(names)).splitlines() + [""]:
+        if sources is not None and not line.startswith(" " * 8):
+            if not sources - {"/var/lib/dpkg/status"}:
+                local.add(package)
+            sources = None
+        if line and not line[0].isspace() and line.endswith(":"):
+            package = line[:-1]
+        elif line.startswith(" *** "):
+            sources = set()
+        elif sources is not None:
+            sources.add(line.split(maxsplit=1)[1])
+    return local
+
+
 def apt_plan(wanted):
     installed, protected = set(), set()
     for name, status, essential, protect, priority in apt_packages():
@@ -97,6 +118,11 @@ def apt_plan(wanted):
             or base.startswith(("linux-", "grub", "shim", "python3"))
         ):
             protected.add(name)
+    local = apt_local_packages(installed)
+    kept = {name for name in installed if name in local or name.split(":")[0] in local}
+    if kept:
+        print(f"Keeping APT packages with no repository source: {', '.join(sorted(kept))}")
+    protected |= kept
     unresolved = wanted - installed - {name.split(":")[0] for name in installed}
     if unresolved:
         raise RuntimeError("Cannot map configured APT roots to installed packages; install first and use concrete package names: " + ", ".join(sorted(unresolved)))

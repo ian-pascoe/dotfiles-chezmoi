@@ -1,6 +1,7 @@
 symbolPreset: nerd
 composer:
   shape: band
+  tokenRate: true
 theme:
   dark: dark-dracula
   light: light
@@ -39,3 +40,5 @@ browser:
   enabled: false
 dev:
   autoqaConsent: denied
+display:
+  cacheMissMarker: true

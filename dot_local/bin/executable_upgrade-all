@@ -38,6 +38,32 @@ if has_cmd apt; then
   echo "APT cache cleaned successfully!"
 fi
 #########################################################################
+# Orca (standalone .deb from GitHub releases; no APT repository)
+if has_cmd dpkg-query && [ "$(dpkg-query -W -f='${Status}' orca-ide 2>/dev/null)" = "install ok installed" ]; then
+  echo "Updating Orca..."
+  ORCA_CURRENT=$(dpkg-query -W -f='${Version}' orca-ide)
+  ORCA_LATEST=$(curl -fsSL https://api.github.com/repos/stablyai/orca/releases/latest | jq -r '.tag_name // empty | ltrimstr("v")')
+  if [ -z "$ORCA_LATEST" ]; then
+    echo "Could not resolve the latest Orca release; skipping."
+  elif ! dpkg --compare-versions "$ORCA_LATEST" gt "$ORCA_CURRENT"; then
+    echo "Orca $ORCA_CURRENT is already up to date."
+  else
+    ORCA_TMP=$(mktemp -d)
+    ORCA_DEB="$ORCA_TMP/orca-ide_${ORCA_LATEST}_$(dpkg --print-architecture).deb"
+    if curl -fL -o "$ORCA_DEB" "https://github.com/stablyai/orca/releases/download/v${ORCA_LATEST}/${ORCA_DEB##*/}" &&
+      sudo apt install -y "$ORCA_DEB"; then
+      # The running server keeps the old binary until restarted.
+      if has_service orca-serve.service; then
+        systemctl --user restart orca-serve.service
+      fi
+      echo "Orca updated from $ORCA_CURRENT to $ORCA_LATEST!"
+    else
+      echo "Orca update to $ORCA_LATEST failed; keeping $ORCA_CURRENT."
+    fi
+    rm -rf "$ORCA_TMP"
+  fi
+fi
+#########################################################################
 # Homebrew/Linuxbrew
 if has_cmd brew; then
   echo "Updating Homebrew and its packages..."
@@ -53,7 +79,7 @@ fi
 # Mise
 if has_cmd mise; then
   echo "Updating Mise packages..."
-  mise upgrade --bump --yes
+  mise upgrade --yes
   echo "Mise packages updated successfully!"
   echo "Cleaning up Mise cache..."
   mise prune --yes

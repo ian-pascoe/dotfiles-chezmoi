@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "keybindings": {},
+  "platforms": {
+    "darwin": {
+      "terminal.focusPreviousPane": ["Mod+BracketLeft", "Ctrl+Shift+H", "Ctrl+Shift+K"],
+      "terminal.focusNextPane": ["Mod+BracketRight", "Ctrl+Shift+J", "Ctrl+Shift+L"],
+      "terminal.splitRight": ["Mod+D", "Ctrl+Shift+Backslash"],
+      "terminal.splitDown": ["Mod+Shift+D", "Ctrl+Shift+Underscore"],
+      "terminal.closePane": ["Mod+W", "Ctrl+Shift+X"],
+      "terminal.expandPane": ["Mod+Shift+Enter", "Ctrl+Shift+Z"],
+      "terminal.setTitle": ["Ctrl+Shift+Period"],
+      "terminal.search": ["Mod+F", "Ctrl+Shift+BracketLeft"],
+      "tab.newTerminal": ["Mod+T", "Ctrl+Shift+T"],
+      "tab.nextAllTypes": ["Mod+Shift+BracketRight", "Ctrl+Shift+N"],
+      "tab.previousAllTypes": ["Mod+Shift+BracketLeft", "Ctrl+Shift+P"],
+      "tab.rename": ["Mod+R", "Ctrl+Shift+Comma"],
+      "worktree.palette": ["Mod+J", "Ctrl+Shift+S"],
+      "sidebar.left.toggle": ["Mod+B", "Ctrl+Shift+B"],
+      "sidebar.explorer.toggle": ["Mod+Shift+E", "Ctrl+Shift+F"],
+      "sidebar.sourceControl.toggle": ["Mod+Shift+G", "Ctrl+Shift+G"]
+    },
+    "linux": {},
+    "win32": {}
+  }
+}
