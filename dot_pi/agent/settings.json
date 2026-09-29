@@ -2,10 +2,10 @@
   "lastChangelogVersion": "0.87.1",
   "packages": [
     "npm:@dietrichgebert/ponytail",
+    "npm:@gotgenes/pi-anthropic-auth",
     "npm:@narumitw/pi-goal",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
-    "npm:pi-claude-bridge",
     {
       "source": "git:github.com/ian-pascoe/pi-extensions",
       "extensions": [
@@ -42,14 +42,14 @@
     }
   ],
   "defaultProjectTrust": "always",
-  "defaultProvider": "claude-bridge",
+  "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-5-5",
   "defaultThinkingLevel": "medium",
   "enabledModels": [
-    "claude-bridge/claude-opus-5-5",
-    "claude-bridge/claude-fable-5-1",
-    "claude-bridge/claude-sonnet-5",
-    "claude-bridge/claude-haiku-4-5",
+    "anthropic/claude-opus-5-5",
+    "anthropic/claude-fable-5-1",
+    "anthropic/claude-sonnet-5-5",
+    "anthropic/claude-haiku-4-5",
     "xai/grok-4.7",
     "opencode-go/deepseek-v4.1-flash",
     "opencode-go/glm-5.3-flash",
@@ -64,7 +64,7 @@
   "theme": "catppuccin",
   "advisor": {
     "enabled": false,
-    "model": "claude-bridge/claude-fable-5-1",
+    "model": "anthropic/claude-fable-5-1",
     "thinkingLevel": "high",
     "allowedTools": [
       "read",
@@ -81,35 +81,35 @@
     "baseToolset": ["context_notes", "context_history", "context_rollover"],
     "modelRoles": {
       "debug": {
-        "model": "claude-bridge/claude-opus-5-5:xhigh",
+        "model": "anthropic/claude-opus-5-5:xhigh",
         "hint": "Use to diagnose failures or isolate regressions."
       },
       "default": {
-        "model": "claude-bridge/claude-opus-5-5:medium",
+        "model": "anthropic/claude-opus-5-5:medium",
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
-        "model": "claude-bridge/claude-haiku-4-5:high",
+        "model": "anthropic/claude-haiku-4-5:high",
         "hint": "Use to locate code, trace behavior, or find reusable patterns."
       },
       "plan": {
-        "model": "claude-bridge/claude-opus-5-5:xhigh",
+        "model": "anthropic/claude-opus-5-5:xhigh",
         "hint": "Use to clarify requirements, weigh designs, or plan implementation."
       },
       "research": {
-        "model": "claude-bridge/claude-haiku-4-5:high",
+        "model": "anthropic/claude-haiku-4-5:high",
         "hint": "Use when technical questions need external sources."
       },
       "review": {
-        "model": "claude-bridge/claude-opus-5-5:xhigh",
+        "model": "anthropic/claude-opus-5-5:xhigh",
         "hint": "Use when changes need independent correctness or spec review."
       },
       "security": {
-        "model": "claude-bridge/claude-opus-5-5:xhigh",
+        "model": "anthropic/claude-opus-5-5:xhigh",
         "hint": "Use for threat modeling, security audits, or vulnerability assessment."
       },
       "task": {
-        "model": "claude-bridge/claude-opus-5-5:low",
+        "model": "anthropic/claude-opus-5-5:low",
         "hint": "Use when a scoped implementation task has a settled approach."
       }
     }
@@ -847,5 +847,8 @@
         "rootMarkers": ["build.zig"]
       }
     }
+  },
+  "warnings": {
+    "anthropicExtraUsage": false
   }
 }
