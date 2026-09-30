@@ -12,7 +12,7 @@ modelRoles:
   slow: anthropic/claude-fable-5-1:high
   tiny: anthropic/claude-haiku-4-5:high
   advisor: anthropic/claude-fable-5-1:high
-  task: anthropic/claude-opus-5-5:medium
+  task: anthropic/claude-opus-5-5:high
   plan: anthropic/claude-opus-5-5:xhigh
   memory: anthropic/claude-haiku-4-5:low
   commit: anthropic/claude-haiku-4-5:low
