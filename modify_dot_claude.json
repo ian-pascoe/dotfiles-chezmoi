@@ -6,5 +6,5 @@ set -eu
 input=$(cat)
 [ -n "$input" ] || input='{}'
 printf '%s\n' "$input" |
-  jq --slurpfile servers "$CHEZMOI_SOURCE_DIR/dot_claude/mcp-servers.json" \
+  jq -j --slurpfile servers "$CHEZMOI_SOURCE_DIR/dot_claude/mcp-servers.json" \
     '.mcpServers = $servers[0]'
