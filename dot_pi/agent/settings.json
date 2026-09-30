@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.87.1",
+  "lastChangelogVersion": "0.99.1",
   "packages": [
     "npm:@dietrichgebert/ponytail",
     "npm:@gotgenes/pi-anthropic-auth",
@@ -16,13 +16,11 @@
         "packages/pi-formatter/src/index.ts",
         "packages/pi-git-checkpoints/src/index.ts",
         "packages/pi-lsp/src/index.ts",
-        "packages/pi-mcp/src/index.ts",
         "packages/pi-minimal-subagents/src/index.ts",
         "packages/pi-skills-selector/src/index.ts",
         "packages/pi-todo/src/index.ts",
         "packages/pi-tps-tracker/src/index.ts",
-        "packages/pi-web-tools/src/index.ts",
-        "packages/pi-codemode/src/index.ts"
+        "packages/pi-web-tools/src/index.ts"
       ],
       "skills": [
         "packages/pi-advisor/skills/pi-advisor/SKILL.md",
@@ -31,20 +29,18 @@
         "packages/pi-formatter/skills/pi-formatter/SKILL.md",
         "packages/pi-git-checkpoints/skills/pi-git-checkpoints/SKILL.md",
         "packages/pi-lsp/skills/pi-lsp/SKILL.md",
-        "packages/pi-mcp/skills/pi-mcp/SKILL.md",
         "packages/pi-minimal-subagents/skills/pi-minimal-subagents/SKILL.md",
         "packages/pi-skills-selector/skills/pi-skills-selector/SKILL.md",
         "packages/pi-todo/skills/pi-todo/SKILL.md",
         "packages/pi-tps-tracker/skills/pi-tps-tracker/SKILL.md",
-        "packages/pi-web-tools/skills/pi-web-tools/SKILL.md",
-        "packages/pi-codemode/skills/pi-codemode/SKILL.md"
+        "packages/pi-web-tools/skills/pi-web-tools/SKILL.md"
       ]
     }
   ],
   "defaultProjectTrust": "always",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-5-5",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "enabledModels": [
     "anthropic/claude-opus-5-5",
     "anthropic/claude-fable-5-1",
@@ -77,7 +73,7 @@
     ]
   },
   "minimalSubagents": {
-    "enabled": false,
+    "enabled": true,
     "baseToolset": ["context_notes", "context_history", "context_rollover"],
     "modelRoles": {
       "debug": {
@@ -85,7 +81,7 @@
         "hint": "Use to diagnose failures or isolate regressions."
       },
       "default": {
-        "model": "anthropic/claude-opus-5-5:medium",
+        "model": "anthropic/claude-opus-5-5:high",
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
@@ -97,7 +93,7 @@
         "hint": "Use to clarify requirements, weigh designs, or plan implementation."
       },
       "research": {
-        "model": "anthropic/claude-haiku-4-5:high",
+        "model": "anthropic/claude-sonnet-5-5:medium",
         "hint": "Use when technical questions need external sources."
       },
       "review": {
@@ -109,47 +105,8 @@
         "hint": "Use for threat modeling, security audits, or vulnerability assessment."
       },
       "task": {
-        "model": "anthropic/claude-opus-5-5:low",
+        "model": "anthropic/claude-sonnet-5-5:high",
         "hint": "Use when a scoped implementation task has a settled approach."
-      }
-    }
-  },
-  "codemode": {
-    "tools": [
-      {
-        "pattern": "mcp__*",
-        "exposure": "codemode-only"
-      }
-    ]
-  },
-  "mcp": {
-    "servers": {
-      "executor": {
-        "enabled": true,
-        "url": "https://exe.ianpascoe.dev/mcp?mode=passthrough"
-      },
-      "browser-use": {
-        "enabled": true,
-        "command": "pnpm",
-        "args": ["dlx", "@playwright/mcp@latest", "--extension"],
-        "environment": {
-          "PLAYWRIGHT_MCP_EXECUTABLE_PATH": "${DEFAULT_BROWSER_EXECUTABLE_PATH}",
-          "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "${PLAYWRIGHT_MCP_EXTENSION_TOKEN}"
-        }
-      },
-      "computer-use": {
-        "enabled": true,
-        "command": "cua-driver",
-        "args": ["mcp"],
-        "environment": {
-          "DISPLAY": ":1",
-          "XDG_SESSION_TYPE": "x11"
-        }
-      },
-      "terminal-control": {
-        "enabled": true,
-        "command": "termctrl",
-        "args": ["mcp"]
       }
     }
   },

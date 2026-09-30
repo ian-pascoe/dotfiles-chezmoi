@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "executor": {
+      "enabled": true,
+      "url": "https://exe.ianpascoe.dev/mcp?mode=passthrough",
+      "oauth": {
+        "scope": "openid"
+      }
+    },
+    "browser-use": {
+      "enabled": true,
+      "command": "pnpm",
+      "args": ["dlx", "@playwright/mcp@latest", "--extension"],
+      "environment": {
+        "PLAYWRIGHT_MCP_EXECUTABLE_PATH": "${DEFAULT_BROWSER_EXECUTABLE_PATH}",
+        "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "${PLAYWRIGHT_MCP_EXTENSION_TOKEN}"
+      }
+    },
+    "computer-use": {
+      "enabled": true,
+      "command": "cua-driver",
+      "args": ["mcp"],
+      "environment": {
+        "DISPLAY": ":1",
+        "XDG_SESSION_TYPE": "x11"
+      }
+    },
+    "terminal-control": {
+      "enabled": true,
+      "command": "termctrl",
+      "args": ["mcp"]
+    }
+  }
+}
