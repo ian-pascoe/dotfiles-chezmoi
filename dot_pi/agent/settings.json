@@ -1,39 +1,40 @@
 {
   "lastChangelogVersion": "0.99.1",
   "packages": [
-    "npm:@dietrichgebert/ponytail",
     "npm:@gotgenes/pi-anthropic-auth",
-    "npm:@narumitw/pi-goal",
     "npm:@plannotator/pi-extension",
     "npm:pi-autoresearch",
     {
       "source": "git:github.com/ian-pascoe/pi-extensions",
       "extensions": [
-        "packages/pi-advisor/src/index.ts",
-        "packages/pi-bible-verses/src/index.ts",
-        "packages/pi-context-management/src/index.ts",
-        "packages/pi-dap/src/index.ts",
-        "packages/pi-formatter/src/index.ts",
-        "packages/pi-git-checkpoints/src/index.ts",
-        "packages/pi-lsp/src/index.ts",
-        "packages/pi-minimal-subagents/src/index.ts",
-        "packages/pi-skills-selector/src/index.ts",
-        "packages/pi-todo/src/index.ts",
-        "packages/pi-tps-tracker/src/index.ts",
-        "packages/pi-web-tools/src/index.ts"
+        "+packages/pi-advisor/src/index.ts",
+        "+packages/pi-bible-verses/src/index.ts",
+        "-packages/pi-context-management/src/index.ts",
+        "-packages/pi-dap/src/index.ts",
+        "+packages/pi-formatter/src/index.ts",
+        "+packages/pi-git-checkpoints/src/index.ts",
+        "-packages/pi-git-status-widget/src/index.ts",
+        "+packages/pi-lsp/src/index.ts",
+        "+packages/pi-minimal-subagents/src/index.ts",
+        "+packages/pi-skills-selector/src/index.ts",
+        "+packages/pi-todo/src/index.ts",
+        "+packages/pi-tps-tracker/src/index.ts",
+        "+packages/pi-web-tools/src/index.ts"
       ],
       "skills": [
-        "packages/pi-advisor/skills/pi-advisor/SKILL.md",
-        "packages/pi-context-management/skills/pi-context-management/SKILL.md",
-        "packages/pi-dap/skills/pi-dap/SKILL.md",
-        "packages/pi-formatter/skills/pi-formatter/SKILL.md",
-        "packages/pi-git-checkpoints/skills/pi-git-checkpoints/SKILL.md",
-        "packages/pi-lsp/skills/pi-lsp/SKILL.md",
-        "packages/pi-minimal-subagents/skills/pi-minimal-subagents/SKILL.md",
-        "packages/pi-skills-selector/skills/pi-skills-selector/SKILL.md",
-        "packages/pi-todo/skills/pi-todo/SKILL.md",
-        "packages/pi-tps-tracker/skills/pi-tps-tracker/SKILL.md",
-        "packages/pi-web-tools/skills/pi-web-tools/SKILL.md"
+        "-packages/pi-advisor/skills/pi-advisor/SKILL.md",
+        "-packages/pi-bible-verses/skills/pi-bible-verses/SKILL.md",
+        "-packages/pi-context-management/skills/pi-context-management/SKILL.md",
+        "-packages/pi-dap/skills/pi-dap/SKILL.md",
+        "-packages/pi-formatter/skills/pi-formatter/SKILL.md",
+        "-packages/pi-git-checkpoints/skills/pi-git-checkpoints/SKILL.md",
+        "-packages/pi-git-status-widget/skills/pi-git-status-widget/SKILL.md",
+        "-packages/pi-lsp/skills/pi-lsp/SKILL.md",
+        "-packages/pi-minimal-subagents/skills/pi-minimal-subagents/SKILL.md",
+        "-packages/pi-skills-selector/skills/pi-skills-selector/SKILL.md",
+        "-packages/pi-todo/skills/pi-todo/SKILL.md",
+        "-packages/pi-tps-tracker/skills/pi-tps-tracker/SKILL.md",
+        "-packages/pi-web-tools/skills/pi-web-tools/SKILL.md"
       ]
     }
   ],
@@ -54,7 +55,6 @@
   "enableInstallTelemetry": false,
   "collapseChangelog": true,
   "showCacheMissNotices": true,
-  "skills": ["~/.cua-driver/skills/cua-driver"],
   "tuiMode": "fullscreen",
   "doubleEscapeAction": "none",
   "theme": "catppuccin",
@@ -62,19 +62,10 @@
     "enabled": false,
     "model": "anthropic/claude-fable-5-1",
     "thinkingLevel": "high",
-    "allowedTools": [
-      "read",
-      "grep",
-      "find",
-      "ls",
-      "context_notes",
-      "context_history",
-      "context_rollover"
-    ]
+    "allowedTools": ["read", "grep", "find", "ls"]
   },
   "minimalSubagents": {
     "enabled": true,
-    "baseToolset": ["context_notes", "context_history", "context_rollover"],
     "modelRoles": {
       "debug": {
         "model": "anthropic/claude-opus-5-5:xhigh",
