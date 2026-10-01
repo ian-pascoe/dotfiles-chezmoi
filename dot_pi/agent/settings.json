@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.99.1",
+  "lastChangelogVersion": "0.99.2",
   "packages": [
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:@plannotator/pi-extension",
@@ -17,6 +17,7 @@
         "+packages/pi-lsp/src/index.ts",
         "+packages/pi-minimal-subagents/src/index.ts",
         "+packages/pi-skills-selector/src/index.ts",
+        "+packages/pi-termctrl/src/index.ts",
         "+packages/pi-todo/src/index.ts",
         "+packages/pi-tps-tracker/src/index.ts",
         "+packages/pi-web-tools/src/index.ts"
@@ -32,6 +33,7 @@
         "-packages/pi-lsp/skills/pi-lsp/SKILL.md",
         "-packages/pi-minimal-subagents/skills/pi-minimal-subagents/SKILL.md",
         "-packages/pi-skills-selector/skills/pi-skills-selector/SKILL.md",
+        "-packages/pi-termctrl/skills/pi-termctrl/SKILL.md",
         "-packages/pi-todo/skills/pi-todo/SKILL.md",
         "-packages/pi-tps-tracker/skills/pi-tps-tracker/SKILL.md",
         "-packages/pi-web-tools/skills/pi-web-tools/SKILL.md"
