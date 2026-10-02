@@ -24,11 +24,6 @@
         "DISPLAY": ":1",
         "XDG_SESSION_TYPE": "x11"
       }
-    },
-    "terminal-control": {
-      "enabled": true,
-      "command": "termctrl",
-      "args": ["mcp"]
     }
   }
 }
