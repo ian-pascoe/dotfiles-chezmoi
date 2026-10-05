@@ -15,9 +15,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "08f8aeb10beb9b8f70f90660f0a1634551304926",
+      "skillFolderHash": "2fd734d1f1f305cb8d17147f444750a284421ad5",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-10-02T10:19:43.249Z"
+      "updatedAt": "2026-10-05T09:30:37.714Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -119,9 +119,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/engineering/ask-matt/SKILL.md",
-      "skillFolderHash": "8ab83b2d681b3a343b869e0840535ecf832a17b5",
+      "skillFolderHash": "da068f2392e1144469cbc602ffff96ef47881a88",
       "installedAt": "2026-06-26T01:17:29.444Z",
-      "updatedAt": "2026-09-30T10:03:30.829Z"
+      "updatedAt": "2026-10-05T09:30:38.335Z"
     },
     "codebase-design": {
       "source": "mattpocock/skills",
@@ -234,9 +234,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/remotion-dev/skills.git",
       "skillPath": "skills/remotion-best-practices/SKILL.md",
-      "skillFolderHash": "17ddb25efb0a6de832d3662f9ca01cc2681ffc9d",
+      "skillFolderHash": "08c9b08b29536e173eca3fcfa29d08537f55df26",
       "installedAt": "2026-07-21T10:41:08.762Z",
-      "updatedAt": "2026-10-01T09:26:23.368Z"
+      "updatedAt": "2026-10-05T09:30:39.957Z"
     },
     "agent-browser": {
       "source": "vercel-labs/agent-browser",
@@ -354,9 +354,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/nicobailon/visual-explainer.git",
       "skillPath": "plugins/visual-explainer/SKILL.md",
-      "skillFolderHash": "898ebc2b3509af8664b48922e4abc40d71233c4c",
+      "skillFolderHash": "7436d23b4868b74fadb93fdef7d3c102b9755821",
       "installedAt": "2026-08-17T09:50:57.504Z",
-      "updatedAt": "2026-08-31T00:24:01.329Z"
+      "updatedAt": "2026-10-05T09:30:41.064Z"
     },
     "show-me": {
       "source": "humanlayer/skills",
