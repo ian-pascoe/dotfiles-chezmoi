@@ -2,25 +2,39 @@
 ## .zshrc
 ##============================
 
-## History
+## History (shared across sessions, deduped; mirrors .bashrc)
 HISTSIZE=10000
 SAVEHIST=$HISTSIZE
 HISTFILE="$HOME/.zsh_history"
-
-## Shared Interactive Config
-if [ -f "$HOME/.config/shell/interactive.sh" ]; then
-  source "$HOME/.config/shell/interactive.sh"
-fi
-
-# Persist history immediately and dedupe entries
-setopt appendhistory
-setopt inc_append_history
+setopt append_history
+setopt share_history
 setopt hist_ignore_dups
 setopt hist_ignore_all_dups
 setopt hist_save_no_dups
+
+## Options
 setopt ignore_eof
 
-## ZPlug
+## Line Editing (vi mode, as in .bashrc)
+# zsh already picks vi mode when $EDITOR contains "vi"; make it explicit.
+bindkey -v
+
+# Up/Down search history by the typed prefix (as ~/.inputrc does for bash).
+autoload -U up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+for __keymap in viins vicmd; do
+  bindkey -M "$__keymap" '^[[A' up-line-or-beginning-search
+  bindkey -M "$__keymap" '^[OA' up-line-or-beginning-search
+  bindkey -M "$__keymap" '^[[B' down-line-or-beginning-search
+  bindkey -M "$__keymap" '^[OB' down-line-or-beginning-search
+done
+unset __keymap
+
+# Shift-Tab cycles completions backward.
+bindkey -M viins '^[[Z' reverse-menu-complete
+
+## ZPlug (autosuggestions + syntax highlighting)
 if command -v brew &>/dev/null; then
   export ZPLUG_HOME="$(brew --prefix zplug 2>/dev/null)"
 elif [ -d "$HOME/.zplug" ]; then
@@ -42,92 +56,16 @@ if [ -n "${ZPLUG_HOME:-}" ] && [ -d "${ZPLUG_HOME}" ]; then
   zplug load
 fi
 
-## FZF
-if command -v fzf &>/dev/null; then
-  source <(fzf --zsh)
-fi
-
 ## Completion
 if ! command -v compdef &>/dev/null; then
   autoload -U compinit && compinit
 fi
+# Color completion lists like readline's colored-stats.
+zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
 
-if command -v lazygit &>/dev/null; then
-  alias lg="lazygit"
-fi
-
-if command -v terraform &>/dev/null; then
-  alias tf="terraform"
-fi
-
-if command -v hunk &>/dev/null; then
-  hunk() {
-    if [[ "$1" == "diff" ]]; then
-      shift
-      command hunk diff \
-        --watch \
-        --transparent-bg \
-        --mode stack \
-        --wrap \
-        --theme "$(
-          case "$(basename "$(readlink ~/.config/theme)")" in
-            catppuccin) echo catppuccin-mocha ;;
-            gruvbox) echo gruvbox-dark-medium ;;
-            kanagawa) echo kanagawa-wave ;;
-            everforest) echo everforest-dark ;;
-            dracula) echo dracula ;;
-            solarized) echo solarized-dark ;;
-            one-dark) echo one-dark-pro ;;
-            vesper) echo vesper ;;
-            flexoki) echo github-dark-default ;;
-            *) basename "$(readlink ~/.config/theme)" ;;
-          esac
-        )" \
-        "$@"
-    else
-      command hunk "$@"
-    fi
-  }
-fi
-
-if command -v pi &>/dev/null; then
-  pi() {
-    case "$1" in
-      auth|config|install|list|remove|uninstall|update|--no-extensions|-ne)
-        # Pi only recognizes subcommands when they are the first argument.
-        command pi "$@"
-        ;;
-      *)
-        command pi \
-          --theme "$HOME/.config/theme/pi.json" \
-          --active-theme "$(basename "$(readlink "$HOME/.config/theme")")" \
-          "$@"
-        ;;
-    esac
-  }
-fi
-
-if command -v omp &>/dev/null; then
-  eval "$(omp completions zsh)"
-fi
-
-if command -v hermes &>/dev/null; then
-  eval "$(hermes completion zsh)"
-fi
-
-## Zoxide
-if command -v zoxide &>/dev/null; then
-  eval "$(zoxide init zsh)"
-  function zd() {
-    if [ $# -eq 0 ]; then
-      builtin cd ~ && zoxide add "$(pwd)" && return
-    elif [ -d "$1" ]; then
-      builtin cd "$1" && zoxide add "$(pwd)" && return
-    else
-      z "$@" && printf "\U000F17A9 " && pwd || echo "Error: Directory not found"
-    fi
-  }
-  alias cd='zd'
+## Shared Interactive Config
+if [ -f "$HOME/.config/shell/interactive.sh" ]; then
+  source "$HOME/.config/shell/interactive.sh"
 fi
 
 ## Starship
@@ -140,13 +78,17 @@ if command -v starship &>/dev/null; then
 
   # Starship's zsh init wraps zle-keymap-select. Re-running it makes the wrapper
   # preserve itself, then Escape in vi mode recurses until FUNCNEST is reached.
+  # The widget name lives in a variable because shfmt rewrites a literal
+  # subscript like [zle-keymap-select] into arithmetic ([zle - keymap - select]).
+  __starship_keymap_widget='zle-keymap-select'
   if (($+functions[prompt_starship_precmd] == 0)); then
     eval "$(starship init zsh)"
-  elif [[ ${widgets[zle - keymap - select]:-} == user:starship_zle-keymap-select-wrapped &&
+  elif [[ ${widgets[$__starship_keymap_widget]:-} == user:starship_zle-keymap-select-wrapped &&
     ${__starship_preserved_zle_keymap_select:-} == starship_zle-keymap-select-wrapped ]]; then
     zle -N zle-keymap-select starship_zle-keymap-select
     unset __starship_preserved_zle_keymap_select
   fi
+  unset __starship_keymap_widget
 fi
 
 ## Apply Base Path Order

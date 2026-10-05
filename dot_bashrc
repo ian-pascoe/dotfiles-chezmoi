@@ -10,28 +10,26 @@ if [ -f "$HOME/.config/shell/path.bash" ]; then
   source "$HOME/.config/shell/path.bash"
 fi
 
-## History
+## History (shared across sessions, deduped; mirrors .zshrc)
 HISTSIZE=10000
 HISTFILESIZE=$HISTSIZE
 HISTFILE="$HOME/.bash_history"
 HISTCONTROL=ignoredups:erasedups
 shopt -s histappend
-PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+# Starship moves the existing PROMPT_COMMAND into STARSHIP_PROMPT_COMMAND, so
+# check both to keep re-sourcing this file idempotent.
+case ";${PROMPT_COMMAND:-};${STARSHIP_PROMPT_COMMAND:-};" in
+*"history -a; history -n"*) ;;
+*) PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}" ;;
+esac
 
-# Check window size after each command and update LINES and COLUMNS
-shopt -s checkwinsize
-
+## Options
+shopt -s checkwinsize # zsh does this automatically
+shopt -s globstar     # ** recursive globs, as in zsh
 set -o ignoreeof
 
-## Shared Interactive Config
-if [ -f "$HOME/.config/shell/interactive.sh" ]; then
-  source "$HOME/.config/shell/interactive.sh"
-fi
-
-## Ble.sh
-if [[ $- == *i* ]] && [[ -f "$HOME/.local/share/blesh/ble.sh" ]]; then
-  source "$HOME/.local/share/blesh/ble.sh" --attach=none
-fi
+## Line Editing (vi mode, as in .zshrc)
+set -o vi
 
 ## Bash Completion
 if command -v brew &>/dev/null; then
@@ -44,41 +42,26 @@ elif [[ -f /etc/bash_completion ]]; then
   source /etc/bash_completion
 fi
 
-## FZF
-if command -v fzf &>/dev/null; then
-  eval "$(fzf --bash)"
-fi
-
-## Zoxide
-if command -v zoxide &>/dev/null; then
-  eval "$(zoxide init bash)"
-  zd() {
-    if [ $# -eq 0 ]; then
-      builtin cd ~ && zoxide add "$(pwd)" && return
-    elif [ -d "$1" ]; then
-      builtin cd "$1" && zoxide add "$(pwd)" && return
-    else
-      z "$@" && printf '\Uf17a9 ' && pwd || echo "Error: Directory not found"
-    fi
-  }
-  alias cd='zd'
+## Shared Interactive Config
+if [ -f "$HOME/.config/shell/interactive.sh" ]; then
+  source "$HOME/.config/shell/interactive.sh"
 fi
 
 ## Starship
 if command -v starship &>/dev/null; then
-  starship_precmd() { printf '\r\033[K'; }
-  if [[ -n "${PROMPT_COMMAND:-}" ]]; then
-    PROMPT_COMMAND="starship_precmd; $PROMPT_COMMAND"
-  else
-    PROMPT_COMMAND="starship_precmd"
+  # Clear stale line state before each prompt render. Starship defines its own
+  # starship_precmd, so this hook needs a distinct name.
+  __sanitize_prompt() { printf '\r\033[K'; }
+  case ";${PROMPT_COMMAND:-};${STARSHIP_PROMPT_COMMAND:-};" in
+  *__sanitize_prompt*) ;;
+  *) PROMPT_COMMAND="__sanitize_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}" ;;
+  esac
+  if ! declare -F starship_precmd >/dev/null; then
+    eval "$(starship init bash)"
   fi
-  eval "$(starship init bash)"
 fi
 
 ## Apply Base Path Order
 if declare -F _bash_apply_base_path_order >/dev/null; then
   _bash_apply_base_path_order
 fi
-
-## Interactive Shell
-[[ ! ${BLE_VERSION-} ]] || ble-attach

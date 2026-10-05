@@ -1,0 +1,41 @@
+##=========================================
+## ~/.inputrc
+##=========================================
+# Readline settings for bash and other readline programs. Bash-only behavior
+# sits under `$if Bash`; vi mode itself is enabled in ~/.bashrc so other
+# readline programs keep emacs keys.
+
+# A user inputrc replaces the system one, so keep its defaults.
+$include /etc/inputrc
+
+## Completion (zsh-like: first Tab lists and inserts the common prefix,
+## repeated Tab cycles through matches)
+set show-all-if-ambiguous on
+set menu-complete-display-prefix on
+set colored-stats on
+set colored-completion-prefix on
+set mark-symlinked-directories on
+
+$if Bash
+  ## Vi Mode Indicator (matches starship's vimcmd_symbol in zsh)
+  set show-mode-in-prompt on
+  set vi-ins-mode-string ""
+  set vi-cmd-mode-string "\1\e[32m\2\1\e[0m\2 "
+
+  ## Tab / Shift-Tab cycle completions
+  set keymap vi-insert
+  "\t": menu-complete
+  "\e[Z": menu-complete-backward
+
+  ## Up/Down search history by the typed prefix
+  "\e[A": history-search-backward
+  "\e[B": history-search-forward
+  "\eOA": history-search-backward
+  "\eOB": history-search-forward
+
+  set keymap vi-command
+  "\e[A": history-search-backward
+  "\e[B": history-search-forward
+  "\eOA": history-search-backward
+  "\eOB": history-search-forward
+$endif
