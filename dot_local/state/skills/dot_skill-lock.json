@@ -15,9 +15,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "2fd734d1f1f305cb8d17147f444750a284421ad5",
+      "skillFolderHash": "cf0c4efe93ac2a840130648c466c68eb958dbb48",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-10-05T09:30:37.714Z"
+      "updatedAt": "2026-10-06T09:47:14.187Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -363,9 +363,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/nicobailon/visual-explainer.git",
       "skillPath": "plugins/visual-explainer/SKILL.md",
-      "skillFolderHash": "7436d23b4868b74fadb93fdef7d3c102b9755821",
+      "skillFolderHash": "9aa9119dfbac0b13fb3e7db3d3bee939cf9ad164",
       "installedAt": "2026-08-17T09:50:57.504Z",
-      "updatedAt": "2026-10-05T09:30:41.064Z"
+      "updatedAt": "2026-10-06T09:47:15.354Z"
     },
     "show-me": {
       "source": "humanlayer/skills",
