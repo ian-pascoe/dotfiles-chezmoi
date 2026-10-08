@@ -3,22 +3,17 @@
   "defaultModel": "claude-opus-5-5",
   "defaultThinkingLevel": "high",
   "enabledModels": [
-    "anthropic/claude-opus-5-5",
     "anthropic/claude-fable-5-1",
+    "anthropic/claude-opus-5-5",
     "anthropic/claude-sonnet-5-5",
-    "anthropic/claude-haiku-5-5",
-    "xai/grok-4.7",
-    "opencode-go/deepseek-v4.1-flash",
-    "opencode-go/glm-5.3-flash",
-    "opencode-go/mimo-v2.6-flash"
+    "anthropic/claude-haiku-5-5"
   ],
   "defaultTools": ["+codemode", "+tool_search", "+grep", "+find", "+ls"],
   "defaultProjectTrust": "always",
-  "theme": "catppuccin",
+  "theme": "kanagawa",
   "tuiMode": "fullscreen",
   "quietStartup": "header",
   "fullscreenExitOutput": "resume-hint",
-  "fullscreenCopyOnSelect": false,
   "autocompleteMaxVisible": 10,
   "doubleEscapeAction": "none",
   "collapseChangelog": true,
@@ -42,6 +37,7 @@
         "+packages/pi-dap/src/index.ts",
         "+packages/pi-formatter/src/index.ts",
         "+packages/pi-git-checkpoints/src/index.ts",
+        "+packages/pi-guardian/src/index.ts",
         "+packages/pi-lsp/src/index.ts",
         "+packages/pi-minimal-subagents/src/index.ts",
         "+packages/pi-skills-selector/src/index.ts",
@@ -58,6 +54,7 @@
         "+packages/pi-dap/skills/pi-dap/SKILL.md",
         "+packages/pi-formatter/skills/pi-formatter/SKILL.md",
         "+packages/pi-git-checkpoints/skills/pi-git-checkpoints/SKILL.md",
+        "+packages/pi-guardian/skills/pi-guardian/SKILL.md",
         "+packages/pi-lsp/skills/pi-lsp/SKILL.md",
         "+packages/pi-minimal-subagents/skills/pi-minimal-subagents/SKILL.md",
         "+packages/pi-skills-selector/skills/pi-skills-selector/SKILL.md",
@@ -70,64 +67,92 @@
   ],
   "guardian": {
     "enabled": false,
+    "classifierModel": "typesafe/jev-latest",
     "model": "anthropic/claude-haiku-5-5",
-    "thinkingLevel": "off",
-    "escalationModel": "anthropic/claude-sonnet-5-5",
-    "escalationThinkingLevel": "low"
+    "thinkingLevel": "low"
   },
   "advisor": {
     "enabled": false,
     "model": "anthropic/claude-fable-5-1",
     "thinkingLevel": "high",
     "allowedTools": [
-      "read",
-      "grep",
-      "find",
-      "ls",
-      "context_notes",
+      "codemode",
       "context_history",
-      "context_rollover"
+      "context_notes",
+      "context_rollover",
+      "find",
+      "grep",
+      "ls",
+      "lsp_call_hierarchy",
+      "lsp_diagnostics",
+      "lsp_document_symbols",
+      "lsp_find_references",
+      "lsp_goto_definition",
+      "lsp_goto_implementation",
+      "lsp_goto_type_definition",
+      "lsp_hover",
+      "lsp_incoming_calls",
+      "lsp_outgoing_calls",
+      "lsp_status",
+      "lsp_workspace_diagnostics",
+      "lsp_workspace_symbols",
+      "read",
+      "tool_search",
+      "web_fetch",
+      "web_search"
     ]
   },
   "minimalSubagents": {
     "enabled": true,
-    "baseToolset": ["context_notes", "context_history", "context_rollover"],
+    "baseToolset": ["codemode", "context_*", "tool_search"],
+    "readToolset": [
+      "find",
+      "grep",
+      "ls",
+      "lsp_call_hierarchy",
+      "lsp_diagnostics",
+      "lsp_document_symbols",
+      "lsp_find_references",
+      "lsp_goto_definition",
+      "lsp_goto_implementation",
+      "lsp_goto_type_definition",
+      "lsp_hover",
+      "lsp_incoming_calls",
+      "lsp_outgoing_calls",
+      "lsp_status",
+      "lsp_workspace_diagnostics",
+      "lsp_workspace_symbols",
+      "read",
+      "web_fetch",
+      "web_search"
+    ],
+    "modifyToolset": [
+      "bash",
+      "edit",
+      "write",
+      "lsp_rename",
+      "lsp_code_actions",
+      "lsp_apply",
+      "lsp_format_document",
+      "dap_*",
+      "terminal_*"
+    ],
     "modelRoles": {
-      "debug": {
-        "model": "anthropic/claude-opus-5-5:xhigh",
-        "hint": "Use to diagnose failures or isolate regressions."
+      "small": {
+        "model": "anthropic/claude-haiku-5-5",
+        "hint": "Cheap and fast. Use for explore (locating code, tracing behavior, finding reusable patterns), web and docs research, summarizing, and mechanical edits. Medium thinking is usually enough."
       },
-      "default": {
-        "model": "anthropic/claude-opus-5-5:high",
-        "hint": "Use when work spans roles or no specialized role fits."
+      "medium": {
+        "model": "anthropic/claude-sonnet-5-5",
+        "hint": "Default workhorse. Use for scoped implementation tasks with a settled approach, tests, refactors, and work that spans several concerns or fits no other tier."
       },
-      "explore": {
-        "model": "anthropic/claude-haiku-5-5:high",
-        "hint": "Use to locate code, trace behavior, or find reusable patterns."
+      "large": {
+        "model": "anthropic/claude-opus-5-5",
+        "hint": "Use for planning and design, independent correctness or spec review, and diagnosing failures. Use high thinking for plan and review; set xhigh thinking for debugging, regressions, and security audits."
       },
-      "oracle": {
+      "xlarge": {
         "model": "anthropic/claude-fable-5-1",
-        "hint": "Use when all else fails and you need the most intelligence"
-      },
-      "plan": {
-        "model": "anthropic/claude-opus-5-5:xhigh",
-        "hint": "Use to clarify requirements, weigh designs, or plan implementation."
-      },
-      "research": {
-        "model": "anthropic/claude-haiku-5-5:high",
-        "hint": "Use when technical questions need external sources."
-      },
-      "review": {
-        "model": "anthropic/claude-opus-5-5:xhigh",
-        "hint": "Use when changes need independent correctness or spec review."
-      },
-      "security": {
-        "model": "anthropic/claude-opus-5-5:xhigh",
-        "hint": "Use for threat modeling, security audits, or vulnerability assessment."
-      },
-      "task": {
-        "model": "anthropic/claude-sonnet-5-5:high",
-        "hint": "Use when a scoped implementation task has a settled approach."
+        "hint": "Most capable and most expensive. Use only when large has failed or the problem is unusually hard."
       }
     }
   },

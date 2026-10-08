@@ -2,44 +2,33 @@
   "mcpServers": {
     "executor": {
       "enabled": true,
-      "url": "https://exe.ianpascoe.dev/mcp?mode=passthrough",
-      "description": "Connected third-party integrations and accounts: search for an integration tool, then invoke it by ID with JSON arguments; also lists workflow skills and stores artifacts.",
-      "oauth": {
-        "scope": "openid"
-      },
-      "exposure": "deferred"
-    },
-    "browser-use": {
-      "enabled": true,
-      "command": "pnpm",
-      "args": [
-        "dlx",
-        "@playwright/mcp@latest",
-        "--extension",
-        "--output-dir",
-        "/home/ianpascoe/.cache/playwright-mcp"
-      ],
-      "env": {
-        "PLAYWRIGHT_MCP_EXECUTABLE_PATH": "${DEFAULT_BROWSER_EXECUTABLE_PATH}",
-        "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "${PLAYWRIGHT_MCP_EXTENSION_TOKEN}",
-        "DISPLAY": ":1",
-        "XDG_SESSION_TYPE": "x11"
-      },
-      "description": "Drives the user's real Helium browser via the Playwright MCP extension (navigate, snapshot, click, screenshot, network/console).",
-      "exposure": "deferred"
+      "url": "https://v2.executor.sh/mcp",
+      "exposure": "direct"
     },
     "computer-use": {
       "enabled": true,
       "command": "cua-driver",
-      "args": [
-        "mcp"
-      ],
+      "args": ["mcp"],
       "env": {
         "DISPLAY": ":1",
         "XDG_SESSION_TYPE": "x11"
       },
-      "description": "Desktop GUI control (screenshots, mouse, keyboard, windows, accessibility tree) on X11 display :1 via cua-driver.",
-      "exposure": "deferred"
+      "exposure": "deferred",
+      "toolExposure": {
+        "*_agent_cursor_*": "hidden",
+        "*_config": "hidden",
+        "health_report": "hidden",
+        "check_permissions": "hidden",
+        "check_for_update": "hidden",
+        "install_ffmpeg": "hidden",
+        "parallel_mouse_drag": "hidden",
+        "mouse_button_*": "hidden"
+      }
+    },
+    "upsy": {
+      "enabled": true,
+      "url": "https://upsy.ai/connect",
+      "exposure": "codemode"
     }
   }
 }

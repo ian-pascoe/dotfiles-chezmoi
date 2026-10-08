@@ -15,9 +15,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "cf0c4efe93ac2a840130648c466c68eb958dbb48",
+      "skillFolderHash": "da1e67257f54376a0a582543e307eb0b33468fc2",
       "installedAt": "2026-04-16T13:30:50.747Z",
-      "updatedAt": "2026-10-06T09:47:14.187Z"
+      "updatedAt": "2026-10-08T14:39:39.454Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -409,9 +409,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/plannotator/herdr-annotate.git",
       "skillPath": "skills/plannotator-tui/SKILL.md",
-      "skillFolderHash": "ac3bb3a7e92d4752c2e56718ebdd5f7597502393",
+      "skillFolderHash": "67049f537385f57c19c75bb759f9d19362853ccf",
       "installedAt": "2026-09-24T18:42:51.969Z",
-      "updatedAt": "2026-09-24T18:42:51.969Z"
+      "updatedAt": "2026-10-08T14:39:40.677Z"
     },
     "pr": {
       "source": "mattpocock/skills",
