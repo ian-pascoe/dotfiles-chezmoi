@@ -6,13 +6,13 @@
     "anthropic/claude-opus-5-5",
     "anthropic/claude-fable-5-1",
     "anthropic/claude-sonnet-5-5",
-    "anthropic/claude-haiku-4-5",
+    "anthropic/claude-haiku-5-5",
     "xai/grok-4.7",
     "opencode-go/deepseek-v4.1-flash",
     "opencode-go/glm-5.3-flash",
     "opencode-go/mimo-v2.6-flash"
   ],
-  "defaultTools": ["+codemode", "+grep", "+find", "+ls"],
+  "defaultTools": ["+codemode", "+tool_search", "+grep", "+find", "+ls"],
   "defaultProjectTrust": "always",
   "theme": "catppuccin",
   "tuiMode": "fullscreen",
@@ -68,6 +68,13 @@
       ]
     }
   ],
+  "guardian": {
+    "enabled": false,
+    "model": "anthropic/claude-haiku-5-5",
+    "thinkingLevel": "off",
+    "escalationModel": "anthropic/claude-sonnet-5-5",
+    "escalationThinkingLevel": "low"
+  },
   "advisor": {
     "enabled": false,
     "model": "anthropic/claude-fable-5-1",
@@ -95,15 +102,19 @@
         "hint": "Use when work spans roles or no specialized role fits."
       },
       "explore": {
-        "model": "anthropic/claude-haiku-4-5:high",
+        "model": "anthropic/claude-haiku-5-5:high",
         "hint": "Use to locate code, trace behavior, or find reusable patterns."
+      },
+      "oracle": {
+        "model": "anthropic/claude-fable-5-1",
+        "hint": "Use when all else fails and you need the most intelligence"
       },
       "plan": {
         "model": "anthropic/claude-opus-5-5:xhigh",
         "hint": "Use to clarify requirements, weigh designs, or plan implementation."
       },
       "research": {
-        "model": "anthropic/claude-sonnet-5-5:medium",
+        "model": "anthropic/claude-haiku-5-5:high",
         "hint": "Use when technical questions need external sources."
       },
       "review": {
@@ -815,5 +826,5 @@
       }
     }
   },
-  "lastChangelogVersion": "1.0.4"
+  "lastChangelogVersion": "1.1.0"
 }

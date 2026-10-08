@@ -3,6 +3,7 @@
     "executor": {
       "enabled": true,
       "url": "https://exe.ianpascoe.dev/mcp?mode=passthrough",
+      "description": "Connected third-party integrations and accounts: search for an integration tool, then invoke it by ID with JSON arguments; also lists workflow skills and stores artifacts.",
       "oauth": {
         "scope": "openid"
       },
